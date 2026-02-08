@@ -51,6 +51,7 @@ const tutorialSkipBtn = document.getElementById("tutorial-skip-btn");
 const statsPanel = document.getElementById("stats-panel");
 const statsCanvas = document.getElementById("stats-canvas");
 const muteBtn = document.getElementById("mute-btn");
+const rangesBtn = document.getElementById("ranges-btn");
 const minimapEl = document.getElementById("minimap-canvas");
 const dayIndicator = document.getElementById("day-indicator");
 const slotContainer = document.getElementById("slot-container");
@@ -348,6 +349,20 @@ function renderDayIndicator() {
   dayIndicator.textContent = phase;
 }
 
+function renderRangesToggle() {
+  if (!rangesBtn) return;
+  rangesBtn.textContent = STATE.showRanges ? "Hide Selected Range (G)" : "Show Selected Range (G)";
+  rangesBtn.classList.toggle("active-tool", STATE.showRanges);
+}
+
+function toggleRanges() {
+  STATE.showRanges = !STATE.showRanges;
+  if (STATE.showRanges && !STATE.selectedBuilding) {
+    setMessage("Select a building to preview its range.");
+  }
+  renderRangesToggle();
+}
+
 // ── Save slots ──
 function renderSlots() {
   if (!slotContainer) return;
@@ -603,6 +618,7 @@ window.addEventListener("keydown", e => {
     toggleMute();
     if (muteBtn) muteBtn.textContent = isMuted() ? "Unmute" : "Mute";
   }
+  if (key === "g") toggleRanges();
   if (key === "escape") closeUpgradeModal();
 
   // Quick slots 1-9
@@ -639,6 +655,7 @@ if (muteBtn) muteBtn.addEventListener("click", () => {
   toggleMute();
   muteBtn.textContent = isMuted() ? "Unmute" : "Mute";
 });
+if (rangesBtn) rangesBtn.addEventListener("click", toggleRanges);
 
 // ── Game loop ──
 let lastTime = performance.now();
@@ -746,6 +763,7 @@ renderUpgradeModal();
 renderEventPanel();
 renderWinConditions();
 renderTutorial();
+renderRangesToggle();
 
 setInterval(() => saveGame(), 5000);
 requestAnimationFrame(loop);

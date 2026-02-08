@@ -175,6 +175,14 @@ const BUILDING_PALETTES = {
   wonder: { body: "#d8cfb0", roof: "#8b7a4a", detail: "#e6dfc6", badge: "#ffd65c", spire: "#9c5bd9" },
 };
 
+const RANGE_COLORS = {
+  water_tower: "#59b8ff",
+  power: "#ffd166",
+  park: "#72d572",
+  workshop: "#b899ff",
+  farm: "#9adf5f",
+};
+
 function drawBuildingIso(ctx, cell, sx, sy, gx, gy) {
   const pal = BUILDING_PALETTES[cell.type];
   if (!pal) {
@@ -544,6 +552,79 @@ function drawHoverHighlight(ctx, sx, sy, occupied) {
   }
 }
 
+function getBuildingRangeDescriptor(cell) {
+  const ld = getBuildingLevelData(cell);
+  if (!ld) return null;
+
+  if (cell.type === "water_tower" && ld.synergy?.waterRadius) {
+    return { radius: ld.synergy.waterRadius, color: RANGE_COLORS.water_tower };
+  }
+  if (cell.type === "power" && ld.synergy?.poweredBoost && ld.synergy?.radius) {
+    return { radius: ld.synergy.radius, color: RANGE_COLORS.power };
+  }
+  if (cell.type === "park" && ld.synergy?.happinessAura && ld.synergy?.radius) {
+    return { radius: ld.synergy.radius, color: RANGE_COLORS.park };
+  }
+  if (cell.type === "workshop" && ld.synergy?.upgradeDiscount && ld.synergy?.radius) {
+    return { radius: ld.synergy.radius, color: RANGE_COLORS.workshop };
+  }
+  if (cell.type === "farm" && ld.synergy?.auraFoodBoost && ld.synergy?.radius) {
+    return { radius: ld.synergy.radius, color: RANGE_COLORS.farm };
+  }
+  return null;
+}
+
+function drawIsoRange(ctx, gx, gy, radius, color) {
+  if (!radius || radius <= 0) return;
+
+  const segments = 40;
+  ctx.save();
+  ctx.beginPath();
+  for (let i = 0; i <= segments; i++) {
+    const a = (i / segments) * Math.PI * 2;
+    const px = gx + Math.cos(a) * radius;
+    const py = gy + Math.sin(a) * radius;
+    const { sx, sy } = gridToIso(px, py);
+    if (i === 0) ctx.moveTo(sx, sy);
+    else ctx.lineTo(sx, sy);
+  }
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.08;
+  ctx.fill();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(0.8, 1.2 / STATE.camera.zoom);
+  ctx.globalAlpha = 0.7;
+  ctx.stroke();
+
+  const center = gridToIso(gx, gy);
+  ctx.globalAlpha = 0.9;
+  ctx.fillStyle = color;
+  ctx.fillRect(center.sx - 1.5, center.sy - 1.5, 3, 3);
+  ctx.restore();
+}
+
+function drawRangeOverlays(ctx, canvasW, canvasH) {
+  if (!STATE.showRanges || STATE.mode !== "play") return;
+  if (!STATE.selectedBuilding) return;
+
+  const { x: gx, y: gy } = STATE.selectedBuilding;
+  const cell = STATE.grid[gy]?.[gx];
+  if (!cell) return;
+
+  const range = getBuildingRangeDescriptor(cell);
+  if (!range) return;
+
+  // Frustum culling for range overlay
+  const { sx, sy } = gridToIso(gx, gy);
+  const screen = worldToScreen(sx, sy, canvasW, canvasH);
+  const margin = (range.radius + 2) * TILE_W * STATE.camera.zoom;
+  if (screen.sx < -margin || screen.sx > canvasW + margin) return;
+  if (screen.sy < -margin || screen.sy > canvasH + margin) return;
+
+  drawIsoRange(ctx, gx, gy, range.radius, range.color);
+}
+
 // ── Minimap ──
 export function drawMinimap(ctx, x, y, w, h) {
   ctx.fillStyle = "rgba(0,0,0,0.7)";
@@ -639,6 +720,8 @@ export function renderWorld(ctx, canvasW, canvasH) {
       }
     }
   }
+
+  drawRangeOverlays(ctx, canvasW, canvasH);
 
   // Selection highlight
   if (STATE.selectedBuilding) {

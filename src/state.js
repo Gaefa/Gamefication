@@ -64,6 +64,7 @@ export const STATE = {
   dayTime: 0.35,
   daySpeed: 0.0003,
   dayPaused: false,
+  showRanges: false,
 
   // stats tracking
   stats: {

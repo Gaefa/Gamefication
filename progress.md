@@ -61,3 +61,10 @@ Original prompt: Build a city builder with pixel graphics.
 - type="module" in package.json
 - Serves via any static HTTP server
 - Canvas renders full window, UI panels overlay
+
+## 2026-02-08 - Selected range overlay cleanup
+- Changed range overlay rendering to draw only for `STATE.selectedBuilding` when range mode is enabled.
+- Updated UI text to clarify behavior: `Show/Hide Selected Range (G)` and tip text now says `G: selected range`.
+- Added UX hint in toggle handler: if range mode is enabled without selection, show message `Select a building to preview its range.`
+- Validation: `npm run check` passed; `node --check src/main.js && node --check src/renderer.js` passed.
+- Playwright skill client run attempted but blocked by missing dependency: `ERR_MODULE_NOT_FOUND: Cannot find package 'playwright'`.
