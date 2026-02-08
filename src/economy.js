@@ -321,13 +321,35 @@ export function updateCaps() {
 }
 
 export function maybeCreateIssue() {
-  forEachBuilding(cell => {
+  forEachBuilding((cell, x, y) => {
     if (cell.type === "road" || cell.issue) return;
     const chance = 0.001 + cell.level * 0.00035;
-    if (Math.random() < chance) {
-      const types = ["Power", "Traffic", "Maintenance", "Supply", "Water"];
-      cell.issue = types[Math.floor(Math.random() * types.length)];
+    if (Math.random() >= chance) return;
+
+    // Context-aware: only assign issues that actually apply
+    const possibleIssues = [];
+
+    // Traffic — only if NOT connected to a road
+    const bld = BUILDINGS[cell.type];
+    if (bld?.requiresRoad && !isConnectedToRoad(x, y)) {
+      possibleIssues.push("Traffic");
     }
+
+    // Power — only if no power plant in range
+    if (cell.type !== "power" && cell.type !== "road" && getPowerAuraBoost(x, y) === 0) {
+      possibleIssues.push("Power");
+    }
+
+    // Water — only if residential and no water coverage
+    if ((cell.type === "hut" || cell.type === "apartment") && !getWaterCoverage(x, y)) {
+      possibleIssues.push("Water");
+    }
+
+    // Generic issues that can happen randomly regardless of infrastructure
+    possibleIssues.push("Maintenance");
+    if (cell.level >= 2) possibleIssues.push("Supply");
+
+    cell.issue = possibleIssues[Math.floor(Math.random() * possibleIssues.length)];
   });
 }
 

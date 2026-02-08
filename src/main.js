@@ -444,8 +444,8 @@ function startNewGame() {
   STATE.cityLevel = 1;
   STATE.population = 0;
   STATE.happiness = 60;
-  STATE.camera.x = GRID_SIZE * 16;
-  STATE.camera.y = 0;
+  STATE.camera.x = 0;
+  STATE.camera.y = GRID_SIZE * 8;
   STATE.camera.zoom = 1;
   STATE.tutorialStep = 0;
   STATE.tutorialDone = false;
