@@ -5,7 +5,27 @@ import { STATE, createBaseCaps, createStartingResources } from "./state.js";
 // ── Helpers ──
 export function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 export function round1(v) { return Math.round(v * 10) / 10; }
-export function formatRes(v) { return round1(v).toString(); }
+const RESOURCE_EPSILON = 1e-6;
+const RESOURCE_PRECISION = 1000;
+
+function normalizeResourceValue(v) {
+  if (!Number.isFinite(v)) return 0;
+  return Math.round(v * RESOURCE_PRECISION) / RESOURCE_PRECISION;
+}
+
+function truncateForDisplay(v, decimals = 2) {
+  const factor = 10 ** decimals;
+  return Math.trunc(v * factor) / factor;
+}
+
+export function formatRes(v) {
+  const safe = Number.isFinite(v) ? v : 0;
+  if (Math.abs(safe - Math.round(safe)) < RESOURCE_EPSILON) {
+    return Math.round(safe).toString();
+  }
+  const shown = truncateForDisplay(safe, 2);
+  return shown.toFixed(2).replace(/\.?0+$/, "");
+}
 
 export function setMessage(text) {
   STATE.message = text;
@@ -15,13 +35,13 @@ export function setMessage(text) {
 // ── Resources ──
 export function hasResources(cost) {
   if (!cost) return true;
-  return Object.entries(cost).every(([k, v]) => (STATE.resources[k] || 0) >= v);
+  return Object.entries(cost).every(([k, v]) => ((STATE.resources[k] || 0) + RESOURCE_EPSILON) >= v);
 }
 
 export function spendResources(cost) {
   if (!cost) return;
   for (const [k, v] of Object.entries(cost)) {
-    STATE.resources[k] = Math.max(0, (STATE.resources[k] || 0) - v);
+    STATE.resources[k] = normalizeResourceValue(Math.max(0, (STATE.resources[k] || 0) - v));
   }
 }
 
@@ -29,7 +49,7 @@ export function addResources(bundle) {
   if (!bundle) return;
   for (const [k, v] of Object.entries(bundle)) {
     const cap = STATE.caps[k] ?? 999999;
-    STATE.resources[k] = clamp((STATE.resources[k] || 0) + v, 0, cap);
+    STATE.resources[k] = normalizeResourceValue(clamp((STATE.resources[k] || 0) + v, 0, cap));
   }
 }
 

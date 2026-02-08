@@ -4,9 +4,9 @@ import { STATE, createEmptyGrid, createStartingResources } from "./state.js";
 import { generateTerrain, canBuildOnTerrain, getTerrainBuildCostMultiplier } from "./mapgen.js";
 import {
   hasResources, spendResources, addResources, setMessage, resourceToString, formatRes,
-  getBuildingLevelData, getNextLevelData, forEachBuilding, isConnectedToRoad,
+  getBuildingLevelData, getNextLevelData, isConnectedToRoad, getWaterCoverage,
   getUpgradeDiscount, clamp, getPrestigeProductionBonus, getCityLevelProductionBonus,
-  computePassiveStats, round1, getRoadMask,
+  computePassiveStats,
 } from "./economy.js";
 import { getEventDefinition, resolveEvent } from "./events.js";
 import {
@@ -179,6 +179,8 @@ function renderSelectedInfo() {
   const next = getNextLevelData(cell);
   const { x, y } = STATE.selectedBuilding;
   const connected = isConnectedToRoad(x, y);
+  const isResidential = cell.type === "hut" || cell.type === "apartment";
+  const waterCovered = isResidential ? getWaterCoverage(x, y) : false;
 
   const lines = [
     `<strong>${data.label}</strong> (${ld.stage})`,
@@ -190,6 +192,7 @@ function renderSelectedInfo() {
   if (ld.population) lines.push(`Pop +${ld.population}`);
   if (ld.happiness) lines.push(`Happy +${ld.happiness}`);
   if (data.requiresRoad) lines.push(`Road: <span class="${connected ? 'status-ok' : 'status-bad'}">${connected ? 'Connected' : 'NOT CONNECTED'}</span>`);
+  if (isResidential) lines.push(`Water Net: <span class="${waterCovered ? 'status-ok' : 'status-bad'}">${waterCovered ? 'Covered' : 'NOT COVERED'}</span>`);
 
   if (next?.cost) {
     const discounted = getUpgradeCost(cell, x, y);
