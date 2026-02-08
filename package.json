@@ -1,0 +1,14 @@
+{
+  "name": "pixel-city-builder",
+  "version": "2.0.0",
+  "description": "Браузерный пиксельный градостроительный симулятор: изометрия 2.5D, процедурная карта, престиж, события (Pixel art city builder, isometric, idle, procedural terrain)",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve .",
+    "check": "node --check src/config.js && node --check src/state.js"
+  },
+  "keywords": ["game", "city-builder", "pixel-art", "isometric"],
+  "author": "",
+  "license": "ISC"
+}

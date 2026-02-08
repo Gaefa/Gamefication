@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Pixel City Builder</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="resource-bar" aria-live="polite"></div>
+
+    <div id="layout">
+      <aside id="info-panel">
+        <h2>City Status</h2>
+        <div id="city-stats"></div>
+        <button id="level-btn" type="button">Level Up</button>
+        <button id="prestige-btn" type="button">Prestige</button>
+
+        <div class="divider"></div>
+        <h2>Win Condition</h2>
+        <div id="win-conditions"></div>
+
+        <div class="divider"></div>
+        <h2>Events</h2>
+        <div id="event-panel">No active events.</div>
+        <div class="button-row">
+          <button id="event-accept-btn" type="button">Accept</button>
+          <button id="event-decline-btn" type="button">Decline</button>
+        </div>
+
+        <div class="divider"></div>
+        <h2>Selected</h2>
+        <div id="selected-info">Click a building.</div>
+        <div class="button-row">
+          <button id="upgrade-window-btn" type="button">Tree</button>
+          <button id="upgrade-btn" type="button">Upgrade</button>
+          <button id="repair-btn" type="button">Repair</button>
+        </div>
+
+        <div class="divider"></div>
+        <h2>Statistics</h2>
+        <div id="stats-panel">
+          <canvas id="stats-canvas" width="196" height="80"></canvas>
+        </div>
+
+        <div class="divider"></div>
+        <div id="day-indicator">Day</div>
+      </aside>
+
+      <div id="canvas-wrap">
+        <canvas id="game" aria-label="Pixel city builder"></canvas>
+        <div id="hud">
+          <button id="start-btn" type="button">Start City</button>
+          <div id="tip">WASD/Arrows: move | Scroll: zoom | Shift+drag: pan | 1-9: tools | U: upgrade | R: repair | B: bulldoze | M: mute</div>
+        </div>
+      </div>
+
+      <aside id="build-panel">
+        <h2>Build Menu</h2>
+        <div id="build-list"></div>
+        <div class="divider"></div>
+        <button id="bulldoze-btn" type="button">Bulldoze (B)</button>
+        <div class="divider"></div>
+        <button id="mute-btn" type="button">Mute</button>
+
+        <div class="divider"></div>
+        <h2>Minimap</h2>
+        <canvas id="minimap-canvas" width="196" height="196"></canvas>
+
+        <div class="divider"></div>
+        <h2>Save Slots</h2>
+        <div id="slot-container"></div>
+      </aside>
+    </div>
+
+    <div id="tutorial-panel" class="tutorial hidden">
+      <div class="tutorial-inner">
+        <h3 id="tutorial-title">Welcome!</h3>
+        <p id="tutorial-text">Text here.</p>
+        <div class="button-row">
+          <button id="tutorial-dismiss-btn" type="button">Got it</button>
+          <button id="tutorial-skip-btn" type="button">Skip Tutorial</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="upgrade-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="upgrade-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="upgrade-title">Upgrade</h2>
+          <button id="close-upgrade-modal-btn" type="button">Close</button>
+        </div>
+        <div id="upgrade-summary"></div>
+        <div id="upgrade-tree" class="tree"></div>
+        <div class="button-row">
+          <button id="upgrade-from-modal-btn" type="button">Upgrade Selected</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
