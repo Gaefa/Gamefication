@@ -57,8 +57,11 @@ const slotContainer = document.getElementById("slot-container");
 
 // ── Canvas setup ──
 function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  // Match internal canvas resolution to its CSS display size
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
 }
 resizeCanvas();
 

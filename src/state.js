@@ -1,5 +1,5 @@
 // ── Game State ─────────────────────────────────────────────────────
-import { GRID_SIZE, TERRAIN } from "./config.js";
+import { GRID_SIZE, TILE_H, TERRAIN } from "./config.js";
 
 export function createStartingResources() {
   return {
@@ -55,7 +55,7 @@ export const STATE = {
   happinessPenaltyTicks: 0,
 
   // camera
-  camera: { x: GRID_SIZE * 16, y: 0, zoom: 1 },
+  camera: { x: 0, y: GRID_SIZE * (TILE_H / 2), zoom: 1 },
   isDragging: false,
   dragStart: { x: 0, y: 0 },
   camStart: { x: 0, y: 0 },
