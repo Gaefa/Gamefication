@@ -45,7 +45,7 @@ func run_tick(allow_issues: bool = true) -> void:
 	var progression: Dictionary = GameStateStore.get_progression()
 	var pressure: Dictionary = GameStateStore.get_pressure()
 	var events_state: Dictionary = GameStateStore.get_events()
-	var meta: Dictionary = GameStateStore.get_meta()
+	var meta: Dictionary = GameStateStore.get_save_meta()
 
 	# Phase 1: Pre-tick -- decay buffs, decrement timers
 	_phase_pre_tick(economy, events_state)

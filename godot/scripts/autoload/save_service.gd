@@ -45,7 +45,7 @@ func save_game(slot: int) -> bool:
 		return false
 
 	# Stamp save time
-	var meta: Dictionary = GameStateStore.get_meta()
+	var meta: Dictionary = GameStateStore.get_save_meta()
 	meta["last_saved_at"] = Time.get_unix_time_from_system()
 
 	# Serialize
@@ -106,7 +106,7 @@ func load_game(slot: int) -> bool:
 	GameStateStore.is_playing = true
 
 	# Calculate offline ticks
-	var meta: Dictionary = GameStateStore.get_meta()
+	var meta: Dictionary = GameStateStore.get_save_meta()
 	var last_saved: float = float(meta.get("last_saved_at", 0.0))
 	if last_saved > 0.0:
 		var now: float = Time.get_unix_time_from_system()

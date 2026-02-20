@@ -106,7 +106,7 @@ func get_events() -> Dictionary:
 	return state.get("events", {})
 
 
-func get_meta() -> Dictionary:
+func get_save_meta() -> Dictionary:
 	return state.get("meta", {})
 
 

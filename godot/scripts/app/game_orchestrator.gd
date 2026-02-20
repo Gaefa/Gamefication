@@ -145,7 +145,7 @@ func _initialize_runtime() -> void:
 		road_network, pipe_network, coverage_map
 	)
 
-	tick_count = int(GameStateStore.get_meta().get("tick_count", 0))
+	tick_count = int(GameStateStore.get_save_meta().get("tick_count", 0))
 	_accumulator = 0.0
 
 
