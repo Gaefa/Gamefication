@@ -1,7 +1,28 @@
 {
   "permissions": {
     "allow": [
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(for f in place_building_command bulldoze_command upgrade_building_command repair_building_command resolve_event_command level_up_command prestige_command set_policy_command)",
+      "Bash(do test -f \"/Users/antyukhin_alexey/.claude-worktrees/Gamefication/elastic-wozniak/godot/scripts/core/commands/$f.gd\")",
+      "Bash(echo:*)",
+      "Bash(done)",
+      "Bash(for f in economy_system infrastructure_system event_system progression_system issue_system maintenance_system citizen_needs_system pressure_director_system)",
+      "Bash(do test -f \"/Users/antyukhin_alexey/.claude-worktrees/Gamefication/elastic-wozniak/godot/scripts/core/systems/$f.gd\")",
+      "Bash(for f in command_bus tick_scheduler game_orchestrator session_service content_registry dlc_loader)",
+      "Bash(do test -f \"/Users/antyukhin_alexey/.claude-worktrees/Gamefication/elastic-wozniak/godot/scripts/app/$f.gd\")",
+      "Bash(for f in adjacency_calculator aura_cache synergy_resolver production_multiplier building_interactions)",
+      "Bash(do test -f \"/Users/antyukhin_alexey/.claude-worktrees/Gamefication/elastic-wozniak/godot/scripts/core/buildings/$f.gd\")",
+      "Bash(for f in resource_flow)",
+      "Bash(do test -f \"/Users/antyukhin_alexey/.claude-worktrees/Gamefication/elastic-wozniak/godot/scripts/core/transport/$f.gd\")",
+      "Bash(for f in terrain_generator noise_provider)",
+      "Bash(do test -f \"/Users/antyukhin_alexey/.claude-worktrees/Gamefication/elastic-wozniak/godot/scenes/mapgen/$f.gd\")",
+      "Bash(for f in main world/world_root world/hex_terrain_layer world/building_layer world/overlay_layer world/fx_layer world/camera_controller ui/hud_root)",
+      "Bash(do test -f \"/Users/antyukhin_alexey/.claude-worktrees/Gamefication/elastic-wozniak/godot/scenes/$f.gd\")",
+      "Bash(test:*)",
+      "Bash(for f in save_schema_v1 save_migrator save_validator)",
+      "Bash(do test -f \"/Users/antyukhin_alexey/.claude-worktrees/Gamefication/elastic-wozniak/godot/scripts/core/save_schema/$f.gd\")"
     ]
   }
 }

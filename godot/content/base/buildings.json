@@ -1,0 +1,304 @@
+{
+  "hut": {
+    "label": "Hut",
+    "description": "Basic residential dwelling. Houses citizens who pay taxes in coins but need food. Upgrade to increase population capacity and unlock cultural contributions. Place near roads for full efficiency and water towers for water supply.",
+    "category": "Residential",
+    "unlock_level": 1,
+    "build_cost": { "wood": 25, "stone": 10 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Hut", "cost": null, "produces": { "coins": 0.5 }, "consumes": { "food": 0.5 }, "population": 2, "happiness": 1, "storage": 0 },
+      { "stage": "House", "cost": { "coins": 50, "planks": 40, "bricks": 30 }, "produces": { "coins": 1 }, "consumes": { "food": 0.6 }, "population": 5, "happiness": 2, "storage": 0 },
+      { "stage": "Cottage", "cost": { "coins": 150, "planks": 80, "bricks": 60, "cloth": 30 }, "produces": { "coins": 2 }, "consumes": { "food": 0.7 }, "population": 10, "happiness": 5, "storage": 0 },
+      { "stage": "Mansion", "cost": { "coins": 400, "bricks": 100, "metal": 80, "glass": 50 }, "produces": { "coins": 5 }, "consumes": { "food": 0.9 }, "population": 20, "happiness": 12, "storage": 0 },
+      { "stage": "Villa", "cost": { "coins": 1000, "metal": 200, "glass": 150, "energy": 100 }, "produces": { "coins": 12, "culture": 0.5 }, "consumes": { "food": 1 }, "population": 35, "happiness": 24, "storage": 0 }
+    ]
+  },
+  "apartment": {
+    "label": "Apartment",
+    "description": "High-density housing for growing cities. Apartments house many more citizens than huts but require energy to operate. Ideal for late-game population boosts. Consumes more food and energy at higher levels but generates significant tax income.",
+    "category": "Residential",
+    "unlock_level": 4,
+    "build_cost": { "coins": 200, "bricks": 100, "metal": 80 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Low-rise", "cost": null, "produces": { "coins": 1 }, "consumes": { "food": 2, "energy": 0.5 }, "population": 15, "happiness": 3, "storage": 0 },
+      { "stage": "Tower", "cost": { "coins": 400, "metal": 150, "glass": 100 }, "produces": { "coins": 2 }, "consumes": { "food": 2.5, "energy": 0.8 }, "population": 30, "happiness": 4, "storage": 0 },
+      { "stage": "Complex", "cost": { "coins": 800, "metal": 250, "glass": 200, "energy": 150 }, "produces": { "coins": 4 }, "consumes": { "food": 3.5, "energy": 1.2 }, "population": 50, "happiness": 6, "storage": 0 },
+      { "stage": "Skyblock", "cost": { "coins": 1600, "metal": 400, "glass": 300, "energy": 250 }, "produces": { "coins": 8 }, "consumes": { "food": 4.5, "energy": 1.8 }, "population": 80, "happiness": 8, "storage": 0 },
+      { "stage": "Megablock", "cost": { "coins": 3200, "metal": 600, "energy": 500, "science": 100 }, "produces": { "coins": 15 }, "consumes": { "food": 5.5, "energy": 2.6 }, "population": 120, "happiness": 12, "storage": 0 }
+    ]
+  },
+  "farm": {
+    "label": "Farm",
+    "description": "Primary food source for your city. Farms produce food that feeds your population. At level 3+ they generate a food aura that boosts nearby food production. Place on grass terrain for +20% bonus. Pairs well with Lumber Mills for a synergy bonus (+15% food, +10% wood). At max level, auto-sells excess food for coins.",
+    "category": "Production",
+    "unlock_level": 1,
+    "build_cost": { "wood": 10 },
+    "requires_road": false,
+    "terrain_bonus": { "0": 0.2, "2": -0.1 },
+    "network_type": null,
+    "levels": [
+      { "stage": "Field", "cost": null, "produces": { "food": 2 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Barn Farm", "cost": { "coins": 50, "wood": 20 }, "produces": { "food": 3 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Mill Farm", "cost": { "coins": 100, "planks": 30, "stone": 20 }, "produces": { "food": 5 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "aura_food_boost": 0.05, "radius": 3 } },
+      { "stage": "Greenhouse", "cost": { "coins": 200, "bricks": 50, "tools": 30 }, "produces": { "food": 8 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "aura_food_boost": 0.07, "radius": 3 } },
+      { "stage": "Hydro Farm", "cost": { "coins": 500, "metal": 100, "glass": 50 }, "produces": { "food": 15 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "aura_food_boost": 0.1, "radius": 4, "auto_sell_food": true } }
+    ]
+  },
+  "lumber": {
+    "label": "Lumber Mill",
+    "description": "Produces wood and refined planks. Place in forest terrain for a massive +50% production bonus. At level 2+ generates a synergy boost for adjacent farms, increasing their food output. Essential early-game resource producer that scales well into late game with Industrial and Auto Forestry upgrades.",
+    "category": "Production",
+    "unlock_level": 1,
+    "build_cost": { "coins": 15 },
+    "requires_road": false,
+    "terrain_bonus": { "4": 0.5 },
+    "network_type": null,
+    "levels": [
+      { "stage": "Yard", "cost": null, "produces": { "wood": 1 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Saw Mill", "cost": { "coins": 40, "wood": 30 }, "produces": { "wood": 2, "planks": 0.5 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "farm_adj_boost": 0.1 } },
+      { "stage": "Timber Plant", "cost": { "coins": 80, "planks": 50, "stone": 30 }, "produces": { "wood": 3, "planks": 1 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "farm_adj_boost": 0.12 } },
+      { "stage": "Industrial Lumber", "cost": { "coins": 150, "bricks": 40, "tools": 20 }, "produces": { "wood": 5, "planks": 2 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "farm_adj_boost": 0.14 } },
+      { "stage": "Auto Forestry", "cost": { "coins": 400, "metal": 80 }, "produces": { "wood": 8, "planks": 4 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "farm_adj_boost": 0.15 } }
+    ]
+  },
+  "quarry": {
+    "label": "Quarry",
+    "description": "Extracts stone and processes bricks. Place on rock terrain for +40% bonus or hills for +20%. At higher levels also produces small amounts of glass. Pairs with Foundry for a synergy bonus on metal and glass production. Core material producer needed for infrastructure and commercial buildings.",
+    "category": "Production",
+    "unlock_level": 1,
+    "build_cost": { "coins": 20, "wood": 10 },
+    "requires_road": false,
+    "terrain_bonus": { "5": 0.4, "3": 0.2 },
+    "network_type": null,
+    "levels": [
+      { "stage": "Pit", "cost": null, "produces": { "stone": 1 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Stone Yard", "cost": { "coins": 60, "wood": 40 }, "produces": { "stone": 2, "bricks": 0.3 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Brickworks", "cost": { "coins": 120, "planks": 60, "food": 40 }, "produces": { "stone": 3, "bricks": 0.8 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Deep Quarry", "cost": { "coins": 250, "bricks": 50, "tools": 30 }, "produces": { "stone": 5, "bricks": 1.5 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Mega Quarry", "cost": { "coins": 600, "metal": 100, "energy": 50 }, "produces": { "stone": 10, "bricks": 3, "glass": 0.2 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 }
+    ]
+  },
+  "workshop": {
+    "label": "Workshop",
+    "description": "Crafts tools and cloth from raw materials. At level 2+ creates a discount aura that reduces upgrade costs for all buildings within its radius. Consumes wood and stone to operate. Essential for upgrading your city efficiently. Place centrally to maximize the upgrade discount coverage.",
+    "category": "Production",
+    "unlock_level": 2,
+    "build_cost": { "coins": 50, "wood": 30, "stone": 20 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Craft Shed", "cost": null, "produces": { "tools": 0.5 }, "consumes": { "wood": 1, "stone": 0.5 }, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Tool House", "cost": { "coins": 100, "planks": 40, "bricks": 30 }, "produces": { "tools": 1 }, "consumes": { "wood": 1.2, "stone": 0.6 }, "population": 0, "happiness": 0, "storage": 0, "synergy": { "upgrade_discount": 0.1, "radius": 3 } },
+      { "stage": "Mechanic Hall", "cost": { "coins": 200, "planks": 60, "bricks": 40, "tools": 20 }, "produces": { "tools": 2, "cloth": 1 }, "consumes": { "wood": 1.5, "stone": 0.8 }, "population": 0, "happiness": 0, "storage": 0, "synergy": { "upgrade_discount": 0.12, "radius": 3 } },
+      { "stage": "Automation Yard", "cost": { "coins": 400, "metal": 80, "tools": 40 }, "produces": { "tools": 4, "cloth": 2 }, "consumes": { "wood": 1.8, "stone": 1 }, "population": 0, "happiness": 0, "storage": 0, "synergy": { "upgrade_discount": 0.14, "radius": 4 } },
+      { "stage": "Nano Workshop", "cost": { "coins": 800, "metal": 150, "glass": 80 }, "produces": { "tools": 8, "cloth": 3 }, "consumes": { "wood": 2, "stone": 1.2 }, "population": 0, "happiness": 0, "storage": 0, "synergy": { "upgrade_discount": 0.16, "radius": 4 } }
+    ]
+  },
+  "foundry": {
+    "label": "Foundry",
+    "description": "Smelts stone into metal and glass using tools and energy. Critical mid-to-late game building for producing advanced construction materials. Pairs with adjacent Quarries for bonus metal/glass output. Higher levels shift from consuming tools to consuming energy, unlocking massive production rates at Fusion Forge stage.",
+    "category": "Production",
+    "unlock_level": 3,
+    "build_cost": { "coins": 150, "bricks": 80, "tools": 40 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Smelter", "cost": null, "produces": { "metal": 0.3 }, "consumes": { "stone": 2, "tools": 0.3 }, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Furnace", "cost": { "coins": 300, "bricks": 100, "tools": 60 }, "produces": { "metal": 0.8 }, "consumes": { "stone": 2.4, "tools": 0.4 }, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Refinery", "cost": { "coins": 600, "metal": 80, "cloth": 40 }, "produces": { "metal": 1.5, "glass": 0.5 }, "consumes": { "stone": 2.8, "energy": 0.3 }, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Steel Plant", "cost": { "coins": 1200, "metal": 150, "glass": 100 }, "produces": { "metal": 3, "glass": 1.2 }, "consumes": { "stone": 3.2, "energy": 0.6 }, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Fusion Forge", "cost": { "coins": 2500, "metal": 300, "energy": 200 }, "produces": { "metal": 6, "glass": 3 }, "consumes": { "stone": 4, "energy": 1.2 }, "population": 0, "happiness": 0, "storage": 0 }
+    ]
+  },
+  "market": {
+    "label": "Market",
+    "description": "Commercial hub that generates coins and boosts nearby residential income. Each level increases the coin bonus given to adjacent huts and apartments. Place markets surrounded by housing for maximum economic output. The Global Market stage generates massive passive income for late-game economies.",
+    "category": "Commercial",
+    "unlock_level": 2,
+    "build_cost": { "coins": 80, "planks": 50, "bricks": 30 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Bazaar", "cost": null, "produces": { "coins": 2 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "residential_coins": 0.15 } },
+      { "stage": "Town Market", "cost": { "coins": 160, "planks": 80, "bricks": 60 }, "produces": { "coins": 4 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "residential_coins": 0.2 } },
+      { "stage": "Trade Hall", "cost": { "coins": 320, "metal": 100, "glass": 80 }, "produces": { "coins": 7 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "residential_coins": 0.3 } },
+      { "stage": "Grand Exchange", "cost": { "coins": 640, "metal": 200, "glass": 150 }, "produces": { "coins": 12 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "residential_coins": 0.4 } },
+      { "stage": "Global Market", "cost": { "coins": 1280, "metal": 300, "glass": 250, "energy": 100 }, "produces": { "coins": 20 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "residential_coins": 0.5 } }
+    ]
+  },
+  "bank": {
+    "label": "Bank",
+    "description": "Financial institution that generates coins and earns interest on your treasury. Interest is calculated as a percentage of current coins per minute, scaling with level. The Hyperbank generates 12% interest per minute on your entire treasury. Expensive to build but extremely profitable for wealthy cities.",
+    "category": "Commercial",
+    "unlock_level": 5,
+    "build_cost": { "coins": 500, "bricks": 150, "metal": 100, "glass": 80 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Credit Office", "cost": null, "produces": { "coins": 5 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "interest_per_min": 0.02 },
+      { "stage": "Regional Bank", "cost": { "coins": 1000, "metal": 200, "glass": 150 }, "produces": { "coins": 10 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "interest_per_min": 0.03 },
+      { "stage": "National Bank", "cost": { "coins": 2000, "metal": 350, "glass": 250, "energy": 200 }, "produces": { "coins": 18 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "interest_per_min": 0.05 },
+      { "stage": "Central Reserve", "cost": { "coins": 4000, "metal": 500, "energy": 400, "science": 150 }, "produces": { "coins": 30 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "interest_per_min": 0.08 },
+      { "stage": "Hyperbank", "cost": { "coins": 8000, "metal": 800, "energy": 600, "science": 300 }, "produces": { "coins": 50 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "interest_per_min": 0.12 }
+    ]
+  },
+  "park": {
+    "label": "Park",
+    "description": "Green space that generates culture and a powerful happiness aura. All buildings within its radius receive a happiness bonus. Essential for keeping citizens satisfied in dense cities. At max level, National Park provides +80 happiness and radiates joy across 6 hex tiles. Does not require road connection.",
+    "category": "Culture",
+    "unlock_level": 3,
+    "build_cost": { "coins": 100, "planks": 60, "food": 40 },
+    "requires_road": false,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Park", "cost": null, "produces": { "culture": 0.5 }, "consumes": {}, "population": 0, "happiness": 10, "storage": 0, "synergy": { "happiness_aura": 0.15, "radius": 4 } },
+      { "stage": "City Garden", "cost": { "coins": 200, "planks": 100, "cloth": 60 }, "produces": { "culture": 1 }, "consumes": {}, "population": 0, "happiness": 20, "storage": 0, "synergy": { "happiness_aura": 0.2, "radius": 4 } },
+      { "stage": "Recreation Zone", "cost": { "coins": 400, "bricks": 150, "cloth": 100, "metal": 80 }, "produces": { "culture": 2 }, "consumes": {}, "population": 0, "happiness": 35, "storage": 0, "synergy": { "happiness_aura": 0.25, "radius": 5 } },
+      { "stage": "Grand Park", "cost": { "coins": 800, "metal": 200, "glass": 150, "energy": 100 }, "produces": { "culture": 4 }, "consumes": {}, "population": 0, "happiness": 55, "storage": 0, "synergy": { "happiness_aura": 0.3, "radius": 5 } },
+      { "stage": "National Park", "cost": { "coins": 1600, "glass": 300, "energy": 250, "science": 100 }, "produces": { "culture": 7 }, "consumes": {}, "population": 0, "happiness": 80, "storage": 0, "synergy": { "happiness_aura": 0.35, "radius": 6 } }
+    ]
+  },
+  "library": {
+    "label": "Library",
+    "description": "Knowledge center producing science and culture. Pairs with Research Centers for a powerful synergy bonus (+20% science to research, +15% to library). At higher levels becomes an academy and then a knowledge hub, dramatically increasing science output. Essential for reaching the tech-heavy late-game city levels.",
+    "category": "Culture",
+    "unlock_level": 4,
+    "build_cost": { "coins": 250, "planks": 150, "bricks": 100 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Library", "cost": null, "produces": { "science": 0.5, "culture": 1 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Research Library", "cost": { "coins": 500, "bricks": 200, "cloth": 150 }, "produces": { "science": 1.2, "culture": 2 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Academy", "cost": { "coins": 1000, "metal": 250, "glass": 200, "cloth": 150 }, "produces": { "science": 2.5, "culture": 4 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Knowledge Hub", "cost": { "coins": 2000, "metal": 400, "glass": 350, "energy": 250 }, "produces": { "science": 5, "culture": 7 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Archive Nexus", "cost": { "coins": 4000, "metal": 600, "energy": 500, "science": 200 }, "produces": { "science": 10, "culture": 12 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0 }
+    ]
+  },
+  "theater": {
+    "label": "Theater",
+    "description": "Cultural landmark generating culture, fame and significant happiness. The most powerful happiness building per tile. Produces fame which is needed for win conditions and prestige calculations. At Cultural Capital stage, provides 130 happiness and 4 fame per second. Requires substantial investment but transforms city morale.",
+    "category": "Culture",
+    "unlock_level": 5,
+    "build_cost": { "coins": 400, "bricks": 200, "cloth": 150, "glass": 100 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Theater", "cost": null, "produces": { "culture": 3, "fame": 0.3 }, "consumes": {}, "population": 0, "happiness": 25, "storage": 0 },
+      { "stage": "Opera Hall", "cost": { "coins": 800, "metal": 300, "glass": 200 }, "produces": { "culture": 6, "fame": 0.6 }, "consumes": {}, "population": 0, "happiness": 40, "storage": 0 },
+      { "stage": "Arts Center", "cost": { "coins": 1600, "metal": 500, "glass": 400, "energy": 300 }, "produces": { "culture": 10, "fame": 1 }, "consumes": {}, "population": 0, "happiness": 60, "storage": 0 },
+      { "stage": "Grand Theater", "cost": { "coins": 3200, "energy": 800, "science": 300 }, "produces": { "culture": 18, "fame": 2 }, "consumes": {}, "population": 0, "happiness": 90, "storage": 0 },
+      { "stage": "Cultural Capital", "cost": { "coins": 6400, "energy": 1200, "science": 600, "fame": 200 }, "produces": { "culture": 30, "fame": 4 }, "consumes": {}, "population": 0, "happiness": 130, "storage": 0 }
+    ]
+  },
+  "power": {
+    "label": "Power Plant",
+    "description": "Generates energy and broadcasts a production boost aura to nearby buildings. At level 2+ creates a powered zone where all buildings get bonus production. Higher levels evolve from coal-burning to solar and fusion, eventually eliminating resource consumption. The Reactor stage powers a radius of 10 hexes with +20% boost.",
+    "category": "Infrastructure",
+    "unlock_level": 4,
+    "build_cost": { "coins": 300, "bricks": 150, "metal": 100 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": "power",
+    "levels": [
+      { "stage": "Plant", "cost": null, "produces": { "energy": 2 }, "consumes": { "stone": 1, "metal": 0.5 }, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Grid Plant", "cost": { "coins": 600, "metal": 250, "tools": 150 }, "produces": { "energy": 4 }, "consumes": { "stone": 1.2, "metal": 0.6 }, "population": 0, "happiness": 0, "storage": 0, "synergy": { "powered_boost": 0.1, "radius": 6 } },
+      { "stage": "Solar Station", "cost": { "coins": 1200, "metal": 400, "glass": 300 }, "produces": { "energy": 7 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "powered_boost": 0.12, "radius": 7 } },
+      { "stage": "Fusion Plant", "cost": { "coins": 2400, "metal": 600, "glass": 500, "science": 200 }, "produces": { "energy": 12 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "powered_boost": 0.15, "radius": 8 } },
+      { "stage": "Reactor", "cost": { "coins": 4800, "metal": 1000, "energy": 800, "science": 400 }, "produces": { "energy": 20 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "powered_boost": 0.2, "radius": 10 } }
+    ]
+  },
+  "water_tower": {
+    "label": "Water Tower",
+    "description": "Provides water supply to surrounding buildings. Residential buildings without water coverage operate at only 60% efficiency. Each upgrade expands the water radius dramatically - from 4 hexes at Well to 14 hexes at Purification Hub. Does not require road connection. Place strategically to cover all housing districts.",
+    "category": "Infrastructure",
+    "unlock_level": 2,
+    "build_cost": { "coins": 60, "stone": 40, "wood": 20 },
+    "requires_road": false,
+    "terrain_bonus": {},
+    "network_type": "water",
+    "levels": [
+      { "stage": "Well", "cost": null, "produces": { "water_res": 3 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "water_radius": 4 } },
+      { "stage": "Cistern", "cost": { "coins": 120, "bricks": 60, "tools": 20 }, "produces": { "water_res": 6 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "water_radius": 6 } },
+      { "stage": "Tower", "cost": { "coins": 300, "metal": 100, "bricks": 80 }, "produces": { "water_res": 12 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "water_radius": 8 } },
+      { "stage": "Treatment Plant", "cost": { "coins": 700, "metal": 200, "glass": 100, "energy": 50 }, "produces": { "water_res": 20 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "water_radius": 10 } },
+      { "stage": "Purification Hub", "cost": { "coins": 1500, "metal": 400, "energy": 200, "science": 80 }, "produces": { "water_res": 35 }, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "synergy": { "water_radius": 14 } }
+    ]
+  },
+  "road": {
+    "label": "Road",
+    "description": "Connects buildings into a transport network. Buildings requiring road connection operate at only 30% without one. Each adjacent road tile provides a production boost - higher level roads give bigger boosts. Roads also form the backbone of resource transport: physical goods (wood, stone, food, coins, etc.) flow along connected road networks.",
+    "category": "Infrastructure",
+    "unlock_level": 1,
+    "build_cost": { "coins": 5, "stone": 3 },
+    "requires_road": false,
+    "terrain_bonus": {},
+    "network_type": "road",
+    "levels": [
+      { "stage": "Dirt", "cost": null, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "bonus": { "road_boost": 0.05 } },
+      { "stage": "Stone", "cost": { "coins": 10, "stone": 8 }, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "bonus": { "road_boost": 0.08 } },
+      { "stage": "Paved", "cost": { "coins": 25, "bricks": 20 }, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "bonus": { "road_boost": 0.12 } },
+      { "stage": "Asphalt", "cost": { "coins": 50, "metal": 30 }, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "bonus": { "road_boost": 0.18 } },
+      { "stage": "Highway", "cost": { "coins": 100, "metal": 60, "energy": 40 }, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 0, "bonus": { "road_boost": 0.25 } }
+    ]
+  },
+  "warehouse": {
+    "label": "Warehouse",
+    "description": "Increases resource storage capacity for all resources (except coins, fame, and water). Also acts as a distribution hub in the road network, increasing local resource throughput. Storage bonus stacks with multiple warehouses. Quantum Storage at max level adds 20,000 to every resource cap. Essential for large cities that outgrow base storage limits.",
+    "category": "Infrastructure",
+    "unlock_level": 2,
+    "build_cost": { "coins": 150, "planks": 100, "bricks": 80 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Storage", "cost": null, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 1000 },
+      { "stage": "Depot", "cost": { "coins": 300, "planks": 150, "metal": 120 }, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 2500 },
+      { "stage": "Mega Depot", "cost": { "coins": 600, "metal": 200, "glass": 150 }, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 5000 },
+      { "stage": "Logistics Hub", "cost": { "coins": 1200, "metal": 350, "energy": 250 }, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 10000 },
+      { "stage": "Quantum Storage", "cost": { "coins": 2400, "metal": 500, "energy": 400, "science": 150 }, "produces": {}, "consumes": {}, "population": 0, "happiness": 0, "storage": 20000 }
+    ]
+  },
+  "research": {
+    "label": "Research Center",
+    "description": "Advanced facility producing massive science and fame output. Consumes energy to operate. Place adjacent to Libraries for a powerful synergy: +20% science to Research Center, +15% science to Library. Only 3 upgrade levels but each is a significant leap. The Innovation Core is one of the strongest science producers in the game.",
+    "category": "Advanced",
+    "unlock_level": 6,
+    "build_cost": { "coins": 3000, "metal": 700, "glass": 500, "energy": 400 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Lab", "cost": null, "produces": { "science": 15, "fame": 0.5 }, "consumes": { "energy": 2 }, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Institute", "cost": { "coins": 6000, "metal": 900, "energy": 700, "science": 300 }, "produces": { "science": 25, "fame": 1 }, "consumes": { "energy": 3 }, "population": 0, "happiness": 0, "storage": 0 },
+      { "stage": "Innovation Core", "cost": { "coins": 12000, "metal": 1400, "energy": 1200, "science": 800 }, "produces": { "science": 40, "fame": 2 }, "consumes": { "energy": 4 }, "population": 0, "happiness": 0, "storage": 0 }
+    ]
+  },
+  "wonder": {
+    "label": "Wonder",
+    "description": "Monumental structure generating massive fame, culture and happiness. The ultimate prestige building. World Wonder at max level provides 320 happiness, 12 fame and 35 culture per second. Extremely expensive to build and upgrade but transforms your city into a cultural powerhouse. Required for competitive fame/prestige scoring.",
+    "category": "Advanced",
+    "unlock_level": 6,
+    "build_cost": { "coins": 8000, "metal": 1500, "glass": 900, "culture": 400 },
+    "requires_road": true,
+    "terrain_bonus": {},
+    "network_type": null,
+    "levels": [
+      { "stage": "Wonder", "cost": null, "produces": { "fame": 3, "culture": 10 }, "consumes": {}, "population": 0, "happiness": 150, "storage": 0 },
+      { "stage": "Grand Wonder", "cost": { "coins": 16000, "energy": 1500, "science": 800, "fame": 400 }, "produces": { "fame": 6, "culture": 20 }, "consumes": {}, "population": 0, "happiness": 220, "storage": 0 },
+      { "stage": "World Wonder", "cost": { "coins": 30000, "energy": 2500, "science": 1600, "fame": 900 }, "produces": { "fame": 12, "culture": 35 }, "consumes": {}, "population": 0, "happiness": 320, "storage": 0 }
+    ]
+  }
+}

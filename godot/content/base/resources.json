@@ -1,0 +1,17 @@
+[
+  { "id": "wood",      "label": "Wood",         "icon": "W", "transport": "road",   "default_cap": 300,    "starting": 50 },
+  { "id": "stone",     "label": "Stone",        "icon": "S", "transport": "road",   "default_cap": 300,    "starting": 30 },
+  { "id": "food",      "label": "Food",         "icon": "F", "transport": "road",   "default_cap": 300,    "starting": 20 },
+  { "id": "coins",     "label": "Coins",        "icon": "$", "transport": "road",   "default_cap": 999999, "starting": 100 },
+  { "id": "planks",    "label": "Planks",       "icon": "P", "transport": "road",   "default_cap": 150,    "starting": 0 },
+  { "id": "bricks",    "label": "Bricks",       "icon": "B", "transport": "road",   "default_cap": 150,    "starting": 0 },
+  { "id": "tools",     "label": "Tools",        "icon": "T", "transport": "road",   "default_cap": 120,    "starting": 0 },
+  { "id": "cloth",     "label": "Cloth",        "icon": "C", "transport": "road",   "default_cap": 120,    "starting": 0 },
+  { "id": "metal",     "label": "Metal",        "icon": "M", "transport": "road",   "default_cap": 120,    "starting": 0 },
+  { "id": "glass",     "label": "Glass",        "icon": "G", "transport": "road",   "default_cap": 120,    "starting": 0 },
+  { "id": "energy",    "label": "Energy",       "icon": "E", "transport": "pipe",   "default_cap": 200,    "starting": 0 },
+  { "id": "science",   "label": "Science",      "icon": "R", "transport": "global", "default_cap": 200,    "starting": 0 },
+  { "id": "culture",   "label": "Culture",      "icon": "A", "transport": "global", "default_cap": 200,    "starting": 0 },
+  { "id": "fame",      "label": "Fame",         "icon": "!", "transport": "global", "default_cap": 999999, "starting": 0 },
+  { "id": "water_res", "label": "Water Supply", "icon": "~", "transport": "pipe",   "default_cap": 999999, "starting": 0 }
+]
