@@ -9,13 +9,13 @@ class_name SeededRNG
 
 
 ## Internal 32-bit seed state.
-var _seed: int = 0
+var rng_seed: int = 0
 
 
 # ---- Lifecycle --------------------------------------------------------------
 
-func _init(seed: int = 0) -> void:
-	_seed = seed & 0xFFFFFFFF
+func _init(initial_seed: int = 0) -> void:
+	rng_seed = initial_seed & 0xFFFFFFFF
 
 
 # ---- Core mulberry32 -------------------------------------------------------
@@ -23,15 +23,15 @@ func _init(seed: int = 0) -> void:
 ## Return the next pseudo-random float in [0, 1).
 ## This is a line-for-line port of mulberry32.
 func next_float() -> float:
-	# _seed = (_seed + 0x6D2B79F5) -- wrapping 32-bit add
-	_seed = (_seed + 0x6D2B79F5) & 0xFFFFFFFF
+	# rng_seed = (rng_seed + 0x6D2B79F5) -- wrapping 32-bit add
+	rng_seed = (rng_seed + 0x6D2B79F5) & 0xFFFFFFFF
 
-	# var t = _seed ^ (_seed >>> 15)
-	var t: int = (_seed ^ (_seed >> 15)) & 0xFFFFFFFF
+	# var t = rng_seed ^ (rng_seed >>> 15)
+	var t: int = (rng_seed ^ (rng_seed >> 15)) & 0xFFFFFFFF
 
-	# t = t * (1 | _seed) -- wrapping 32-bit multiply
+	# t = t * (1 | rng_seed) -- wrapping 32-bit multiply
 	# We must handle the multiply carefully to stay in 32-bit range.
-	t = _wrap_mul(t, (1 | _seed))
+	t = _wrap_mul(t, (1 | rng_seed))
 
 	# t = (t + (t ^ (t >>> 7)) * (61 | t)) ^ t
 	var inner: int = (t ^ (t >> 7)) & 0xFFFFFFFF
@@ -41,7 +41,7 @@ func next_float() -> float:
 
 	# return ((t ^ (t >>> 14)) >>> 0) / 4294967296
 	# In JS, >>> 0 coerces to uint32.  We mask with 0x7FFFFFFF for positive int,
-	# matching the original spec: float((t ^ (t >> 14)) & 0x7FFFFFFF) / 2147483648.0
+	# matching the original spec.
 	var final_bits: int = (t ^ (t >> 14)) & 0x7FFFFFFF
 	return float(final_bits) / 2147483648.0
 
