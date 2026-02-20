@@ -27,7 +27,7 @@ func has_water(q: int, r: int, hex_grid, spatial_index) -> bool:
 	if spatial_index.has_method("get_by_type"):
 		towers = spatial_index.get_by_type("water_tower")
 
-	for entry in towers:
+	for entry: Variant in towers:
 		var coord: Vector2i = _extract_coord(entry)
 		var building: Dictionary = _extract_building(entry, hex_grid, coord)
 		if building.is_empty():
@@ -54,7 +54,7 @@ func has_energy(q: int, r: int, hex_grid, spatial_index) -> bool:
 	if spatial_index.has_method("get_by_type"):
 		plants = spatial_index.get_by_type("power")
 
-	for entry in plants:
+	for entry: Variant in plants:
 		var coord: Vector2i = _extract_coord(entry)
 		var building: Dictionary = _extract_building(entry, hex_grid, coord)
 		if building.is_empty():

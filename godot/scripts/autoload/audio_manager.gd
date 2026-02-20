@@ -170,7 +170,7 @@ func _play_procedural_tone(sfx_name: String) -> void:
 		elif t > 0.8:
 			envelope = (1.0 - t) / 0.2
 
-		var sample: float = sinf(phase * TAU) * envelope * 0.4
+		var sample: float = sin(phase * TAU) * envelope * 0.4
 		playback.push_frame(Vector2(sample, sample))
 		phase = fmod(phase + increment, 1.0)
 	# Tone generation complete.

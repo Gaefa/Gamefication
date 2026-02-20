@@ -134,8 +134,8 @@ func _initialize_runtime() -> void:
 	spatial_index = SpatialIndex.new()
 	aura_cache = AuraCache.new()
 	transport_graph = TransportGraph.new()
-	road_network = RoadNetwork.new()
-	pipe_network = PipeNetwork.new()
+	road_network = RoadNetwork.new(transport_graph)
+	pipe_network = PipeNetwork.new(transport_graph)
 	coverage_map = CoverageMap.new()
 
 	# Create app-layer coordinators
