@@ -1,103 +1,62 @@
-## noise_provider.gd -- 2D value noise generator using SeededRNG.
-## Port of createNoise2D from the JS mapgen.js.
-## Generates a lattice of random values and interpolates between them
-## with cosine smoothing.  Supports Fractal Brownian Motion (FBM).
 class_name NoiseProvider
+## FBM (Fractal Brownian Motion) value noise generator.
+## Uses SeededRNG for deterministic results.
+
+var _rng: SeededRNG
+var _perm: PackedInt32Array
 
 
-## Lattice cell size in "noise space".
-var _grid_size: int = 16
-
-## The random lattice values.  Indexed as _lattice[y * _lattice_w + x].
-var _lattice: PackedFloat64Array = PackedFloat64Array()
-var _lattice_w: int = 0
-var _lattice_h: int = 0
-
-## SeededRNG used for deterministic lattice generation.
-var _rng: SeededRNG = null
-
-
-# ------------------------------------------------------------------
-# Lifecycle
-# ------------------------------------------------------------------
-
-## Initialize the noise lattice for a map of [param map_size] with the given
-## [param seed_value] and optional [param cell_size].
-func _init(map_size: int, seed_value: int, cell_size: int = 16) -> void:
-	_grid_size = cell_size
-	_rng = SeededRNG.new(seed_value)
-
-	# Lattice needs to cover the map + 1 extra cell on each edge for interpolation.
-	_lattice_w = (map_size / _grid_size) + 2
-	_lattice_h = (map_size / _grid_size) + 2
-	_lattice.resize(_lattice_w * _lattice_h)
-
-	for i in range(_lattice.size()):
-		_lattice[i] = _rng.next_float()
+func _init(rng: SeededRNG) -> void:
+	_rng = rng
+	_perm = PackedInt32Array()
+	_perm.resize(512)
+	# Build permutation table
+	var base: Array[int] = []
+	for i: int in 256:
+		base.append(i)
+	# Fisher-Yates shuffle
+	for i: int in range(255, 0, -1):
+		var j: int = _rng.range_int(0, i + 1)
+		var tmp: int = base[i]
+		base[i] = base[j]
+		base[j] = tmp
+	for i: int in 256:
+		_perm[i] = base[i]
+		_perm[i + 256] = base[i]
 
 
-# ------------------------------------------------------------------
-# Single sample
-# ------------------------------------------------------------------
-
-## Sample the noise at continuous coordinates (x, y).
-## Returns a value roughly in [0, 1].
-func sample(x: float, y: float) -> float:
-	var gx: float = x / float(_grid_size)
-	var gy: float = y / float(_grid_size)
-
-	var ix: int = int(floor(gx))
-	var iy: int = int(floor(gy))
-
-	var fx: float = gx - float(ix)
-	var fy: float = gy - float(iy)
-
-	# Cosine interpolation weights
-	var wx: float = (1.0 - cos(fx * PI)) * 0.5
-	var wy: float = (1.0 - cos(fy * PI)) * 0.5
-
-	var v00: float = _lattice_at(ix, iy)
-	var v10: float = _lattice_at(ix + 1, iy)
-	var v01: float = _lattice_at(ix, iy + 1)
-	var v11: float = _lattice_at(ix + 1, iy + 1)
-
-	var top: float = lerp(v00, v10, wx)
-	var bot: float = lerp(v01, v11, wx)
-
-	return lerp(top, bot, wy)
-
-
-# ------------------------------------------------------------------
-# Fractal Brownian Motion
-# ------------------------------------------------------------------
-
-## Sample FBM noise with the given number of octaves.
-## Each octave doubles frequency and halves amplitude (persistence = 0.5).
-func fbm(x: float, y: float, octaves: int = 4, persistence: float = 0.5) -> float:
+func fbm(x: float, y: float, octaves: int = 4, lacunarity: float = 2.0, gain: float = 0.5) -> float:
 	var total: float = 0.0
 	var amplitude: float = 1.0
 	var frequency: float = 1.0
-	var max_value: float = 0.0
-
-	for _i in octaves:
-		total += sample(x * frequency, y * frequency) * amplitude
-		max_value += amplitude
-		amplitude *= persistence
-		frequency *= 2.0
-
-	return total / max_value if max_value > 0.0 else 0.0
+	var max_val: float = 0.0
+	for _i: int in octaves:
+		total += _value_noise(x * frequency, y * frequency) * amplitude
+		max_val += amplitude
+		amplitude *= gain
+		frequency *= lacunarity
+	return total / max_val
 
 
-# ------------------------------------------------------------------
-# Internal
-# ------------------------------------------------------------------
+func _value_noise(x: float, y: float) -> float:
+	var xi: int = int(floorf(x)) & 255
+	var yi: int = int(floorf(y)) & 255
+	var xf: float = x - floorf(x)
+	var yf: float = y - floorf(y)
+	var u: float = _fade(xf)
+	var v: float = _fade(yf)
+	var aa: int = _perm[_perm[xi] + yi]
+	var ab: int = _perm[_perm[xi] + yi + 1]
+	var ba: int = _perm[_perm[xi + 1] + yi]
+	var bb: int = _perm[_perm[xi + 1] + yi + 1]
+	var x1: float = lerpf(_hash_f(aa), _hash_f(ba), u)
+	var x2: float = lerpf(_hash_f(ab), _hash_f(bb), u)
+	return lerpf(x1, x2, v)
 
-## Safe lattice lookup with wrapping.
-func _lattice_at(ix: int, iy: int) -> float:
-	# Clamp to lattice bounds
-	ix = clampi(ix, 0, _lattice_w - 1)
-	iy = clampi(iy, 0, _lattice_h - 1)
-	var idx: int = iy * _lattice_w + ix
-	if idx < 0 or idx >= _lattice.size():
-		return 0.5
-	return _lattice[idx]
+
+func _fade(t: float) -> float:
+	return t * t * t * (t * (t * 6.0 - 15.0) + 10.0)
+
+
+func _hash_f(h: int) -> float:
+	return float(h & 255) / 255.0

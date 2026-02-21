@@ -1,212 +1,229 @@
-## hud_root.gd -- Root HUD controller.
-## Creates the entire HUD procedurally using Control nodes.
-## Contains: resource bar, building palette, info panel, message log.
 extends Control
+## Top-level HUD: resource bar, building palette, info panel, event popup, toast.
+
+var _resource_label: Label
+var _info_label: Label
+var _toast_label: Label
+var _toast_timer: float = 0.0
+var _build_panel: VBoxContainer
+var _event_panel: PanelContainer
+var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 
 
-var _orchestrator: GameOrchestrator = null
-
-## References to HUD elements (created in _build_hud).
-var _resource_labels: Dictionary = {}
-var _info_label: RichTextLabel = null
-var _message_label: Label = null
-var _message_timer: float = 0.0
-var _building_buttons: Array = []
-var _pause_button: Button = null
-var _level_label: Label = null
+func _ready() -> void:
+	_build_resource_bar()
+	_build_building_palette()
+	_build_info_panel()
+	_build_event_panel()
+	_build_toast()
+	_connect_signals()
 
 
-# ------------------------------------------------------------------
-# Setup
-# ------------------------------------------------------------------
-
-func setup(orchestrator: GameOrchestrator) -> void:
-	_orchestrator = orchestrator
-	_build_hud()
-
-	# Connect signals
-	EventBus.tick_completed.connect(_on_tick)
+func _connect_signals() -> void:
 	EventBus.resources_changed.connect(_on_resources_changed)
-	EventBus.message_posted.connect(_on_message)
-	EventBus.city_level_changed.connect(_on_level_changed)
-	EventBus.event_fired.connect(_on_event_fired)
+	EventBus.toast_requested.connect(_on_toast)
+	EventBus.selection_changed.connect(_on_selection_changed)
+	EventBus.game_event_spawned.connect(_on_event_spawned)
+	EventBus.tick_finished.connect(_on_tick_finished)
 
 
-# ------------------------------------------------------------------
-# Build HUD programmatically
-# ------------------------------------------------------------------
+# --- Resource bar (top) ---
 
-func _build_hud() -> void:
-	# ---- Top bar: resources ----
-	var top_bar := HBoxContainer.new()
-	top_bar.name = "TopBar"
-	top_bar.set_anchors_preset(PRESET_TOP_WIDE)
-	top_bar.size = Vector2(get_viewport_rect().size.x, 32)
-	top_bar.add_theme_constant_override("separation", 12)
-	add_child(top_bar)
+func _build_resource_bar() -> void:
+	var panel := PanelContainer.new()
+	panel.set_anchors_preset(PRESET_TOP_WIDE)
+	panel.custom_minimum_size.y = 40
+	add_child(panel)
 
-	# Add resource labels for key resources
-	var display_resources: Array = ["coins", "wood", "stone", "food", "energy", "water_res", "science", "fame"]
-	for rid: String in display_resources:
-		var lbl := Label.new()
-		lbl.name = "Res_" + rid
-		lbl.text = "%s: 0" % rid.substr(0, 4).to_upper()
-		lbl.add_theme_font_size_override("font_size", 12)
-		top_bar.add_child(lbl)
-		_resource_labels[rid] = lbl
+	_resource_label = Label.new()
+	_resource_label.text = "Resources loading..."
+	_resource_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	panel.add_child(_resource_label)
 
-	# ---- Level & pause in top-right ----
-	_level_label = Label.new()
-	_level_label.name = "LevelLabel"
-	_level_label.text = "Lv.1"
-	_level_label.add_theme_font_size_override("font_size", 14)
-	top_bar.add_child(_level_label)
 
-	_pause_button = Button.new()
-	_pause_button.name = "PauseBtn"
-	_pause_button.text = "||"
-	_pause_button.custom_minimum_size = Vector2(32, 28)
-	_pause_button.pressed.connect(_on_pause_pressed)
-	top_bar.add_child(_pause_button)
+func _on_resources_changed(resources: Dictionary) -> void:
+	var parts: Array[String] = []
+	var show_res: Array = ["coins", "food", "wood", "stone", "energy", "science"]
+	for res_id: String in show_res:
+		var val: float = resources.get(res_id, 0.0) as float
+		var def: Dictionary = ContentDB.get_resource_def(res_id)
+		var label: String = def.get("label", res_id) as String
+		parts.append("%s: %d" % [label, int(val)])
+	var pop: int = GameStateStore.population().total as int
+	var happiness: float = GameStateStore.population().happiness as float
+	parts.append("Pop: %d" % pop)
+	parts.append("Happy: %d%%" % int(happiness))
+	parts.append("Lv%d" % (GameStateStore.progression().city_level as int))
+	_resource_label.text = " | ".join(parts)
 
-	# ---- Bottom bar: building palette ----
-	var bottom_panel := PanelContainer.new()
-	bottom_panel.name = "BottomPanel"
-	bottom_panel.set_anchors_preset(PRESET_BOTTOM_WIDE)
-	bottom_panel.position = Vector2(0, get_viewport_rect().size.y - 80)
-	bottom_panel.size = Vector2(get_viewport_rect().size.x, 80)
-	add_child(bottom_panel)
 
+# --- Building palette (left) ---
+
+func _build_building_palette() -> void:
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 72)
-	bottom_panel.add_child(scroll)
+	scroll.position = Vector2(0, 50)
+	scroll.size = Vector2(160, 500)
+	add_child(scroll)
 
-	var palette := HBoxContainer.new()
-	palette.name = "BuildingPalette"
-	palette.add_theme_constant_override("separation", 4)
-	scroll.add_child(palette)
+	_build_panel = VBoxContainer.new()
+	scroll.add_child(_build_panel)
 
-	# Create a button for each building type
-	var buildings: Dictionary = ContentDB.get_all_buildings() if ContentDB.has_method("get_all_buildings") else {}
-	var categories: Array = ContentDB.get_categories() if ContentDB.has_method("get_categories") else []
-
-	if buildings.is_empty():
-		# Fallback: create buttons from known building types
-		var known_types: Array = ["hut", "farm", "lumber", "quarry", "road", "workshop",
-			"foundry", "market", "warehouse", "research", "library", "power",
-			"water_tower", "park", "apartment", "monument", "trading_post", "bank"]
-		for btype: String in known_types:
-			_create_building_button(palette, btype, btype.capitalize())
-	else:
-		for btype: String in buildings:
-			var bdef: Dictionary = buildings[btype]
-			var label: String = bdef.get("label", btype.capitalize())
-			_create_building_button(palette, btype, label)
-
-	# ---- Right panel: building info ----
-	var info_panel := PanelContainer.new()
-	info_panel.name = "InfoPanel"
-	info_panel.position = Vector2(get_viewport_rect().size.x - 240, 40)
-	info_panel.size = Vector2(230, 300)
-	info_panel.visible = false
-	add_child(info_panel)
-
-	_info_label = RichTextLabel.new()
-	_info_label.bbcode_enabled = true
-	_info_label.fit_content = true
-	_info_label.custom_minimum_size = Vector2(220, 280)
-	info_panel.add_child(_info_label)
-
-	# ---- Message toast ----
-	_message_label = Label.new()
-	_message_label.name = "MessageToast"
-	_message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_message_label.set_anchors_preset(PRESET_CENTER_TOP)
-	_message_label.position = Vector2(get_viewport_rect().size.x / 2 - 150, 40)
-	_message_label.size = Vector2(300, 30)
-	_message_label.add_theme_font_size_override("font_size", 14)
-	_message_label.add_theme_color_override("font_color", Color.YELLOW)
-	_message_label.visible = false
-	add_child(_message_label)
+	for type_id: String in ContentDB.get_building_ids():
+		var def: Dictionary = ContentDB.get_building_def(type_id)
+		var btn := Button.new()
+		btn.text = "%s (Lv%d)" % [def.get("label", type_id), def.get("unlock_level", 1)]
+		btn.tooltip_text = def.get("description", "") as String
+		btn.pressed.connect(_on_build_button.bind(type_id))
+		_build_panel.add_child(btn)
 
 
-func _create_building_button(parent: Node, type_id: String, label: String) -> void:
-	var btn := Button.new()
-	btn.name = "Btn_" + type_id
-	btn.text = label.substr(0, 6)
-	btn.custom_minimum_size = Vector2(56, 56)
-	btn.tooltip_text = label
-	btn.pressed.connect(func() -> void: _on_building_selected(type_id))
-	parent.add_child(btn)
-	_building_buttons.append(btn)
+func _on_build_button(type_id: String) -> void:
+	EventBus.build_mode_changed.emit(type_id)
 
 
-# ------------------------------------------------------------------
-# Process -- update message toast timer
-# ------------------------------------------------------------------
+# --- Info panel (bottom-right) ---
+
+func _build_info_panel() -> void:
+	var panel := PanelContainer.new()
+	panel.set_anchors_preset(PRESET_BOTTOM_RIGHT)
+	panel.position = Vector2(-300, -200)
+	panel.size = Vector2(280, 180)
+	add_child(panel)
+
+	_info_label = Label.new()
+	_info_label.text = "Click a tile for info"
+	_info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel.add_child(_info_label)
+
+
+func _on_selection_changed(coord: Vector2i) -> void:
+	_selected_coord = coord
+	_update_info()
+
+
+func _update_info() -> void:
+	if _selected_coord == Vector2i(-9999, -9999):
+		return
+	var bld: Dictionary = GameStateStore.get_building(_selected_coord)
+	if bld.is_empty():
+		var terrain_id: int = GameStateStore.get_terrain(_selected_coord)
+		var tdef: Dictionary = ContentDB.get_terrain_def(terrain_id)
+		_info_label.text = "Terrain: %s\nCoord: (%d, %d)" % [
+			tdef.get("label", "Unknown"),
+			_selected_coord.x, _selected_coord.y
+		]
+		return
+
+	var type_id: String = bld.get("type", "") as String
+	var level: int = bld.get("level", 0) as int
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
+	var stage: String = ldata.get("stage", "?") as String
+
+	var text: String = "%s (%s)\nLevel %d\n" % [def.get("label", type_id), stage, level]
+	var produces: Dictionary = ldata.get("produces", {})
+	if not produces.is_empty():
+		text += "Produces: "
+		var pp: Array = []
+		for r: String in produces:
+			pp.append("%s: %.1f" % [r, produces[r] as float])
+		text += ", ".join(pp) + "\n"
+	var consumes: Dictionary = ldata.get("consumes", {})
+	if not consumes.is_empty():
+		text += "Consumes: "
+		var cc: Array = []
+		for r: String in consumes:
+			cc.append("%s: %.1f" % [r, consumes[r] as float])
+		text += ", ".join(cc) + "\n"
+	if bld.get("damaged", false) as bool:
+		text += "[DAMAGED]\n"
+	if bld.get("has_issue", false) as bool:
+		text += "[ISSUE]\n"
+
+	_info_label.text = text
+
+
+# --- Event popup ---
+
+func _build_event_panel() -> void:
+	_event_panel = PanelContainer.new()
+	_event_panel.set_anchors_preset(PRESET_CENTER)
+	_event_panel.size = Vector2(400, 250)
+	_event_panel.position = Vector2(-200, -125)
+	_event_panel.visible = false
+	add_child(_event_panel)
+
+
+func _on_event_spawned(event_data: Dictionary) -> void:
+	_event_panel.visible = true
+	# Clear previous children
+	for c: Node in _event_panel.get_children():
+		c.queue_free()
+
+	var vbox := VBoxContainer.new()
+	_event_panel.add_child(vbox)
+
+	var title := Label.new()
+	title.text = event_data.get("title", "Event") as String
+	title.add_theme_font_size_override("font_size", 18)
+	vbox.add_child(title)
+
+	var body := Label.new()
+	body.text = event_data.get("body", "") as String
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vbox.add_child(body)
+
+	var btn_row := HBoxContainer.new()
+	vbox.add_child(btn_row)
+
+	var ev_id: String = event_data.get("id", "") as String
+
+	var accept_btn := Button.new()
+	accept_btn.text = event_data.get("accept_label", "Accept") as String
+	accept_btn.pressed.connect(_resolve_event.bind(ev_id, true))
+	btn_row.add_child(accept_btn)
+
+	var decline_btn := Button.new()
+	decline_btn.text = event_data.get("decline_label", "Decline") as String
+	decline_btn.pressed.connect(_resolve_event.bind(ev_id, false))
+	btn_row.add_child(decline_btn)
+
+
+func _resolve_event(ev_id: String, accept: bool) -> void:
+	var main_node: Node = get_tree().current_scene
+	if main_node and main_node.has_method("get_orchestrator"):
+		var orch: GameOrchestrator = main_node.call("get_orchestrator") as GameOrchestrator
+		var cmd := ResolveEventCommand.new(ev_id, accept)
+		orch.command_bus.execute(cmd)
+	_event_panel.visible = false
+
+
+# --- Toast ---
+
+func _build_toast() -> void:
+	_toast_label = Label.new()
+	_toast_label.set_anchors_preset(PRESET_BOTTOM_WIDE)
+	_toast_label.position.y = -60
+	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_toast_label.add_theme_font_size_override("font_size", 14)
+	_toast_label.modulate.a = 0.0
+	add_child(_toast_label)
+
+
+func _on_toast(text: String, duration: float) -> void:
+	_toast_label.text = text
+	_toast_label.modulate.a = 1.0
+	_toast_timer = duration
+
 
 func _process(delta: float) -> void:
-	if _message_timer > 0.0:
-		_message_timer -= delta
-		if _message_timer <= 0.0:
-			_message_label.visible = false
+	if _toast_timer > 0.0:
+		_toast_timer -= delta
+		if _toast_timer <= 0.0:
+			_toast_label.modulate.a = 0.0
+		elif _toast_timer < 1.0:
+			_toast_label.modulate.a = _toast_timer
 
 
-# ------------------------------------------------------------------
-# Update resource display
-# ------------------------------------------------------------------
-
-func _update_resources() -> void:
-	for rid: String in _resource_labels:
-		var lbl: Label = _resource_labels[rid]
-		var val: float = GameStateStore.get_resource(rid)
-		var cap: float = float(GameStateStore.get_economy().get("caps", {}).get(rid, 999))
-		lbl.text = "%s: %d/%d" % [rid.substr(0, 4).to_upper(), int(val), int(cap)]
-
-	# Update level
-	if _level_label:
-		var lvl: int = int(GameStateStore.get_progression().get("city_level", 1))
-		var stars: int = int(GameStateStore.get_progression().get("prestige_stars", 0))
-		_level_label.text = "Lv.%d" % lvl
-		if stars > 0:
-			_level_label.text += " *%d" % stars
-
-
-# ------------------------------------------------------------------
-# Signal handlers
-# ------------------------------------------------------------------
-
-func _on_tick(_tick_num: int) -> void:
-	_update_resources()
-
-
-func _on_resources_changed() -> void:
-	_update_resources()
-
-
-func _on_message(text: String, duration: float) -> void:
-	_message_label.text = text
-	_message_label.visible = true
-	_message_timer = duration
-
-
-func _on_level_changed(new_level: int) -> void:
-	_on_message("City Level Up! Lv.%d" % new_level, 3.0)
-
-
-func _on_event_fired(event_id: String) -> void:
-	_on_message("Event: %s" % event_id, 4.0)
-
-
-func _on_pause_pressed() -> void:
-	if _orchestrator:
-		var paused: bool = _orchestrator.toggle_pause()
-		_pause_button.text = ">" if paused else "||"
-		_on_message("Paused" if paused else "Playing", 1.5)
-
-
-func _on_building_selected(type_id: String) -> void:
-	# Find the Main node and call select_building
-	var main_node := get_tree().current_scene
-	if main_node and main_node.has_method("select_building"):
-		main_node.select_building(type_id)
+func _on_tick_finished(_tick: int) -> void:
+	_update_info()

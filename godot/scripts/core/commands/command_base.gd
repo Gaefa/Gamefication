@@ -1,14 +1,13 @@
-## command_base.gd -- Abstract base class for all game commands.
-## Commands encapsulate a single state-mutating action that can be
-## validated, executed, and (potentially) undone.  All concrete commands
-## must override execute().
 class_name CommandBase
+## Abstract base for all game commands (Command pattern).
+
+var success: bool = false
+var message: String = ""
 
 
-## Execute the command against the current game state.
-## Returns true if the command succeeded, false if validation failed
-## or the command could not be applied for any reason.
-## Subclasses MUST override this method.
-func execute(state: Dictionary, hex_grid: HexGrid, spatial_index: SpatialIndex) -> bool:
-	push_warning("CommandBase.execute() called on abstract base -- override in subclass.")
-	return false
+func execute(_ctx: Dictionary) -> void:
+	push_error("CommandBase.execute() not overridden")
+
+
+func undo(_ctx: Dictionary) -> void:
+	pass  # Optional: not all commands support undo

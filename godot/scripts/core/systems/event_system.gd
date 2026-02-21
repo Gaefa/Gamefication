@@ -1,40 +1,163 @@
-## event_system.gd -- Timer-based event spawning filtered by city_level
-## and pressure_phase.
 class_name EventSystem
+## Spawns random game events based on pressure phase, city level, and cooldowns.
+## Active events have timers; unresolved events auto-decline when timer expires.
 
-static func process_tick(state: Dictionary) -> void:
-	var events_dict: Dictionary = state.get("events", {})
-	var progression: Dictionary = state.get("progression", {})
-	var pressure: Dictionary = state.get("pressure", {})
+var _rng: SeededRNG
 
-	# Decrement timer
-	events_dict["timer"] = float(events_dict.get("timer", 60.0)) - 1.0
+const EVENT_CHECK_INTERVAL := 30  # check every N ticks
+const BASE_EVENT_CHANCE := 0.15
 
-	# If there's already an active event, skip
-	if events_dict.get("active_event") != null:
+
+func _init(rng: SeededRNG) -> void:
+	_rng = rng
+
+
+func process_tick() -> void:
+	var tick: int = GameStateStore.get_tick()
+	var ev_state: Dictionary = GameStateStore.events()
+
+	# Tick down active event timers
+	var still_active: Array = []
+	for ev: Dictionary in ev_state.active:
+		var timer: float = (ev.get("timer", 0.0) as float) - 1.0
+		if timer <= 0.0:
+			_auto_decline(ev)
+		else:
+			ev["timer"] = timer
+			still_active.append(ev)
+	ev_state.active = still_active
+
+	# Tick down cooldowns
+	var cd: Dictionary = ev_state.cooldowns
+	var expired_cds: Array = []
+	for ev_id: String in cd:
+		cd[ev_id] = (cd[ev_id] as int) - 1
+		if (cd[ev_id] as int) <= 0:
+			expired_cds.append(ev_id)
+	for ev_id: String in expired_cds:
+		cd.erase(ev_id)
+
+	# Maybe spawn a new event
+	if tick % EVENT_CHECK_INTERVAL == 0 and ev_state.active.size() < 2:
+		_try_spawn_event()
+
+
+func _try_spawn_event() -> void:
+	var city_level: int = GameStateStore.progression().city_level as int
+	var phase: String = GameStateStore.pressure().phase as String
+	var phase_num: int = _phase_to_int(phase)
+
+	# Collect eligible events
+	var eligible: Array = []
+	var cd: Dictionary = GameStateStore.events().cooldowns
+	for ev_id: String in ContentDB.get_event_ids():
+		if cd.has(ev_id):
+			continue
+		var def: Dictionary = ContentDB.get_event_def(ev_id)
+		if (def.get("min_level", 1) as int) > city_level:
+			continue
+		if (def.get("pressure_phase_min", 0) as int) > phase_num:
+			continue
+		eligible.append(ev_id)
+
+	if eligible.is_empty():
 		return
 
-	# If timer hasn't expired, skip
-	if float(events_dict.get("timer", 1.0)) > 0.0:
+	# Chance scales with pressure
+	var chance: float = BASE_EVENT_CHANCE + GameStateStore.pressure().index as float * 0.003
+	if not _rng.chance(chance):
 		return
 
-	# Roll a new event
-	var city_level: int = int(progression.get("city_level", 1))
-	var pressure_phase: int = int(pressure.get("phase", 0))
+	# Pick random event
+	var idx: int = _rng.range_int(0, eligible.size())
+	var ev_id: String = eligible[idx] as String
+	var def: Dictionary = ContentDB.get_event_def(ev_id)
 
-	var pool: Array = ContentDB.get_events_for_level(city_level) if ContentDB.has_method("get_events_for_level") else []
-	var filtered: Array = []
-	for ev: Variant in pool:
-		if ev is Dictionary:
-			var ev_dict: Dictionary = ev as Dictionary
-			if int(ev_dict.get("pressure_phase_min", 0)) <= pressure_phase:
-				filtered.append(ev_dict)
+	var active_ev: Dictionary = {
+		"id": ev_id,
+		"timer": 60.0,  # 60 seconds to respond
+		"spawned_tick": GameStateStore.get_tick(),
+	}
+	GameStateStore.events().active.append(active_ev)
+	GameStateStore.events().cooldowns[ev_id] = 300  # 5 min cooldown
 
-	if filtered.is_empty():
-		events_dict["timer"] = 60.0
+	EventBus.game_event_spawned.emit(def)
+
+
+func _auto_decline(ev: Dictionary) -> void:
+	var ev_id: String = ev.get("id", "") as String
+	var def: Dictionary = ContentDB.get_event_def(ev_id)
+	_apply_effects(def.get("decline_effects", {}))
+	EventBus.game_event_resolved.emit(ev_id, false)
+
+
+func resolve_event(ev_id: String, accept: bool) -> void:
+	var ev_state: Dictionary = GameStateStore.events()
+	var def: Dictionary = ContentDB.get_event_def(ev_id)
+
+	if accept:
+		var cost: Dictionary = def.get("accept_cost", {})
+		if not GameStateStore.can_afford(cost):
+			return
+		GameStateStore.spend(cost)
+		_apply_effects(def.get("accept_effects", {}))
+	else:
+		_apply_effects(def.get("decline_effects", {}))
+
+	# Remove from active
+	var keep: Array = []
+	for ev: Dictionary in ev_state.active:
+		if (ev.get("id", "") as String) != ev_id:
+			keep.append(ev)
+	ev_state.active = keep
+
+	EventBus.game_event_resolved.emit(ev_id, accept)
+
+
+func _apply_effects(effects: Dictionary) -> void:
+	if effects.is_empty():
 		return
 
-	var chosen: Dictionary = filtered[randi() % filtered.size()]
-	events_dict["active_event"] = {"id": chosen.get("id", "")}
-	events_dict["timer"] = 90.0 + float(randi() % 60)
-	EventBus.event_fired.emit(str(chosen.get("id", "")))
+	# Resource changes
+	for key: String in effects:
+		if key == "add_buff":
+			var buff: Dictionary = (effects[key] as Dictionary).duplicate()
+			GameStateStore.add_buff(buff)
+		elif key == "force_issues":
+			_force_issues(effects[key] as int)
+		elif key == "damage_buildings":
+			_damage_random_buildings(effects[key] as int)
+		elif key == "message":
+			EventBus.toast_requested.emit(effects[key] as String, 5.0)
+
+
+func _force_issues(count: int) -> void:
+	var coords: Array = GameStateStore.get_all_building_coords()
+	for i: int in mini(count, coords.size()):
+		var idx: int = _rng.range_int(0, coords.size())
+		var coord: Vector2i = coords[idx] as Vector2i
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		bld["has_issue"] = true
+		GameStateStore.set_building(coord, bld)
+
+
+func _damage_random_buildings(count: int) -> void:
+	var coords: Array = GameStateStore.get_all_building_coords()
+	for i: int in mini(count, coords.size()):
+		var idx: int = _rng.range_int(0, coords.size())
+		var coord: Vector2i = coords[idx] as Vector2i
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		if (bld.get("type", "") as String) == "road":
+			continue
+		bld["damaged"] = true
+		GameStateStore.set_building(coord, bld)
+		EventBus.building_damaged.emit(coord, 1.0)
+
+
+func _phase_to_int(phase: String) -> int:
+	match phase:
+		"calm": return 0
+		"tension": return 1
+		"crisis": return 2
+		"emergency": return 3
+	return 0

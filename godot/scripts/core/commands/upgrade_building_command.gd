@@ -1,40 +1,58 @@
-class_name UpgradeBuildingCommand
-extends CommandBase
+class_name UpgradeBuildingCommand extends CommandBase
+## Upgrades a building to the next level.
 
-var q: int
-var r: int
+var coord: Vector2i
 
-func _init(q_: int = 0, r_: int = 0) -> void:
-	q = q_; r = r_
 
-func execute(state: Dictionary, hex_grid: HexGrid, spatial_index: SpatialIndex) -> bool:
-	var bld := hex_grid.get_building(q, r)
-	if bld.is_empty():
-		return false
-	if bld.get("issue") != null:
-		return false
-	var bld_def := ContentDB.get_building(bld.type)
-	if bld_def.is_empty():
-		return false
-	var levels: Array = bld_def.get("levels", [])
-	if bld.level >= levels.size():
-		return false
-	var next_level: Dictionary = levels[bld.level]  # 0-indexed, current level is 1-based
-	var cost: Dictionary = next_level.get("cost", {})
-	if cost.is_empty() or cost == null:
-		return false
-	# Check resources
-	var resources: Dictionary = state.economy.resources
-	for k in cost:
-		if resources.get(k, 0.0) < cost[k] - 0.001:
-			return false
-	# Spend
-	for k in cost:
-		resources[k] = maxf(0.0, resources.get(k, 0.0) - cost[k])
-	bld.level += 1
-	hex_grid.set_building(q, r, bld)
-	state.meta["total_upgrades_done"] = state.meta.get("total_upgrades_done", 0) + 1
-	EventBus.building_upgraded.emit(Vector2i(q, r), bld.level)
-	EventBus.resources_changed.emit()
-	EventBus.coverage_invalidated.emit()
-	return true
+func _init(p_coord: Vector2i) -> void:
+	coord = p_coord
+
+
+func execute(ctx: Dictionary) -> void:
+	if not GameStateStore.has_building(coord):
+		message = "No building here"
+		return
+
+	var bld: Dictionary = GameStateStore.get_building(coord)
+	var type_id: String = bld.get("type", "") as String
+	var current_level: int = bld.get("level", 0) as int
+	var max_level: int = ContentDB.max_building_level(type_id)
+
+	if current_level + 1 >= max_level:
+		message = "Already at max level"
+		return
+
+	var next_ldata: Dictionary = ContentDB.building_level_data(type_id, current_level + 1)
+	var cost: Dictionary = next_ldata.get("cost", {})
+	if cost.is_empty():
+		message = "No upgrade available"
+		return
+
+	# Apply upgrade discount from aura
+	var interactions: BuildingInteractions = ctx.get("interactions") as BuildingInteractions
+	var discount: float = 0.0
+	if interactions:
+		discount = interactions.get_upgrade_discount(coord)
+	var adjusted_cost: Dictionary = {}
+	for res_id: String in cost:
+		adjusted_cost[res_id] = (cost[res_id] as float) * maxf(1.0 - discount, 0.5)
+
+	if not GameStateStore.can_afford(adjusted_cost):
+		message = "Not enough resources"
+		return
+
+	GameStateStore.spend(adjusted_cost)
+	bld["level"] = current_level + 1
+	GameStateStore.set_building(coord, bld)
+
+	# Invalidate caches
+	if interactions:
+		interactions.invalidate_caches()
+	var coverage: CoverageMap = ctx.get("coverage") as CoverageMap
+	if coverage:
+		coverage.invalidate()
+
+	success = true
+	var stage: String = next_ldata.get("stage", "Level %d" % (current_level + 1)) as String
+	message = "Upgraded to %s" % stage
+	EventBus.building_upgraded.emit(coord, current_level + 1)

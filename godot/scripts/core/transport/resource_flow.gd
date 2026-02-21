@@ -1,24 +1,28 @@
 class_name ResourceFlow
+## Determines if a resource can reach a building based on transport type.
+## Transport modes: "global" (instant), "road" (needs road network), "pipe".
 
-static func get_transport_type(resource_id: String) -> String:
-	var res_def := ContentDB.get_resource_def(resource_id)
-	return res_def.get("transport", "global")
+var _coverage: CoverageMap
 
-static func can_receive_resource(q: int, r: int, resource_id: String, road_network: RoadNetwork, pipe_network: PipeNetwork, hex_grid: HexGrid, spatial_index: SpatialIndex) -> bool:
-	match get_transport_type(resource_id):
+
+func _init(coverage: CoverageMap) -> void:
+	_coverage = coverage
+
+
+func can_deliver(res_id: String, coord: Vector2i) -> bool:
+	var def: Dictionary = ContentDB.get_resource_def(res_id)
+	var transport: String = def.get("transport", "global") as String
+	match transport:
 		"global":
 			return true
 		"road":
-			return road_network.is_building_connected(q, r, hex_grid)
+			return _coverage.is_road_connected(coord)
 		"pipe":
-			if resource_id == "energy":
-				return pipe_network.has_energy(q, r, hex_grid, spatial_index)
-			if resource_id == "water_res":
-				return pipe_network.has_water(q, r, hex_grid, spatial_index)
+			return _coverage.is_water_covered(coord)
 	return true
 
-static func get_connectivity_multiplier(q: int, r: int, building_type: String, road_network: RoadNetwork, hex_grid: HexGrid) -> float:
-	var bld_def := ContentDB.get_building(building_type)
-	if bld_def.get("requires_road", false) and not road_network.is_building_connected(q, r, hex_grid):
-		return 0.3
-	return 1.0
+
+func delivery_efficiency(res_id: String, coord: Vector2i) -> float:
+	if can_deliver(res_id, coord):
+		return 1.0
+	return 0.0  # No transport → no delivery

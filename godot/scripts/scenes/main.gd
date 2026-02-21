@@ -1,168 +1,135 @@
-## main.gd -- Root scene script.
-## Owns the GameOrchestrator and wires UI signals.
 extends Node2D
+## Root scene. Bootstraps the game, handles global input, and routes UI events.
 
+var _orchestrator: GameOrchestrator
+var _build_mode: String = ""  # "" = none, otherwise building type_id
+var _hud: Control
 
-## The game orchestrator (owns all runtime objects).
-var orchestrator: GameOrchestrator = null
-
-## Currently selected building type for placement (null = nothing selected).
-var selected_building_type: String = ""
-
-## Currently hovered hex coordinate.
-var hovered_hex: Vector2i = Vector2i(-1, -1)
-
-## Hex size for rendering (pixels from center to corner, flat-top).
-const HEX_SIZE: float = 32.0
-
-
-# ------------------------------------------------------------------
-# Lifecycle
-# ------------------------------------------------------------------
 
 func _ready() -> void:
-	orchestrator = GameOrchestrator.new()
-	add_child(orchestrator)
+	_orchestrator = GameOrchestrator.new()
+	_orchestrator.new_game()
+	_setup_scene_tree()
+	_connect_signals()
 
-	# Start a new game immediately for now (will be replaced with menu later)
-	orchestrator.start_new_game()
 
-	# Pass references to child layers
-	var world_root := $WorldRoot
-	if world_root:
-		world_root.setup(orchestrator, HEX_SIZE)
+func _setup_scene_tree() -> void:
+	# World root (terrain + buildings)
+	var world := Node2D.new()
+	world.name = "World"
+	add_child(world)
 
-	var hud_root := $CanvasLayer/HudRoot
-	if hud_root:
-		hud_root.setup(orchestrator)
+	var terrain_layer := Node2D.new()
+	terrain_layer.name = "TerrainLayer"
+	terrain_layer.set_script(load("res://scripts/scenes/hex_terrain_layer.gd"))
+	world.add_child(terrain_layer)
 
-	# Connect tick signal to refresh visuals
-	EventBus.tick_completed.connect(_on_tick_completed)
-	EventBus.building_placed.connect(_on_building_placed)
-	EventBus.building_removed.connect(_on_building_removed)
+	var building_layer := Node2D.new()
+	building_layer.name = "BuildingLayer"
+	building_layer.set_script(load("res://scripts/scenes/building_layer.gd"))
+	world.add_child(building_layer)
+
+	var overlay_layer := Node2D.new()
+	overlay_layer.name = "OverlayLayer"
+	overlay_layer.set_script(load("res://scripts/scenes/overlay_layer.gd"))
+	world.add_child(overlay_layer)
+
+	var fx_layer := Node2D.new()
+	fx_layer.name = "FXLayer"
+	fx_layer.set_script(load("res://scripts/scenes/fx_layer.gd"))
+	world.add_child(fx_layer)
+
+	# Camera
+	var cam := Camera2D.new()
+	cam.name = "Camera"
+	cam.set_script(load("res://scripts/scenes/camera_controller.gd"))
+	cam.zoom = Vector2(1.5, 1.5)
+	add_child(cam)
+
+	# HUD (CanvasLayer)
+	var canvas := CanvasLayer.new()
+	canvas.name = "HUDCanvas"
+	add_child(canvas)
+
+	_hud = Control.new()
+	_hud.name = "HUD"
+	_hud.set_script(load("res://scripts/scenes/hud_root.gd"))
+	_hud.set_anchors_preset(Control.PRESET_FULL_RECT)
+	canvas.add_child(_hud)
+
+	# Initialize rendering
+	terrain_layer.call("render_terrain", _orchestrator.hex_grid)
+	building_layer.call("set_hex_grid", _orchestrator.hex_grid)
+
+
+func _connect_signals() -> void:
+	EventBus.build_mode_changed.connect(_on_build_mode_changed)
+	EventBus.building_placed.connect(_on_building_changed)
+	EventBus.building_removed.connect(_on_building_changed)
+	EventBus.building_upgraded.connect(func(_c: Vector2i, _l: int) -> void: _refresh_buildings())
+	EventBus.building_repaired.connect(func(_c: Vector2i) -> void: _refresh_buildings())
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not orchestrator or not GameStateStore.is_playing:
-		return
-
-	# Mouse click for building placement / selection
-	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			_handle_left_click(event.global_position)
-		elif event.button_index == MOUSE_BUTTON_RIGHT:
-			# Deselect
-			selected_building_type = ""
-			EventBus.message_posted.emit("Deselected", 1.0)
-
-	# Keyboard shortcuts
-	if event is InputEventKey and event.pressed:
-		if Input.is_action_just_pressed("upgrade_building"):
-			_handle_upgrade()
-		elif Input.is_action_just_pressed("repair_building"):
-			_handle_repair()
-		elif Input.is_action_just_pressed("bulldoze"):
-			_handle_bulldoze()
-
-	# Track hovered hex
-	if event is InputEventMouseMotion:
-		var camera := $Camera2D as Camera2D
-		if camera:
-			var world_pos: Vector2 = camera.get_global_mouse_position()
-			hovered_hex = HexCoords.pixel_to_axial(world_pos.x, world_pos.y, HEX_SIZE)
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+			_handle_click(mb.global_position)
+		elif mb.pressed and mb.button_index == MOUSE_BUTTON_RIGHT:
+			_build_mode = ""
+			EventBus.build_mode_changed.emit("")
+	elif event is InputEventKey:
+		var ke := event as InputEventKey
+		if ke.pressed:
+			_handle_key(ke)
 
 
-# ------------------------------------------------------------------
-# Click handlers
-# ------------------------------------------------------------------
+func _handle_click(screen_pos: Vector2) -> void:
+	var cam: Camera2D = get_node("Camera") as Camera2D
+	var world_pos: Vector2 = (screen_pos - get_viewport_rect().size * 0.5) / cam.zoom + cam.global_position
+	var coord: Vector2i = HexCoords.pixel_to_axial(world_pos)
 
-func _handle_left_click(screen_pos: Vector2) -> void:
-	var camera := $Camera2D as Camera2D
-	if not camera:
-		return
-
-	var world_pos: Vector2 = camera.get_global_mouse_position()
-	var hex: Vector2i = HexCoords.pixel_to_axial(world_pos.x, world_pos.y, HEX_SIZE)
-
-	if selected_building_type != "":
-		# Place building
-		var cmd := PlaceBuildingCommand.new()
-		cmd.q = hex.x
-		cmd.r = hex.y
-		cmd.building_type = selected_building_type
-		var ok: bool = orchestrator.execute_command(cmd)
-		if ok:
-			AudioManager.play_build()
-		else:
-			EventBus.message_posted.emit("Cannot place here!", 2.0)
+	if _build_mode != "":
+		var cmd := PlaceBuildingCommand.new(coord, _build_mode)
+		_orchestrator.command_bus.execute(cmd)
 	else:
-		# Select building at hex (for info display)
-		hovered_hex = hex
-		var bld = orchestrator.hex_grid.get_building(hex.x, hex.y) if orchestrator.hex_grid else null
-		if bld != null:
-			# Emit selection info (HUD will pick it up)
-			pass
+		EventBus.selection_changed.emit(coord)
 
 
-func _handle_upgrade() -> void:
-	if hovered_hex == Vector2i(-1, -1):
-		return
-	var cmd := UpgradeBuildingCommand.new()
-	cmd.q = hovered_hex.x
-	cmd.r = hovered_hex.y
-	var ok: bool = orchestrator.execute_command(cmd)
-	if ok:
-		AudioManager.play_upgrade()
-	else:
-		EventBus.message_posted.emit("Cannot upgrade!", 2.0)
+func _handle_key(ke: InputEventKey) -> void:
+	if ke.keycode == KEY_ESCAPE:
+		_build_mode = ""
+		EventBus.build_mode_changed.emit("")
+	elif Input.is_action_just_pressed("upgrade_building"):
+		# Upgrade building at current selection
+		pass  # Handled by HUD
+	elif Input.is_action_just_pressed("repair_building"):
+		pass
+	elif Input.is_action_just_pressed("bulldoze"):
+		pass
+	elif ke.keycode == KEY_SPACE:
+		SimulationRunner.toggle_pause()
+	elif ke.keycode == KEY_1:
+		SimulationRunner.set_speed(1.0)
+	elif ke.keycode == KEY_2:
+		SimulationRunner.set_speed(2.0)
+	elif ke.keycode == KEY_3:
+		SimulationRunner.set_speed(3.0)
 
 
-func _handle_repair() -> void:
-	if hovered_hex == Vector2i(-1, -1):
-		return
-	var cmd := RepairBuildingCommand.new()
-	cmd.q = hovered_hex.x
-	cmd.r = hovered_hex.y
-	var ok: bool = orchestrator.execute_command(cmd)
-	if ok:
-		AudioManager.play_repair()
+func _on_build_mode_changed(type_id: String) -> void:
+	_build_mode = type_id
 
 
-func _handle_bulldoze() -> void:
-	if hovered_hex == Vector2i(-1, -1):
-		return
-	var cmd := BulldozeCommand.new()
-	cmd.q = hovered_hex.x
-	cmd.r = hovered_hex.y
-	var ok: bool = orchestrator.execute_command(cmd)
-	if ok:
-		AudioManager.play_bulldoze()
+func _on_building_changed(_coord: Vector2i, _type_id: String) -> void:
+	_refresh_buildings()
 
 
-# ------------------------------------------------------------------
-# Signal handlers
-# ------------------------------------------------------------------
-
-func _on_tick_completed(_tick_num: int) -> void:
-	# Refresh rendering layers
-	var world_root := $WorldRoot
-	if world_root and world_root.has_method("refresh"):
-		world_root.refresh()
+func _refresh_buildings() -> void:
+	var bl: Node = get_node_or_null("World/BuildingLayer")
+	if bl:
+		bl.call("refresh")
 
 
-func _on_building_placed(_coord: Vector2i, _type_id: String) -> void:
-	var world_root := $WorldRoot
-	if world_root and world_root.has_method("refresh"):
-		world_root.refresh()
-
-
-func _on_building_removed(_coord: Vector2i) -> void:
-	var world_root := $WorldRoot
-	if world_root and world_root.has_method("refresh"):
-		world_root.refresh()
-
-
-## Select a building type for placement (called from HUD buttons).
-func select_building(type_id: String) -> void:
-	selected_building_type = type_id
-	EventBus.message_posted.emit("Selected: %s" % type_id, 2.0)
+func get_orchestrator() -> GameOrchestrator:
+	return _orchestrator

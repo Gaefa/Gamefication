@@ -1,51 +1,26 @@
-## level_up_command.gd -- Advances the city to the next level when
-## resource requirements are met.
-class_name LevelUpCommand
-extends CommandBase
+class_name LevelUpCommand extends CommandBase
+## Manually triggers city level advancement (usually auto-detected by ProgressionSystem).
 
+func execute(_ctx: Dictionary) -> void:
+	var current_level: int = GameStateStore.progression().city_level as int
+	var next_def: Dictionary = ContentDB.get_level_def(current_level + 1)
+	if next_def.is_empty():
+		message = "Already at max level"
+		return
 
-func execute(state: Dictionary, hex_grid: HexGrid, spatial_index: SpatialIndex) -> bool:
-	var progression: Dictionary = state.get("progression", {})
-	var economy: Dictionary = state.get("economy", {})
-	var resources: Dictionary = economy.get("resources", {})
-	var caps: Dictionary = economy.get("caps", {})
+	var reqs: Dictionary = next_def.get("requirements", {})
+	var req_pop: int = reqs.get("population", 0) as int
+	if (GameStateStore.population().total as int) < req_pop:
+		message = "Need %d population" % req_pop
+		return
 
-	var current_level: int = int(progression.get("city_level", 1))
-	var levels: Array = ContentDB.get_city_levels()
+	var req_res: Dictionary = reqs.get("resources", {})
+	if not GameStateStore.can_afford(req_res):
+		message = "Not enough resources"
+		return
 
-	# Find the next level entry
-	var next_entry: Dictionary = {}
-	for entry: Variant in levels:
-		if entry is Dictionary:
-			var entry_dict: Dictionary = entry as Dictionary
-			if int(entry_dict.get("level", 0)) == current_level + 1:
-				next_entry = entry_dict
-				break
-
-	if next_entry.is_empty():
-		return false
-
-	# Check and spend requirements
-	var reqs_raw: Variant = next_entry.get("requirements")
-	if reqs_raw is Dictionary:
-		var reqs: Dictionary = reqs_raw as Dictionary
-		# Validate affordability
-		for k: String in reqs:
-			if float(resources.get(k, 0.0)) < float(reqs[k]) - 0.001:
-				return false
-		# Spend resources
-		for k: String in reqs:
-			resources[k] = maxf(0.0, float(resources.get(k, 0.0)) - float(reqs[k]))
-
-	# Grant rewards
-	var reward_raw: Variant = next_entry.get("reward", {})
-	if reward_raw is Dictionary:
-		var reward: Dictionary = reward_raw as Dictionary
-		for k: String in reward:
-			var cap: float = float(caps.get(k, 999999.0))
-			resources[k] = minf(float(resources.get(k, 0.0)) + float(reward[k]), cap)
-
-	progression["city_level"] = current_level + 1
+	GameStateStore.spend(req_res)
+	GameStateStore.progression().city_level = current_level + 1
+	success = true
+	message = "Advanced to level %d!" % (current_level + 1)
 	EventBus.city_level_changed.emit(current_level + 1)
-	EventBus.resources_changed.emit()
-	return true

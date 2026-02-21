@@ -1,50 +1,51 @@
-## event_bus.gd -- Global signal hub (autoload singleton).
-## All game-wide signals are declared here so any node can emit or
-## connect without hard dependencies.
-class_name EventBusClass
 extends Node
+## Central signal hub. Every game-wide event goes through here.
+## Systems emit signals; UI and other systems connect to listen.
 
-# ---- Building lifecycle ----
+# --- Economy ---
+signal resources_changed(resources: Dictionary)
+signal resource_depleted(resource_id: String)
+signal production_tick_done()
+
+# --- Buildings ---
 signal building_placed(coord: Vector2i, type_id: String)
-signal building_removed(coord: Vector2i)
+signal building_removed(coord: Vector2i, type_id: String)
 signal building_upgraded(coord: Vector2i, new_level: int)
+signal building_repaired(coord: Vector2i)
+signal building_damaged(coord: Vector2i, severity: float)
 
-# ---- Resources ----
-signal resource_changed(resource_id: String)
-signal resources_changed()
+# --- Infrastructure ---
+signal road_network_changed()
+signal pipe_network_changed()
+signal power_network_changed()
+signal coverage_recalculated()
 
-# ---- Simulation tick ----
-signal tick_completed(tick_num: int)
+# --- Population & Happiness ---
+signal population_changed(total: int)
+signal happiness_changed(value: float)
 
-# ---- Random / scripted events ----
-signal event_fired(event_id: String)
-signal event_resolved(event_id: String, accepted: bool)
-
-# ---- State persistence ----
-signal state_dirty(section: String)
-
-# ---- Pressure system ----
-signal pressure_phase_changed(phase: int)
-
-# ---- Citizen requests ----
-signal citizen_request_new(request: Dictionary)
-signal citizen_request_resolved(request_id: String)
-
-# ---- Progression ----
+# --- Progression ---
 signal city_level_changed(new_level: int)
-signal prestige_completed(stars_gained: int)
+signal prestige_triggered(stars: int)
+signal win_condition_met()
 
-# ---- Session ----
-signal game_started()
-signal game_loaded(slot: int)
+# --- Events (disasters, traders, etc.) ---
+signal game_event_spawned(event_data: Dictionary)
+signal game_event_resolved(event_id: String, accepted: bool)
+
+# --- Pressure Director ---
+signal pressure_updated(index: float, phase: String)
+
+# --- Save / Load ---
 signal game_saved(slot: int)
+signal game_loaded(slot: int)
+signal new_game_started()
 
-# ---- Tutorial ----
-signal tutorial_step_changed(step_index: int)
+# --- UI hints ---
+signal toast_requested(text: String, duration: float)
+signal build_mode_changed(type_id: String)
+signal selection_changed(coord: Vector2i)
 
-# ---- UI / messaging ----
-signal message_posted(text: String, duration: float)
-
-# ---- Infrastructure graph invalidation ----
-signal coverage_invalidated()
-signal network_invalidated()
+# --- Tick ---
+signal tick_started(tick_number: int)
+signal tick_finished(tick_number: int)

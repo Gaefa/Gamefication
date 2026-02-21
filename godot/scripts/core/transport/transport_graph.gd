@@ -1,182 +1,80 @@
-## transport_graph.gd -- Maintains connected components for road and pipe
-## networks using BFS flood fill over the hex grid.
 class_name TransportGraph
+## Maintains connected components for road and pipe networks via BFS.
+## Rebuilt when network topology changes.
 
-
-# ---- Connected-component maps ----
-# Each maps Vector2i (axial coord) -> component_id (int).
-var _road_components: Dictionary = {}
-var _pipe_components: Dictionary = {}
-
-var _road_component_count: int = 0
-var _pipe_component_count: int = 0
-
+var _components: Array = []  # Array[Array[Vector2i]]
+var _coord_to_component: Dictionary = {}  # Vector2i → int (component index)
 var _dirty: bool = true
+var _network_type: String  # "road" or "pipe"
+var _spatial: SpatialIndex
 
 
-# ------------------------------------------------------------------
-# Public API
-# ------------------------------------------------------------------
-
-## Full rebuild of both road and pipe connected-component maps.
-## Call after any road/pipe/building placement or removal.
-func rebuild(hex_grid) -> void:
-	_road_components.clear()
-	_pipe_components.clear()
-	_road_component_count = 0
-	_pipe_component_count = 0
-
-	var road_visited: Dictionary = {}
-	var pipe_visited: Dictionary = {}
-
-	# Iterate every cell that has a building.
-	var all_coords: Array = hex_grid.get_all_building_coords() if hex_grid.has_method("get_all_building_coords") else _collect_coords(hex_grid)
-
-	for coord: Vector2i in all_coords:
-		var building: Dictionary = hex_grid.get_building(coord.x, coord.y) if hex_grid.has_method("get_building") else {}
-		if building.is_empty():
-			continue
-
-		var btype: String = building.get("type", "")
-
-		# --- Road components ---
-		if btype == "road" and not road_visited.has(coord):
-			_flood_fill(coord, hex_grid, "road", _road_component_count, road_visited)
-			_road_component_count += 1
-
-		# --- Pipe components ---
-		# Pipes include roads + buildings whose network_type is "water" or "power".
-		var net_type: String = _get_network_type(btype)
-		var is_pipe_eligible: bool = (btype == "road" or net_type == "water" or net_type == "power")
-		if is_pipe_eligible and not pipe_visited.has(coord):
-			_flood_fill(coord, hex_grid, "pipe", _pipe_component_count, pipe_visited)
-			_pipe_component_count += 1
-
-	# Copy visited sets into component maps.
-	_road_components = road_visited.duplicate()
-	_pipe_components = pipe_visited.duplicate()
-	_dirty = false
+func _init(network_type: String, spatial: SpatialIndex) -> void:
+	_network_type = network_type
+	_spatial = spatial
 
 
-## Returns true if any of the 6 hex neighbours of [param coord] belongs
-## to the road component map (i.e., is a road tile in the network).
-func is_road_connected(coord: Vector2i, hex_grid) -> bool:
-	var neighbors: Array[Vector2i] = HexCoords.axial_neighbors(coord.x, coord.y)
-	for nb: Vector2i in neighbors:
-		if _road_components.has(nb):
-			return true
-	return false
-
-
-## Check whether two coords are in the same road connected component.
-func are_same_road_component(a: Vector2i, b: Vector2i) -> bool:
-	if not _road_components.has(a) or not _road_components.has(b):
-		return false
-	return _road_components[a] == _road_components[b]
-
-
-## Check whether two coords are in the same pipe connected component.
-func are_same_pipe_component(a: Vector2i, b: Vector2i) -> bool:
-	if not _pipe_components.has(a) or not _pipe_components.has(b):
-		return false
-	return _pipe_components[a] == _pipe_components[b]
-
-
-## Returns the road component id for a coord, or -1 if not in any component.
-func get_road_component(coord: Vector2i) -> int:
-	if _road_components.has(coord):
-		return _road_components[coord] as int
-	return -1
-
-
-## Returns the pipe component id for a coord, or -1 if not in any component.
-func get_pipe_component(coord: Vector2i) -> int:
-	if _pipe_components.has(coord):
-		return _pipe_components[coord] as int
-	return -1
-
-
-## Mark the graph as needing a rebuild.
 func invalidate() -> void:
 	_dirty = true
 
 
-## Rebuild only if dirty.
-func ensure_fresh(hex_grid) -> void:
-	if _dirty:
-		rebuild(hex_grid)
+func ensure_fresh() -> void:
+	if not _dirty:
+		return
+	_dirty = false
+	_rebuild()
 
 
-# ------------------------------------------------------------------
-# Internal
-# ------------------------------------------------------------------
-
-## BFS flood fill from [param start].
-## For "road": only expands to hex neighbours that are roads.
-## For "pipe": expands to neighbours that are roads OR have network_type
-## in ["water", "power"].
-func _flood_fill(start: Vector2i, hex_grid, network_type: String,
-		component_id: int, visited: Dictionary) -> void:
-	var queue: Array[Vector2i] = [start]
-	visited[start] = component_id
-
-	while queue.size() > 0:
-		var current: Vector2i = queue.pop_front()
-		var neighbors: Array[Vector2i] = HexCoords.axial_neighbors(current.x, current.y)
-
-		for nb: Vector2i in neighbors:
-			if visited.has(nb):
-				continue
-
-			# Check that there is a building at this neighbor.
-			var nb_building: Dictionary = {}
-			if hex_grid.has_method("get_building"):
-				nb_building = hex_grid.get_building(nb.x, nb.y)
-			if nb_building.is_empty():
-				continue
-
-			var nb_type: String = nb_building.get("type", "")
-
-			var accept: bool = false
-			if network_type == "road":
-				accept = (nb_type == "road")
-			elif network_type == "pipe":
-				var nb_net: String = _get_network_type(nb_type)
-				accept = (nb_type == "road" or nb_net == "water" or nb_net == "power")
-
-			if accept:
-				visited[nb] = component_id
-				queue.append(nb)
+func are_connected(a: Vector2i, b: Vector2i) -> bool:
+	ensure_fresh()
+	if not _coord_to_component.has(a) or not _coord_to_component.has(b):
+		return false
+	return _coord_to_component[a] == _coord_to_component[b]
 
 
-## Retrieve the network_type for a building type from ContentDB.
-## Returns "" if not found or null.
-func _get_network_type(building_type: String) -> String:
-	var bdef: Dictionary = ContentDB.get_building(building_type)
-	if bdef.is_empty():
-		return ""
-	var nt: Variant = bdef.get("network_type", null)
-	if nt == null:
-		return ""
-	return str(nt)
+func get_component_of(coord: Vector2i) -> Array[Vector2i]:
+	ensure_fresh()
+	if not _coord_to_component.has(coord):
+		return []
+	var idx: int = _coord_to_component[coord] as int
+	if idx >= 0 and idx < _components.size():
+		var comp: Array[Vector2i] = []
+		for c: Variant in _components[idx]:
+			comp.append(c as Vector2i)
+		return comp
+	return []
 
 
-## Fallback coord collector when hex_grid does not expose
-## get_all_building_coords().  Tries iterating via get_building() over
-## a reasonable grid range.
-func _collect_coords(hex_grid) -> Array:
-	var coords: Array = []
-	# Try common grid size accessors.
-	var grid_size: int = 0
-	if hex_grid.has_method("get_grid_size"):
-		grid_size = hex_grid.get_grid_size()
-	elif "grid_size" in hex_grid:
-		grid_size = int(hex_grid.grid_size)
-	else:
-		grid_size = 30  # sensible default
+func _rebuild() -> void:
+	_components.clear()
+	_coord_to_component.clear()
 
-	for r in range(-grid_size, grid_size + 1):
-		for q in range(-grid_size, grid_size + 1):
-			if hex_grid.has_method("has_building") and hex_grid.has_building(q, r):
-				coords.append(Vector2i(q, r))
-	return coords
+	var type_id: String = _network_type
+	if _network_type == "pipe":
+		type_id = "water_tower"  # pipe network is water_tower tiles
+
+	var coords: Array[Vector2i] = _spatial.get_coords_of_type(type_id)
+	var visited: Dictionary = {}
+	var coord_set: Dictionary = {}
+	for c: Vector2i in coords:
+		coord_set[c] = true
+
+	for start: Vector2i in coords:
+		if visited.has(start):
+			continue
+		var component: Array = []
+		var queue: Array[Vector2i] = [start]
+		visited[start] = true
+		while queue.size() > 0:
+			var cur: Vector2i = queue.pop_front()
+			component.append(cur)
+			for nb: Vector2i in HexCoords.neighbors_of(cur):
+				if visited.has(nb):
+					continue
+				if coord_set.has(nb):
+					visited[nb] = true
+					queue.append(nb)
+		var comp_idx: int = _components.size()
+		_components.append(component)
+		for c: Variant in component:
+			_coord_to_component[c as Vector2i] = comp_idx

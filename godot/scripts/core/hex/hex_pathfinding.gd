@@ -1,146 +1,69 @@
-## hex_pathfinding.gd -- Pathfinding on hex grids using Godot's AStar2D.
-## Maintains two separate A* graphs: one for road networks and one for
-## pipe networks (roads + water towers + power plants).
 class_name HexPathfinding
+## A* pathfinding over the hex grid, constrained to road/pipe tiles.
+
+var _astar := AStar2D.new()
+var _coord_to_id: Dictionary = {}  # Vector2i → int
+var _next_id: int = 0
 
 
-## A* graph for road-only tiles.
-var _astar_road: AStar2D = AStar2D.new()
-
-## A* graph for pipe network tiles (roads, water towers, power plants).
-var _astar_pipe: AStar2D = AStar2D.new()
-
-## Grid size, cached for coordinate-to-ID conversion.
-var _grid_size: int = 64
+func clear() -> void:
+	_astar.clear()
+	_coord_to_id.clear()
+	_next_id = 0
 
 
-# ---- Lifecycle --------------------------------------------------------------
-
-func _init(grid_size: int = 64) -> void:
-	_grid_size = grid_size
-
-
-# ---- ID conversion ---------------------------------------------------------
-
-## Convert axial (q, r) to a unique integer point ID for AStar2D.
-func _coord_to_id(q: int, r: int) -> int:
-	return r * _grid_size + q
+func add_point(coord: Vector2i) -> void:
+	if _coord_to_id.has(coord):
+		return
+	var id := _next_id
+	_next_id += 1
+	_coord_to_id[coord] = id
+	_astar.add_point(id, Vector2(coord.x, coord.y))
 
 
-## Convert point ID back to axial coordinates.
-func _id_to_coord(id: int) -> Vector2i:
-	@warning_ignore("integer_division")
-	var r: int = id / _grid_size
-	var q: int = id % _grid_size
-	return Vector2i(q, r)
+func connect_neighbors(coord: Vector2i) -> void:
+	if not _coord_to_id.has(coord):
+		return
+	var id: int = _coord_to_id[coord] as int
+	for nb: Vector2i in HexCoords.neighbors_of(coord):
+		if _coord_to_id.has(nb):
+			var nb_id: int = _coord_to_id[nb] as int
+			if not _astar.are_points_connected(id, nb_id):
+				_astar.connect_points(id, nb_id)
 
 
-# ---- Road graph -------------------------------------------------------------
-
-## Rebuild the road-only A* graph from the current hex grid state.
-## Clears all existing points/connections then adds every tile whose
-## building type is "road", and connects neighboring road tiles.
-func rebuild_road_graph(hex_grid: HexGrid) -> void:
-	_astar_road.clear()
-
-	var all_buildings: Dictionary = hex_grid.get_all_buildings()
-	var road_coords: Array[Vector2i] = []
-
-	# Pass 1: add all road points
-	for coord: Vector2i in all_buildings:
-		var bdata: Dictionary = all_buildings[coord]
-		if bdata.get("type", "") == "road":
-			var pid: int = _coord_to_id(coord.x, coord.y)
-			if not _astar_road.has_point(pid):
-				var pixel: Vector2 = HexCoords.axial_to_pixel(coord.x, coord.y, 1.0)
-				_astar_road.add_point(pid, pixel)
-			road_coords.append(coord)
-
-	# Pass 2: connect neighboring road tiles
-	for coord: Vector2i in road_coords:
-		var pid: int = _coord_to_id(coord.x, coord.y)
-		var neighbors: Array[Vector2i] = HexCoords.axial_neighbors(coord.x, coord.y)
-		for nb: Vector2i in neighbors:
-			var nid: int = _coord_to_id(nb.x, nb.y)
-			if _astar_road.has_point(nid) and not _astar_road.are_points_connected(pid, nid):
-				_astar_road.connect_points(pid, nid)
+func has_point(coord: Vector2i) -> bool:
+	return _coord_to_id.has(coord)
 
 
-# ---- Pipe graph (roads + water_tower + power) --------------------------------
-
-## Rebuild the pipe network A* graph.  Pipe-eligible tiles are roads,
-## water towers, and power plants.
-func rebuild_pipe_graph(hex_grid: HexGrid) -> void:
-	_astar_pipe.clear()
-
-	var all_buildings: Dictionary = hex_grid.get_all_buildings()
-	var pipe_coords: Array[Vector2i] = []
-	var pipe_types: PackedStringArray = PackedStringArray(["road", "water_tower", "power"])
-
-	# Pass 1: add all pipe-eligible points
-	for coord: Vector2i in all_buildings:
-		var bdata: Dictionary = all_buildings[coord]
-		var btype: String = bdata.get("type", "")
-		if btype in pipe_types:
-			var pid: int = _coord_to_id(coord.x, coord.y)
-			if not _astar_pipe.has_point(pid):
-				var pixel: Vector2 = HexCoords.axial_to_pixel(coord.x, coord.y, 1.0)
-				_astar_pipe.add_point(pid, pixel)
-			pipe_coords.append(coord)
-
-	# Pass 2: connect neighboring pipe tiles
-	for coord: Vector2i in pipe_coords:
-		var pid: int = _coord_to_id(coord.x, coord.y)
-		var neighbors: Array[Vector2i] = HexCoords.axial_neighbors(coord.x, coord.y)
-		for nb: Vector2i in neighbors:
-			var nid: int = _coord_to_id(nb.x, nb.y)
-			if _astar_pipe.has_point(nid) and not _astar_pipe.are_points_connected(pid, nid):
-				_astar_pipe.connect_points(pid, nid)
-
-
-# ---- Pathfinding queries ----------------------------------------------------
-
-## Find the shortest road-only path between two axial coordinates.
-## Returns an empty array if no path exists.
-func find_road_path(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
-	var from_id: int = _coord_to_id(from.x, from.y)
-	var to_id: int = _coord_to_id(to.x, to.y)
-
-	if not _astar_road.has_point(from_id) or not _astar_road.has_point(to_id):
-		return [] as Array[Vector2i]
-
-	var id_path: PackedInt64Array = _astar_road.get_id_path(from_id, to_id)
-	var result: Array[Vector2i] = []
-	result.resize(id_path.size())
-	for i in id_path.size():
-		result[i] = _id_to_coord(int(id_path[i]))
-	return result
-
-
-## Find the shortest pipe-network path between two axial coordinates.
-## Returns an empty array if no path exists.
-func find_pipe_path(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
-	var from_id: int = _coord_to_id(from.x, from.y)
-	var to_id: int = _coord_to_id(to.x, to.y)
-
-	if not _astar_pipe.has_point(from_id) or not _astar_pipe.has_point(to_id):
-		return [] as Array[Vector2i]
-
-	var id_path: PackedInt64Array = _astar_pipe.get_id_path(from_id, to_id)
-	var result: Array[Vector2i] = []
-	result.resize(id_path.size())
-	for i in id_path.size():
-		result[i] = _id_to_coord(int(id_path[i]))
-	return result
-
-
-## Return true if two road tiles are connected (reachable via roads).
-func is_road_reachable(from: Vector2i, to: Vector2i) -> bool:
-	var from_id: int = _coord_to_id(from.x, from.y)
-	var to_id: int = _coord_to_id(to.x, to.y)
-
-	if not _astar_road.has_point(from_id) or not _astar_road.has_point(to_id):
+func are_connected(a: Vector2i, b: Vector2i) -> bool:
+	if not _coord_to_id.has(a) or not _coord_to_id.has(b):
 		return false
+	var id_a: int = _coord_to_id[a] as int
+	var id_b: int = _coord_to_id[b] as int
+	var path := _astar.get_id_path(id_a, id_b)
+	return path.size() > 0
 
-	var id_path: PackedInt64Array = _astar_road.get_id_path(from_id, to_id)
-	return id_path.size() > 0
+
+func get_connected_component(start: Vector2i) -> Array[Vector2i]:
+	## BFS from start, returning all reachable points.
+	if not _coord_to_id.has(start):
+		return []
+	var visited: Dictionary = {}
+	var queue: Array[Vector2i] = [start]
+	visited[start] = true
+	var result: Array[Vector2i] = []
+	while queue.size() > 0:
+		var cur: Vector2i = queue.pop_front()
+		result.append(cur)
+		var cur_id: int = _coord_to_id[cur] as int
+		for nb: Vector2i in HexCoords.neighbors_of(cur):
+			if visited.has(nb):
+				continue
+			if not _coord_to_id.has(nb):
+				continue
+			var nb_id: int = _coord_to_id[nb] as int
+			if _astar.are_points_connected(cur_id, nb_id):
+				visited[nb] = true
+				queue.append(nb)
+	return result

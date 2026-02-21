@@ -1,44 +1,64 @@
-class_name PlaceBuildingCommand
-extends CommandBase
+class_name PlaceBuildingCommand extends CommandBase
+## Places a building on the hex grid.
 
-var q: int
-var r: int
+var coord: Vector2i
 var type_id: String
 
-func _init(q_: int = 0, r_: int = 0, type_: String = "") -> void:
-	q = q_; r = r_; type_id = type_
 
-func execute(state: Dictionary, hex_grid: HexGrid, spatial_index: SpatialIndex) -> bool:
-	if not hex_grid.is_valid_coord(q, r):
-		return false
-	if hex_grid.has_building(q, r):
-		return false
-	var terrain_type := hex_grid.get_terrain(q, r)
-	var terrain_def := ContentDB.get_terrain_type(terrain_type)
-	if not terrain_def.get("buildable", false):
-		return false
-	var bld_def := ContentDB.get_building(type_id)
-	if bld_def.is_empty():
-		return false
-	if bld_def.get("unlock_level", 1) > state.progression.city_level:
-		return false
-	var base_cost: Dictionary = bld_def.get("build_cost", {})
-	var cost_mult: float = terrain_def.get("cost_multiplier", 1.0)
-	var final_cost := {}
-	for k in base_cost:
-		final_cost[k] = base_cost[k] * cost_mult
-	var resources: Dictionary = state.economy.resources
-	for k in final_cost:
-		if resources.get(k, 0.0) < final_cost[k] - 0.001:
-			return false
-	for k in final_cost:
-		resources[k] = maxf(0.0, resources.get(k, 0.0) - final_cost[k])
-	var building := {"type": type_id, "level": 1, "issue": null}
-	hex_grid.set_building(q, r, building)
-	spatial_index.add(Vector2i(q, r), type_id)
-	state.meta["total_buildings_placed"] = state.meta.get("total_buildings_placed", 0) + 1
-	EventBus.building_placed.emit(Vector2i(q, r), type_id)
-	EventBus.resources_changed.emit()
-	EventBus.network_invalidated.emit()
-	EventBus.coverage_invalidated.emit()
-	return true
+func _init(p_coord: Vector2i, p_type_id: String) -> void:
+	coord = p_coord
+	type_id = p_type_id
+
+
+func execute(ctx: Dictionary) -> void:
+	var hex_grid: HexGrid = ctx.hex_grid as HexGrid
+	var spatial: SpatialIndex = ctx.spatial as SpatialIndex
+
+	# Validate
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	if def.is_empty():
+		message = "Unknown building: %s" % type_id
+		return
+
+	if not hex_grid.can_build_at(coord):
+		message = "Cannot build here"
+		return
+
+	# Check unlock level
+	var req_level: int = def.get("unlock_level", 1) as int
+	var city_level: int = GameStateStore.progression().city_level as int
+	if city_level < req_level:
+		message = "Requires city level %d" % req_level
+		return
+
+	# Check cost
+	var build_cost: Dictionary = def.get("build_cost", {})
+	if not GameStateStore.can_afford(build_cost):
+		message = "Not enough resources"
+		return
+
+	# Spend & place
+	GameStateStore.spend(build_cost)
+	var bld: Dictionary = {
+		"type": type_id,
+		"level": 0,
+		"damaged": false,
+		"has_issue": false,
+	}
+	GameStateStore.set_building(coord, bld)
+	spatial.add(coord, type_id)
+
+	# Invalidate caches
+	var interactions: BuildingInteractions = ctx.get("interactions") as BuildingInteractions
+	if interactions:
+		interactions.invalidate_caches()
+	var coverage: CoverageMap = ctx.get("coverage") as CoverageMap
+	if coverage:
+		coverage.invalidate()
+	var road_graph: TransportGraph = ctx.get("road_graph") as TransportGraph
+	if road_graph:
+		road_graph.invalidate()
+
+	success = true
+	message = "Built %s" % def.get("label", type_id)
+	EventBus.building_placed.emit(coord, type_id)
