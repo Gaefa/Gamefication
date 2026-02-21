@@ -16,10 +16,30 @@ const CONTENT_ROOT := "res://content/base/"
 
 func _ready() -> void:
 	buildings = _load_json(CONTENT_ROOT + "buildings.json")
-	resources = _load_json(CONTENT_ROOT + "resources.json")
+	# resources.json is an Array — convert to Dictionary keyed by "id"
+	var res_raw: Variant = _load_json_raw(CONTENT_ROOT + "resources.json")
+	if res_raw is Array:
+		for entry: Variant in res_raw:
+			if entry is Dictionary:
+				var d: Dictionary = entry as Dictionary
+				var res_id: String = d.get("id", "") as String
+				if res_id != "":
+					resources[res_id] = d
+	elif res_raw is Dictionary:
+		resources = res_raw as Dictionary
 	var terrain_raw: Dictionary = _load_json(CONTENT_ROOT + "terrain.json")
 	terrain_types = terrain_raw.get("types", terrain_raw)
-	events = _load_json(CONTENT_ROOT + "events.json")
+	# events.json is an Array — convert to Dictionary keyed by "id"
+	var ev_raw: Variant = _load_json_raw(CONTENT_ROOT + "events.json")
+	if ev_raw is Array:
+		for entry: Variant in ev_raw:
+			if entry is Dictionary:
+				var d: Dictionary = entry as Dictionary
+				var ev_id: String = d.get("id", "") as String
+				if ev_id != "":
+					events[ev_id] = d
+	elif ev_raw is Dictionary:
+		events = ev_raw as Dictionary
 	synergies = _load_json_array(CONTENT_ROOT + "synergies.json")
 	categories = _load_json(CONTENT_ROOT + "categories.json")
 

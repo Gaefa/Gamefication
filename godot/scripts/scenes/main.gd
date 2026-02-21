@@ -4,6 +4,7 @@ extends Node2D
 var _orchestrator: GameOrchestrator
 var _build_mode: String = ""  # "" = none, otherwise building type_id
 var _hud: Control
+var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 
 
 func _ready() -> void:
@@ -55,6 +56,8 @@ func _setup_scene_tree() -> void:
 	_hud.name = "HUD"
 	_hud.set_script(load("res://scripts/scenes/hud_root.gd"))
 	_hud.set_anchors_preset(Control.PRESET_FULL_RECT)
+	# CRITICAL: Let mouse events pass through to the world
+	_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(_hud)
 
 	# Initialize rendering
@@ -70,29 +73,51 @@ func _connect_signals() -> void:
 	EventBus.building_repaired.connect(func(_c: Vector2i) -> void: _refresh_buildings())
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
-			_handle_click(mb.global_position)
+			# Check if the click is over a UI element — if so, skip
+			if _is_click_on_ui(mb.position):
+				return
+			_handle_click()
+			get_viewport().set_input_as_handled()
 		elif mb.pressed and mb.button_index == MOUSE_BUTTON_RIGHT:
 			_build_mode = ""
 			EventBus.build_mode_changed.emit("")
-	elif event is InputEventKey:
+			get_viewport().set_input_as_handled()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey:
 		var ke := event as InputEventKey
 		if ke.pressed:
 			_handle_key(ke)
 
 
-func _handle_click(screen_pos: Vector2) -> void:
-	var cam: Camera2D = get_node("Camera") as Camera2D
-	var world_pos: Vector2 = (screen_pos - get_viewport_rect().size * 0.5) / cam.zoom + cam.global_position
+func _is_click_on_ui(screen_pos: Vector2) -> bool:
+	## Check if the click position overlaps with any interactive UI area.
+	## Left palette: x < 170, top bar: y < 45, bottom-right panel
+	if screen_pos.x < 170 and screen_pos.y > 45:
+		return true  # Building palette
+	if screen_pos.y < 45:
+		return true  # Resource bar
+	var vp_size: Vector2 = get_viewport_rect().size
+	if screen_pos.x > vp_size.x - 300 and screen_pos.y > vp_size.y - 200:
+		return true  # Info panel
+	return false
+
+
+func _handle_click() -> void:
+	# Use get_global_mouse_position() which properly accounts for Camera2D transform
+	var world_pos: Vector2 = get_global_mouse_position()
 	var coord: Vector2i = HexCoords.pixel_to_axial(world_pos)
 
 	if _build_mode != "":
 		var cmd := PlaceBuildingCommand.new(coord, _build_mode)
 		_orchestrator.command_bus.execute(cmd)
 	else:
+		_selected_coord = coord
 		EventBus.selection_changed.emit(coord)
 
 
@@ -101,12 +126,17 @@ func _handle_key(ke: InputEventKey) -> void:
 		_build_mode = ""
 		EventBus.build_mode_changed.emit("")
 	elif Input.is_action_just_pressed("upgrade_building"):
-		# Upgrade building at current selection
-		pass  # Handled by HUD
+		if _selected_coord != Vector2i(-9999, -9999):
+			var cmd := UpgradeBuildingCommand.new(_selected_coord)
+			_orchestrator.command_bus.execute(cmd)
 	elif Input.is_action_just_pressed("repair_building"):
-		pass
+		if _selected_coord != Vector2i(-9999, -9999):
+			var cmd := RepairBuildingCommand.new(_selected_coord)
+			_orchestrator.command_bus.execute(cmd)
 	elif Input.is_action_just_pressed("bulldoze"):
-		pass
+		if _selected_coord != Vector2i(-9999, -9999):
+			var cmd := BulldozeCommand.new(_selected_coord)
+			_orchestrator.command_bus.execute(cmd)
 	elif ke.keycode == KEY_SPACE:
 		SimulationRunner.toggle_pause()
 	elif ke.keycode == KEY_1:

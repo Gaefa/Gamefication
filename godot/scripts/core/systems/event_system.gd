@@ -96,11 +96,15 @@ func resolve_event(ev_id: String, accept: bool) -> void:
 	var def: Dictionary = ContentDB.get_event_def(ev_id)
 
 	if accept:
-		var cost: Dictionary = def.get("accept_cost", {})
-		if not GameStateStore.can_afford(cost):
-			return
-		GameStateStore.spend(cost)
-		_apply_effects(def.get("accept_effects", {}))
+		var cost_raw: Variant = def.get("accept_cost", null)
+		var cost: Dictionary = cost_raw as Dictionary if cost_raw is Dictionary else {}
+		if not cost.is_empty():
+			if not GameStateStore.can_afford(cost):
+				return
+			GameStateStore.spend(cost)
+		var eff_raw: Variant = def.get("accept_effects", null)
+		var accept_effects: Dictionary = eff_raw as Dictionary if eff_raw is Dictionary else {}
+		_apply_effects(accept_effects)
 	else:
 		_apply_effects(def.get("decline_effects", {}))
 
@@ -118,11 +122,21 @@ func _apply_effects(effects: Dictionary) -> void:
 	if effects.is_empty():
 		return
 
-	# Resource changes
 	for key: String in effects:
 		if key == "add_buff":
-			var buff: Dictionary = (effects[key] as Dictionary).duplicate()
-			GameStateStore.add_buff(buff)
+			var buff_raw: Variant = effects[key]
+			if buff_raw is Dictionary:
+				GameStateStore.add_buff((buff_raw as Dictionary).duplicate())
+		elif key == "add_resources":
+			var res_dict: Variant = effects[key]
+			if res_dict is Dictionary:
+				for res_id: String in (res_dict as Dictionary):
+					GameStateStore.add_resource(res_id, (res_dict as Dictionary)[res_id] as float)
+		elif key == "remove_resources":
+			var res_dict: Variant = effects[key]
+			if res_dict is Dictionary:
+				for res_id: String in (res_dict as Dictionary):
+					GameStateStore.add_resource(res_id, -((res_dict as Dictionary)[res_id] as float))
 		elif key == "force_issues":
 			_force_issues(effects[key] as int)
 		elif key == "damage_buildings":

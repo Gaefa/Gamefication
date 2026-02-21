@@ -11,6 +11,9 @@ var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 
 
 func _ready() -> void:
+	# Root Control ignores mouse — children handle their own
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 	_build_resource_bar()
 	_build_building_palette()
 	_build_info_panel()
@@ -33,11 +36,13 @@ func _build_resource_bar() -> void:
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(PRESET_TOP_WIDE)
 	panel.custom_minimum_size.y = 40
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP  # block clicks on the bar itself
 	add_child(panel)
 
 	_resource_label = Label.new()
 	_resource_label.text = "Resources loading..."
 	_resource_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_resource_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_child(_resource_label)
 
 
@@ -47,8 +52,8 @@ func _on_resources_changed(resources: Dictionary) -> void:
 	for res_id: String in show_res:
 		var val: float = resources.get(res_id, 0.0) as float
 		var def: Dictionary = ContentDB.get_resource_def(res_id)
-		var label: String = def.get("label", res_id) as String
-		parts.append("%s: %d" % [label, int(val)])
+		var label_text: String = def.get("label", res_id) as String
+		parts.append("%s: %d" % [label_text, int(val)])
 	var pop: int = GameStateStore.population().total as int
 	var happiness: float = GameStateStore.population().happiness as float
 	parts.append("Pop: %d" % pop)
@@ -63,9 +68,11 @@ func _build_building_palette() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.position = Vector2(0, 50)
 	scroll.size = Vector2(160, 500)
+	scroll.mouse_filter = Control.MOUSE_FILTER_STOP  # block clicks behind palette
 	add_child(scroll)
 
 	_build_panel = VBoxContainer.new()
+	_build_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	scroll.add_child(_build_panel)
 
 	for type_id: String in ContentDB.get_building_ids():
@@ -85,15 +92,26 @@ func _on_build_button(type_id: String) -> void:
 
 func _build_info_panel() -> void:
 	var panel := PanelContainer.new()
-	panel.set_anchors_preset(PRESET_BOTTOM_RIGHT)
-	panel.position = Vector2(-300, -200)
-	panel.size = Vector2(280, 180)
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	# Position manually at bottom-right
+	panel.set_anchors_and_offsets_preset(PRESET_BOTTOM_RIGHT)
+	panel.offset_left = -300
+	panel.offset_top = -200
 	add_child(panel)
+
+	var margin := MarginContainer.new()
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_constant_override("margin_left", 8)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_right", 8)
+	margin.add_theme_constant_override("margin_bottom", 8)
+	panel.add_child(margin)
 
 	_info_label = Label.new()
 	_info_label.text = "Click a tile for info"
 	_info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	panel.add_child(_info_label)
+	_info_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_child(_info_label)
 
 
 func _on_selection_changed(coord: Vector2i) -> void:
@@ -140,6 +158,8 @@ func _update_info() -> void:
 	if bld.get("has_issue", false) as bool:
 		text += "[ISSUE]\n"
 
+	# Keyboard shortcuts hint
+	text += "\n[U] Upgrade  [R] Repair  [B] Bulldoze"
 	_info_label.text = text
 
 
@@ -151,6 +171,7 @@ func _build_event_panel() -> void:
 	_event_panel.size = Vector2(400, 250)
 	_event_panel.position = Vector2(-200, -125)
 	_event_panel.visible = false
+	_event_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_event_panel)
 
 
@@ -166,11 +187,13 @@ func _on_event_spawned(event_data: Dictionary) -> void:
 	var title := Label.new()
 	title.text = event_data.get("title", "Event") as String
 	title.add_theme_font_size_override("font_size", 18)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(title)
 
 	var body := Label.new()
 	body.text = event_data.get("body", "") as String
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(body)
 
 	var btn_row := HBoxContainer.new()
@@ -203,10 +226,12 @@ func _resolve_event(ev_id: String, accept: bool) -> void:
 func _build_toast() -> void:
 	_toast_label = Label.new()
 	_toast_label.set_anchors_preset(PRESET_BOTTOM_WIDE)
-	_toast_label.position.y = -60
+	_toast_label.offset_top = -60
+	_toast_label.offset_bottom = -30
 	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_toast_label.add_theme_font_size_override("font_size", 14)
 	_toast_label.modulate.a = 0.0
+	_toast_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_toast_label)
 
 
