@@ -15,15 +15,17 @@ const COLORS: Dictionary = {
 }
 
 
+func _ready() -> void:
+	get_viewport().size_changed.connect(_on_viewport_resized)
+
+
 func render_terrain(grid: HexGrid) -> void:
 	_hex_grid = grid
 	queue_redraw()
 
 
-func _notification(what: int) -> void:
-	# Redraw when the window is resized
-	if what == NOTIFICATION_RESIZED or what == NOTIFICATION_VISIBILITY_CHANGED:
-		queue_redraw()
+func _on_viewport_resized() -> void:
+	queue_redraw()
 
 
 func _draw() -> void:
