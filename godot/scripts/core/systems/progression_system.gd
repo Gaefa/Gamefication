@@ -49,7 +49,7 @@ func _update_happiness() -> void:
 		total_happiness += base_h + aura_h
 		bld_count += 1
 
-	# Happiness = base 50 + building happiness, clamped 0-100
+	# Happiness = base 50 + building happiness scaled, clamped 0-100
 	var happiness: float = clampf(50.0 + total_happiness * 0.1, 0.0, 100.0)
 	var prev: float = GameStateStore.population().happiness as float
 	GameStateStore.population().happiness = happiness
@@ -64,21 +64,37 @@ func _check_level_up() -> void:
 	if def.is_empty():
 		return
 
-	var reqs: Dictionary = def.get("requirements", {})
-	var pop: int = GameStateStore.population().total as int
-	var req_pop: int = reqs.get("population", 0) as int
-	if pop < req_pop:
+	# city_levels.json format: {level, name, requirements: {res: amount} or null, reward}
+	var reqs_raw: Variant = def.get("requirements", null)
+	if reqs_raw == null or not (reqs_raw is Dictionary):
+		# null requirements = free level up (only level 1 should have this, and we start at 1)
+		# Don't auto-level — level 1 is the starting level
 		return
 
-	var req_res: Dictionary = reqs.get("resources", {})
-	for res_id: String in req_res:
-		if GameStateStore.get_resource(res_id) < (req_res[res_id] as float):
+	var reqs: Dictionary = reqs_raw as Dictionary
+	if reqs.is_empty():
+		return
+
+	# Check if player can afford ALL required resources
+	for res_id: String in reqs:
+		var required: float = reqs[res_id] as float
+		if GameStateStore.get_resource(res_id) < required:
 			return
 
-	# All requirements met — level up!
+	# All requirements met — level up! Spend the resources.
+	for res_id: String in reqs:
+		GameStateStore.add_resource(res_id, -(reqs[res_id] as float))
+
 	GameStateStore.progression().city_level = next_level
+
+	# Grant reward
+	var reward: Variant = def.get("reward", null)
+	if reward is Dictionary:
+		for res_id: String in (reward as Dictionary):
+			GameStateStore.add_resource(res_id, (reward as Dictionary)[res_id] as float)
+
 	EventBus.city_level_changed.emit(next_level)
-	EventBus.toast_requested.emit("City advanced to level %d!" % next_level, 5.0)
+	EventBus.toast_requested.emit("City advanced to %s (level %d)!" % [def.get("name", "?"), next_level], 5.0)
 
 
 func _check_win_condition() -> void:

@@ -1,8 +1,8 @@
 extends Node2D
 ## Renders hex terrain as colored polygons.
+## Redraws when viewport resizes or camera moves.
 
 var _hex_grid: HexGrid
-var _drawn: bool = false
 
 # Terrain colors (matching terrain.json)
 const COLORS: Dictionary = {
@@ -17,14 +17,18 @@ const COLORS: Dictionary = {
 
 func render_terrain(grid: HexGrid) -> void:
 	_hex_grid = grid
-	_drawn = false
 	queue_redraw()
 
 
+func _notification(what: int) -> void:
+	# Redraw when the window is resized
+	if what == NOTIFICATION_RESIZED or what == NOTIFICATION_VISIBILITY_CHANGED:
+		queue_redraw()
+
+
 func _draw() -> void:
-	if _hex_grid == null or _drawn:
+	if _hex_grid == null:
 		return
-	_drawn = true
 
 	var hex_points := _hex_polygon()
 	for coord: Vector2i in _hex_grid.all_coords():

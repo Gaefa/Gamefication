@@ -32,12 +32,11 @@ func process_tick() -> void:
 		# Get multipliers
 		var mults: Dictionary = _interactions.get_total_multipliers(coord)
 
-		# Production
+		# Production — always produces regardless of transport
 		for res_id: String in produces:
 			var base: float = produces[res_id] as float
 			var mult: float = mults.get(res_id, 1.0) as float
-			var flow_eff: float = _resource_flow.delivery_efficiency(res_id, coord)
-			var amount: float = base * mult * flow_eff
+			var amount: float = base * mult
 			net_production[res_id] = (net_production[res_id] as float) + amount
 
 		# Consumption
@@ -55,7 +54,7 @@ func process_tick() -> void:
 			GameStateStore.add_resource(res_id, net)
 		GameStateStore.economy().production[res_id] = net
 
-	# Maintenance cost (scales with city)
+	# Maintenance cost (only if there are buildings)
 	_apply_maintenance()
 
 	EventBus.production_tick_done.emit()
@@ -76,15 +75,17 @@ func _process_bank_interest(net: Dictionary) -> void:
 		var ldata: Dictionary = ContentDB.building_level_data("bank", level)
 		var rate: float = ldata.get("interest_per_min", 0.0) as float
 		if rate > 0.0:
-			# Convert per-minute to per-tick (1 tick = 1 second)
 			var per_tick: float = rate / 60.0
 			var interest: float = GameStateStore.get_resource("coins") * per_tick
 			net["coins"] = (net.get("coins", 0.0) as float) + interest
 
 
 func _apply_maintenance() -> void:
-	var pop: int = GameStateStore.population().total as int
 	var bld_count: int = GameStateStore.get_all_building_coords().size()
-	# Simple scaling: base + pop*0.01 + buildings*0.05 coins/tick
-	var cost: float = 0.5 + pop * 0.01 + bld_count * 0.05
-	GameStateStore.add_resource("coins", -cost)
+	if bld_count == 0:
+		return  # No buildings = no maintenance
+	var pop: int = GameStateStore.population().total as int
+	# Scaling: pop*0.01 + buildings*0.02 coins/tick (no base cost)
+	var cost: float = pop * 0.01 + bld_count * 0.02
+	if cost > 0.0:
+		GameStateStore.add_resource("coins", -cost)

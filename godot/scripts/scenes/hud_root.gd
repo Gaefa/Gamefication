@@ -67,7 +67,7 @@ func _on_resources_changed(resources: Dictionary) -> void:
 func _build_building_palette() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.position = Vector2(0, 50)
-	scroll.size = Vector2(160, 500)
+	scroll.size = Vector2(220, 500)
 	scroll.mouse_filter = Control.MOUSE_FILTER_STOP  # block clicks behind palette
 	add_child(scroll)
 
@@ -77,11 +77,38 @@ func _build_building_palette() -> void:
 
 	for type_id: String in ContentDB.get_building_ids():
 		var def: Dictionary = ContentDB.get_building_def(type_id)
+		var unlock_lv: int = def.get("unlock_level", 1) as int
+
+		# Container for each building entry
+		var entry := VBoxContainer.new()
+		_build_panel.add_child(entry)
+
 		var btn := Button.new()
-		btn.text = "%s (Lv%d)" % [def.get("label", type_id), def.get("unlock_level", 1)]
+		btn.text = "%s (Lv%d)" % [def.get("label", type_id), unlock_lv]
 		btn.tooltip_text = def.get("description", "") as String
 		btn.pressed.connect(_on_build_button.bind(type_id))
-		_build_panel.add_child(btn)
+		entry.add_child(btn)
+
+		# Cost label
+		var build_cost: Dictionary = def.get("build_cost", {})
+		if not build_cost.is_empty():
+			var cost_parts: Array[String] = []
+			for res_id: String in build_cost:
+				var amount: float = build_cost[res_id] as float
+				var res_def: Dictionary = ContentDB.get_resource_def(res_id)
+				var res_label: String = res_def.get("label", res_id) as String
+				cost_parts.append("%s:%d" % [res_label, int(amount)])
+			var cost_label := Label.new()
+			cost_label.text = "  " + ", ".join(cost_parts)
+			cost_label.add_theme_font_size_override("font_size", 11)
+			cost_label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.6))
+			cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			entry.add_child(cost_label)
+
+		# Separator
+		var sep := HSeparator.new()
+		sep.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		entry.add_child(sep)
 
 
 func _on_build_button(type_id: String) -> void:
