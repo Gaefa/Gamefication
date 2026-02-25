@@ -1,0 +1,18 @@
+# Godot editor
+godot/.godot/
+*.import
+*.uid
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build
+export/
+*.pck

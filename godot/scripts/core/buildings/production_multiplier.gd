@@ -57,9 +57,17 @@ func _terrain_bonus(coord: Vector2i, type_id: String) -> float:
 
 
 func _buff_multiplier(type_id: String) -> float:
-	var mult: float = 1.0
+	## Aggregates all active buff production_mult values.
+	## production_mult in events.json is additive: +0.2 = +20%, -0.15 = -15%.
+	## We sum them and return (1.0 + total) so the result is a multiplier.
+	var total_bonus: float = 0.0
 	for buff: Dictionary in GameStateStore.get_buffs():
 		var target: String = buff.get("target", "") as String
 		if target == "" or target == type_id:
-			mult *= buff.get("multiplier", 1.0) as float
-	return mult
+			# Support both formats: "production_mult" (events.json) and legacy "multiplier"
+			if buff.has("production_mult"):
+				total_bonus += buff.get("production_mult", 0.0) as float
+			elif buff.has("multiplier"):
+				# Legacy: multiplier is already a full factor like 1.2
+				total_bonus += (buff.get("multiplier", 1.0) as float) - 1.0
+	return maxf(1.0 + total_bonus, 0.1)  # Never let production go below 10%

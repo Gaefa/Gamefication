@@ -49,8 +49,13 @@ func _update_happiness() -> void:
 		total_happiness += base_h + aura_h
 		bld_count += 1
 
-	# Happiness = base 50 + building happiness scaled, clamped 0-100
-	var happiness: float = clampf(50.0 + total_happiness * 0.1, 0.0, 100.0)
+	# Apply happiness from active buffs (happiness_add from events)
+	var buff_happiness: float = 0.0
+	for buff: Dictionary in GameStateStore.get_buffs():
+		buff_happiness += buff.get("happiness_add", 0.0) as float
+
+	# Happiness = base 50 + building happiness scaled + buff happiness, clamped 0-100
+	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness, 0.0, 100.0)
 	var prev: float = GameStateStore.population().happiness as float
 	GameStateStore.population().happiness = happiness
 	if absf(happiness - prev) > 0.5:

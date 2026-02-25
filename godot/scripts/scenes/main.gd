@@ -5,6 +5,7 @@ var _orchestrator: GameOrchestrator
 var _build_mode: String = ""  # "" = none, otherwise building type_id
 var _hud: Control
 var _selected_coord: Vector2i = Vector2i(-9999, -9999)
+var _show_ranges: bool = false
 
 
 func _ready() -> void:
@@ -57,7 +58,6 @@ func _setup_scene_tree() -> void:
 	_hud.name = "HUD"
 	_hud.set_script(load("res://scripts/scenes/hud_root.gd"))
 	_hud.set_anchors_preset(Control.PRESET_FULL_RECT)
-	# CRITICAL: Let mouse events pass through to the world
 	_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(_hud)
 
@@ -78,7 +78,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
-			# Check if the click is over a UI element — if so, skip
+			# Use real hit-test: check if any MOUSE_FILTER_STOP Control is under cursor
 			if _is_click_on_ui(mb.position):
 				return
 			_handle_click()
@@ -97,20 +97,29 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _is_click_on_ui(screen_pos: Vector2) -> bool:
-	## Check if the click position overlaps with any interactive UI area.
-	## Left palette: x < 230, top bar: y < 65, bottom-right panel
-	if screen_pos.x < 230 and screen_pos.y > 65:
-		return true  # Building palette
-	if screen_pos.y < 65:
-		return true  # Resource bar
-	var vp_size: Vector2 = get_viewport_rect().size
-	if screen_pos.x > vp_size.x - 300 and screen_pos.y > vp_size.y - 200:
-		return true  # Info panel
+	## Real hit-test: walk all Control children in HUDCanvas and check rect overlap.
+	var canvas_node: Node = get_node_or_null("HUDCanvas")
+	if canvas_node == null:
+		return false
+	return _check_control_hit(canvas_node, screen_pos)
+
+
+func _check_control_hit(node: Node, pos: Vector2) -> bool:
+	## Recursively checks if pos hits any visible MOUSE_FILTER_STOP Control.
+	if node is Control:
+		var ctrl := node as Control
+		if not ctrl.visible:
+			return false
+		if ctrl.mouse_filter == Control.MOUSE_FILTER_STOP:
+			if ctrl.get_global_rect().has_point(pos):
+				return true
+	for child: Node in node.get_children():
+		if _check_control_hit(child, pos):
+			return true
 	return false
 
 
 func _handle_click() -> void:
-	# get_global_mouse_position() accounts for Camera2D but not World node scale
 	var world_pos: Vector2 = get_global_mouse_position()
 	var world_node: Node2D = get_node("World") as Node2D
 	if world_node:
@@ -129,6 +138,14 @@ func _handle_key(ke: InputEventKey) -> void:
 	if ke.keycode == KEY_ESCAPE:
 		_build_mode = ""
 		EventBus.build_mode_changed.emit("")
+	elif ke.keycode == KEY_H:
+		if _hud and _hud.has_method("toggle_help"):
+			_hud.call("toggle_help")
+	elif ke.keycode == KEY_V:
+		_show_ranges = not _show_ranges
+		var overlay: Node = get_node_or_null("World/OverlayLayer")
+		if overlay and overlay.has_method("set_show_ranges"):
+			overlay.call("set_show_ranges", _show_ranges, _selected_coord)
 	elif Input.is_action_just_pressed("upgrade_building"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := UpgradeBuildingCommand.new(_selected_coord)

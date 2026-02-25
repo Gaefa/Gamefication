@@ -1,5 +1,6 @@
 extends Node
 ## 3-slot save/load system with autosave support.
+## Integrates SaveMigrator for old saves and SaveValidator for data integrity.
 
 const SAVE_DIR := "user://saves/"
 const AUTOSAVE_INTERVAL := 120.0  # seconds
@@ -31,6 +32,7 @@ func save_game(slot: int) -> bool:
 	file.store_string(json_str)
 	file.close()
 	EventBus.game_saved.emit(slot)
+	EventBus.toast_requested.emit("Game saved (slot %d)" % slot, 2.0)
 	return true
 
 
@@ -38,21 +40,43 @@ func load_game(slot: int) -> bool:
 	var path := _slot_path(slot)
 	if not FileAccess.file_exists(path):
 		push_warning("SaveService: no save at slot %d" % slot)
+		EventBus.toast_requested.emit("No save in slot %d" % slot, 3.0)
 		return false
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
+		push_error("SaveService: cannot open slot %d" % slot)
 		return false
 	var text := file.get_as_text()
 	file.close()
+
 	var json := JSON.new()
 	if json.parse(text) != OK:
-		push_error("SaveService: parse error in slot %d" % slot)
+		push_error("SaveService: parse error in slot %d: %s" % [slot, json.get_error_message()])
+		EventBus.toast_requested.emit("Save file corrupted (slot %d)" % slot, 4.0)
 		return false
+
 	var data: Variant = json.data
 	if not data is Dictionary:
+		push_error("SaveService: expected Dictionary in slot %d" % slot)
+		EventBus.toast_requested.emit("Save file invalid (slot %d)" % slot, 4.0)
 		return false
-	GameStateStore.load_from_dict(data as Dictionary)
+
+	# Migrate old format saves to current schema
+	var migrated: Dictionary = SaveMigrator.migrate(data as Dictionary)
+
+	# Validate after migration
+	var errors: Array[String] = SaveValidator.validate(migrated)
+	if not errors.is_empty():
+		push_warning("SaveService: validation errors in slot %d:" % slot)
+		for err: String in errors:
+			push_warning("  - %s" % err)
+		# Try to load anyway — validator warnings are non-fatal
+		# But toast the user about potential issues
+		EventBus.toast_requested.emit("Save loaded with %d warning(s)" % errors.size(), 4.0)
+
+	GameStateStore.load_from_dict(migrated)
 	EventBus.game_loaded.emit(slot)
+	EventBus.toast_requested.emit("Game loaded (slot %d)" % slot, 2.0)
 	return true
 
 
