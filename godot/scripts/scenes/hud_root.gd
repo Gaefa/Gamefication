@@ -2,6 +2,7 @@ extends Control
 ## Top-level HUD: resource bar, building palette, info panel, event popup, toast.
 
 var _resource_label: Label
+var _level_label: Label
 var _info_label: Label
 var _toast_label: Label
 var _toast_timer: float = 0.0
@@ -35,15 +36,27 @@ func _connect_signals() -> void:
 func _build_resource_bar() -> void:
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(PRESET_TOP_WIDE)
-	panel.custom_minimum_size.y = 40
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP  # block clicks on the bar itself
+	panel.custom_minimum_size.y = 60
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(vbox)
 
 	_resource_label = Label.new()
 	_resource_label.text = "Resources loading..."
 	_resource_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_resource_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_child(_resource_label)
+	vbox.add_child(_resource_label)
+
+	_level_label = Label.new()
+	_level_label.text = ""
+	_level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_level_label.add_theme_font_size_override("font_size", 11)
+	_level_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
+	_level_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(_level_label)
 
 
 func _on_resources_changed(resources: Dictionary) -> void:
@@ -58,8 +71,36 @@ func _on_resources_changed(resources: Dictionary) -> void:
 	var happiness: float = GameStateStore.population().happiness as float
 	parts.append("Pop: %d" % pop)
 	parts.append("Happy: %d%%" % int(happiness))
-	parts.append("Lv%d" % (GameStateStore.progression().city_level as int))
+	var city_lv: int = GameStateStore.progression().city_level as int
+	parts.append("Lv%d" % city_lv)
 	_resource_label.text = " | ".join(parts)
+
+	# Show next city level requirements
+	_update_level_requirements(city_lv)
+
+
+func _update_level_requirements(city_lv: int) -> void:
+	var next_def: Dictionary = ContentDB.get_level_def(city_lv + 1)
+	if next_def.is_empty():
+		_level_label.text = "Max city level reached!"
+		return
+	var next_name: String = next_def.get("name", "?") as String
+	var reqs_raw: Variant = next_def.get("requirements", null)
+	if reqs_raw == null or not (reqs_raw is Dictionary):
+		_level_label.text = "Next: %s" % next_name
+		return
+	var reqs: Dictionary = reqs_raw as Dictionary
+	var req_parts: Array[String] = []
+	for res_id: String in reqs:
+		var needed: float = reqs[res_id] as float
+		var have: float = GameStateStore.get_resource(res_id)
+		var res_def: Dictionary = ContentDB.get_resource_def(res_id)
+		var res_label: String = res_def.get("label", res_id) as String
+		if have >= needed:
+			req_parts.append("%s OK" % res_label)
+		else:
+			req_parts.append("%s %d/%d" % [res_label, int(have), int(needed)])
+	_level_label.text = "Next Lv: %s  [%s]" % [next_name, ", ".join(req_parts)]
 
 
 # --- Building palette (left) ---
@@ -184,6 +225,24 @@ func _update_info() -> void:
 		text += "[DAMAGED]\n"
 	if bld.get("has_issue", false) as bool:
 		text += "[ISSUE]\n"
+
+	# Upgrade cost for next level
+	var max_level: int = ContentDB.max_building_level(type_id)
+	if level + 1 < max_level:
+		var next_ldata: Dictionary = ContentDB.building_level_data(type_id, level + 1)
+		var next_stage: String = next_ldata.get("stage", "?") as String
+		var cost: Dictionary = next_ldata.get("cost", {})
+		if not cost.is_empty():
+			text += "\nUpgrade to %s:\n" % next_stage
+			for res_id: String in cost:
+				var needed: float = cost[res_id] as float
+				var have: float = GameStateStore.get_resource(res_id)
+				var res_def: Dictionary = ContentDB.get_resource_def(res_id)
+				var res_label: String = res_def.get("label", res_id) as String
+				var ok: String = "OK" if have >= needed else "!!"
+				text += "  %s: %d/%d %s\n" % [res_label, int(have), int(needed), ok]
+	else:
+		text += "\n[MAX LEVEL]\n"
 
 	# Keyboard shortcuts hint
 	text += "\n[U] Upgrade  [R] Repair  [B] Bulldoze"

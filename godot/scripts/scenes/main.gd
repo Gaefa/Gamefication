@@ -15,9 +15,10 @@ func _ready() -> void:
 
 
 func _setup_scene_tree() -> void:
-	# World root (terrain + buildings)
+	# World root (terrain + buildings) — squish Y for isometric feel
 	var world := Node2D.new()
 	world.name = "World"
+	world.scale = Vector2(1.0, 0.75)
 	add_child(world)
 
 	var terrain_layer := Node2D.new()
@@ -97,10 +98,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _is_click_on_ui(screen_pos: Vector2) -> bool:
 	## Check if the click position overlaps with any interactive UI area.
-	## Left palette: x < 170, top bar: y < 45, bottom-right panel
-	if screen_pos.x < 170 and screen_pos.y > 45:
+	## Left palette: x < 230, top bar: y < 65, bottom-right panel
+	if screen_pos.x < 230 and screen_pos.y > 65:
 		return true  # Building palette
-	if screen_pos.y < 45:
+	if screen_pos.y < 65:
 		return true  # Resource bar
 	var vp_size: Vector2 = get_viewport_rect().size
 	if screen_pos.x > vp_size.x - 300 and screen_pos.y > vp_size.y - 200:
@@ -109,8 +110,11 @@ func _is_click_on_ui(screen_pos: Vector2) -> bool:
 
 
 func _handle_click() -> void:
-	# Use get_global_mouse_position() which properly accounts for Camera2D transform
+	# get_global_mouse_position() accounts for Camera2D but not World node scale
 	var world_pos: Vector2 = get_global_mouse_position()
+	var world_node: Node2D = get_node("World") as Node2D
+	if world_node:
+		world_pos /= world_node.scale
 	var coord: Vector2i = HexCoords.pixel_to_axial(world_pos)
 
 	if _build_mode != "":
