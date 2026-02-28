@@ -91,7 +91,7 @@ func _auto_decline(ev: Dictionary) -> void:
 	EventBus.game_event_resolved.emit(ev_id, false)
 
 
-func resolve_event(ev_id: String, accept: bool) -> void:
+func resolve_event(ev_id: String, accept: bool) -> Dictionary:
 	var ev_state: Dictionary = GameStateStore.events()
 	var def: Dictionary = ContentDB.get_event_def(ev_id)
 
@@ -100,7 +100,7 @@ func resolve_event(ev_id: String, accept: bool) -> void:
 		var cost: Dictionary = cost_raw as Dictionary if cost_raw is Dictionary else {}
 		if not cost.is_empty():
 			if not GameStateStore.can_afford(cost):
-				return
+				return {"success": false, "reason": "Not enough resources"}
 			GameStateStore.spend(cost)
 		var eff_raw: Variant = def.get("accept_effects", null)
 		var accept_effects: Dictionary = eff_raw as Dictionary if eff_raw is Dictionary else {}
@@ -116,6 +116,7 @@ func resolve_event(ev_id: String, accept: bool) -> void:
 	ev_state.active = keep
 
 	EventBus.game_event_resolved.emit(ev_id, accept)
+	return {"success": true, "reason": ""}
 
 
 func _apply_effects(effects: Dictionary) -> void:

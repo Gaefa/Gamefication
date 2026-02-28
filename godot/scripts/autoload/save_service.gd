@@ -17,10 +17,10 @@ func _process(delta: float) -> void:
 	_autosave_timer += delta
 	if _autosave_timer >= AUTOSAVE_INTERVAL:
 		_autosave_timer = 0.0
-		save_game(0)  # slot 0 = autosave
+		save_game(0, true)  # slot 0 = autosave (silent)
 
 
-func save_game(slot: int) -> bool:
+func save_game(slot: int, silent: bool = false) -> bool:
 	var path := _slot_path(slot)
 	var data: Dictionary = GameStateStore.to_save_dict()
 	data["save_time"] = Time.get_datetime_string_from_system()
@@ -32,7 +32,8 @@ func save_game(slot: int) -> bool:
 	file.store_string(json_str)
 	file.close()
 	EventBus.game_saved.emit(slot)
-	EventBus.toast_requested.emit("Game saved (slot %d)" % slot, 2.0)
+	if not silent:
+		EventBus.toast_requested.emit("Game saved (slot %d)" % slot, 2.0)
 	return true
 
 

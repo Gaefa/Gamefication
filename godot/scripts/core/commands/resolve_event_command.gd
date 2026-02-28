@@ -15,6 +15,9 @@ func execute(ctx: Dictionary) -> void:
 	if event_system == null:
 		message = "No event system"
 		return
-	event_system.resolve_event(event_id, accept)
-	success = true
-	message = "Event %s %s" % [event_id, "accepted" if accept else "declined"]
+	var result: Dictionary = event_system.resolve_event(event_id, accept)
+	success = result.get("success", false) as bool
+	if success:
+		message = "Event %s %s" % [event_id, "accepted" if accept else "declined"]
+	else:
+		message = result.get("reason", "Event action failed") as String

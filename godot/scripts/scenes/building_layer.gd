@@ -426,6 +426,6 @@ func _hex_polygon(hex_size: float) -> PackedVector2Array:
 	var pts := PackedVector2Array()
 	for i: int in 6:
 		var angle := TAU / 6.0 * float(i)
-		pts.append(Vector2(cos(angle), sin(angle)) * hex_size)
+		pts.append(Vector2(cos(angle), sin(angle) * HexCoords.ISO_Y) * hex_size)
 	pts.append(pts[0])
 	return pts

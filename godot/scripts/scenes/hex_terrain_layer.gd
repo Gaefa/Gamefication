@@ -46,10 +46,10 @@ func _draw() -> void:
 
 
 func _hex_polygon() -> PackedVector2Array:
-	## Flat-top hex vertices.
+	## Flat-top hex vertices with isometric Y-squish.
 	var pts := PackedVector2Array()
 	for i: int in 6:
 		var angle := TAU / 6.0 * float(i)
-		pts.append(Vector2(cos(angle), sin(angle)) * HexCoords.HEX_SIZE)
+		pts.append(Vector2(cos(angle), sin(angle) * HexCoords.ISO_Y) * HexCoords.HEX_SIZE)
 	pts.append(pts[0])  # close the polygon for polyline
 	return pts

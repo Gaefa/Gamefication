@@ -40,10 +40,6 @@ func _draw() -> void:
 	# Build preview cursor (snaps to hex grid)
 	if _build_preview != "":
 		var mouse_pos: Vector2 = get_global_mouse_position()
-		# Account for parent (World) scale
-		var parent_node: Node2D = get_parent() as Node2D
-		if parent_node:
-			mouse_pos /= parent_node.scale
 		var coord: Vector2i = HexCoords.pixel_to_axial(mouse_pos)
 		var snap_center: Vector2 = HexCoords.axial_to_pixel(coord)
 		var color := Color(0.2, 0.8, 0.2, 0.4)
@@ -59,36 +55,11 @@ func _draw_building_range(center: Vector2) -> void:
 	var type_id: String = bld.get("type", "") as String
 	var level: int = bld.get("level", 0) as int
 	var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
-
-	var radius: int = 0
-	var range_color := Color(0.5, 0.8, 1.0, 0.15)
-
-	match type_id:
-		"water_tower":
-			var water_radii: Array[int] = [4, 6, 8, 10, 14]
-			radius = water_radii[mini(level, water_radii.size() - 1)]
-			range_color = Color(0.3, 0.5, 1.0, 0.12)
-		"power":
-			var power_radii: Array[int] = [6, 7, 8, 9, 10]
-			radius = power_radii[mini(level, power_radii.size() - 1)]
-			range_color = Color(1.0, 0.9, 0.2, 0.12)
-		"park":
-			var park_radii: Array[int] = [0, 0, 4, 5, 6]
-			radius = park_radii[mini(level, park_radii.size() - 1)]
-			range_color = Color(0.3, 0.9, 0.3, 0.12)
-		"workshop":
-			if level >= 1:
-				radius = 3
-				range_color = Color(0.8, 0.6, 0.2, 0.12)
-
-	# Also check synergy data for radius
-	var synergy: Dictionary = ldata.get("synergy", {})
-	if synergy.has("radius") and radius == 0:
-		radius = synergy.get("radius", 0) as int
-		range_color = Color(0.5, 0.8, 0.5, 0.12)
-
+	var desc: Dictionary = _get_range_descriptor(type_id, ldata)
+	var radius: int = desc.get("radius", 0) as int
 	if radius <= 0:
 		return
+	var range_color: Color = desc.get("color", Color(0.5, 0.8, 0.5, 0.12)) as Color
 
 	# Draw hex tiles in range
 	var hex_pts := _hex_polygon(HexCoords.HEX_SIZE * 0.8)
@@ -101,16 +72,32 @@ func _draw_building_range(center: Vector2) -> void:
 			pts.append(tile_center + p)
 		draw_colored_polygon(pts, range_color)
 
-	# Draw range border circle
-	var pixel_radius: float = HexCoords.HEX_SIZE * 1.73 * float(radius)
+	# Draw range border circle (account for Y-squish)
+	var pixel_radius: float = HexCoords.HEX_SIZE * 1.73 * float(radius) * HexCoords.ISO_Y
 	draw_arc(center, pixel_radius, 0.0, TAU, 48, range_color * 3.0, 1.5)
+
+
+## Read range data exclusively from synergy — no hardcoded radius arrays.
+static func _get_range_descriptor(_type_id: String, ldata: Dictionary) -> Dictionary:
+	var synergy: Dictionary = ldata.get("synergy", {})
+	if synergy.has("water_radius"):
+		return {"radius": synergy["water_radius"] as int, "color": Color(0.3, 0.5, 1.0, 0.12)}
+	if synergy.has("powered_boost") and synergy.has("radius"):
+		return {"radius": synergy["radius"] as int, "color": Color(1.0, 0.9, 0.2, 0.12)}
+	if synergy.has("happiness_aura") and synergy.has("radius"):
+		return {"radius": synergy["radius"] as int, "color": Color(0.3, 0.9, 0.3, 0.12)}
+	if synergy.has("upgrade_discount") and synergy.has("radius"):
+		return {"radius": synergy["radius"] as int, "color": Color(0.8, 0.6, 0.2, 0.12)}
+	if synergy.has("radius"):
+		return {"radius": synergy["radius"] as int, "color": Color(0.5, 0.8, 0.5, 0.12)}
+	return {"radius": 0, "color": Color.TRANSPARENT}
 
 
 func _hex_polygon(hex_size: float) -> PackedVector2Array:
 	var pts := PackedVector2Array()
 	for i: int in 6:
 		var angle := TAU / 6.0 * float(i)
-		pts.append(Vector2(cos(angle), sin(angle)) * hex_size)
+		pts.append(Vector2(cos(angle), sin(angle) * HexCoords.ISO_Y) * hex_size)
 	pts.append(pts[0])
 	return pts
 

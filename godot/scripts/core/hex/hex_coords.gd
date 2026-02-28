@@ -49,19 +49,24 @@ static func disk(center: Vector2i, radius: int) -> Array[Vector2i]:
 	return results
 
 
-## Convert axial (q, r) to flat-top pixel position.
+## Y-squish factor for isometric feel (applied at coordinate level, not via Node2D.scale,
+## so that draw_string / icons are not distorted).
+const ISO_Y := 0.75
+
+
+## Convert axial (q, r) to flat-top pixel position (with isometric Y-squish).
 static func axial_to_pixel(coord: Vector2i) -> Vector2:
 	var q := float(coord.x)
 	var r := float(coord.y)
 	var x := HEX_SIZE * (1.5 * q)
-	var y := HEX_SIZE * (sqrt(3.0) * (r + q * 0.5))
+	var y := HEX_SIZE * (sqrt(3.0) * (r + q * 0.5)) * ISO_Y
 	return Vector2(x, y)
 
 
-## Convert pixel position to the nearest axial coordinate.
+## Convert pixel position to the nearest axial coordinate (inverse of axial_to_pixel).
 static func pixel_to_axial(pixel: Vector2) -> Vector2i:
 	var q := pixel.x / (HEX_SIZE * 1.5)
-	var r := (pixel.y / (HEX_SIZE * sqrt(3.0))) - q * 0.5
+	var r := (pixel.y / (HEX_SIZE * sqrt(3.0) * ISO_Y)) - q * 0.5
 	return _axial_round(q, r)
 
 

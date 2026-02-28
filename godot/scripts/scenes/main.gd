@@ -16,10 +16,9 @@ func _ready() -> void:
 
 
 func _setup_scene_tree() -> void:
-	# World root (terrain + buildings) — squish Y for isometric feel
+	# World root (terrain + buildings). Isometric Y-squish is in HexCoords.ISO_Y.
 	var world := Node2D.new()
 	world.name = "World"
-	world.scale = Vector2(1.0, 0.75)
 	add_child(world)
 
 	var terrain_layer := Node2D.new()
@@ -121,9 +120,6 @@ func _check_control_hit(node: Node, pos: Vector2) -> bool:
 
 func _handle_click() -> void:
 	var world_pos: Vector2 = get_global_mouse_position()
-	var world_node: Node2D = get_node("World") as Node2D
-	if world_node:
-		world_pos /= world_node.scale
 	var coord: Vector2i = HexCoords.pixel_to_axial(world_pos)
 
 	if _build_mode != "":
@@ -132,20 +128,19 @@ func _handle_click() -> void:
 	else:
 		_selected_coord = coord
 		EventBus.selection_changed.emit(coord)
+		_refresh_overlay_state()
 
 
 func _handle_key(ke: InputEventKey) -> void:
 	if ke.keycode == KEY_ESCAPE:
 		_build_mode = ""
 		EventBus.build_mode_changed.emit("")
+	elif Input.is_action_just_pressed("toggle_ranges"):
+		_show_ranges = not _show_ranges
+		_refresh_overlay_state()
 	elif ke.keycode == KEY_H:
 		if _hud and _hud.has_method("toggle_help"):
 			_hud.call("toggle_help")
-	elif ke.keycode == KEY_V:
-		_show_ranges = not _show_ranges
-		var overlay: Node = get_node_or_null("World/OverlayLayer")
-		if overlay and overlay.has_method("set_show_ranges"):
-			overlay.call("set_show_ranges", _show_ranges, _selected_coord)
 	elif Input.is_action_just_pressed("upgrade_building"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := UpgradeBuildingCommand.new(_selected_coord)
@@ -180,6 +175,13 @@ func _refresh_buildings() -> void:
 	var bl: Node = get_node_or_null("World/BuildingLayer")
 	if bl:
 		bl.call("refresh")
+	_refresh_overlay_state()
+
+
+func _refresh_overlay_state() -> void:
+	var overlay: Node = get_node_or_null("World/OverlayLayer")
+	if overlay and overlay.has_method("set_show_ranges"):
+		overlay.call("set_show_ranges", _show_ranges, _selected_coord)
 
 
 func get_orchestrator() -> GameOrchestrator:
