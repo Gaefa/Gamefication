@@ -1,0 +1,9 @@
+[
+  { "level": 1, "name": "Settlement",      "requirements": null, "reward": { "coins": 100 } },
+  { "level": 2, "name": "Village",         "requirements": { "food": 100, "wood": 150, "stone": 100, "coins": 50 },         "reward": { "coins": 250, "planks": 50 } },
+  { "level": 3, "name": "Town",            "requirements": { "food": 500, "planks": 300, "bricks": 250, "tools": 100, "coins": 500 }, "reward": { "coins": 1000, "metal": 100 } },
+  { "level": 4, "name": "Large City",      "requirements": { "food": 1000, "metal": 500, "glass": 400, "tools": 200, "coins": 2000 }, "reward": { "coins": 3000, "energy": 300, "science": 50 } },
+  { "level": 5, "name": "Metropolis",      "requirements": { "food": 2000, "metal": 1000, "energy": 800, "science": 300, "coins": 5000 }, "reward": { "coins": 10000, "energy": 500, "science": 200, "fame": 100 } },
+  { "level": 6, "name": "Megapolis",       "requirements": { "food": 5000, "metal": 2500, "energy": 2000, "science": 1000, "culture": 500, "coins": 20000 }, "reward": { "coins": 50000, "fame": 500 } },
+  { "level": 7, "name": "Futuristic City", "requirements": { "wood": 10000, "stone": 10000, "food": 10000, "coins": 100000, "energy": 5000, "science": 3000, "culture": 1500, "fame": 500 }, "reward": { "fame": 1000, "science": 500 } }
+]

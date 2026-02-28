@@ -1,0 +1,58 @@
+[
+  {
+    "id": "welcome",
+    "title": "Welcome, Mayor!",
+    "text": "Your settlement awaits. Let's build a city from scratch! Start by placing some roads -- they connect your buildings and enable resource transport.",
+    "auto_advance": false,
+    "condition": null
+  },
+  {
+    "id": "build_road",
+    "title": "Build Roads",
+    "text": "Select ROAD from the build menu and place a few tiles. Roads boost adjacent buildings and form the transport network for physical resources like wood, stone and food.",
+    "auto_advance": true,
+    "condition": { "type": "count_buildings", "building": "road", "min": 3 }
+  },
+  {
+    "id": "build_farm",
+    "title": "Feed Your People",
+    "text": "Build a FARM near your roads. Farms on grass terrain produce bonus food (+20%). Place them next to lumber mills for a synergy bonus!",
+    "auto_advance": true,
+    "condition": { "type": "count_buildings", "building": "farm", "min": 1 }
+  },
+  {
+    "id": "build_hut",
+    "title": "Attract Residents",
+    "text": "Build a HUT next to a road. Residents need food and water. Without a road connection, buildings operate at only 30% efficiency!",
+    "auto_advance": true,
+    "condition": { "type": "count_buildings", "building": "hut", "min": 1 }
+  },
+  {
+    "id": "build_water",
+    "title": "Water Supply",
+    "text": "Build a WATER TOWER to supply water through the pipe network. Residential buildings without water produce at only 60% efficiency!",
+    "auto_advance": true,
+    "condition": { "type": "count_buildings", "building": "water_tower", "min": 1 }
+  },
+  {
+    "id": "upgrade",
+    "title": "Upgrade Buildings",
+    "text": "Click a building to select it, then press U or click Upgrade. Higher levels produce more resources! Place workshops nearby for an upgrade discount.",
+    "auto_advance": true,
+    "condition": { "type": "stat_check", "stat": "total_upgrades_done", "min": 1 }
+  },
+  {
+    "id": "level_up",
+    "title": "Grow Your City",
+    "text": "Check the city stats panel for level-up requirements. Meet them to unlock new buildings and bonuses! Each hex neighbor counts!",
+    "auto_advance": true,
+    "condition": { "type": "city_level", "min": 2 }
+  },
+  {
+    "id": "done",
+    "title": "You're Ready!",
+    "text": "Great job! You know the basics. Keep building, upgrading, and expanding. Aim for City Level 7 and beyond! Watch for events and manage your pressure index.",
+    "auto_advance": false,
+    "condition": null
+  }
+]

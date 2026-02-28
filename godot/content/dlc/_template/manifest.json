@@ -1,0 +1,18 @@
+{
+  "dlc_id": "template_dlc",
+  "version": "1.0.0",
+  "required_core_version": "0.1.0",
+  "name": "Template DLC",
+  "description": "Template for creating new DLC modules.",
+  "capabilities": [],
+  "content_bundles": [],
+  "save_namespace": "dlc_template",
+  "hooks": {
+    "tick_hooks": false,
+    "pressure_hooks": false,
+    "event_catalog_hooks": false,
+    "citizen_need_hooks": false,
+    "ui_slot_hooks": false,
+    "save_hooks": false
+  }
+}

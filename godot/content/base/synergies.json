@@ -1,0 +1,104 @@
+[
+  {
+    "id": "farm_lumber",
+    "pair": ["farm", "lumber"],
+    "description": "Lumber mills near farms share irrigation and land management, boosting both outputs.",
+    "bonuses": {
+      "farm":   { "food": 0.15 },
+      "lumber": { "wood": 0.10 }
+    },
+    "min_level": 2,
+    "type": "adjacency"
+  },
+  {
+    "id": "market_hut",
+    "pair": ["market", "hut"],
+    "description": "Markets near housing attract shoppers, increasing residential tax income.",
+    "bonuses": {
+      "hut": { "coins_per_resident": 0.15 }
+    },
+    "min_level": 1,
+    "type": "adjacency"
+  },
+  {
+    "id": "market_apartment",
+    "pair": ["market", "apartment"],
+    "description": "Markets near apartment complexes serve dense populations, boosting commerce.",
+    "bonuses": {
+      "apartment": { "coins_per_resident": 0.15 }
+    },
+    "min_level": 1,
+    "type": "adjacency"
+  },
+  {
+    "id": "park_any",
+    "pair": ["park", "*"],
+    "description": "Parks create a peaceful atmosphere, spreading happiness to all nearby buildings.",
+    "bonuses": {
+      "*": { "happiness_aura": true }
+    },
+    "min_level": 1,
+    "type": "aura"
+  },
+  {
+    "id": "power_any",
+    "pair": ["power", "*"],
+    "description": "Power plants energize nearby buildings, boosting their production efficiency.",
+    "bonuses": {
+      "*": { "production_in_radius": true }
+    },
+    "min_level": 2,
+    "type": "aura"
+  },
+  {
+    "id": "water_hut",
+    "pair": ["water_tower", "hut"],
+    "description": "Water towers supply clean water to nearby huts, enabling full operational efficiency.",
+    "bonuses": {
+      "hut": { "full_efficiency": true }
+    },
+    "min_level": 1,
+    "type": "aura"
+  },
+  {
+    "id": "water_apartment",
+    "pair": ["water_tower", "apartment"],
+    "description": "Water towers supply clean water to nearby apartments, enabling full efficiency.",
+    "bonuses": {
+      "apartment": { "full_efficiency": true }
+    },
+    "min_level": 1,
+    "type": "aura"
+  },
+  {
+    "id": "workshop_any",
+    "pair": ["workshop", "*"],
+    "description": "Workshops provide local tooling expertise, reducing upgrade costs for nearby buildings.",
+    "bonuses": {
+      "*": { "upgrade_cost_reduction": true }
+    },
+    "min_level": 2,
+    "type": "aura"
+  },
+  {
+    "id": "research_library",
+    "pair": ["research", "library"],
+    "description": "Research centers and libraries share knowledge, dramatically boosting science output.",
+    "bonuses": {
+      "research": { "science": 0.2 },
+      "library":  { "science": 0.15 }
+    },
+    "min_level": 1,
+    "type": "adjacency"
+  },
+  {
+    "id": "foundry_quarry",
+    "pair": ["foundry", "quarry"],
+    "description": "Foundries next to quarries receive raw stone directly, boosting metal and glass output.",
+    "bonuses": {
+      "foundry": { "metal": 0.1, "glass": 0.1 }
+    },
+    "min_level": 1,
+    "type": "adjacency"
+  }
+]
