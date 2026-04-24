@@ -54,8 +54,9 @@ Content files:
 - events;
 - city levels;
 - tutorial;
-- future: technologies;
-- future: policies;
+- technologies;
+- policies;
+- start profiles;
 - future: scenarios;
 - future: expansions.
 
@@ -139,10 +140,10 @@ Core sections:
 - economy;
 - population;
 - progression;
+- governance;
+- mandate;
 - pressure;
 - events;
-- technologies;
-- policies;
 - scenarios;
 - meta.
 
@@ -250,10 +251,10 @@ Rules:
 
 ## 13. Immediate Technical Tasks
 
-1. Add `technologies.json` and `TechnologySystem`.
-2. Add `policies.json` and `PolicySystem`.
-3. Add `ModifierResolver`.
-4. Wire modifiers into `EconomySystem`, `PressureSystem`, `CoverageMap`.
-5. Add `scenarios.json` and `ScenarioSystem`.
+1. Add `scenarios.json` and `ScenarioSystem`.
+2. Add mandate objectives v1.
+3. Add patron trust / recall events v1.
+4. Add citizen demands v1.
+5. Add `ModifierResolver` to unify technology, policy, mandate and event effects.
 6. Add content validation.
 7. Prepare expansion manifest format for later DLC.

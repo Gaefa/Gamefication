@@ -1550,5 +1550,81 @@
   "ui.language.russian": {
     "en": "Russian",
     "ru": "Русский"
+  },
+  "start_profile.appointed_administrator.label": {
+    "en": "Appointed Administrator",
+    "ru": "Назначенный администратор"
+  },
+  "start_profile.appointed_administrator.description": {
+    "en": "Easier start with patron funding, moderate legitimacy and recall risk. Best default path for first-time players.",
+    "ru": "Более простой старт с финансированием покровителя, умеренной легитимностью и риском отзыва. Лучший путь по умолчанию для первого прохождения."
+  },
+  "start_profile.founder_rebel.label": {
+    "en": "Independent Founder: The Rebel",
+    "ru": "Независимый основатель: Бунтарь"
+  },
+  "start_profile.founder_rebel.description": {
+    "en": "Hard start with high autonomy and strong defiant support. External trust is low and early pressure is higher.",
+    "ru": "Сложный старт с высокой автономией и сильной протестной поддержкой. Внешнее доверие низкое, раннее давление выше."
+  },
+  "start_profile.founder_people_choice.label": {
+    "en": "Independent Founder: The People's Choice",
+    "ru": "Независимый основатель: Выбор народа"
+  },
+  "start_profile.founder_people_choice.description": {
+    "en": "Community-backed start with strong citizen support and happiness. Funding is limited and unpopular shortages hurt more later.",
+    "ru": "Старт с поддержкой общины, высоким доверием граждан и счастьем. Финансирование ограничено, а непопулярные дефициты позже бьют сильнее."
+  },
+  "start_profile.founder_outcasts.label": {
+    "en": "Independent Founder: The Outcasts",
+    "ru": "Независимый основатель: Изгои"
+  },
+  "start_profile.founder_outcasts.description": {
+    "en": "Very hard start with almost no recognition, high autonomy and improvised resilience. Money is scarce, but basic survival production is stronger.",
+    "ru": "Очень сложный старт почти без признания, с высокой автономией и самодельной устойчивостью. Денег мало, но базовое производство для выживания сильнее."
+  },
+  "ui.start.title": {
+    "en": "Choose Your Mandate",
+    "ru": "Выбери мандат"
+  },
+  "ui.start.keep_current": {
+    "en": "Keep Current",
+    "ru": "Оставить текущий"
+  },
+  "ui.start.keep_current_tooltip": {
+    "en": "Close this panel and keep the current default start.",
+    "ru": "Закрыть панель и оставить текущий старт по умолчанию."
+  },
+  "ui.start.intro": {
+    "en": "Start profile changes your resources, mandate pressure and early strategic identity.",
+    "ru": "Стартовый профиль меняет ресурсы, давление мандата и раннюю стратегическую роль."
+  },
+  "ui.start.begin": {
+    "en": "Begin",
+    "ru": "Начать"
+  },
+  "ui.start.started": {
+    "en": "Started: %s",
+    "ru": "Старт: %s"
+  },
+  "ui.start.path.appointed": {
+    "en": "Appointed",
+    "ru": "Назначение"
+  },
+  "ui.start.path.independent_founder": {
+    "en": "Independent",
+    "ru": "Независимость"
+  },
+  "ui.start.trust": {
+    "en": "Trust",
+    "ru": "Доверие"
+  },
+  "ui.start.support": {
+    "en": "Support",
+    "ru": "Поддержка"
+  },
+  "ui.start.autonomy": {
+    "en": "Autonomy",
+    "ru": "Автономия"
   }
 }

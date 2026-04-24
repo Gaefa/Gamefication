@@ -12,6 +12,7 @@ var categories: Array = []
 var tutorial_steps: Array = []
 var technologies: Dictionary = {}
 var policies: Dictionary = {}
+var start_profiles: Dictionary = {}
 
 const CONTENT_ROOT := "res://content/base/"
 
@@ -57,6 +58,7 @@ func _ready() -> void:
 
 	technologies = _load_keyed_array(CONTENT_ROOT + "technologies.json", "id")
 	policies = _load_keyed_array(CONTENT_ROOT + "policies.json", "id")
+	start_profiles = _load_keyed_array(CONTENT_ROOT + "start_profiles.json", "id")
 
 
 # --- Public queries ---
@@ -85,6 +87,10 @@ func get_policy_def(policy_id: String) -> Dictionary:
 	return policies.get(policy_id, {})
 
 
+func get_start_profile_def(profile_id: String) -> Dictionary:
+	return start_profiles.get(profile_id, {})
+
+
 func get_level_def(level: int) -> Dictionary:
 	if level >= 1 and level <= city_levels.size():
 		return city_levels[level - 1]
@@ -109,6 +115,10 @@ func get_technology_ids() -> Array:
 
 func get_policy_ids() -> Array:
 	return policies.keys()
+
+
+func get_start_profile_ids() -> Array:
+	return start_profiles.keys()
 
 
 func get_level_requirement(level: int, key: String) -> Variant:

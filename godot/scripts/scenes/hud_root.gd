@@ -24,6 +24,8 @@ var _event_panel: PanelContainer
 var _toast_label: Label
 var _toast_timer: float = 0.0
 
+var _start_panel: PanelContainer
+var _start_visible: bool = true
 var _help_panel: PanelContainer
 var _help_label: Label
 var _help_visible: bool = false
@@ -46,6 +48,7 @@ func _ready() -> void:
 	_build_info_panel()
 	_build_event_panel()
 	_build_toast()
+	_build_start_panel()
 	_build_help_panel()
 	_build_governance_panel()
 	_build_settings_panel()
@@ -58,6 +61,7 @@ func _connect_signals() -> void:
 	EventBus.toast_requested.connect(_on_toast)
 	EventBus.selection_changed.connect(_on_selection_changed)
 	EventBus.game_event_spawned.connect(_on_event_spawned)
+	EventBus.new_game_started.connect(_on_new_game_started)
 	EventBus.tick_finished.connect(_on_tick_finished)
 	EventBus.city_level_changed.connect(func(_lv: int) -> void: _rebuild_building_list())
 	EventBus.build_mode_changed.connect(_on_build_mode_changed)
@@ -423,6 +427,8 @@ func _on_locale_changed(_locale: String) -> void:
 		_rebuild_governance_panel()
 	if _settings_visible:
 		_rebuild_settings_panel()
+	if _start_visible:
+		_rebuild_start_panel()
 
 
 # ===========================================================
@@ -739,6 +745,149 @@ PRESSURE: Calm > Tension > Crisis > Emergency
 func toggle_help() -> void:
 	_help_visible = not _help_visible
 	_help_panel.visible = _help_visible
+
+
+# ===========================================================
+# START PANEL (center) — start profile / faction background
+# ===========================================================
+
+func _build_start_panel() -> void:
+	_start_panel = PanelContainer.new()
+	_start_panel.set_anchors_preset(PRESET_CENTER)
+	_start_panel.size = Vector2(620, 500)
+	_start_panel.position = Vector2(-310, -250)
+	_start_panel.visible = true
+	_start_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_start_panel)
+	_rebuild_start_panel()
+
+
+func _rebuild_start_panel() -> void:
+	if _start_panel == null:
+		return
+	for c: Node in _start_panel.get_children():
+		c.queue_free()
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	_start_panel.add_child(margin)
+
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 10)
+	margin.add_child(root)
+
+	var header := HBoxContainer.new()
+	root.add_child(header)
+
+	var title := Label.new()
+	title.text = Localization.t("ui.start.title", "Choose Your Mandate")
+	title.add_theme_font_size_override("font_size", 18)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title)
+
+	var close_btn := Button.new()
+	close_btn.text = Localization.t("ui.start.keep_current", "Keep Current")
+	close_btn.tooltip_text = Localization.t("ui.start.keep_current_tooltip", "Close this panel and keep the current default start.")
+	close_btn.pressed.connect(_close_start_panel)
+	header.add_child(close_btn)
+
+	var intro := Label.new()
+	intro.text = Localization.t("ui.start.intro", "Start profile changes your resources, mandate pressure and early strategic identity.")
+	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	intro.add_theme_font_size_override("font_size", 11)
+	intro.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	root.add_child(intro)
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	root.add_child(scroll)
+
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 8)
+	scroll.add_child(list)
+
+	for profile_id: String in ContentDB.get_start_profile_ids():
+		list.add_child(_build_start_profile_row(profile_id))
+
+
+func _build_start_profile_row(profile_id: String) -> Control:
+	var def: Dictionary = ContentDB.get_start_profile_def(profile_id)
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size.y = 98
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	panel.add_child(row)
+
+	var text_box := VBoxContainer.new()
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(text_box)
+
+	var title := Label.new()
+	title.text = Localization.content_text(def, "label", profile_id)
+	title.add_theme_font_size_override("font_size", 13)
+	text_box.add_child(title)
+
+	var desc := Label.new()
+	desc.text = Localization.content_text(def, "description", "")
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.add_theme_font_size_override("font_size", 10)
+	text_box.add_child(desc)
+
+	var meta := Label.new()
+	meta.text = _format_start_profile_meta(def)
+	meta.add_theme_font_size_override("font_size", 10)
+	meta.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
+	text_box.add_child(meta)
+
+	var btn := Button.new()
+	btn.text = Localization.t("ui.start.begin", "Begin")
+	btn.pressed.connect(_start_new_run.bind(profile_id))
+	row.add_child(btn)
+
+	return panel
+
+
+func _format_start_profile_meta(def: Dictionary) -> String:
+	var mandate_data: Dictionary = def.get("mandate", {})
+	var path_label := Localization.t("ui.start.path.%s" % (def.get("start_path", "appointed") as String), def.get("start_path", "appointed") as String)
+	return "%s | %s:%d | %s:%d | %s:%d" % [
+		path_label,
+		Localization.t("ui.start.trust", "Trust"),
+		mandate_data.get("patron_trust", 0) as int,
+		Localization.t("ui.start.support", "Support"),
+		mandate_data.get("support", 0) as int,
+		Localization.t("ui.start.autonomy", "Autonomy"),
+		mandate_data.get("autonomy", 0) as int,
+	]
+
+
+func _start_new_run(profile_id: String) -> void:
+	var main_node: Node = get_tree().current_scene
+	if main_node and main_node.has_method("start_new_run"):
+		main_node.call("start_new_run", profile_id)
+	_close_start_panel()
+	_update_resource_bar()
+	_rebuild_building_list()
+	_info_label.text = _get_welcome_text()
+	var profile_def: Dictionary = ContentDB.get_start_profile_def(profile_id)
+	EventBus.toast_requested.emit(
+		Localization.t("ui.start.started", "Started: %s") % Localization.content_text(profile_def, "label", profile_id),
+		3.0
+	)
+
+
+func _close_start_panel() -> void:
+	_start_visible = false
+	_start_panel.visible = false
+
+
+func _on_new_game_started() -> void:
+	_update_resource_bar()
+	_rebuild_building_list()
 
 
 # ===========================================================

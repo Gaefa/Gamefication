@@ -332,7 +332,8 @@ Founder archetypes:
 
 MVP status:
 - support two starts: `Appointed Administrator` and `Independent Founder`;
-- founder archetype can be a data flag with 2-3 modifiers;
+- `Independent Founder` currently has three data-driven archetype variants: `The Rebel`, `The People's Choice`, `The Outcasts`;
+- founder archetype is a data flag with start resources, mandate state and early modifiers;
 - full custom banner/name can wait.
 
 Vertical slice status:

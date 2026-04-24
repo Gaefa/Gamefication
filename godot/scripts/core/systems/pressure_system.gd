@@ -88,4 +88,7 @@ func _apply_governance_pressure(base: float) -> float:
 		var effects: Dictionary = policy_def.get("effects", {})
 		pressure += effects.get("pressure_delta", 0.0) as float
 		multiplier *= effects.get("pressure_mult", 1.0) as float
+	var mandate_effects: Dictionary = GameStateStore.mandate().get("effects", {})
+	pressure += mandate_effects.get("pressure_delta", 0.0) as float
+	multiplier *= mandate_effects.get("pressure_mult", 1.0) as float
 	return pressure * multiplier

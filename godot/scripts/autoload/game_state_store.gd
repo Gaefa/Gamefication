@@ -12,7 +12,7 @@ func _ready() -> void:
 
 # --- State reset (new game) ---
 
-func reset() -> void:
+func reset(start_profile_id: String = "appointed_administrator") -> void:
 	_tick = 0
 	_state = {
 		"world": {
@@ -42,6 +42,7 @@ func reset() -> void:
 			"active_policies": {},    # category -> policy_id
 			"policy_cooldowns": {},   # policy_id -> ticks_remaining
 		},
+		"mandate": _default_mandate(),
 		"pressure": {
 			"index": 0.0,
 			"phase": "calm",
@@ -59,6 +60,7 @@ func reset() -> void:
 		},
 	}
 	_init_resources()
+	apply_start_profile(start_profile_id)
 
 
 func _init_resources() -> void:
@@ -99,6 +101,11 @@ func governance() -> Dictionary:
 	if not _state.has("governance"):
 		_state["governance"] = _default_governance()
 	return _state.governance
+
+func mandate() -> Dictionary:
+	if not _state.has("mandate"):
+		_state["mandate"] = _default_mandate()
+	return _state.mandate
 
 func events() -> Dictionary:
 	return _state.events
@@ -209,6 +216,45 @@ func get_active_policies() -> Dictionary:
 	return governance().active_policies
 
 
+# --- Start profile / mandate helpers ---
+
+func apply_start_profile(profile_id: String) -> void:
+	var profile: Dictionary = ContentDB.get_start_profile_def(profile_id)
+	if profile.is_empty():
+		profile_id = "appointed_administrator"
+		profile = ContentDB.get_start_profile_def(profile_id)
+	if profile.is_empty():
+		return
+
+	save_meta().start_profile_id = profile_id
+	var mandate_state: Dictionary = mandate()
+	mandate_state.start_profile_id = profile_id
+	mandate_state.start_path = profile.get("start_path", "appointed") as String
+	mandate_state.founder_archetype = profile.get("founder_archetype", "") as String
+	mandate_state.patron_id = profile.get("patron_id", "") as String
+	mandate_state.effects = (profile.get("effects", {}) as Dictionary).duplicate(true)
+
+	var profile_mandate: Dictionary = profile.get("mandate", {})
+	for key: String in profile_mandate:
+		mandate_state[key] = profile_mandate[key]
+
+	var resources: Dictionary = profile.get("starting_resources", {})
+	for res_id: String in resources:
+		set_resource(res_id, resources[res_id] as float)
+
+	var policies: Array = profile.get("default_policies", [])
+	for policy_var: Variant in policies:
+		var policy_id: String = policy_var as String
+		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
+		if policy_def.is_empty():
+			continue
+		set_active_policy(policy_def.get("category", "general") as String, policy_id)
+
+
+func get_start_profile_id() -> String:
+	return mandate().get("start_profile_id", "appointed_administrator") as String
+
+
 # --- Serialization ---
 
 func to_save_dict() -> Dictionary:
@@ -240,6 +286,14 @@ func _ensure_runtime_defaults() -> void:
 			gov["active_policies"] = {}
 		if not gov.has("policy_cooldowns"):
 			gov["policy_cooldowns"] = {}
+	if not _state.has("mandate"):
+		_state["mandate"] = _default_mandate()
+	else:
+		var mandate_state: Dictionary = _state.mandate
+		var defaults: Dictionary = _default_mandate()
+		for key: String in defaults:
+			if not mandate_state.has(key):
+				mandate_state[key] = defaults[key]
 	if not _state.has("pressure"):
 		_state["pressure"] = {"index": 0.0, "phase": "calm", "active_policy": ""}
 	elif not (_state.pressure as Dictionary).has("active_policy"):
@@ -251,6 +305,21 @@ func _default_governance() -> Dictionary:
 		"technologies": [],
 		"active_policies": {},
 		"policy_cooldowns": {},
+	}
+
+
+func _default_mandate() -> Dictionary:
+	return {
+		"start_profile_id": "appointed_administrator",
+		"start_path": "appointed",
+		"founder_archetype": "",
+		"patron_id": "restoration_league",
+		"patron_trust": 50,
+		"legitimacy": 50,
+		"autonomy": 30,
+		"recall_risk": 0,
+		"support": 50,
+		"effects": {},
 	}
 
 

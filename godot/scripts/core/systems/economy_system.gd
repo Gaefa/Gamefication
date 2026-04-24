@@ -105,6 +105,7 @@ func _governance_production_multiplier(res_id: String) -> float:
 		var policy_id: String = policy_var as String
 		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
 		total_bonus += _production_bonus_from_effects(policy_def.get("effects", {}), res_id)
+	total_bonus += _production_bonus_from_effects(GameStateStore.mandate().get("effects", {}), res_id)
 	return maxf(1.0 + total_bonus, 0.1)
 
 

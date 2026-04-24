@@ -75,6 +75,8 @@ func _governance_happiness_add() -> float:
 		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
 		var effects: Dictionary = policy_def.get("effects", {})
 		total += effects.get("happiness_add", 0.0) as float
+	var mandate_effects: Dictionary = GameStateStore.mandate().get("effects", {})
+	total += mandate_effects.get("happiness_add", 0.0) as float
 	return total
 
 

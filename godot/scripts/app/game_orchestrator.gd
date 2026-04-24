@@ -78,10 +78,10 @@ func build() -> void:
 	SimulationRunner.tick_callback = tick_scheduler.run_tick
 
 
-func new_game(seed_val: int = 0) -> void:
+func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator") -> void:
 	if seed_val == 0:
 		seed_val = randi()
-	GameStateStore.reset()
+	GameStateStore.reset(profile_id)
 	GameStateStore.save_meta().rng_seed = seed_val
 	build()
 	_generate_terrain()
