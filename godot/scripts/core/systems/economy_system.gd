@@ -28,20 +28,23 @@ func process_tick() -> void:
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 		var produces: Dictionary = ldata.get("produces", {})
 		var consumes: Dictionary = ldata.get("consumes", {})
+		var input_efficiency: float = _resource_flow.input_efficiency_for(coord, consumes)
+		var condition_efficiency := 0.5 if (bld.get("has_issue", false) as bool) else 1.0
 
 		# Get multipliers
 		var mults: Dictionary = _interactions.get_total_multipliers(coord)
 
-		# Production — always produces regardless of transport
+		# Production needs both inputs and an output route.
 		for res_id: String in produces:
 			var base: float = produces[res_id] as float
 			var mult: float = mults.get(res_id, 1.0) as float
-			var amount: float = base * mult
+			var output_efficiency: float = _resource_flow.output_efficiency_for(res_id, coord, type_id)
+			var amount: float = base * mult * input_efficiency * output_efficiency * condition_efficiency
 			net_production[res_id] = (net_production[res_id] as float) + amount
 
-		# Consumption
+		# If inputs cannot be delivered, the building stalls instead of silently draining stockpiles.
 		for res_id: String in consumes:
-			var amount: float = consumes[res_id] as float
+			var amount: float = (consumes[res_id] as float) * input_efficiency
 			net_production[res_id] = (net_production[res_id] as float) - amount
 
 	# Bank interest (special mechanic)

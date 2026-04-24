@@ -147,29 +147,45 @@ func _apply_effects(effects: Dictionary) -> void:
 
 
 func _force_issues(count: int) -> void:
-	var coords: Array = GameStateStore.get_all_building_coords()
-	for i: int in mini(count, coords.size()):
-		var idx: int = _rng.range_int(0, coords.size())
-		var coord: Vector2i = coords[idx] as Vector2i
+	var coords: Array = _pick_unique_coords(_candidate_problem_coords(true, true), count)
+	for coord: Vector2i in coords:
 		var bld: Dictionary = GameStateStore.get_building(coord)
-		if (bld.get("type", "") as String) == "road":
-			continue
 		bld["has_issue"] = true
 		GameStateStore.set_building(coord, bld)
 		EventBus.building_issue_added.emit(coord)
 
 
 func _damage_random_buildings(count: int) -> void:
-	var coords: Array = GameStateStore.get_all_building_coords()
-	for i: int in mini(count, coords.size()):
-		var idx: int = _rng.range_int(0, coords.size())
-		var coord: Vector2i = coords[idx] as Vector2i
+	var coords: Array = _pick_unique_coords(_candidate_problem_coords(true, false), count)
+	for coord: Vector2i in coords:
 		var bld: Dictionary = GameStateStore.get_building(coord)
-		if (bld.get("type", "") as String) == "road":
-			continue
 		bld["damaged"] = true
 		GameStateStore.set_building(coord, bld)
 		EventBus.building_damaged.emit(coord, 1.0)
+
+
+func _candidate_problem_coords(skip_damaged: bool, skip_issues: bool) -> Array:
+	var result: Array = []
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		if (bld.get("type", "") as String) == "road":
+			continue
+		if skip_damaged and (bld.get("damaged", false) as bool):
+			continue
+		if skip_issues and (bld.get("has_issue", false) as bool):
+			continue
+		result.append(coord)
+	return result
+
+
+func _pick_unique_coords(candidates: Array, count: int) -> Array:
+	var pool: Array = candidates.duplicate()
+	var picked: Array = []
+	while picked.size() < count and not pool.is_empty():
+		var idx: int = _rng.range_int(0, pool.size())
+		picked.append(pool[idx])
+		pool.remove_at(idx)
+	return picked
 
 
 func _phase_to_int(phase: String) -> int:
