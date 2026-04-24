@@ -8,7 +8,7 @@ var city_levels: Array = []
 var terrain_types: Dictionary = {}
 var events: Dictionary = {}
 var synergies: Array = []
-var categories: Dictionary = {}
+var categories: Array = []
 var tutorial_steps: Array = []
 
 const CONTENT_ROOT := "res://content/base/"
@@ -41,7 +41,7 @@ func _ready() -> void:
 	elif ev_raw is Dictionary:
 		events = ev_raw as Dictionary
 	synergies = _load_json_array(CONTENT_ROOT + "synergies.json")
-	categories = _load_json(CONTENT_ROOT + "categories.json")
+	categories = _load_json_array(CONTENT_ROOT + "categories.json")
 
 	var levels_raw: Variant = _load_json_raw(CONTENT_ROOT + "city_levels.json")
 	if levels_raw is Array:
