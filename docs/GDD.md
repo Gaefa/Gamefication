@@ -259,10 +259,56 @@ MVP scope:
 Later scope:
 - multiple patrons;
 - switching allegiance;
+- founding player's own faction;
 - rival administrators;
 - regional cluster governance.
 
-## 14. Competition Model
+## 14. Player-Created Faction
+
+Создание собственной фракции - late-game/autonomy path.
+
+It should answer the fantasy:
+- город больше не просто выполняет чужой мандат;
+- игрок формирует собственную доктрину;
+- кластер городов становится политическим проектом;
+- бывшие покровители и rival administrators реагируют.
+
+Unlock requirements:
+- high city level;
+- high citizen trust;
+- stable critical utilities;
+- enough fame/prestige;
+- mandate conflict or mandate completion;
+- at least one strong internal faction supporting autonomy.
+
+Core choices:
+- faction name/banner;
+- founding charter;
+- economic doctrine;
+- civic doctrine;
+- external stance: cooperative, neutral, defiant.
+
+Gameplay effects:
+- changes patron relationship into diplomatic relationship;
+- unlocks unique policies;
+- changes event pool;
+- creates sanctions/support offers;
+- enables regional cluster objectives.
+
+MVP status:
+- not required for first MVP;
+- can be foreshadowed through mandate UI and patron trust.
+
+Vertical slice status:
+- optional event chain, not full system.
+
+Expansion potential:
+- full custom faction mechanics;
+- regional diplomacy;
+- inter-city logistics;
+- faction-specific buildings and cosmetics.
+
+## 15. Competition Model
 
 Competition should exist, but not as full AI city simulation in MVP.
 
@@ -283,7 +329,7 @@ Avoid for MVP:
 - full diplomacy simulator;
 - simultaneous regional AI economy.
 
-## 15. MVP Scope
+## 16. MVP Scope
 
 Must have:
 - procedural playable map;
@@ -309,8 +355,9 @@ Must not have:
 - full metro/rail systems;
 - multiplayer.
 - full rival AI cities.
+- full custom faction system.
 
-## 16. Vertical Slice Scope
+## 17. Vertical Slice Scope
 
 Add:
 - 15-18 buildings;
@@ -324,7 +371,7 @@ Add:
 - playtest feedback loop.
 - recall/mandate event chain.
 
-## 17. Success Criteria
+## 18. Success Criteria
 
 Internal MVP:
 - 20 minute play session without explaining mechanics verbally.
