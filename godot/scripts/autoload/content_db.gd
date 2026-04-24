@@ -10,6 +10,8 @@ var events: Dictionary = {}
 var synergies: Array = []
 var categories: Array = []
 var tutorial_steps: Array = []
+var technologies: Dictionary = {}
+var policies: Dictionary = {}
 
 const CONTENT_ROOT := "res://content/base/"
 
@@ -53,6 +55,9 @@ func _ready() -> void:
 	if tut_raw is Array:
 		tutorial_steps = tut_raw
 
+	technologies = _load_keyed_array(CONTENT_ROOT + "technologies.json", "id")
+	policies = _load_keyed_array(CONTENT_ROOT + "policies.json", "id")
+
 
 # --- Public queries ---
 
@@ -72,6 +77,14 @@ func get_event_def(event_id: String) -> Dictionary:
 	return events.get(event_id, {})
 
 
+func get_technology_def(technology_id: String) -> Dictionary:
+	return technologies.get(technology_id, {})
+
+
+func get_policy_def(policy_id: String) -> Dictionary:
+	return policies.get(policy_id, {})
+
+
 func get_level_def(level: int) -> Dictionary:
 	if level >= 1 and level <= city_levels.size():
 		return city_levels[level - 1]
@@ -88,6 +101,14 @@ func get_resource_ids() -> Array:
 
 func get_event_ids() -> Array:
 	return events.keys()
+
+
+func get_technology_ids() -> Array:
+	return technologies.keys()
+
+
+func get_policy_ids() -> Array:
+	return policies.keys()
 
 
 func get_level_requirement(level: int, key: String) -> Variant:
@@ -125,6 +146,23 @@ func _load_json_array(path: String) -> Array:
 		return raw
 	push_warning("ContentDB: expected Array in %s" % path)
 	return []
+
+
+func _load_keyed_array(path: String, key_name: String) -> Dictionary:
+	var out: Dictionary = {}
+	var raw: Variant = _load_json_raw(path)
+	if raw is Array:
+		for entry: Variant in raw:
+			if entry is Dictionary:
+				var d: Dictionary = entry as Dictionary
+				var id: String = d.get(key_name, "") as String
+				if id != "":
+					out[id] = d
+	elif raw is Dictionary:
+		out = raw as Dictionary
+	else:
+		push_warning("ContentDB: expected Array or Dictionary in %s" % path)
+	return out
 
 
 func _load_json_raw(path: String) -> Variant:

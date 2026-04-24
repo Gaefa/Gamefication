@@ -39,7 +39,8 @@ func process_tick() -> void:
 			var base: float = produces[res_id] as float
 			var mult: float = mults.get(res_id, 1.0) as float
 			var output_efficiency: float = _resource_flow.output_efficiency_for(res_id, coord, type_id)
-			var amount: float = base * mult * input_efficiency * output_efficiency * condition_efficiency
+			var gov_mult: float = _governance_production_multiplier(res_id)
+			var amount: float = base * mult * gov_mult * input_efficiency * output_efficiency * condition_efficiency
 			net_production[res_id] = (net_production[res_id] as float) + amount
 
 		# If inputs cannot be delivered, the building stalls instead of silently draining stockpiles.
@@ -92,3 +93,21 @@ func _apply_maintenance() -> void:
 	var cost: float = pop * 0.01 + bld_count * 0.02
 	if cost > 0.0:
 		GameStateStore.add_resource("coins", -cost)
+
+
+func _governance_production_multiplier(res_id: String) -> float:
+	var total_bonus: float = 0.0
+	for tech_var: Variant in GameStateStore.get_technologies():
+		var tech_id: String = tech_var as String
+		var tech_def: Dictionary = ContentDB.get_technology_def(tech_id)
+		total_bonus += _production_bonus_from_effects(tech_def.get("effects", {}), res_id)
+	for policy_var: Variant in GameStateStore.get_active_policies().values():
+		var policy_id: String = policy_var as String
+		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
+		total_bonus += _production_bonus_from_effects(policy_def.get("effects", {}), res_id)
+	return maxf(1.0 + total_bonus, 0.1)
+
+
+func _production_bonus_from_effects(effects: Dictionary, res_id: String) -> float:
+	var prod_mult: Dictionary = effects.get("production_mult", {})
+	return prod_mult.get(res_id, 0.0) as float

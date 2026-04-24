@@ -1,0 +1,48 @@
+[
+  {
+    "id": "basic_logistics",
+    "label": "Basic Logistics",
+    "description": "Standardized depots and routing rules improve delivered goods output.",
+    "tier": 1,
+    "cost": { "coins": 80, "wood": 40 },
+    "requires": [],
+    "effects": {
+      "production_mult": { "wood": 0.05, "stone": 0.05, "food": 0.05 }
+    }
+  },
+  {
+    "id": "water_surveying",
+    "label": "Water Surveying",
+    "description": "Better survey work increases reserve generation from water towers.",
+    "tier": 1,
+    "cost": { "coins": 120, "stone": 60 },
+    "requires": [],
+    "effects": {
+      "production_mult": { "water_res": 0.1 },
+      "pressure_delta": -2.0
+    }
+  },
+  {
+    "id": "civic_planning",
+    "label": "Civic Planning",
+    "description": "City planning offices reduce unrest and unlock stronger governance.",
+    "tier": 2,
+    "cost": { "coins": 250, "planks": 80, "science": 20 },
+    "requires": ["basic_logistics"],
+    "effects": {
+      "pressure_delta": -4.0,
+      "happiness_add": 2.0
+    }
+  },
+  {
+    "id": "emergency_protocols",
+    "label": "Emergency Protocols",
+    "description": "Prepared response plans reduce the pressure impact of fragile infrastructure.",
+    "tier": 2,
+    "cost": { "coins": 300, "tools": 80, "science": 30 },
+    "requires": ["civic_planning"],
+    "effects": {
+      "pressure_mult": 0.95
+    }
+  }
+]

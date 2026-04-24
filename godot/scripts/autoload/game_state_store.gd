@@ -37,6 +37,11 @@ func reset() -> void:
 			"prestige_count": 0,
 			"history": [],       # Array[{tick, event}] for stats
 		},
+		"governance": {
+			"technologies": [],       # Array[tech_id]
+			"active_policies": {},    # category -> policy_id
+			"policy_cooldowns": {},   # policy_id -> ticks_remaining
+		},
 		"pressure": {
 			"index": 0.0,
 			"phase": "calm",
@@ -89,6 +94,11 @@ func progression() -> Dictionary:
 
 func pressure() -> Dictionary:
 	return _state.pressure
+
+func governance() -> Dictionary:
+	if not _state.has("governance"):
+		_state["governance"] = _default_governance()
+	return _state.governance
 
 func events() -> Dictionary:
 	return _state.events
@@ -175,6 +185,30 @@ func clear_expired_buffs() -> void:
 	_state.economy.buffs = keep
 
 
+# --- Governance helpers ---
+
+func has_technology(technology_id: String) -> bool:
+	return (governance().technologies as Array).has(technology_id)
+
+func add_technology(technology_id: String) -> void:
+	if not has_technology(technology_id):
+		(governance().technologies as Array).append(technology_id)
+
+func get_technologies() -> Array:
+	return governance().technologies as Array
+
+func set_active_policy(category: String, policy_id: String) -> void:
+	governance().active_policies[category] = policy_id
+	# Keep legacy pressure key populated until older UI/save paths are removed.
+	pressure().active_policy = policy_id
+
+func get_active_policy(category: String) -> String:
+	return governance().active_policies.get(category, "") as String
+
+func get_active_policies() -> Dictionary:
+	return governance().active_policies
+
+
 # --- Serialization ---
 
 func to_save_dict() -> Dictionary:
@@ -189,9 +223,35 @@ func load_from_dict(data: Dictionary) -> void:
 	_tick = data.get("tick", 0) as int
 	_state = data.duplicate(true)
 	_state.erase("tick")
+	_ensure_runtime_defaults()
 	# Restore Vector2i keys
 	_state.world.terrain = _dict_str_to_v2i(_state.world.terrain)
 	_state.world.buildings = _dict_str_to_v2i(_state.world.buildings)
+
+
+func _ensure_runtime_defaults() -> void:
+	if not _state.has("governance"):
+		_state["governance"] = _default_governance()
+	else:
+		var gov: Dictionary = _state.governance
+		if not gov.has("technologies"):
+			gov["technologies"] = []
+		if not gov.has("active_policies"):
+			gov["active_policies"] = {}
+		if not gov.has("policy_cooldowns"):
+			gov["policy_cooldowns"] = {}
+	if not _state.has("pressure"):
+		_state["pressure"] = {"index": 0.0, "phase": "calm", "active_policy": ""}
+	elif not (_state.pressure as Dictionary).has("active_policy"):
+		_state.pressure["active_policy"] = ""
+
+
+func _default_governance() -> Dictionary:
+	return {
+		"technologies": [],
+		"active_policies": {},
+		"policy_cooldowns": {},
+	}
 
 
 func _dict_v2i_to_str(src: Dictionary) -> Dictionary:

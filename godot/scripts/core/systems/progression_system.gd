@@ -53,13 +53,29 @@ func _update_happiness() -> void:
 	var buff_happiness: float = 0.0
 	for buff: Dictionary in GameStateStore.get_buffs():
 		buff_happiness += buff.get("happiness_add", 0.0) as float
+	var governance_happiness: float = _governance_happiness_add()
 
 	# Happiness = base 50 + building happiness scaled + buff happiness, clamped 0-100
-	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness, 0.0, 100.0)
+	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness, 0.0, 100.0)
 	var prev: float = GameStateStore.population().happiness as float
 	GameStateStore.population().happiness = happiness
 	if absf(happiness - prev) > 0.5:
 		EventBus.happiness_changed.emit(happiness)
+
+
+func _governance_happiness_add() -> float:
+	var total := 0.0
+	for tech_var: Variant in GameStateStore.get_technologies():
+		var tech_id: String = tech_var as String
+		var tech_def: Dictionary = ContentDB.get_technology_def(tech_id)
+		var effects: Dictionary = tech_def.get("effects", {})
+		total += effects.get("happiness_add", 0.0) as float
+	for policy_var: Variant in GameStateStore.get_active_policies().values():
+		var policy_id: String = policy_var as String
+		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
+		var effects: Dictionary = policy_def.get("effects", {})
+		total += effects.get("happiness_add", 0.0) as float
+	return total
 
 
 func _check_level_up() -> void:
