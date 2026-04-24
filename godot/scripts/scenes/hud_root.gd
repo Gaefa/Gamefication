@@ -23,6 +23,9 @@ var _toast_timer: float = 0.0
 
 var _help_panel: PanelContainer
 var _help_visible: bool = false
+var _governance_panel: PanelContainer
+var _governance_visible: bool = false
+var _governance_tabs: TabContainer
 
 var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 
@@ -37,6 +40,7 @@ func _ready() -> void:
 	_build_event_panel()
 	_build_toast()
 	_build_help_panel()
+	_build_governance_panel()
 	_connect_signals()
 	_set_active_category("Infrastructure")
 
@@ -182,6 +186,13 @@ func _build_build_panel() -> void:
 	title.add_theme_font_size_override("font_size", 12)
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	header.add_child(title)
+
+	var gov_btn := Button.new()
+	gov_btn.text = "Gov"
+	gov_btn.tooltip_text = "Governance (G): tech tree and policies"
+	gov_btn.add_theme_font_size_override("font_size", 10)
+	gov_btn.pressed.connect(toggle_governance)
+	header.add_child(gov_btn)
 
 	_category_select = OptionButton.new()
 	_category_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -386,7 +397,7 @@ func _get_welcome_text() -> String:
 	return """Click tile for info
 WASD-Move Scroll-Zoom LMB-Select
 RMB/Esc-Cancel U-Upgrade R-Repair
-B-Bulldoze V-Range H-Help"""
+B-Bulldoze V-Range G-Gov H-Help"""
 
 
 func _on_selection_changed(coord: Vector2i) -> void:
@@ -652,6 +663,268 @@ PRESSURE: Calm > Tension > Crisis > Emergency
 func toggle_help() -> void:
 	_help_visible = not _help_visible
 	_help_panel.visible = _help_visible
+
+
+# ===========================================================
+# GOVERNANCE PANEL (center) — Tech / Policies
+# ===========================================================
+
+func _build_governance_panel() -> void:
+	_governance_panel = PanelContainer.new()
+	_governance_panel.set_anchors_preset(PRESET_CENTER)
+	_governance_panel.size = Vector2(620, 500)
+	_governance_panel.position = Vector2(-310, -250)
+	_governance_panel.visible = false
+	_governance_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_governance_panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 10)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 10)
+	_governance_panel.add_child(margin)
+
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 8)
+	margin.add_child(root)
+
+	var header := HBoxContainer.new()
+	root.add_child(header)
+
+	var title := Label.new()
+	title.text = "Governance"
+	title.add_theme_font_size_override("font_size", 18)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title)
+
+	var close_btn := Button.new()
+	close_btn.text = "Close"
+	close_btn.pressed.connect(toggle_governance)
+	header.add_child(close_btn)
+
+	_governance_tabs = TabContainer.new()
+	_governance_tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_governance_tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.add_child(_governance_tabs)
+
+	_rebuild_governance_panel()
+
+
+func toggle_governance() -> void:
+	_governance_visible = not _governance_visible
+	_governance_panel.visible = _governance_visible
+	if _governance_visible:
+		_rebuild_governance_panel()
+
+
+func _rebuild_governance_panel() -> void:
+	if _governance_tabs == null:
+		return
+	for c: Node in _governance_tabs.get_children():
+		c.queue_free()
+	_governance_tabs.add_child(_build_tech_tab())
+	_governance_tabs.add_child(_build_policy_tab())
+
+
+func _build_tech_tab() -> Control:
+	var scroll := ScrollContainer.new()
+	scroll.name = "Tech"
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 6)
+	scroll.add_child(list)
+
+	for tech_id: String in ContentDB.get_technology_ids():
+		list.add_child(_build_tech_row(tech_id))
+
+	return scroll
+
+
+func _build_tech_row(tech_id: String) -> Control:
+	var def: Dictionary = ContentDB.get_technology_def(tech_id)
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size.y = 74
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	panel.add_child(row)
+
+	var text_box := VBoxContainer.new()
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(text_box)
+
+	var researched: bool = GameStateStore.has_technology(tech_id)
+	var title := Label.new()
+	title.text = "%s%s" % [def.get("label", tech_id), " [DONE]" if researched else ""]
+	title.add_theme_font_size_override("font_size", 13)
+	text_box.add_child(title)
+
+	var desc := Label.new()
+	desc.text = def.get("description", "") as String
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.add_theme_font_size_override("font_size", 10)
+	text_box.add_child(desc)
+
+	var meta := Label.new()
+	meta.text = "Cost: %s | Effects: %s" % [_format_cost(def.get("cost", {})), _format_effects(def.get("effects", {}))]
+	meta.add_theme_font_size_override("font_size", 10)
+	meta.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	text_box.add_child(meta)
+
+	var btn := Button.new()
+	btn.text = "Researched" if researched else "Research"
+	btn.disabled = researched or not _can_research_tech(def)
+	btn.pressed.connect(_research_technology.bind(tech_id))
+	row.add_child(btn)
+
+	return panel
+
+
+func _build_policy_tab() -> Control:
+	var scroll := ScrollContainer.new()
+	scroll.name = "Policies"
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 6)
+	scroll.add_child(list)
+
+	var active_summary := Label.new()
+	active_summary.text = "Active: " + _format_active_policies()
+	active_summary.add_theme_font_size_override("font_size", 12)
+	active_summary.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
+	list.add_child(active_summary)
+
+	for policy_id: String in ContentDB.get_policy_ids():
+		list.add_child(_build_policy_row(policy_id))
+
+	return scroll
+
+
+func _build_policy_row(policy_id: String) -> Control:
+	var def: Dictionary = ContentDB.get_policy_def(policy_id)
+	var category: String = def.get("category", "general") as String
+	var active: bool = GameStateStore.get_active_policy(category) == policy_id
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size.y = 74
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	panel.add_child(row)
+
+	var text_box := VBoxContainer.new()
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(text_box)
+
+	var title := Label.new()
+	title.text = "[%s] %s%s" % [category.capitalize(), def.get("label", policy_id), " [ACTIVE]" if active else ""]
+	title.add_theme_font_size_override("font_size", 13)
+	text_box.add_child(title)
+
+	var desc := Label.new()
+	desc.text = def.get("description", "") as String
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.add_theme_font_size_override("font_size", 10)
+	text_box.add_child(desc)
+
+	var meta := Label.new()
+	meta.text = "Switch: %s | Effects: %s" % [_format_cost(def.get("switch_cost", {})), _format_effects(def.get("effects", {}))]
+	meta.add_theme_font_size_override("font_size", 10)
+	meta.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	text_box.add_child(meta)
+
+	var btn := Button.new()
+	btn.text = "Active" if active else "Set"
+	btn.disabled = active or not _can_set_policy(def)
+	btn.pressed.connect(_set_policy.bind(policy_id))
+	row.add_child(btn)
+
+	return panel
+
+
+func _research_technology(tech_id: String) -> void:
+	var orch: GameOrchestrator = _get_orchestrator()
+	if orch == null:
+		return
+	var cmd: CommandBase = load("res://scripts/core/commands/research_technology_command.gd").new(tech_id)
+	orch.command_bus.execute(cmd)
+	_update_resource_bar()
+	_rebuild_governance_panel()
+
+
+func _set_policy(policy_id: String) -> void:
+	var orch: GameOrchestrator = _get_orchestrator()
+	if orch == null:
+		return
+	orch.command_bus.execute(SetPolicyCommand.new(policy_id))
+	_update_resource_bar()
+	_rebuild_governance_panel()
+
+
+func _can_research_tech(def: Dictionary) -> bool:
+	if not GameStateStore.can_afford(def.get("cost", {})):
+		return false
+	var requires: Array = def.get("requires", [])
+	for req_var: Variant in requires:
+		if not GameStateStore.has_technology(req_var as String):
+			return false
+	return true
+
+
+func _can_set_policy(def: Dictionary) -> bool:
+	if not GameStateStore.can_afford(def.get("switch_cost", {})):
+		return false
+	var requirements: Dictionary = def.get("requirements", {})
+	var city_level: int = requirements.get("city_level", 1) as int
+	if (GameStateStore.progression().city_level as int) < city_level:
+		return false
+	var techs: Array = requirements.get("tech", [])
+	for tech_var: Variant in techs:
+		if not GameStateStore.has_technology(tech_var as String):
+			return false
+	return true
+
+
+func _format_cost(cost: Dictionary) -> String:
+	if cost.is_empty():
+		return "free"
+	var parts: Array[String] = []
+	for res_id: String in cost:
+		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
+		parts.append("%s:%d" % [rdef.get("label", res_id), int(cost[res_id] as float)])
+	return ", ".join(parts)
+
+
+func _format_effects(effects: Dictionary) -> String:
+	if effects.is_empty():
+		return "none"
+	var parts: Array[String] = []
+	if effects.has("production_mult"):
+		var prod: Dictionary = effects.production_mult
+		for res_id: String in prod:
+			var rdef: Dictionary = ContentDB.get_resource_def(res_id)
+			parts.append("%s %+d%%" % [rdef.get("label", res_id), int((prod[res_id] as float) * 100.0)])
+	if effects.has("happiness_add"):
+		parts.append("Happy %+d" % int(effects.happiness_add as float))
+	if effects.has("pressure_delta"):
+		parts.append("Pressure %+d" % int(effects.pressure_delta as float))
+	if effects.has("pressure_mult"):
+		parts.append("Pressure x%.2f" % (effects.pressure_mult as float))
+	return ", ".join(parts)
+
+
+func _format_active_policies() -> String:
+	var active: Dictionary = GameStateStore.get_active_policies()
+	if active.is_empty():
+		return "none"
+	var parts: Array[String] = []
+	for category: String in active:
+		var policy_id: String = active[category] as String
+		var def: Dictionary = ContentDB.get_policy_def(policy_id)
+		parts.append("%s=%s" % [category, def.get("label", policy_id)])
+	return ", ".join(parts)
 
 
 # ===========================================================

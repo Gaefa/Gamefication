@@ -143,6 +143,9 @@ func _handle_key(ke: InputEventKey) -> void:
 	elif ke.keycode == KEY_H:
 		if _hud and _hud.has_method("toggle_help"):
 			_hud.call("toggle_help")
+	elif Input.is_action_just_pressed("toggle_governance"):
+		if _hud and _hud.has_method("toggle_governance"):
+			_hud.call("toggle_governance")
 	elif Input.is_action_just_pressed("upgrade_building"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := UpgradeBuildingCommand.new(_selected_coord)
