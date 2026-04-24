@@ -71,9 +71,8 @@ func load_game(slot: int) -> bool:
 		push_warning("SaveService: validation errors in slot %d:" % slot)
 		for err: String in errors:
 			push_warning("  - %s" % err)
-		# Try to load anyway — validator warnings are non-fatal
-		# But toast the user about potential issues
-		EventBus.toast_requested.emit("Save loaded with %d warning(s)" % errors.size(), 4.0)
+		EventBus.toast_requested.emit("Save file invalid (slot %d)" % slot, 4.0)
+		return false
 
 	GameStateStore.load_from_dict(migrated)
 	EventBus.game_loaded.emit(slot)

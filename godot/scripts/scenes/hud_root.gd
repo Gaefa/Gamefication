@@ -444,6 +444,10 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	if effect != "":
 		text += effect + "\n"
 
+	var flow_text: String = _build_flow_diagnostics(coord, type_id, def, ldata, bld)
+	if flow_text != "":
+		text += flow_text + "\n"
+
 	# --- Problem ---
 	if bld.get("damaged", false) as bool:
 		text += "\nDAMAGED - press R to repair"
@@ -476,6 +480,110 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 
 	text += "\n[U]Up [R]Fix [B]Del [V]Range"
 	return text
+
+
+func _build_flow_diagnostics(coord: Vector2i, type_id: String, def: Dictionary, ldata: Dictionary, bld: Dictionary) -> String:
+	var orch := _get_orchestrator()
+	if orch == null or orch.coverage == null or orch.resource_flow == null:
+		return ""
+
+	var lines: Array[String] = []
+	var consumes: Dictionary = ldata.get("consumes", {})
+	var produces: Dictionary = ldata.get("produces", {})
+	var input_eff: float = orch.resource_flow.input_efficiency_for(coord, consumes)
+	var condition_eff: float = 0.5 if (bld.get("has_issue", false) as bool) else 1.0
+
+	if _uses_road_flow(def, produces, consumes):
+		lines.append("Road: %s" % _ok_missing(orch.coverage.is_road_connected(coord)))
+
+	if _uses_water_flow(def, type_id, produces, consumes):
+		lines.append("Water: %s" % _ok_missing(orch.coverage.is_water_covered(coord)))
+
+	if _uses_power_flow(type_id, produces, consumes):
+		lines.append("Power: %s" % _ok_missing(orch.coverage.is_power_covered(coord)))
+
+	if not consumes.is_empty():
+		var missing_inputs: Array[String] = _missing_inputs(coord, consumes, orch.resource_flow)
+		if missing_inputs.is_empty():
+			lines.append("Inputs: OK")
+		else:
+			lines.append("Inputs: missing " + ", ".join(missing_inputs))
+
+	if not produces.is_empty():
+		var blocked_outputs: Array[String] = _blocked_outputs(coord, type_id, produces, orch.resource_flow)
+		if blocked_outputs.is_empty():
+			lines.append("Outputs: OK")
+		else:
+			lines.append("Outputs: blocked " + ", ".join(blocked_outputs))
+
+	var final_eff: float = input_eff * condition_eff
+	if final_eff < 1.0:
+		lines.append("Efficiency: %d%%" % int(final_eff * 100.0))
+	else:
+		lines.append("Efficiency: 100%")
+
+	if lines.is_empty():
+		return ""
+	return "\n" + "\n".join(lines)
+
+
+func _get_orchestrator() -> GameOrchestrator:
+	var main_node: Node = get_tree().current_scene
+	if main_node and main_node.has_method("get_orchestrator"):
+		return main_node.call("get_orchestrator") as GameOrchestrator
+	return null
+
+
+func _ok_missing(ok: bool) -> String:
+	return "OK" if ok else "MISSING"
+
+
+func _uses_road_flow(def: Dictionary, produces: Dictionary, consumes: Dictionary) -> bool:
+	if def.get("requires_road", false) as bool:
+		return true
+	return _has_transport(produces, "road") or _has_transport(consumes, "road")
+
+
+func _uses_water_flow(def: Dictionary, type_id: String, produces: Dictionary, consumes: Dictionary) -> bool:
+	if (def.get("category", "") as String) == "Residential":
+		return true
+	if type_id == "water_tower":
+		return true
+	return produces.has("water_res") or consumes.has("water_res")
+
+
+func _uses_power_flow(type_id: String, produces: Dictionary, consumes: Dictionary) -> bool:
+	if type_id == "power":
+		return true
+	return produces.has("energy") or consumes.has("energy")
+
+
+func _has_transport(resources: Dictionary, transport: String) -> bool:
+	for res_id: String in resources:
+		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
+		if (rdef.get("transport", "global") as String) == transport:
+			return true
+	return false
+
+
+func _missing_inputs(coord: Vector2i, consumes: Dictionary, flow: ResourceFlow) -> Array[String]:
+	var missing: Array[String] = []
+	for res_id: String in consumes:
+		if flow.delivery_efficiency(res_id, coord) >= 1.0:
+			continue
+		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
+		missing.append(rdef.get("label", res_id) as String)
+	return missing
+
+
+func _blocked_outputs(coord: Vector2i, type_id: String, produces: Dictionary, flow: ResourceFlow) -> Array[String]:
+	var blocked: Array[String] = []
+	for res_id: String in produces:
+		if flow.output_efficiency_for(res_id, coord, type_id) >= 1.0:
+			continue
+		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
+		blocked.append(rdef.get("label", res_id) as String)
+	return blocked
 
 
 # ===========================================================
