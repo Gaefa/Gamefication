@@ -17,24 +17,24 @@ func execute(ctx: Dictionary) -> void:
 	# Validate
 	var def: Dictionary = ContentDB.get_building_def(type_id)
 	if def.is_empty():
-		message = "Unknown building: %s" % type_id
+		message = Localization.t("ui.command.unknown_building", "Unknown building: %s") % type_id
 		return
 
 	if not hex_grid.can_build_at(coord):
-		message = "Cannot build here"
+		message = Localization.t("ui.command.cannot_build_here", "Cannot build here")
 		return
 
 	# Check unlock level
 	var req_level: int = def.get("unlock_level", 1) as int
 	var city_level: int = GameStateStore.progression().city_level as int
 	if city_level < req_level:
-		message = "Requires city level %d" % req_level
+		message = Localization.t("ui.command.requires_city_level", "Requires city level %d") % req_level
 		return
 
 	# Check cost
 	var build_cost: Dictionary = def.get("build_cost", {})
 	if not GameStateStore.can_afford(build_cost):
-		message = "Not enough resources"
+		message = Localization.t("ui.command.not_enough_resources", "Not enough resources")
 		return
 
 	# Spend & place
@@ -60,5 +60,5 @@ func execute(ctx: Dictionary) -> void:
 		road_graph.invalidate()
 
 	success = true
-	message = "Built %s" % def.get("label", type_id)
+	message = Localization.t("ui.command.built", "Built %s") % Localization.content_text(def, "label", type_id)
 	EventBus.building_placed.emit(coord, type_id)

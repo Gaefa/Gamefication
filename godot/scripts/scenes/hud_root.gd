@@ -114,7 +114,7 @@ func _update_resource_bar() -> void:
 	for res_id: String in ["coins", "food", "wood", "stone"]:
 		var val: float = GameStateStore.get_resource(res_id)
 		var def: Dictionary = ContentDB.get_resource_def(res_id)
-		var lbl: String = def.get("label", res_id) as String
+		var lbl: String = Localization.content_text(def, "label", res_id)
 		core_parts.append("%s:%d" % [lbl, int(val)])
 	_core_label.text = " ".join(core_parts)
 
@@ -123,7 +123,7 @@ func _update_resource_bar() -> void:
 	var happiness: float = GameStateStore.population().happiness as float
 	var city_lv: int = GameStateStore.progression().city_level as int
 	var lv_def: Dictionary = ContentDB.get_level_def(city_lv)
-	var lv_name: String = lv_def.get("name", "?") as String
+	var lv_name: String = Localization.content_text(lv_def, "name", "?")
 
 	var energy: float = GameStateStore.get_resource("energy")
 	var city_text: String = "%s:%d  %s:%d%%  %s:%d  %s%d %s" % [
@@ -286,7 +286,7 @@ func _rebuild_building_list() -> void:
 
 		var unlock_lv: int = def.get("unlock_level", 1) as int
 		var is_locked: bool = city_lv < unlock_lv
-		var label_name: String = def.get("label", type_id) as String
+		var label_name: String = Localization.content_text(def, "label", type_id)
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, 0)
 
 		# Button — compact: name only (tooltip has description)
@@ -303,7 +303,7 @@ func _rebuild_building_list() -> void:
 			if type_id == _active_build_type:
 				btn.modulate = Color(0.8, 1.0, 0.5)
 		btn.add_theme_font_size_override("font_size", 12)
-		btn.tooltip_text = def.get("description", "") as String
+		btn.tooltip_text = Localization.content_text(def, "description", "")
 		btn.pressed.connect(_on_build_button.bind(type_id))
 		_build_vbox.add_child(btn)
 
@@ -324,7 +324,7 @@ func _rebuild_building_list() -> void:
 			var cost_parts: Array[String] = []
 			for res_id: String in build_cost:
 				var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-				cost_parts.append("%s:%d" % [rdef.get("label", res_id), int(build_cost[res_id] as float)])
+				cost_parts.append("%s:%d" % [Localization.content_text(rdef, "label", res_id), int(build_cost[res_id] as float)])
 			cost_lbl = Label.new()
 			cost_lbl.text = "  " + ", ".join(cost_parts)
 			cost_lbl.add_theme_font_size_override("font_size", 10)
@@ -340,11 +340,11 @@ func _format_key_effect(ldata: Dictionary) -> String:
 	var produces: Dictionary = ldata.get("produces", {})
 	for r: String in produces:
 		var rdef: Dictionary = ContentDB.get_resource_def(r)
-		parts.append("+%.0f %s" % [produces[r] as float, rdef.get("label", r)])
+		parts.append("+%.0f %s" % [produces[r] as float, Localization.content_text(rdef, "label", r)])
 	var consumes: Dictionary = ldata.get("consumes", {})
 	for r: String in consumes:
 		var rdef: Dictionary = ContentDB.get_resource_def(r)
-		parts.append("-%.0f %s" % [consumes[r] as float, rdef.get("label", r)])
+		parts.append("-%.0f %s" % [consumes[r] as float, Localization.content_text(rdef, "label", r)])
 	var bld_pop: int = ldata.get("population", 0) as int
 	if bld_pop > 0:
 		parts.append("+%d %s" % [bld_pop, Localization.t("ui.effect.population", "pop")])
@@ -476,7 +476,7 @@ func _update_info() -> void:
 func _build_tile_info_text(coord: Vector2i) -> String:
 	var terrain_id: int = GameStateStore.get_terrain(coord)
 	var tdef: Dictionary = ContentDB.get_terrain_def(terrain_id)
-	var t_label: String = tdef.get("label", "Unknown") as String
+	var t_label: String = Localization.content_text(tdef, "label", Localization.t("ui.common.unknown", "Unknown"))
 	var buildable: bool = tdef.get("buildable", true) as bool
 
 	var text: String = "%s (%d,%d)" % [t_label, coord.x, coord.y]
@@ -491,7 +491,7 @@ func _build_tile_info_text(coord: Vector2i) -> String:
 			if tb.has(str(terrain_id)):
 				var bonus: float = tb[str(terrain_id)] as float
 				if bonus > 0:
-					bonuses.append("+%d%% %s" % [int(bonus * 100), bdef.get("label", btype_id)])
+					bonuses.append("+%d%% %s" % [int(bonus * 100), Localization.content_text(bdef, "label", btype_id)])
 		if not bonuses.is_empty():
 			text += "\n%s: %s" % [Localization.t("ui.tile.bonus", "Bonus"), ", ".join(bonuses)]
 	return text
@@ -502,10 +502,15 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	var level: int = bld.get("level", 0) as int
 	var def: Dictionary = ContentDB.get_building_def(type_id)
 	var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
-	var stage: String = ldata.get("stage", "?") as String
+	var stage: String = Localization.content_text(ldata, "stage", "?")
 
 	# --- Status ---
-	var text: String = "%s (%s) Lv%d\n" % [def.get("label", type_id), stage, level]
+	var text: String = "%s (%s) %s%d\n" % [
+		Localization.content_text(def, "label", type_id),
+		stage,
+		Localization.t("ui.common.level_short", "Lv"),
+		level,
+	]
 
 	var effect: String = _format_key_effect(ldata)
 	if effect != "":
@@ -525,7 +530,7 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	var max_level: int = ContentDB.max_building_level(type_id)
 	if level + 1 < max_level:
 		var next_ldata: Dictionary = ContentDB.building_level_data(type_id, level + 1)
-		var next_stage: String = next_ldata.get("stage", "?") as String
+		var next_stage: String = Localization.content_text(next_ldata, "stage", "?")
 		var cost_raw: Variant = next_ldata.get("cost", null)
 		var cost: Dictionary = cost_raw as Dictionary if cost_raw is Dictionary else {}
 		if not cost.is_empty():
@@ -540,7 +545,7 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 					var have: float = GameStateStore.get_resource(res_id)
 					if have < needed:
 						var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-						missing.append("%s %d/%d" % [rdef.get("label", res_id), int(have), int(needed)])
+						missing.append("%s %d/%d" % [Localization.content_text(rdef, "label", res_id), int(have), int(needed)])
 				text += "\n%s: %s" % [Localization.t("ui.building.upgrade_need", "Upgrade: need"), ", ".join(missing)]
 	else:
 		text += "\n" + Localization.t("ui.building.max_level", "MAX LEVEL")
@@ -639,7 +644,7 @@ func _missing_inputs(coord: Vector2i, consumes: Dictionary, flow: ResourceFlow) 
 		if flow.delivery_efficiency(res_id, coord) >= 1.0:
 			continue
 		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-		missing.append(rdef.get("label", res_id) as String)
+		missing.append(Localization.content_text(rdef, "label", res_id))
 	return missing
 
 
@@ -649,7 +654,7 @@ func _blocked_outputs(coord: Vector2i, type_id: String, produces: Dictionary, fl
 		if flow.output_efficiency_for(res_id, coord, type_id) >= 1.0:
 			continue
 		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-		blocked.append(rdef.get("label", res_id) as String)
+		blocked.append(Localization.content_text(rdef, "label", res_id))
 	return blocked
 
 
@@ -819,12 +824,12 @@ func _build_tech_row(tech_id: String) -> Control:
 
 	var researched: bool = GameStateStore.has_technology(tech_id)
 	var title := Label.new()
-	title.text = "%s%s" % [def.get("label", tech_id), Localization.t("ui.tech.done_suffix", " [DONE]") if researched else ""]
+	title.text = "%s%s" % [Localization.content_text(def, "label", tech_id), Localization.t("ui.tech.done_suffix", " [DONE]") if researched else ""]
 	title.add_theme_font_size_override("font_size", 13)
 	text_box.add_child(title)
 
 	var desc := Label.new()
-	desc.text = def.get("description", "") as String
+	desc.text = Localization.content_text(def, "description", "")
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc.add_theme_font_size_override("font_size", 10)
 	text_box.add_child(desc)
@@ -888,14 +893,14 @@ func _build_policy_row(policy_id: String) -> Control:
 	var title := Label.new()
 	title.text = "[%s] %s%s" % [
 		category.capitalize(),
-		def.get("label", policy_id),
+		Localization.content_text(def, "label", policy_id),
 		Localization.t("ui.policy.active_suffix", " [ACTIVE]") if active else "",
 	]
 	title.add_theme_font_size_override("font_size", 13)
 	text_box.add_child(title)
 
 	var desc := Label.new()
-	desc.text = def.get("description", "") as String
+	desc.text = Localization.content_text(def, "description", "")
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc.add_theme_font_size_override("font_size", 10)
 	text_box.add_child(desc)
@@ -973,7 +978,7 @@ func _format_cost(cost: Dictionary) -> String:
 	var parts: Array[String] = []
 	for res_id: String in cost:
 		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-		parts.append("%s:%d" % [rdef.get("label", res_id), int(cost[res_id] as float)])
+		parts.append("%s:%d" % [Localization.content_text(rdef, "label", res_id), int(cost[res_id] as float)])
 	return ", ".join(parts)
 
 
@@ -985,7 +990,7 @@ func _format_effects(effects: Dictionary) -> String:
 		var prod: Dictionary = effects.production_mult
 		for res_id: String in prod:
 			var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-			parts.append("%s %+d%%" % [rdef.get("label", res_id), int((prod[res_id] as float) * 100.0)])
+			parts.append("%s %+d%%" % [Localization.content_text(rdef, "label", res_id), int((prod[res_id] as float) * 100.0)])
 	if effects.has("happiness_add"):
 		parts.append("%s %+d" % [Localization.t("ui.effect.happiness", "Happy"), int(effects.happiness_add as float)])
 	if effects.has("pressure_delta"):
@@ -1003,7 +1008,7 @@ func _format_active_policies() -> String:
 	for category: String in active:
 		var policy_id: String = active[category] as String
 		var def: Dictionary = ContentDB.get_policy_def(policy_id)
-		parts.append("%s=%s" % [category, def.get("label", policy_id)])
+		parts.append("%s=%s" % [category, Localization.content_text(def, "label", policy_id)])
 	return ", ".join(parts)
 
 
@@ -1030,13 +1035,13 @@ func _on_event_spawned(event_data: Dictionary) -> void:
 	_event_panel.add_child(vbox)
 
 	var title := Label.new()
-	title.text = event_data.get("title", "Event") as String
+	title.text = Localization.content_text(event_data, "title", Localization.t("ui.event.title", "Event"))
 	title.add_theme_font_size_override("font_size", 16)
 	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(title)
 
 	var body := Label.new()
-	body.text = event_data.get("body", "") as String
+	body.text = Localization.content_text(event_data, "body", "")
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.add_theme_font_size_override("font_size", 12)
 	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1049,7 +1054,7 @@ func _on_event_spawned(event_data: Dictionary) -> void:
 		var cp: Array[String] = []
 		for res_id: String in (cost_raw as Dictionary):
 			var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-			cp.append("%s: %d" % [rdef.get("label", res_id), int((cost_raw as Dictionary)[res_id] as float)])
+			cp.append("%s: %d" % [Localization.content_text(rdef, "label", res_id), int((cost_raw as Dictionary)[res_id] as float)])
 		cost_label.text = Localization.t("ui.meta.cost", "Cost") + ": " + ", ".join(cp)
 		cost_label.add_theme_font_size_override("font_size", 11)
 		cost_label.add_theme_color_override("font_color", Color(1.0, 0.7, 0.4))
@@ -1062,7 +1067,7 @@ func _on_event_spawned(event_data: Dictionary) -> void:
 	var ev_id: String = event_data.get("id", "") as String
 
 	var accept_btn := Button.new()
-	accept_btn.text = event_data.get("accept_label", Localization.t("ui.event.accept", "Accept")) as String
+	accept_btn.text = Localization.content_text(event_data, "accept_label", Localization.t("ui.event.accept", "Accept"))
 	var accept_cost_raw: Variant = event_data.get("accept_cost", null)
 	if accept_cost_raw is Dictionary and not (accept_cost_raw as Dictionary).is_empty():
 		if not GameStateStore.can_afford(accept_cost_raw as Dictionary):
@@ -1072,7 +1077,7 @@ func _on_event_spawned(event_data: Dictionary) -> void:
 	btn_row.add_child(accept_btn)
 
 	var decline_btn := Button.new()
-	decline_btn.text = event_data.get("decline_label", Localization.t("ui.event.decline", "Decline")) as String
+	decline_btn.text = Localization.content_text(event_data, "decline_label", Localization.t("ui.event.decline", "Decline"))
 	decline_btn.pressed.connect(_resolve_event.bind(ev_id, false))
 	btn_row.add_child(decline_btn)
 

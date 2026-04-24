@@ -40,6 +40,15 @@ func t(key: String, fallback: String = "") -> String:
 	return fallback if fallback != "" else key
 
 
+func content_text(def: Dictionary, field: String, fallback: String = "") -> String:
+	var key_field := "%s_key" % field
+	var key: String = def.get(key_field, "") as String
+	var raw: String = def.get(field, fallback) as String
+	if key != "":
+		return t(key, raw)
+	return raw if raw != "" else fallback
+
+
 func _load_strings() -> void:
 	if not FileAccess.file_exists(CONTENT_PATH):
 		push_warning("Localization: file not found: %s" % CONTENT_PATH)

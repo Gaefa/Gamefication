@@ -33,7 +33,7 @@ func save_game(slot: int, silent: bool = false) -> bool:
 	file.close()
 	EventBus.game_saved.emit(slot)
 	if not silent:
-		EventBus.toast_requested.emit("Game saved (slot %d)" % slot, 2.0)
+		EventBus.toast_requested.emit(Localization.t("ui.save.saved", "Game saved (slot %d)") % slot, 2.0)
 	return true
 
 
@@ -41,7 +41,7 @@ func load_game(slot: int) -> bool:
 	var path := _slot_path(slot)
 	if not FileAccess.file_exists(path):
 		push_warning("SaveService: no save at slot %d" % slot)
-		EventBus.toast_requested.emit("No save in slot %d" % slot, 3.0)
+		EventBus.toast_requested.emit(Localization.t("ui.save.no_save", "No save in slot %d") % slot, 3.0)
 		return false
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
@@ -53,13 +53,13 @@ func load_game(slot: int) -> bool:
 	var json := JSON.new()
 	if json.parse(text) != OK:
 		push_error("SaveService: parse error in slot %d: %s" % [slot, json.get_error_message()])
-		EventBus.toast_requested.emit("Save file corrupted (slot %d)" % slot, 4.0)
+		EventBus.toast_requested.emit(Localization.t("ui.save.corrupted", "Save file corrupted (slot %d)") % slot, 4.0)
 		return false
 
 	var data: Variant = json.data
 	if not data is Dictionary:
 		push_error("SaveService: expected Dictionary in slot %d" % slot)
-		EventBus.toast_requested.emit("Save file invalid (slot %d)" % slot, 4.0)
+		EventBus.toast_requested.emit(Localization.t("ui.save.invalid", "Save file invalid (slot %d)") % slot, 4.0)
 		return false
 
 	# Migrate old format saves to current schema
@@ -71,12 +71,12 @@ func load_game(slot: int) -> bool:
 		push_warning("SaveService: validation errors in slot %d:" % slot)
 		for err: String in errors:
 			push_warning("  - %s" % err)
-		EventBus.toast_requested.emit("Save file invalid (slot %d)" % slot, 4.0)
+		EventBus.toast_requested.emit(Localization.t("ui.save.invalid", "Save file invalid (slot %d)") % slot, 4.0)
 		return false
 
 	GameStateStore.load_from_dict(migrated)
 	EventBus.game_loaded.emit(slot)
-	EventBus.toast_requested.emit("Game loaded (slot %d)" % slot, 2.0)
+	EventBus.toast_requested.emit(Localization.t("ui.save.loaded", "Game loaded (slot %d)") % slot, 2.0)
 	return true
 
 

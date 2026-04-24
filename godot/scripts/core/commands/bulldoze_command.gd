@@ -10,7 +10,7 @@ func _init(p_coord: Vector2i) -> void:
 
 func execute(ctx: Dictionary) -> void:
 	if not GameStateStore.has_building(coord):
-		message = "Nothing to bulldoze"
+		message = Localization.t("ui.command.nothing_to_bulldoze", "Nothing to bulldoze")
 		return
 
 	var bld: Dictionary = GameStateStore.get_building(coord)
@@ -39,5 +39,5 @@ func execute(ctx: Dictionary) -> void:
 		road_graph.invalidate()
 
 	success = true
-	message = "Bulldozed %s" % def.get("label", type_id)
+	message = Localization.t("ui.command.bulldozed", "Bulldozed %s") % Localization.content_text(def, "label", type_id)
 	EventBus.building_removed.emit(coord, type_id)

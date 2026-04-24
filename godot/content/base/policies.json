@@ -6,57 +6,99 @@
     "description": "Default fiscal posture. No strong bonuses or penalties.",
     "requirements": {},
     "switch_cost": {},
-    "effects": {}
+    "effects": {},
+    "label_key": "policy.balanced_budget.label",
+    "description_key": "policy.balanced_budget.description"
   },
   {
     "id": "low_taxes",
     "category": "taxation",
     "label": "Low Taxes",
     "description": "Citizens are happier, but city income and reserves grow slower.",
-    "requirements": { "city_level": 1 },
-    "switch_cost": { "coins": 25 },
+    "requirements": {
+      "city_level": 1
+    },
+    "switch_cost": {
+      "coins": 25
+    },
     "effects": {
-      "production_mult": { "coins": -0.1 },
-      "happiness_add": 4.0,
-      "pressure_delta": -2.0
-    }
+      "production_mult": {
+        "coins": -0.1
+      },
+      "happiness_add": 4,
+      "pressure_delta": -2
+    },
+    "label_key": "policy.low_taxes.label",
+    "description_key": "policy.low_taxes.description"
   },
   {
     "id": "emergency_reserves",
     "category": "security",
     "label": "Emergency Reserves",
     "description": "Keep reserves and crews ready. Costs income but lowers pressure.",
-    "requirements": { "city_level": 2 },
-    "switch_cost": { "coins": 100 },
+    "requirements": {
+      "city_level": 2
+    },
+    "switch_cost": {
+      "coins": 100
+    },
     "effects": {
-      "production_mult": { "coins": -0.05 },
-      "pressure_delta": -6.0
-    }
+      "production_mult": {
+        "coins": -0.05
+      },
+      "pressure_delta": -6
+    },
+    "label_key": "policy.emergency_reserves.label",
+    "description_key": "policy.emergency_reserves.description"
   },
   {
     "id": "labor_mobilization",
     "category": "labor",
     "label": "Labor Mobilization",
     "description": "Push production harder at the cost of public mood.",
-    "requirements": { "city_level": 2 },
-    "switch_cost": { "coins": 75 },
+    "requirements": {
+      "city_level": 2
+    },
+    "switch_cost": {
+      "coins": 75
+    },
     "effects": {
-      "production_mult": { "wood": 0.1, "stone": 0.1, "planks": 0.1, "bricks": 0.1 },
-      "happiness_add": -3.0,
-      "pressure_delta": 3.0
-    }
+      "production_mult": {
+        "wood": 0.1,
+        "stone": 0.1,
+        "planks": 0.1,
+        "bricks": 0.1
+      },
+      "happiness_add": -3,
+      "pressure_delta": 3
+    },
+    "label_key": "policy.labor_mobilization.label",
+    "description_key": "policy.labor_mobilization.description"
   },
   {
     "id": "green_zoning",
     "category": "environment",
     "label": "Green Zoning",
     "description": "Cleaner districts improve public mood but slow heavy extraction.",
-    "requirements": { "city_level": 3, "tech": ["civic_planning"] },
-    "switch_cost": { "coins": 150 },
+    "requirements": {
+      "city_level": 3,
+      "tech": [
+        "civic_planning"
+      ]
+    },
+    "switch_cost": {
+      "coins": 150
+    },
     "effects": {
-      "production_mult": { "wood": -0.05, "stone": -0.05, "culture": 0.08 },
-      "happiness_add": 5.0,
-      "pressure_delta": -3.0
-    }
+      "production_mult": {
+        "wood": -0.05,
+        "stone": -0.05,
+        "culture": 0.08
+      },
+      "happiness_add": 5,
+      "pressure_delta": -3
+    },
+    "label_key": "policy.green_zoning.label",
+    "description_key": "policy.green_zoning.description"
   }
 ]

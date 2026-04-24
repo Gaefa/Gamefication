@@ -100,7 +100,7 @@ func resolve_event(ev_id: String, accept: bool) -> Dictionary:
 		var cost: Dictionary = cost_raw as Dictionary if cost_raw is Dictionary else {}
 		if not cost.is_empty():
 			if not GameStateStore.can_afford(cost):
-				return {"success": false, "reason": "Not enough resources"}
+				return {"success": false, "reason": Localization.t("ui.command.not_enough_resources", "Not enough resources")}
 			GameStateStore.spend(cost)
 		var eff_raw: Variant = def.get("accept_effects", null)
 		var accept_effects: Dictionary = eff_raw as Dictionary if eff_raw is Dictionary else {}
@@ -127,7 +127,9 @@ func _apply_effects(effects: Dictionary) -> void:
 		if key == "add_buff":
 			var buff_raw: Variant = effects[key]
 			if buff_raw is Dictionary:
-				GameStateStore.add_buff((buff_raw as Dictionary).duplicate())
+				var buff := (buff_raw as Dictionary).duplicate()
+				buff["name"] = Localization.content_text(buff, "name", buff.get("name", "") as String)
+				GameStateStore.add_buff(buff)
 		elif key == "add_resources":
 			var res_dict: Variant = effects[key]
 			if res_dict is Dictionary:
@@ -143,7 +145,7 @@ func _apply_effects(effects: Dictionary) -> void:
 		elif key == "damage_buildings":
 			_damage_random_buildings(effects[key] as int)
 		elif key == "message":
-			EventBus.toast_requested.emit(effects[key] as String, 5.0)
+			EventBus.toast_requested.emit(Localization.content_text(effects, "message", effects[key] as String), 5.0)
 
 
 func _force_issues(count: int) -> void:

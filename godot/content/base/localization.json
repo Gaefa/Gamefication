@@ -1,21 +1,72 @@
 {
-  "ui.build.title": { "en": "Build", "ru": "Строительство" },
-  "ui.category.infrastructure": { "en": "Infrastructure", "ru": "Инфраструктура" },
-  "ui.category.residential": { "en": "Residential", "ru": "Жилье" },
-  "ui.category.production": { "en": "Production", "ru": "Производство" },
-  "ui.category.commercial": { "en": "Commercial", "ru": "Коммерция" },
-  "ui.category.culture": { "en": "Culture", "ru": "Культура" },
-  "ui.category.advanced": { "en": "Advanced", "ru": "Развитое" },
-  "ui.resource.population": { "en": "Pop", "ru": "Жители" },
-  "ui.resource.happiness": { "en": "Happy", "ru": "Счастье" },
-  "ui.resource.energy": { "en": "Energy", "ru": "Энергия" },
-  "ui.resource.level": { "en": "Lv", "ru": "Ур" },
-  "ui.resource.next": { "en": "Next", "ru": "Далее" },
-  "ui.risk.pressure": { "en": "Pressure", "ru": "Давление" },
-  "ui.phase.calm": { "en": "Calm", "ru": "Спокойствие" },
-  "ui.phase.tension": { "en": "Tension", "ru": "Напряжение" },
-  "ui.phase.crisis": { "en": "Crisis", "ru": "Кризис" },
-  "ui.phase.emergency": { "en": "Emergency", "ru": "ЧС" },
+  "ui.build.title": {
+    "en": "Build",
+    "ru": "Строительство"
+  },
+  "ui.category.infrastructure": {
+    "en": "Infrastructure",
+    "ru": "Инфраструктура"
+  },
+  "ui.category.residential": {
+    "en": "Residential",
+    "ru": "Жилье"
+  },
+  "ui.category.production": {
+    "en": "Production",
+    "ru": "Производство"
+  },
+  "ui.category.commercial": {
+    "en": "Commercial",
+    "ru": "Коммерция"
+  },
+  "ui.category.culture": {
+    "en": "Culture",
+    "ru": "Культура"
+  },
+  "ui.category.advanced": {
+    "en": "Advanced",
+    "ru": "Развитое"
+  },
+  "ui.resource.population": {
+    "en": "Pop",
+    "ru": "Жители"
+  },
+  "ui.resource.happiness": {
+    "en": "Happy",
+    "ru": "Счастье"
+  },
+  "ui.resource.energy": {
+    "en": "Energy",
+    "ru": "Энергия"
+  },
+  "ui.resource.level": {
+    "en": "Lv",
+    "ru": "Ур"
+  },
+  "ui.resource.next": {
+    "en": "Next",
+    "ru": "Далее"
+  },
+  "ui.risk.pressure": {
+    "en": "Pressure",
+    "ru": "Давление"
+  },
+  "ui.phase.calm": {
+    "en": "Calm",
+    "ru": "Спокойствие"
+  },
+  "ui.phase.tension": {
+    "en": "Tension",
+    "ru": "Напряжение"
+  },
+  "ui.phase.crisis": {
+    "en": "Crisis",
+    "ru": "Кризис"
+  },
+  "ui.phase.emergency": {
+    "en": "Emergency",
+    "ru": "ЧС"
+  },
   "ui.welcome.text": {
     "en": "Click tile for info\nWASD-Move Scroll-Zoom LMB-Select\nRMB/Esc-Cancel U-Upgrade R-Repair\nB-Bulldoze V-Range G-Gov H-Help",
     "ru": "Клик по клетке - информация\nWASD-движение Колесо-зум ЛКМ-выбор\nПКМ/Esc-отмена U-улучшить R-починить\nB-снести V-радиус G-управление H-помощь"
@@ -24,49 +75,1452 @@
     "en": "=== PIXEL CITY BUILDER ===\n\nQUICK START:\n  1. Build Roads (Infrastructure tab)\n  2. Build Huts near roads\n  3. Build Farms for food\n  4. Build Lumber Mills in forests\n\nTERRAIN:\n  Green=Grass(+20% farm) Blue=Water\n  Yellow=Sand Brown=Hill(+20% quarry)\n  DkGreen=Forest(+50% lumber) Gray=Rock(+40% quarry)\n\nWATER & POWER:\n  Water Tower: residential need water (60% without)\n  Power Plant: production boost in radius\n\nSYNERGIES:\n  Farm+Lumber: +15% food, +10% wood\n  Market+Residential: +15% coins\n  Park: happiness aura | Workshop: upgrade discount\n  Research+Library: +20%/+15% science\n\nROADS:\n  No road = 30% production! Higher roads = bigger bonus.\n\nPRESSURE: Calm > Tension > Crisis > Emergency\n  More buildings + problems = higher pressure = more events.",
     "ru": "=== PIXEL CITY BUILDER ===\n\nБЫСТРЫЙ СТАРТ:\n  1. Построй дороги (вкладка инфраструктуры)\n  2. Поставь хижины рядом с дорогами\n  3. Построй фермы для еды\n  4. Поставь лесопилки в лесах\n\nМЕСТНОСТЬ:\n  Зеленый=трава(+20% фермы) Синий=вода\n  Желтый=песок Коричневый=холмы(+20% карьер)\n  Темно-зеленый=лес(+50% лесопилка) Серый=камень(+40% карьер)\n\nВОДА И ЭНЕРГИЯ:\n  Водонапорная башня: жилью нужна вода (60% без нее)\n  Электростанция: усиливает производство в радиусе\n\nСИНЕРГИИ:\n  Ферма+Лесопилка: +15% еда, +10% дерево\n  Рынок+Жилье: +15% монеты\n  Парк: аура счастья | Мастерская: скидка на улучшения\n  Исследования+Библиотека: +20%/+15% наука\n\nДОРОГИ:\n  Нет дороги = 30% производства. Улучшенные дороги дают больший бонус.\n\nДАВЛЕНИЕ: Спокойствие > Напряжение > Кризис > ЧС\n  Больше зданий и проблем = выше давление = больше событий."
   },
-  "ui.tile.cannot_build": { "en": "Cannot build here", "ru": "Здесь нельзя строить" },
-  "ui.tile.bonus": { "en": "Bonus", "ru": "Бонус" },
-  "ui.building.damaged": { "en": "DAMAGED - press R to repair", "ru": "ПОВРЕЖДЕНО - нажми R для ремонта" },
-  "ui.building.issue": { "en": "ISSUE - press R to fix", "ru": "ПРОБЛЕМА - нажми R для решения" },
-  "ui.building.upgrade_to": { "en": "[U] Upgrade to", "ru": "[U] Улучшить до" },
-  "ui.building.upgrade_need": { "en": "Upgrade needs", "ru": "Нужно для улучшения" },
-  "ui.building.max_level": { "en": "MAX LEVEL", "ru": "МАКСИМАЛЬНЫЙ УРОВЕНЬ" },
-  "ui.building.actions": { "en": "[U]Up [R]Fix [B]Del [V]Range", "ru": "[U]Ул [R]Рем [B]Снос [V]Радиус" },
-  "ui.flow.road": { "en": "Road", "ru": "Дорога" },
-  "ui.flow.water": { "en": "Water", "ru": "Вода" },
-  "ui.flow.power": { "en": "Power", "ru": "Энергия" },
-  "ui.flow.inputs": { "en": "Inputs", "ru": "Входы" },
-  "ui.flow.outputs": { "en": "Outputs", "ru": "Выходы" },
-  "ui.flow.efficiency": { "en": "Efficiency", "ru": "Эффективность" },
-  "ui.flow.ok": { "en": "OK", "ru": "OK" },
-  "ui.flow.missing_caps": { "en": "MISSING", "ru": "НЕТ" },
-  "ui.flow.missing": { "en": "missing", "ru": "не хватает" },
-  "ui.flow.blocked": { "en": "blocked", "ru": "заблокировано" },
-  "ui.governance.short": { "en": "Gov", "ru": "Упр" },
-  "ui.governance.tooltip": { "en": "Governance (G): tech tree and policies", "ru": "Управление (G): технологии и политики" },
-  "ui.governance.title": { "en": "Governance", "ru": "Управление" },
-  "ui.common.close": { "en": "Close", "ru": "Закрыть" },
-  "ui.common.free": { "en": "free", "ru": "бесплатно" },
-  "ui.common.none": { "en": "none", "ru": "нет" },
-  "ui.tech.tab": { "en": "Tech", "ru": "Технологии" },
-  "ui.tech.researched": { "en": "Researched", "ru": "Изучено" },
-  "ui.tech.research": { "en": "Research", "ru": "Изучить" },
-  "ui.tech.done_suffix": { "en": " [DONE]", "ru": " [ИЗУЧЕНО]" },
-  "ui.policy.tab": { "en": "Policies", "ru": "Политики" },
-  "ui.policy.active_prefix": { "en": "Active: ", "ru": "Активно: " },
-  "ui.policy.active": { "en": "Active", "ru": "Активно" },
-  "ui.policy.set": { "en": "Set", "ru": "Выбрать" },
-  "ui.policy.active_suffix": { "en": " [ACTIVE]", "ru": " [АКТИВНО]" },
-  "ui.meta.cost": { "en": "Cost", "ru": "Цена" },
-  "ui.meta.switch": { "en": "Switch", "ru": "Смена" },
-  "ui.meta.effects": { "en": "Effects", "ru": "Эффекты" },
-  "ui.effect.happiness": { "en": "Happy", "ru": "Счастье" },
-  "ui.effect.pressure": { "en": "Pressure", "ru": "Давление" },
-  "ui.effect.population": { "en": "pop", "ru": "жители" },
-  "ui.effect.storage": { "en": "storage", "ru": "склад" },
-  "ui.event.accept": { "en": "Accept", "ru": "Принять" },
-  "ui.event.decline": { "en": "Decline", "ru": "Отклонить" },
-  "ui.event.not_enough_resources": { "en": "Not enough resources", "ru": "Не хватает ресурсов" },
-  "ui.language.toggle": { "en": "RU", "ru": "EN" },
-  "ui.language.tooltip": { "en": "Switch language to Russian", "ru": "Переключить язык на английский" }
+  "ui.tile.cannot_build": {
+    "en": "Cannot build here",
+    "ru": "Здесь нельзя строить"
+  },
+  "ui.tile.bonus": {
+    "en": "Bonus",
+    "ru": "Бонус"
+  },
+  "ui.building.damaged": {
+    "en": "DAMAGED - press R to repair",
+    "ru": "ПОВРЕЖДЕНО - нажми R для ремонта"
+  },
+  "ui.building.issue": {
+    "en": "ISSUE - press R to fix",
+    "ru": "ПРОБЛЕМА - нажми R для решения"
+  },
+  "ui.building.upgrade_to": {
+    "en": "[U] Upgrade to",
+    "ru": "[U] Улучшить до"
+  },
+  "ui.building.upgrade_need": {
+    "en": "Upgrade needs",
+    "ru": "Нужно для улучшения"
+  },
+  "ui.building.max_level": {
+    "en": "MAX LEVEL",
+    "ru": "МАКСИМАЛЬНЫЙ УРОВЕНЬ"
+  },
+  "ui.building.actions": {
+    "en": "[U]Up [R]Fix [B]Del [V]Range",
+    "ru": "[U]Ул [R]Рем [B]Снос [V]Радиус"
+  },
+  "ui.flow.road": {
+    "en": "Road",
+    "ru": "Дорога"
+  },
+  "ui.flow.water": {
+    "en": "Water",
+    "ru": "Вода"
+  },
+  "ui.flow.power": {
+    "en": "Power",
+    "ru": "Энергия"
+  },
+  "ui.flow.inputs": {
+    "en": "Inputs",
+    "ru": "Входы"
+  },
+  "ui.flow.outputs": {
+    "en": "Outputs",
+    "ru": "Выходы"
+  },
+  "ui.flow.efficiency": {
+    "en": "Efficiency",
+    "ru": "Эффективность"
+  },
+  "ui.flow.ok": {
+    "en": "OK",
+    "ru": "OK"
+  },
+  "ui.flow.missing_caps": {
+    "en": "MISSING",
+    "ru": "НЕТ"
+  },
+  "ui.flow.missing": {
+    "en": "missing",
+    "ru": "не хватает"
+  },
+  "ui.flow.blocked": {
+    "en": "blocked",
+    "ru": "заблокировано"
+  },
+  "ui.governance.short": {
+    "en": "Gov",
+    "ru": "Упр"
+  },
+  "ui.governance.tooltip": {
+    "en": "Governance (G): tech tree and policies",
+    "ru": "Управление (G): технологии и политики"
+  },
+  "ui.governance.title": {
+    "en": "Governance",
+    "ru": "Управление"
+  },
+  "ui.common.close": {
+    "en": "Close",
+    "ru": "Закрыть"
+  },
+  "ui.common.free": {
+    "en": "free",
+    "ru": "бесплатно"
+  },
+  "ui.common.none": {
+    "en": "none",
+    "ru": "нет"
+  },
+  "ui.tech.tab": {
+    "en": "Tech",
+    "ru": "Технологии"
+  },
+  "ui.tech.researched": {
+    "en": "Researched",
+    "ru": "Изучено"
+  },
+  "ui.tech.research": {
+    "en": "Research",
+    "ru": "Изучить"
+  },
+  "ui.tech.done_suffix": {
+    "en": " [DONE]",
+    "ru": " [ИЗУЧЕНО]"
+  },
+  "ui.policy.tab": {
+    "en": "Policies",
+    "ru": "Политики"
+  },
+  "ui.policy.active_prefix": {
+    "en": "Active: ",
+    "ru": "Активно: "
+  },
+  "ui.policy.active": {
+    "en": "Active",
+    "ru": "Активно"
+  },
+  "ui.policy.set": {
+    "en": "Set",
+    "ru": "Выбрать"
+  },
+  "ui.policy.active_suffix": {
+    "en": " [ACTIVE]",
+    "ru": " [АКТИВНО]"
+  },
+  "ui.meta.cost": {
+    "en": "Cost",
+    "ru": "Цена"
+  },
+  "ui.meta.switch": {
+    "en": "Switch",
+    "ru": "Смена"
+  },
+  "ui.meta.effects": {
+    "en": "Effects",
+    "ru": "Эффекты"
+  },
+  "ui.effect.happiness": {
+    "en": "Happy",
+    "ru": "Счастье"
+  },
+  "ui.effect.pressure": {
+    "en": "Pressure",
+    "ru": "Давление"
+  },
+  "ui.effect.population": {
+    "en": "pop",
+    "ru": "жители"
+  },
+  "ui.effect.storage": {
+    "en": "storage",
+    "ru": "склад"
+  },
+  "ui.event.accept": {
+    "en": "Accept",
+    "ru": "Принять"
+  },
+  "ui.event.decline": {
+    "en": "Decline",
+    "ru": "Отклонить"
+  },
+  "ui.event.not_enough_resources": {
+    "en": "Not enough resources",
+    "ru": "Не хватает ресурсов"
+  },
+  "ui.language.toggle": {
+    "en": "RU",
+    "ru": "EN"
+  },
+  "ui.language.tooltip": {
+    "en": "Switch language to Russian",
+    "ru": "Переключить язык на английский"
+  },
+  "resource.wood.label": {
+    "en": "Wood",
+    "ru": "Дерево"
+  },
+  "resource.stone.label": {
+    "en": "Stone",
+    "ru": "Камень"
+  },
+  "resource.food.label": {
+    "en": "Food",
+    "ru": "Еда"
+  },
+  "resource.coins.label": {
+    "en": "Coins",
+    "ru": "Монеты"
+  },
+  "resource.planks.label": {
+    "en": "Planks",
+    "ru": "Доски"
+  },
+  "resource.bricks.label": {
+    "en": "Bricks",
+    "ru": "Кирпичи"
+  },
+  "resource.tools.label": {
+    "en": "Tools",
+    "ru": "Инструменты"
+  },
+  "resource.cloth.label": {
+    "en": "Cloth",
+    "ru": "Ткань"
+  },
+  "resource.metal.label": {
+    "en": "Metal",
+    "ru": "Металл"
+  },
+  "resource.glass.label": {
+    "en": "Glass",
+    "ru": "Стекло"
+  },
+  "resource.energy.label": {
+    "en": "Energy",
+    "ru": "Энергия"
+  },
+  "resource.science.label": {
+    "en": "Science",
+    "ru": "Наука"
+  },
+  "resource.culture.label": {
+    "en": "Culture",
+    "ru": "Культура"
+  },
+  "resource.fame.label": {
+    "en": "Fame",
+    "ru": "Слава"
+  },
+  "resource.water_res.label": {
+    "en": "Water Reserve",
+    "ru": "Резерв воды"
+  },
+  "terrain.grass.label": {
+    "en": "Grass",
+    "ru": "Трава"
+  },
+  "terrain.water.label": {
+    "en": "Water",
+    "ru": "Вода"
+  },
+  "terrain.sand.label": {
+    "en": "Sand",
+    "ru": "Песок"
+  },
+  "terrain.hill.label": {
+    "en": "Hill",
+    "ru": "Холмы"
+  },
+  "terrain.forest.label": {
+    "en": "Forest",
+    "ru": "Лес"
+  },
+  "terrain.rock.label": {
+    "en": "Rock",
+    "ru": "Скалы"
+  },
+  "city_level.1.name": {
+    "en": "Settlement",
+    "ru": "Поселение"
+  },
+  "city_level.2.name": {
+    "en": "Village",
+    "ru": "Деревня"
+  },
+  "city_level.3.name": {
+    "en": "Town",
+    "ru": "Городок"
+  },
+  "city_level.4.name": {
+    "en": "Large City",
+    "ru": "Большой город"
+  },
+  "city_level.5.name": {
+    "en": "Metropolis",
+    "ru": "Метрополис"
+  },
+  "city_level.6.name": {
+    "en": "Megapolis",
+    "ru": "Мегаполис"
+  },
+  "city_level.7.name": {
+    "en": "Futuristic City",
+    "ru": "Футуристический город"
+  },
+  "building.hut.label": {
+    "en": "Hut",
+    "ru": "Хижина"
+  },
+  "building.hut.description": {
+    "en": "Basic residential dwelling. Houses citizens who pay taxes in coins but need food. Upgrade to increase population capacity and unlock cultural contributions. Place near roads for full efficiency and water towers for water supply.",
+    "ru": "Базовое жилье. Дает население и налоговые монеты, но требует еду. Улучшения увеличивают вместимость и позже открывают культурный вклад. Для полной эффективности ставь рядом с дорогами и покрытием воды."
+  },
+  "building.hut.stage.0.name": {
+    "en": "Hut",
+    "ru": "Хижина"
+  },
+  "building.hut.stage.1.name": {
+    "en": "House",
+    "ru": "Дом"
+  },
+  "building.hut.stage.2.name": {
+    "en": "Cottage",
+    "ru": "Коттедж"
+  },
+  "building.hut.stage.3.name": {
+    "en": "Mansion",
+    "ru": "Особняк"
+  },
+  "building.hut.stage.4.name": {
+    "en": "Villa",
+    "ru": "Вилла"
+  },
+  "building.apartment.label": {
+    "en": "Apartment",
+    "ru": "Апартаменты"
+  },
+  "building.apartment.description": {
+    "en": "High-density housing for growing cities. Apartments house many more citizens than huts but require energy to operate. Ideal for late-game population boosts. Consumes more food and energy at higher levels but generates significant tax income.",
+    "ru": "Плотное жилье для растущих городов. Вмещает намного больше жителей, чем хижины, но требует энергию. Подходит для позднего роста населения, потребляет больше еды и энергии, зато дает высокий налоговый доход."
+  },
+  "building.apartment.stage.0.name": {
+    "en": "Low-rise",
+    "ru": "Малоэтажка"
+  },
+  "building.apartment.stage.1.name": {
+    "en": "Tower",
+    "ru": "Башня"
+  },
+  "building.apartment.stage.2.name": {
+    "en": "Complex",
+    "ru": "Комплекс"
+  },
+  "building.apartment.stage.3.name": {
+    "en": "Skyblock",
+    "ru": "Небоблок"
+  },
+  "building.apartment.stage.4.name": {
+    "en": "Megablock",
+    "ru": "Мегаблок"
+  },
+  "building.farm.label": {
+    "en": "Farm",
+    "ru": "Ферма"
+  },
+  "building.farm.description": {
+    "en": "Primary food source for your city. Farms produce food that feeds your population. At level 3+ they generate a food aura that boosts nearby food production. Place on grass terrain for +20% bonus. Pairs well with Lumber Mills for a synergy bonus (+15% food, +10% wood). At max level, auto-sells excess food for coins.",
+    "ru": "Основной источник еды. Фермы кормят население, а с высоких уровней усиливают производство еды поблизости. На траве получают бонус +20%. Хорошо работают рядом с лесопилками. На максимальном уровне продают избыток еды за монеты."
+  },
+  "building.farm.stage.0.name": {
+    "en": "Field",
+    "ru": "Поле"
+  },
+  "building.farm.stage.1.name": {
+    "en": "Barn Farm",
+    "ru": "Ферма с амбаром"
+  },
+  "building.farm.stage.2.name": {
+    "en": "Mill Farm",
+    "ru": "Мельничная ферма"
+  },
+  "building.farm.stage.3.name": {
+    "en": "Greenhouse",
+    "ru": "Теплица"
+  },
+  "building.farm.stage.4.name": {
+    "en": "Hydro Farm",
+    "ru": "Гидроферма"
+  },
+  "building.lumber.label": {
+    "en": "Lumber Mill",
+    "ru": "Лесопилка"
+  },
+  "building.lumber.description": {
+    "en": "Produces wood and refined planks. Place in forest terrain for a massive +50% production bonus. At level 2+ generates a synergy boost for adjacent farms, increasing their food output. Essential early-game resource producer that scales well into late game with Industrial and Auto Forestry upgrades.",
+    "ru": "Производит дерево и доски. В лесу получает сильный бонус +50%. С уровня 2 усиливает соседние фермы. Ключевой ранний производитель ресурсов, который масштабируется в поздней игре через индустриальные улучшения."
+  },
+  "building.lumber.stage.0.name": {
+    "en": "Yard",
+    "ru": "Двор"
+  },
+  "building.lumber.stage.1.name": {
+    "en": "Saw Mill",
+    "ru": "Лесопилка"
+  },
+  "building.lumber.stage.2.name": {
+    "en": "Timber Plant",
+    "ru": "Лесозавод"
+  },
+  "building.lumber.stage.3.name": {
+    "en": "Industrial Lumber",
+    "ru": "Индустриальная лесопилка"
+  },
+  "building.lumber.stage.4.name": {
+    "en": "Auto Forestry",
+    "ru": "Автолесничество"
+  },
+  "building.quarry.label": {
+    "en": "Quarry",
+    "ru": "Карьер"
+  },
+  "building.quarry.description": {
+    "en": "Extracts stone and processes bricks. Place on rock terrain for +40% bonus or hills for +20%. At higher levels also produces small amounts of glass. Pairs with Foundry for a synergy bonus on metal and glass production. Core material producer needed for infrastructure and commercial buildings.",
+    "ru": "Добывает камень и производит кирпичи. На скалах получает +40%, на холмах +20%. На высоких уровнях дает немного стекла. Рядом с литейным цехом усиливает металл и стекло. Базовый источник материалов для инфраструктуры."
+  },
+  "building.quarry.stage.0.name": {
+    "en": "Pit",
+    "ru": "Котлован"
+  },
+  "building.quarry.stage.1.name": {
+    "en": "Stone Yard",
+    "ru": "Каменоломня"
+  },
+  "building.quarry.stage.2.name": {
+    "en": "Brickworks",
+    "ru": "Кирпичный цех"
+  },
+  "building.quarry.stage.3.name": {
+    "en": "Deep Quarry",
+    "ru": "Глубокий карьер"
+  },
+  "building.quarry.stage.4.name": {
+    "en": "Mega Quarry",
+    "ru": "Мега-карьер"
+  },
+  "building.workshop.label": {
+    "en": "Workshop",
+    "ru": "Мастерская"
+  },
+  "building.workshop.description": {
+    "en": "Crafts tools and cloth from raw materials. At level 2+ creates a discount aura that reduces upgrade costs for all buildings within its radius. Consumes wood and stone to operate. Essential for upgrading your city efficiently. Place centrally to maximize the upgrade discount coverage.",
+    "ru": "Производит инструменты и ткань из сырья. С уровня 2 создает ауру скидки на улучшения зданий в радиусе. Потребляет дерево и камень. Лучше ставить ближе к центру города."
+  },
+  "building.workshop.stage.0.name": {
+    "en": "Craft Shed",
+    "ru": "Ремесленный сарай"
+  },
+  "building.workshop.stage.1.name": {
+    "en": "Tool House",
+    "ru": "Инструментальный дом"
+  },
+  "building.workshop.stage.2.name": {
+    "en": "Mechanic Hall",
+    "ru": "Механический зал"
+  },
+  "building.workshop.stage.3.name": {
+    "en": "Automation Yard",
+    "ru": "Двор автоматизации"
+  },
+  "building.workshop.stage.4.name": {
+    "en": "Nano Workshop",
+    "ru": "Нано-мастерская"
+  },
+  "building.foundry.label": {
+    "en": "Foundry",
+    "ru": "Литейный цех"
+  },
+  "building.foundry.description": {
+    "en": "Smelts stone into metal and glass using tools and energy. Critical mid-to-late game building for producing advanced construction materials. Pairs with adjacent Quarries for bonus metal/glass output. Higher levels shift from consuming tools to consuming energy, unlocking massive production rates at Fusion Forge stage.",
+    "ru": "Переплавляет камень в металл и стекло с помощью инструментов и энергии. Важное здание середины и поздней игры. Рядом с карьерами получает бонус. На высоких уровнях переходит к энергоемкому производству."
+  },
+  "building.foundry.stage.0.name": {
+    "en": "Smelter",
+    "ru": "Плавильня"
+  },
+  "building.foundry.stage.1.name": {
+    "en": "Furnace",
+    "ru": "Печь"
+  },
+  "building.foundry.stage.2.name": {
+    "en": "Refinery",
+    "ru": "Рафинерия"
+  },
+  "building.foundry.stage.3.name": {
+    "en": "Steel Plant",
+    "ru": "Сталелитейный завод"
+  },
+  "building.foundry.stage.4.name": {
+    "en": "Fusion Forge",
+    "ru": "Термоядерная кузница"
+  },
+  "building.market.label": {
+    "en": "Market",
+    "ru": "Рынок"
+  },
+  "building.market.description": {
+    "en": "Commercial hub that generates coins and boosts nearby residential income. Each level increases the coin bonus given to adjacent huts and apartments. Place markets surrounded by housing for maximum economic output. The Global Market stage generates massive passive income for late-game economies.",
+    "ru": "Коммерческий центр, который приносит монеты и усиливает доход жилья поблизости. Чем выше уровень, тем выше бонус к монетам от хижин и апартаментов. Лучше работает в окружении жилых кварталов."
+  },
+  "building.market.stage.0.name": {
+    "en": "Bazaar",
+    "ru": "Базар"
+  },
+  "building.market.stage.1.name": {
+    "en": "Town Market",
+    "ru": "Городской рынок"
+  },
+  "building.market.stage.2.name": {
+    "en": "Trade Hall",
+    "ru": "Торговый зал"
+  },
+  "building.market.stage.3.name": {
+    "en": "Grand Exchange",
+    "ru": "Большая биржа"
+  },
+  "building.market.stage.4.name": {
+    "en": "Global Market",
+    "ru": "Глобальный рынок"
+  },
+  "building.bank.label": {
+    "en": "Bank",
+    "ru": "Банк"
+  },
+  "building.bank.description": {
+    "en": "Financial institution that generates coins and earns interest on your treasury. Interest is calculated as a percentage of current coins per minute, scaling with level. The Hyperbank generates 12% interest per minute on your entire treasury. Expensive to build but extremely profitable for wealthy cities.",
+    "ru": "Финансовое учреждение, которое приносит монеты и проценты с казны. Проценты считаются от текущего запаса монет и растут с уровнем. Дорого строится, но очень выгодно для богатых городов."
+  },
+  "building.bank.stage.0.name": {
+    "en": "Credit Office",
+    "ru": "Кредитный офис"
+  },
+  "building.bank.stage.1.name": {
+    "en": "Regional Bank",
+    "ru": "Региональный банк"
+  },
+  "building.bank.stage.2.name": {
+    "en": "National Bank",
+    "ru": "Национальный банк"
+  },
+  "building.bank.stage.3.name": {
+    "en": "Central Reserve",
+    "ru": "Центральный резерв"
+  },
+  "building.bank.stage.4.name": {
+    "en": "Hyperbank",
+    "ru": "Гипербанк"
+  },
+  "building.park.label": {
+    "en": "Park",
+    "ru": "Парк"
+  },
+  "building.park.description": {
+    "en": "Green space that generates culture and a powerful happiness aura. All buildings within its radius receive a happiness bonus. Essential for keeping citizens satisfied in dense cities. At max level, National Park provides +80 happiness and radiates joy across 6 hex tiles. Does not require road connection.",
+    "ru": "Зеленая зона, дающая культуру и сильную ауру счастья. Здания в радиусе получают бонус к настроению. Важен для плотных районов. Не требует подключения к дороге."
+  },
+  "building.park.stage.0.name": {
+    "en": "Park",
+    "ru": "Парк"
+  },
+  "building.park.stage.1.name": {
+    "en": "City Garden",
+    "ru": "Городской сад"
+  },
+  "building.park.stage.2.name": {
+    "en": "Recreation Zone",
+    "ru": "Зона отдыха"
+  },
+  "building.park.stage.3.name": {
+    "en": "Grand Park",
+    "ru": "Большой парк"
+  },
+  "building.park.stage.4.name": {
+    "en": "National Park",
+    "ru": "Национальный парк"
+  },
+  "building.library.label": {
+    "en": "Library",
+    "ru": "Библиотека"
+  },
+  "building.library.description": {
+    "en": "Knowledge center producing science and culture. Pairs with Research Centers for a powerful synergy bonus (+20% science to research, +15% to library). At higher levels becomes an academy and then a knowledge hub, dramatically increasing science output. Essential for reaching the tech-heavy late-game city levels.",
+    "ru": "Центр знаний, производящий науку и культуру. В связке с исследовательским центром дает мощную синергию науки. На высоких уровнях превращается в академию и хаб знаний."
+  },
+  "building.library.stage.0.name": {
+    "en": "Library",
+    "ru": "Библиотека"
+  },
+  "building.library.stage.1.name": {
+    "en": "Research Library",
+    "ru": "Научная библиотека"
+  },
+  "building.library.stage.2.name": {
+    "en": "Academy",
+    "ru": "Академия"
+  },
+  "building.library.stage.3.name": {
+    "en": "Knowledge Hub",
+    "ru": "Хаб знаний"
+  },
+  "building.library.stage.4.name": {
+    "en": "Archive Nexus",
+    "ru": "Архивный нексус"
+  },
+  "building.theater.label": {
+    "en": "Theater",
+    "ru": "Театр"
+  },
+  "building.theater.description": {
+    "en": "Cultural landmark generating culture, fame and significant happiness. The most powerful happiness building per tile. Produces fame which is needed for win conditions and prestige calculations. At Cultural Capital stage, provides 130 happiness and 4 fame per second. Requires substantial investment but transforms city morale.",
+    "ru": "Культурная достопримечательность, дающая культуру, славу и много счастья. Один из сильнейших источников морали на клетку. Требует вложений, но заметно меняет настроение города."
+  },
+  "building.theater.stage.0.name": {
+    "en": "Theater",
+    "ru": "Театр"
+  },
+  "building.theater.stage.1.name": {
+    "en": "Opera Hall",
+    "ru": "Оперный зал"
+  },
+  "building.theater.stage.2.name": {
+    "en": "Arts Center",
+    "ru": "Центр искусств"
+  },
+  "building.theater.stage.3.name": {
+    "en": "Grand Theater",
+    "ru": "Большой театр"
+  },
+  "building.theater.stage.4.name": {
+    "en": "Cultural Capital",
+    "ru": "Культурная столица"
+  },
+  "building.power.label": {
+    "en": "Power Plant",
+    "ru": "Электростанция"
+  },
+  "building.power.description": {
+    "en": "Generates energy and broadcasts a production boost aura to nearby buildings. At level 2+ creates a powered zone where all buildings get bonus production. Higher levels evolve from coal-burning to solar and fusion, eventually eliminating resource consumption. The Reactor stage powers a radius of 10 hexes with +20% boost.",
+    "ru": "Производит энергию и дает ауру производственного усиления зданиям поблизости. Высокие уровни переходят от топлива к солнечной и термоядерной энергетике, снижая потребление ресурсов."
+  },
+  "building.power.stage.0.name": {
+    "en": "Plant",
+    "ru": "Станция"
+  },
+  "building.power.stage.1.name": {
+    "en": "Grid Plant",
+    "ru": "Сетевая станция"
+  },
+  "building.power.stage.2.name": {
+    "en": "Solar Station",
+    "ru": "Солнечная станция"
+  },
+  "building.power.stage.3.name": {
+    "en": "Fusion Plant",
+    "ru": "Термоядерная станция"
+  },
+  "building.power.stage.4.name": {
+    "en": "Reactor",
+    "ru": "Реактор"
+  },
+  "building.water_tower.label": {
+    "en": "Water Tower",
+    "ru": "Водонапорная башня"
+  },
+  "building.water_tower.description": {
+    "en": "Provides water supply to surrounding buildings. Residential buildings without water coverage operate at only 60% efficiency. Each upgrade expands the water radius dramatically - from 4 hexes at Well to 14 hexes at Purification Hub. Does not require road connection. Place strategically to cover all housing districts.",
+    "ru": "Дает водное покрытие окружающим зданиям. Жилье без воды работает только на 60% эффективности. Улучшения сильно расширяют радиус воды. Не требует дороги."
+  },
+  "building.water_tower.stage.0.name": {
+    "en": "Well",
+    "ru": "Колодец"
+  },
+  "building.water_tower.stage.1.name": {
+    "en": "Cistern",
+    "ru": "Цистерна"
+  },
+  "building.water_tower.stage.2.name": {
+    "en": "Tower",
+    "ru": "Башня"
+  },
+  "building.water_tower.stage.3.name": {
+    "en": "Treatment Plant",
+    "ru": "Очистная станция"
+  },
+  "building.water_tower.stage.4.name": {
+    "en": "Purification Hub",
+    "ru": "Центр очистки"
+  },
+  "building.road.label": {
+    "en": "Road",
+    "ru": "Дорога"
+  },
+  "building.road.description": {
+    "en": "Connects buildings into a transport network. Buildings requiring road connection operate at only 30% without one. Each adjacent road tile provides a production boost - higher level roads give bigger boosts. Roads also form the backbone of resource transport: physical goods (wood, stone, food, coins, etc.) flow along connected road networks.",
+    "ru": "Соединяет здания в транспортную сеть. Здания без требуемой дороги работают только на 30%. Соседние дороги дают производственный бонус, а физические ресурсы идут по связанным дорожным сетям."
+  },
+  "building.road.stage.0.name": {
+    "en": "Dirt",
+    "ru": "Грунтовая"
+  },
+  "building.road.stage.1.name": {
+    "en": "Stone",
+    "ru": "Каменная"
+  },
+  "building.road.stage.2.name": {
+    "en": "Paved",
+    "ru": "Мощеная"
+  },
+  "building.road.stage.3.name": {
+    "en": "Asphalt",
+    "ru": "Асфальт"
+  },
+  "building.road.stage.4.name": {
+    "en": "Highway",
+    "ru": "Шоссе"
+  },
+  "building.warehouse.label": {
+    "en": "Warehouse",
+    "ru": "Склад"
+  },
+  "building.warehouse.description": {
+    "en": "Increases resource storage capacity for all resources (except coins, fame, and water). Also acts as a distribution hub in the road network, increasing local resource throughput. Storage bonus stacks with multiple warehouses. Quantum Storage at max level adds 20,000 to every resource cap. Essential for large cities that outgrow base storage limits.",
+    "ru": "Увеличивает лимиты хранения ресурсов, кроме монет, славы и воды. Также работает как распределительный узел дорожной сети. Несколько складов суммируют бонусы."
+  },
+  "building.warehouse.stage.0.name": {
+    "en": "Storage",
+    "ru": "Хранилище"
+  },
+  "building.warehouse.stage.1.name": {
+    "en": "Depot",
+    "ru": "Депо"
+  },
+  "building.warehouse.stage.2.name": {
+    "en": "Mega Depot",
+    "ru": "Мега-депо"
+  },
+  "building.warehouse.stage.3.name": {
+    "en": "Logistics Hub",
+    "ru": "Логистический хаб"
+  },
+  "building.warehouse.stage.4.name": {
+    "en": "Quantum Storage",
+    "ru": "Квантовое хранилище"
+  },
+  "building.research.label": {
+    "en": "Research Center",
+    "ru": "Исследовательский центр"
+  },
+  "building.research.description": {
+    "en": "Advanced facility producing massive science and fame output. Consumes energy to operate. Place adjacent to Libraries for a powerful synergy: +20% science to Research Center, +15% science to Library. Only 3 upgrade levels but each is a significant leap. The Innovation Core is one of the strongest science producers in the game.",
+    "ru": "Продвинутое здание, производящее много науки и славы. Потребляет энергию. Рядом с библиотеками получает сильную синергию науки. Каждый уровень дает большой скачок эффективности."
+  },
+  "building.research.stage.0.name": {
+    "en": "Lab",
+    "ru": "Лаборатория"
+  },
+  "building.research.stage.1.name": {
+    "en": "Institute",
+    "ru": "Институт"
+  },
+  "building.research.stage.2.name": {
+    "en": "Innovation Core",
+    "ru": "Ядро инноваций"
+  },
+  "building.wonder.label": {
+    "en": "Wonder",
+    "ru": "Чудо"
+  },
+  "building.wonder.description": {
+    "en": "Monumental structure generating massive fame, culture and happiness. The ultimate prestige building. World Wonder at max level provides 320 happiness, 12 fame and 35 culture per second. Extremely expensive to build and upgrade but transforms your city into a cultural powerhouse. Required for competitive fame/prestige scoring.",
+    "ru": "Монументальное сооружение, производящее славу, культуру и счастье. Главное престижное здание поздней игры. Очень дорогое, но превращает город в культурный центр."
+  },
+  "building.wonder.stage.0.name": {
+    "en": "Wonder",
+    "ru": "Чудо"
+  },
+  "building.wonder.stage.1.name": {
+    "en": "Grand Wonder",
+    "ru": "Великое чудо"
+  },
+  "building.wonder.stage.2.name": {
+    "en": "World Wonder",
+    "ru": "Мировое чудо"
+  },
+  "technology.basic_logistics.label": {
+    "en": "Basic Logistics",
+    "ru": "Базовая логистика"
+  },
+  "technology.basic_logistics.description": {
+    "en": "Standardized depots and routing rules improve delivered goods output.",
+    "ru": "Стандартизированные склады и правила маршрутов улучшают выпуск доставляемых товаров."
+  },
+  "technology.water_surveying.label": {
+    "en": "Water Surveying",
+    "ru": "Водная разведка"
+  },
+  "technology.water_surveying.description": {
+    "en": "Better survey work increases reserve generation from water towers.",
+    "ru": "Более точная разведка повышает генерацию водного резерва от водонапорных башен."
+  },
+  "technology.civic_planning.label": {
+    "en": "Civic Planning",
+    "ru": "Городское планирование"
+  },
+  "technology.civic_planning.description": {
+    "en": "City planning offices reduce unrest and unlock stronger governance.",
+    "ru": "Планировочные офисы снижают недовольство и открывают более сильное управление."
+  },
+  "technology.emergency_protocols.label": {
+    "en": "Emergency Protocols",
+    "ru": "Протоколы ЧС"
+  },
+  "technology.emergency_protocols.description": {
+    "en": "Prepared response plans reduce the pressure impact of fragile infrastructure.",
+    "ru": "Подготовленные планы реагирования снижают влияние хрупкой инфраструктуры на давление."
+  },
+  "policy.balanced_budget.label": {
+    "en": "Balanced Budget",
+    "ru": "Сбалансированный бюджет"
+  },
+  "policy.balanced_budget.description": {
+    "en": "Default fiscal posture. No strong bonuses or penalties.",
+    "ru": "Базовая финансовая политика без сильных бонусов и штрафов."
+  },
+  "policy.low_taxes.label": {
+    "en": "Low Taxes",
+    "ru": "Низкие налоги"
+  },
+  "policy.low_taxes.description": {
+    "en": "Citizens are happier, but city income and reserves grow slower.",
+    "ru": "Граждане счастливее, но доход города и резервы растут медленнее."
+  },
+  "policy.emergency_reserves.label": {
+    "en": "Emergency Reserves",
+    "ru": "Аварийные резервы"
+  },
+  "policy.emergency_reserves.description": {
+    "en": "Keep reserves and crews ready. Costs income but lowers pressure.",
+    "ru": "Поддерживает запасы и бригады готовыми. Снижает доход, но уменьшает давление."
+  },
+  "policy.labor_mobilization.label": {
+    "en": "Labor Mobilization",
+    "ru": "Трудовая мобилизация"
+  },
+  "policy.labor_mobilization.description": {
+    "en": "Push production harder at the cost of public mood.",
+    "ru": "Ускоряет производство ценой ухудшения общественного настроения."
+  },
+  "policy.green_zoning.label": {
+    "en": "Green Zoning",
+    "ru": "Зеленое зонирование"
+  },
+  "policy.green_zoning.description": {
+    "en": "Cleaner districts improve public mood but slow heavy extraction.",
+    "ru": "Более чистые районы повышают настроение, но замедляют тяжелую добычу."
+  },
+  "event.wanderer.title": {
+    "en": "Wandering Trader",
+    "ru": "Странствующий торговец"
+  },
+  "event.wanderer.body": {
+    "en": "A wandering trader offers a small supply of materials.",
+    "ru": "Странствующий торговец предлагает небольшой запас материалов."
+  },
+  "event.wanderer.accept_label": {
+    "en": "Trade",
+    "ru": "Торговать"
+  },
+  "event.wanderer.decline_label": {
+    "en": "Pass",
+    "ru": "Пропустить"
+  },
+  "event.wanderer.accept_message": {
+    "en": "Trader left some supplies.",
+    "ru": "Торговец оставил немного припасов."
+  },
+  "event.wanderer.decline_message": {
+    "en": "Trader wandered away.",
+    "ru": "Торговец ушел дальше."
+  },
+  "event.settlers.title": {
+    "en": "Settlers Arrive",
+    "ru": "Прибыли поселенцы"
+  },
+  "event.settlers.body": {
+    "en": "A group of settlers wants to join your settlement. Accept for extra coins!",
+    "ru": "Группа поселенцев хочет присоединиться к поселению. Прими их ради дополнительных монет."
+  },
+  "event.settlers.accept_label": {
+    "en": "Welcome!",
+    "ru": "Принять!"
+  },
+  "event.settlers.decline_label": {
+    "en": "Turn Away",
+    "ru": "Отказать"
+  },
+  "event.settlers.accept_message": {
+    "en": "Settlers brought some coins.",
+    "ru": "Поселенцы принесли немного монет."
+  },
+  "event.settlers.decline_message": {
+    "en": "Settlers moved on.",
+    "ru": "Поселенцы ушли дальше."
+  },
+  "event.caravan.title": {
+    "en": "Trade Caravan",
+    "ru": "Торговый караван"
+  },
+  "event.caravan.body": {
+    "en": "A caravan offers supplies for cash flow.",
+    "ru": "Караван предлагает припасы в обмен на денежный поток."
+  },
+  "event.caravan.accept_label": {
+    "en": "Take Deal",
+    "ru": "Взять сделку"
+  },
+  "event.caravan.decline_label": {
+    "en": "Ignore",
+    "ru": "Игнорировать"
+  },
+  "event.caravan.accept_message": {
+    "en": "Caravan delivered resources.",
+    "ru": "Караван доставил ресурсы."
+  },
+  "event.caravan.decline_message": {
+    "en": "Caravan moved on.",
+    "ru": "Караван ушел дальше."
+  },
+  "event.festival.title": {
+    "en": "City Festival",
+    "ru": "Городской фестиваль"
+  },
+  "event.festival.body": {
+    "en": "Hold a festival to boost morale and production for 3 minutes.",
+    "ru": "Проведи фестиваль, чтобы поднять мораль и производство на 3 минуты."
+  },
+  "event.festival.accept_label": {
+    "en": "Fund Festival",
+    "ru": "Профинансировать"
+  },
+  "event.festival.decline_label": {
+    "en": "Skip",
+    "ru": "Пропустить"
+  },
+  "event.festival.accept_message": {
+    "en": "Festival started.",
+    "ru": "Фестиваль начался."
+  },
+  "event.festival.decline_message": {
+    "en": "Citizens are disappointed.",
+    "ru": "Горожане разочарованы."
+  },
+  "event.festival.accept_buff_name": {
+    "en": "Festival",
+    "ru": "Фестиваль"
+  },
+  "event.storm.title": {
+    "en": "Storm Warning",
+    "ru": "Штормовое предупреждение"
+  },
+  "event.storm.body": {
+    "en": "Bad weather incoming. Protect infrastructure or risk widespread issues.",
+    "ru": "Надвигается непогода. Защити инфраструктуру или рискуй массовыми проблемами."
+  },
+  "event.storm.accept_label": {
+    "en": "Mitigate",
+    "ru": "Снизить риск"
+  },
+  "event.storm.decline_label": {
+    "en": "Risk It",
+    "ru": "Рискнуть"
+  },
+  "event.storm.accept_message": {
+    "en": "Storm defenses active.",
+    "ru": "Штормовая защита активна."
+  },
+  "event.storm.decline_message": {
+    "en": "Storm caused damage.",
+    "ru": "Шторм нанес ущерб."
+  },
+  "event.storm.accept_buff_name": {
+    "en": "Protected Grid",
+    "ru": "Защищенная сеть"
+  },
+  "event.innovation.title": {
+    "en": "Innovation Grant",
+    "ru": "Инновационный грант"
+  },
+  "event.innovation.body": {
+    "en": "A grant can accelerate high-tech growth.",
+    "ru": "Грант может ускорить высокотехнологичный рост."
+  },
+  "event.innovation.accept_label": {
+    "en": "Accept Grant",
+    "ru": "Принять грант"
+  },
+  "event.innovation.decline_label": {
+    "en": "Pass",
+    "ru": "Отказаться"
+  },
+  "event.innovation.accept_message": {
+    "en": "Grant applied to city labs.",
+    "ru": "Грант направлен в городские лаборатории."
+  },
+  "event.innovation.decline_message": {
+    "en": "Grant was offered elsewhere.",
+    "ru": "Грант отдали другому городу."
+  },
+  "event.drought.title": {
+    "en": "Drought",
+    "ru": "Засуха"
+  },
+  "event.drought.body": {
+    "en": "Water reserves are dwindling. Spend emergency reserves or farms suffer.",
+    "ru": "Водные резервы истощаются. Потрать аварийные запасы или фермы пострадают."
+  },
+  "event.drought.accept_label": {
+    "en": "Emergency Supply",
+    "ru": "Аварийная вода"
+  },
+  "event.drought.decline_label": {
+    "en": "Wait It Out",
+    "ru": "Переждать"
+  },
+  "event.drought.accept_message": {
+    "en": "Emergency water distributed.",
+    "ru": "Аварийная вода распределена."
+  },
+  "event.drought.decline_message": {
+    "en": "Farms are suffering from drought.",
+    "ru": "Фермы страдают от засухи."
+  },
+  "event.drought.accept_buff_name": {
+    "en": "Water Reserves",
+    "ru": "Водные резервы"
+  },
+  "event.drought.decline_buff_name": {
+    "en": "Drought",
+    "ru": "Засуха"
+  },
+  "event.earthquake.title": {
+    "en": "Earthquake",
+    "ru": "Землетрясение"
+  },
+  "event.earthquake.body": {
+    "en": "Seismic activity detected! Reinforce infrastructure or suffer massive damage.",
+    "ru": "Обнаружена сейсмическая активность. Усиль инфраструктуру или получишь массовый ущерб."
+  },
+  "event.earthquake.accept_label": {
+    "en": "Emergency Reinforcement",
+    "ru": "Аварийное усиление"
+  },
+  "event.earthquake.decline_label": {
+    "en": "Brace for Impact",
+    "ru": "Готовиться к удару"
+  },
+  "event.earthquake.accept_message": {
+    "en": "Reinforcements held. Minimal damage.",
+    "ru": "Усиление выдержало. Ущерб минимален."
+  },
+  "event.earthquake.decline_message": {
+    "en": "Earthquake devastated the city.",
+    "ru": "Землетрясение разрушило город."
+  },
+  "event.earthquake.accept_buff_name": {
+    "en": "Reinforced",
+    "ru": "Усилено"
+  },
+  "event.earthquake.decline_buff_name": {
+    "en": "Aftershock",
+    "ru": "Афтершок"
+  },
+  "event.blackout.title": {
+    "en": "Grid Blackout",
+    "ru": "Отключение сети"
+  },
+  "event.blackout.body": {
+    "en": "Power grid overloaded! Industry halts and crime rises without electricity.",
+    "ru": "Энергосеть перегружена. Без электричества промышленность встает, а преступность растет."
+  },
+  "event.blackout.accept_label": {
+    "en": "Emergency Repairs",
+    "ru": "Аварийный ремонт"
+  },
+  "event.blackout.decline_label": {
+    "en": "Wait for Recovery",
+    "ru": "Ждать восстановления"
+  },
+  "event.blackout.accept_message": {
+    "en": "Power grid restored.",
+    "ru": "Энергосеть восстановлена."
+  },
+  "event.blackout.decline_message": {
+    "en": "The city plunged into darkness.",
+    "ru": "Город погрузился во тьму."
+  },
+  "event.blackout.accept_buff_name": {
+    "en": "Grid Restored",
+    "ru": "Сеть восстановлена"
+  },
+  "event.blackout.decline_buff_name": {
+    "en": "Blackout",
+    "ru": "Блэкаут"
+  },
+  "event.housing_crisis.title": {
+    "en": "Housing Crisis",
+    "ru": "Жилищный кризис"
+  },
+  "event.housing_crisis.body": {
+    "en": "Population is growing faster than housing. Citizens demand action!",
+    "ru": "Население растет быстрее жилья. Граждане требуют действий."
+  },
+  "event.housing_crisis.accept_label": {
+    "en": "Emergency Shelters",
+    "ru": "Временное жилье"
+  },
+  "event.housing_crisis.decline_label": {
+    "en": "Ignore Demands",
+    "ru": "Игнорировать"
+  },
+  "event.housing_crisis.accept_message": {
+    "en": "Emergency shelters built. Crisis averted.",
+    "ru": "Временное жилье построено. Кризис предотвращен."
+  },
+  "event.housing_crisis.decline_message": {
+    "en": "Citizens are furious about housing shortage.",
+    "ru": "Горожане в ярости из-за нехватки жилья."
+  },
+  "event.housing_crisis.accept_buff_name": {
+    "en": "Emergency Housing",
+    "ru": "Временное жилье"
+  },
+  "event.epidemic.title": {
+    "en": "Epidemic Outbreak",
+    "ru": "Вспышка эпидемии"
+  },
+  "event.epidemic.body": {
+    "en": "Disease spreading rapidly! Fund quarantine or lose workforce.",
+    "ru": "Болезнь быстро распространяется. Оплати карантин или потеряешь рабочую силу."
+  },
+  "event.epidemic.accept_label": {
+    "en": "Quarantine & Treat",
+    "ru": "Карантин и лечение"
+  },
+  "event.epidemic.decline_label": {
+    "en": "Let It Pass",
+    "ru": "Пусть пройдет"
+  },
+  "event.epidemic.accept_message": {
+    "en": "Quarantine measures containing the outbreak.",
+    "ru": "Карантин сдерживает вспышку."
+  },
+  "event.epidemic.decline_message": {
+    "en": "Disease ravaged the population.",
+    "ru": "Болезнь ударила по населению."
+  },
+  "event.epidemic.accept_buff_name": {
+    "en": "Quarantine Active",
+    "ru": "Карантин активен"
+  },
+  "event.epidemic.decline_buff_name": {
+    "en": "Epidemic",
+    "ru": "Эпидемия"
+  },
+  "event.transport_collapse.title": {
+    "en": "Transport Collapse",
+    "ru": "Транспортный коллапс"
+  },
+  "event.transport_collapse.body": {
+    "en": "Road network overwhelmed. Supply chains breaking down!",
+    "ru": "Дорожная сеть перегружена. Цепочки поставок рушатся."
+  },
+  "event.transport_collapse.accept_label": {
+    "en": "Emergency Road Crews",
+    "ru": "Дорожные бригады"
+  },
+  "event.transport_collapse.decline_label": {
+    "en": "Endure It",
+    "ru": "Терпеть"
+  },
+  "event.transport_collapse.accept_message": {
+    "en": "Road crews dispatched. Traffic clearing.",
+    "ru": "Дорожные бригады отправлены. Пробки рассасываются."
+  },
+  "event.transport_collapse.decline_message": {
+    "en": "Supply chains disrupted.",
+    "ru": "Цепочки поставок нарушены."
+  },
+  "event.transport_collapse.accept_buff_name": {
+    "en": "Road Repair Crews",
+    "ru": "Дорожные бригады"
+  },
+  "event.transport_collapse.decline_buff_name": {
+    "en": "Transport Jam",
+    "ru": "Транспортный затор"
+  },
+  "tutorial.welcome.title": {
+    "en": "Welcome, Mayor!",
+    "ru": "Добро пожаловать, мэр!"
+  },
+  "tutorial.welcome.text": {
+    "en": "Your settlement awaits. Let's build a city from scratch! Start by placing some roads -- they connect your buildings and enable resource transport.",
+    "ru": "Твое поселение ждет. Построим город с нуля. Начни с дорог: они соединяют здания и включают транспорт ресурсов."
+  },
+  "tutorial.build_road.title": {
+    "en": "Build Roads",
+    "ru": "Построй дороги"
+  },
+  "tutorial.build_road.text": {
+    "en": "Select ROAD from the build menu and place a few tiles. Roads boost adjacent buildings and form the transport network for physical resources like wood, stone and food.",
+    "ru": "Выбери ДОРОГУ в меню строительства и поставь несколько клеток. Дороги усиливают соседние здания и создают сеть для физических ресурсов вроде дерева, камня и еды."
+  },
+  "tutorial.build_farm.title": {
+    "en": "Feed Your People",
+    "ru": "Накорми людей"
+  },
+  "tutorial.build_farm.text": {
+    "en": "Build a FARM near your roads. Farms on grass terrain produce bonus food (+20%). Place them next to lumber mills for a synergy bonus!",
+    "ru": "Построй ФЕРМУ рядом с дорогами. Фермы на траве получают бонус еды (+20%). Ставь их рядом с лесопилками для синергии."
+  },
+  "tutorial.build_hut.title": {
+    "en": "Attract Residents",
+    "ru": "Привлеки жителей"
+  },
+  "tutorial.build_hut.text": {
+    "en": "Build a HUT next to a road. Residents need food and water. Without a road connection, buildings operate at only 30% efficiency!",
+    "ru": "Построй ХИЖИНУ рядом с дорогой. Жителям нужны еда и вода. Без дороги здания работают только на 30% эффективности."
+  },
+  "tutorial.build_water.title": {
+    "en": "Water Coverage",
+    "ru": "Покрытие водой"
+  },
+  "tutorial.build_water.text": {
+    "en": "Build a WATER TOWER to cover nearby residential buildings. Water Reserve is a city stockpile for crises; coverage is local and shown on selected buildings.",
+    "ru": "Построй ВОДОНАПОРНУЮ БАШНЮ, чтобы покрыть ближайшее жилье. Резерв воды - городской запас для кризисов; покрытие локальное и видно на выбранных зданиях."
+  },
+  "tutorial.upgrade.title": {
+    "en": "Upgrade Buildings",
+    "ru": "Улучшай здания"
+  },
+  "tutorial.upgrade.text": {
+    "en": "Click a building to select it, then press U or click Upgrade. Higher levels produce more resources! Place workshops nearby for an upgrade discount.",
+    "ru": "Кликни здание, затем нажми U или кнопку улучшения. Высокие уровни дают больше ресурсов. Ставь мастерские рядом для скидки на улучшения."
+  },
+  "tutorial.level_up.title": {
+    "en": "Grow Your City",
+    "ru": "Развивай город"
+  },
+  "tutorial.level_up.text": {
+    "en": "Check the city stats panel for level-up requirements. Meet them to unlock new buildings and bonuses! Each hex neighbor counts!",
+    "ru": "Смотри требования повышения уровня в панели города. Выполняй их, чтобы открыть новые здания и бонусы. Каждый соседний гекс важен."
+  },
+  "tutorial.done.title": {
+    "en": "You're Ready!",
+    "ru": "Ты готов!"
+  },
+  "tutorial.done.text": {
+    "en": "Great job! You know the basics. Keep building, upgrading, and expanding. Aim for City Level 7 and beyond! Watch for events and manage your pressure index.",
+    "ru": "База освоена. Продолжай строить, улучшать и расширяться. Целься в уровень города 7 и выше. Следи за событиями и индексом давления."
+  },
+  "synergy.farm_lumber.description": {
+    "en": "Lumber mills near farms share irrigation and land management, boosting both outputs.",
+    "ru": "Лесопилки рядом с фермами делятся ирригацией и управлением землей, усиливая оба производства."
+  },
+  "synergy.market_hut.description": {
+    "en": "Markets near housing attract shoppers, increasing residential tax income.",
+    "ru": "Рынки рядом с жильем привлекают покупателей и повышают налоговый доход жителей."
+  },
+  "synergy.market_apartment.description": {
+    "en": "Markets near apartment complexes serve dense populations, boosting commerce.",
+    "ru": "Рынки рядом с апартаментами обслуживают плотное население и усиливают коммерцию."
+  },
+  "synergy.park_any.description": {
+    "en": "Parks create a peaceful atmosphere, spreading happiness to all nearby buildings.",
+    "ru": "Парки создают спокойную атмосферу и распространяют счастье на здания поблизости."
+  },
+  "synergy.power_any.description": {
+    "en": "Power plants energize nearby buildings, boosting their production efficiency.",
+    "ru": "Электростанции питают здания рядом и повышают их производственную эффективность."
+  },
+  "synergy.water_hut.description": {
+    "en": "Water towers supply clean water to nearby huts, enabling full operational efficiency.",
+    "ru": "Водонапорные башни снабжают хижины чистой водой и включают полную эффективность."
+  },
+  "synergy.water_apartment.description": {
+    "en": "Water towers supply clean water to nearby apartments, enabling full efficiency.",
+    "ru": "Водонапорные башни снабжают апартаменты чистой водой и включают полную эффективность."
+  },
+  "synergy.workshop_any.description": {
+    "en": "Workshops provide local tooling expertise, reducing upgrade costs for nearby buildings.",
+    "ru": "Мастерские дают местную инженерную поддержку и снижают стоимость улучшений рядом."
+  },
+  "synergy.research_library.description": {
+    "en": "Research centers and libraries share knowledge, dramatically boosting science output.",
+    "ru": "Исследовательские центры и библиотеки обмениваются знаниями, резко повышая производство науки."
+  },
+  "synergy.foundry_quarry.description": {
+    "en": "Foundries next to quarries receive raw stone directly, boosting metal and glass output.",
+    "ru": "Литейные цеха рядом с карьерами получают сырой камень напрямую, усиливая металл и стекло."
+  },
+  "ui.common.unknown": {
+    "en": "Unknown",
+    "ru": "Неизвестно"
+  },
+  "ui.common.level_short": {
+    "en": "Lv",
+    "ru": "Ур"
+  },
+  "ui.command.unknown_building": {
+    "en": "Unknown building: %s",
+    "ru": "Неизвестное здание: %s"
+  },
+  "ui.command.cannot_build_here": {
+    "en": "Cannot build here",
+    "ru": "Здесь нельзя строить"
+  },
+  "ui.command.requires_city_level": {
+    "en": "Requires city level %d",
+    "ru": "Требуется уровень города %d"
+  },
+  "ui.command.not_enough_resources": {
+    "en": "Not enough resources",
+    "ru": "Не хватает ресурсов"
+  },
+  "ui.command.built": {
+    "en": "Built %s",
+    "ru": "Построено: %s"
+  },
+  "ui.command.nothing_to_bulldoze": {
+    "en": "Nothing to bulldoze",
+    "ru": "Нечего сносить"
+  },
+  "ui.command.bulldozed": {
+    "en": "Bulldozed %s",
+    "ru": "Снесено: %s"
+  },
+  "ui.command.no_building_here": {
+    "en": "No building here",
+    "ru": "Здесь нет здания"
+  },
+  "ui.command.already_max_level": {
+    "en": "Already at max level",
+    "ru": "Уже максимальный уровень"
+  },
+  "ui.command.no_upgrade_available": {
+    "en": "No upgrade available",
+    "ru": "Улучшение недоступно"
+  },
+  "ui.command.upgraded_to": {
+    "en": "Upgraded to %s",
+    "ru": "Улучшено до: %s"
+  },
+  "ui.command.need_population": {
+    "en": "Need %d population",
+    "ru": "Нужно жителей: %d"
+  },
+  "ui.command.advanced_level": {
+    "en": "Advanced to level %d!",
+    "ru": "Город вырос до уровня %d!"
+  },
+  "ui.command.building_fine": {
+    "en": "Building is fine",
+    "ru": "Со зданием все в порядке"
+  },
+  "ui.command.need_coins": {
+    "en": "Need %d coins",
+    "ru": "Нужно монет: %d"
+  },
+  "ui.command.building_repaired": {
+    "en": "Building repaired",
+    "ru": "Здание отремонтировано"
+  },
+  "ui.command.need_prestige_level": {
+    "en": "Need at least level 3 to prestige",
+    "ru": "Для престижа нужен минимум 3 уровень"
+  },
+  "ui.command.prestige_done": {
+    "en": "Prestige! Earned %d stars (total: %d)",
+    "ru": "Престиж! Получено звезд: %d (всего: %d)"
+  },
+  "ui.command.unknown_technology": {
+    "en": "Unknown technology: %s",
+    "ru": "Неизвестная технология: %s"
+  },
+  "ui.command.already_researched": {
+    "en": "Already researched: %s",
+    "ru": "Уже изучено: %s"
+  },
+  "ui.command.missing_requirements": {
+    "en": "Missing requirements: %s",
+    "ru": "Не выполнены требования: %s"
+  },
+  "ui.command.researched": {
+    "en": "Researched %s",
+    "ru": "Изучено: %s"
+  },
+  "ui.command.unknown_policy": {
+    "en": "Unknown policy: %s",
+    "ru": "Неизвестная политика: %s"
+  },
+  "ui.command.policy_set": {
+    "en": "Policy set: %s",
+    "ru": "Политика выбрана: %s"
+  },
+  "ui.command.no_event_system": {
+    "en": "No event system",
+    "ru": "Система событий недоступна"
+  },
+  "ui.command.event_resolved": {
+    "en": "Event %s %s",
+    "ru": "Событие %s: %s"
+  },
+  "ui.command.event_accepted": {
+    "en": "accepted",
+    "ru": "принято"
+  },
+  "ui.command.event_declined": {
+    "en": "declined",
+    "ru": "отклонено"
+  },
+  "ui.command.event_action_failed": {
+    "en": "Event action failed",
+    "ru": "Действие события не удалось"
+  },
+  "ui.progress.city_advanced": {
+    "en": "City advanced to %s (level %d)!",
+    "ru": "Город вырос: %s (уровень %d)!"
+  },
+  "ui.save.saved": {
+    "en": "Game saved (slot %d)",
+    "ru": "Игра сохранена (слот %d)"
+  },
+  "ui.save.no_save": {
+    "en": "No save in slot %d",
+    "ru": "Нет сохранения в слоте %d"
+  },
+  "ui.save.corrupted": {
+    "en": "Save file corrupted (slot %d)",
+    "ru": "Файл сохранения поврежден (слот %d)"
+  },
+  "ui.save.invalid": {
+    "en": "Save file invalid (slot %d)",
+    "ru": "Файл сохранения некорректен (слот %d)"
+  },
+  "ui.save.loaded": {
+    "en": "Game loaded (slot %d)",
+    "ru": "Игра загружена (слот %d)"
+  },
+  "ui.event.title": {
+    "en": "Event",
+    "ru": "Событие"
+  }
 }

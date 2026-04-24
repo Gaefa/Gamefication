@@ -4,45 +4,77 @@
     "label": "Basic Logistics",
     "description": "Standardized depots and routing rules improve delivered goods output.",
     "tier": 1,
-    "cost": { "coins": 80, "wood": 40 },
+    "cost": {
+      "coins": 80,
+      "wood": 40
+    },
     "requires": [],
     "effects": {
-      "production_mult": { "wood": 0.05, "stone": 0.05, "food": 0.05 }
-    }
+      "production_mult": {
+        "wood": 0.05,
+        "stone": 0.05,
+        "food": 0.05
+      }
+    },
+    "label_key": "technology.basic_logistics.label",
+    "description_key": "technology.basic_logistics.description"
   },
   {
     "id": "water_surveying",
     "label": "Water Surveying",
     "description": "Better survey work increases reserve generation from water towers.",
     "tier": 1,
-    "cost": { "coins": 120, "stone": 60 },
+    "cost": {
+      "coins": 120,
+      "stone": 60
+    },
     "requires": [],
     "effects": {
-      "production_mult": { "water_res": 0.1 },
-      "pressure_delta": -2.0
-    }
+      "production_mult": {
+        "water_res": 0.1
+      },
+      "pressure_delta": -2
+    },
+    "label_key": "technology.water_surveying.label",
+    "description_key": "technology.water_surveying.description"
   },
   {
     "id": "civic_planning",
     "label": "Civic Planning",
     "description": "City planning offices reduce unrest and unlock stronger governance.",
     "tier": 2,
-    "cost": { "coins": 250, "planks": 80, "science": 20 },
-    "requires": ["basic_logistics"],
+    "cost": {
+      "coins": 250,
+      "planks": 80,
+      "science": 20
+    },
+    "requires": [
+      "basic_logistics"
+    ],
     "effects": {
-      "pressure_delta": -4.0,
-      "happiness_add": 2.0
-    }
+      "pressure_delta": -4,
+      "happiness_add": 2
+    },
+    "label_key": "technology.civic_planning.label",
+    "description_key": "technology.civic_planning.description"
   },
   {
     "id": "emergency_protocols",
     "label": "Emergency Protocols",
     "description": "Prepared response plans reduce the pressure impact of fragile infrastructure.",
     "tier": 2,
-    "cost": { "coins": 300, "tools": 80, "science": 30 },
-    "requires": ["civic_planning"],
+    "cost": {
+      "coins": 300,
+      "tools": 80,
+      "science": 30
+    },
+    "requires": [
+      "civic_planning"
+    ],
     "effects": {
       "pressure_mult": 0.95
-    }
+    },
+    "label_key": "technology.emergency_protocols.label",
+    "description_key": "technology.emergency_protocols.description"
   }
 ]

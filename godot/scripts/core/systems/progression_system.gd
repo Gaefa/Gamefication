@@ -115,7 +115,11 @@ func _check_level_up() -> void:
 			GameStateStore.add_resource(res_id, (reward as Dictionary)[res_id] as float)
 
 	EventBus.city_level_changed.emit(next_level)
-	EventBus.toast_requested.emit("City advanced to %s (level %d)!" % [def.get("name", "?"), next_level], 5.0)
+	EventBus.toast_requested.emit(
+		Localization.t("ui.progress.city_advanced", "City advanced to %s (level %d)!")
+			% [Localization.content_text(def, "name", "?"), next_level],
+		5.0
+	)
 
 
 func _check_win_condition() -> void:
