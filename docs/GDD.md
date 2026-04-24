@@ -28,6 +28,10 @@
 - технологии и политики входят в базовую игру.
 - DLC расширяют контент, инфраструктуру и сценарии, но не продают фундаментальные системы.
 
+6. `Mandate Pressure`
+- игрок не просто строит город, а выполняет мандат перед фракцией-покровителем.
+- отзыв администратора, финансирование и отношения с покровителем создают внешний слой давления.
+
 ## 3. Target Platforms
 
 Primary:
@@ -48,6 +52,7 @@ Secondary:
 5. Исследовать технологии и выбирать политики.
 6. Развивать районы через adjacency bonuses и service coverage.
 7. Достичь сценарной цели или уйти в endless/endgame pressure.
+8. Управлять отношениями с покровителем и удерживать мандат.
 
 ## 5. Game Modes
 
@@ -73,6 +78,17 @@ Endgame-режим после победы в сценарии:
 - stricter citizen demands;
 - prestige stars;
 - legacy bonuses for future runs.
+
+### Regional Cluster Mode
+
+Поздний режим, не MVP.
+
+Игрок управляет несколькими городами региона:
+- shared reserves;
+- trade routes;
+- regional objectives;
+- faction-level mandates;
+- hazards that spill across cities.
 
 ## 6. Resources And Utilities
 
@@ -204,6 +220,10 @@ Inputs:
 - damaged buildings;
 - unmet demands;
 - policy instability.
+- patron trust;
+- mandate progress;
+- regional hazards;
+- rival administrator pressure.
 
 Outputs:
 - event weights;
@@ -213,7 +233,57 @@ Outputs:
 
 Goal: create escalating drama without hidden cheating.
 
-## 13. MVP Scope
+## 13. Mandate, Patron And Recall
+
+Администратор получает мандат от фракции-покровителя.
+
+Core parameters:
+- patron trust;
+- funding level;
+- autonomy;
+- mandate objectives;
+- recall risk.
+
+Gameplay:
+- high trust unlocks grants, emergency aid and tech access;
+- low trust creates audits, forced policies, budget cuts and recall ultimatums;
+- recall is a failure path or crisis chain depending on scenario rules;
+- player may switch patron or push for autonomy in later game.
+
+MVP scope:
+- one patron per scenario;
+- trust meter;
+- 2-3 mandate events;
+- recall warning and failure condition.
+
+Later scope:
+- multiple patrons;
+- switching allegiance;
+- rival administrators;
+- regional cluster governance.
+
+## 14. Competition Model
+
+Competition should exist, but not as full AI city simulation in MVP.
+
+Recommended base approach:
+- asynchronous PvE rivals;
+- scenario scores;
+- grants and contracts contested by rival administrators;
+- narrative events showing other administrators' progress.
+
+Why:
+- creates external pressure;
+- avoids scope explosion;
+- preserves single-player citybuilder focus.
+
+Avoid for MVP:
+- RTS-like enemy cities;
+- PvP;
+- full diplomacy simulator;
+- simultaneous regional AI economy.
+
+## 15. MVP Scope
 
 Must have:
 - procedural playable map;
@@ -225,6 +295,8 @@ Must have:
 - 5 city levels;
 - tech tree v1;
 - policy deck v1;
+- patron trust v1;
+- mandate objectives v1;
 - 8-10 events;
 - 1 scenario;
 - save/load;
@@ -236,8 +308,9 @@ Must not have:
 - complex religion/ideology;
 - full metro/rail systems;
 - multiplayer.
+- full rival AI cities.
 
-## 14. Vertical Slice Scope
+## 16. Vertical Slice Scope
 
 Add:
 - 15-18 buildings;
@@ -249,8 +322,9 @@ Add:
 - settings;
 - export pipeline;
 - playtest feedback loop.
+- recall/mandate event chain.
 
-## 15. Success Criteria
+## 17. Success Criteria
 
 Internal MVP:
 - 20 minute play session without explaining mechanics verbally.
