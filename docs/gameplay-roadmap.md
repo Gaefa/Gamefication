@@ -166,9 +166,9 @@ Demand растет с уровнем города. Early game про выжив
 - Metropolis: science/fame, endgame pressure;
 - Wonder City: сценарная победа или prestige.
 
-## 10. Tech / Policy / Religion / Ideology DLC
+## 10. Tech And Policy In Base Game
 
-Эти системы нельзя вшивать напрямую в здания.
+Технологии и политики входят в базовую игру. Это не DLC.
 
 Архитектурно они должны работать через modifiers:
 - production modifiers;
@@ -178,7 +178,13 @@ Demand растет с уровнем города. Early game про выжив
 - citizen faction preferences;
 - scenario objectives.
 
-Каждый DLC добавляет content pack + systems, но не ломает base loop.
+Религия/идеология не входят в MVP. Их можно добавить позже как расширение citizen/faction layer, но только после стабильной базовой политики.
+
+Подходящие DLC вместо tech/policy:
+- transport expansion: rail, metro, stations;
+- leisure expansion: entertainment, tourism, festivals;
+- building expansion: new districts, megaprojects, density;
+- biome/scenario packs.
 
 ## 11. Vertical Slice
 

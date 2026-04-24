@@ -98,37 +98,52 @@ Mobile:
 - music/art supporter pack;
 - QoL overlays, если не превращаются в pay-to-understand.
 
-## 4. DLC И Soft Push
+## 4. Base Game: Tech And Policy
 
-### DLC 1: Crisis Director Pack
+Технологии и политики входят в базовую игру.
 
-Состав:
-- новые природные катастрофы;
-- социальные кризисы;
-- цепочки событий;
-- новые scenario objectives.
+Причина:
+- это фундамент progression и governance;
+- без них citybuilder будет казаться плоским;
+- продавать базовое управление как DLC нельзя, это ломает доверие.
 
-Правило: базовая игра уже должна иметь достаточный набор кризисов. DLC не должно выглядеть как вырезанная core-механика.
+Base scope:
+- tech tree v1;
+- policy categories v1;
+- modifiers for economy, pressure, citizen demands and unlocks.
 
-### DLC 2: Tech And Policy
+## 5. DLC И Soft Push
 
-Состав:
-- technology tree;
-- policy cards;
-- экономические доктрины;
-- новые tradeoffs.
-
-Архитектура: через modifiers, unlock rules, event weights.
-
-### DLC 3: Faith And Ideology
+### DLC 1: Transit Authority
 
 Состав:
-- религиозные/идеологические фракции;
-- требования граждан;
-- конфликты районов;
-- уникальные события.
+- rail tracks;
+- metro lines;
+- stations;
+- commute demand;
+- freight logistics;
+- transit-oriented scenarios.
 
-Архитектура: отдельный content pack + faction/demand system. Не хардкодить в здания.
+Правило: дороги и базовая логистика остаются в базе. Rail/metro расширяют масштаб и density gameplay.
+
+### DLC 2: Leisure Districts
+
+Состав:
+- entertainment buildings;
+- tourism;
+- festivals;
+- nightlife districts;
+- stadium/theater expansions;
+- happiness and public order tradeoffs.
+
+### DLC 3: Urban Expansion Pack
+
+Состав:
+- new residential/commercial/production buildings;
+- high-density variants;
+- new city services;
+- megaprojects;
+- new adjacency patterns.
 
 ### DLC 4: Biomes And Frontiers
 
@@ -138,6 +153,14 @@ Mobile:
 - islands;
 - mountain valley;
 - biome-specific resources and hazards.
+
+### DLC 5: Civic Life
+
+Состав:
+- deeper citizen groups;
+- education/culture chains;
+- public institutions;
+- city identity scenarios.
 
 ### Supporter Pack
 
