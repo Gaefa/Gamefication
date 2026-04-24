@@ -265,21 +265,20 @@ Later scope:
 
 ## 14. Player-Created Faction
 
-Создание собственной фракции - late-game/autonomy path.
+Создание собственной фракции может быть стартовым hard mode или late-game/autonomy path.
 
 It should answer the fantasy:
 - город больше не просто выполняет чужой мандат;
 - игрок формирует собственную доктрину;
 - кластер городов становится политическим проектом;
-- бывшие покровители и rival administrators реагируют.
+- покровители и rival administrators реагируют.
 
-Unlock requirements:
-- high city level;
-- high citizen trust;
-- stable critical utilities;
-- enough fame/prestige;
-- mandate conflict or mandate completion;
-- at least one strong internal faction supporting autonomy.
+Creation/maintenance requirements:
+- money: start fund or treasury threshold;
+- reputation: fame/prestige/legitimacy;
+- city support: citizen trust or internal faction support;
+- operational stability: food/water/energy/security baseline;
+- recognition: trade partner, ally or successful public mandate.
 
 Core choices:
 - faction name/banner;
@@ -287,20 +286,58 @@ Core choices:
 - economic doctrine;
 - civic doctrine;
 - external stance: cooperative, neutral, defiant.
+- founder archetype.
 
 Gameplay effects:
-- changes patron relationship into diplomatic relationship;
+- removes recall risk but creates legitimacy collapse risk;
 - unlocks unique policies;
 - changes event pool;
-- creates sanctions/support offers;
+- creates sanctions/support offers/trade penalties;
 - enables regional cluster objectives.
 
+Start paths:
+
+1. `Appointed Administrator`
+- easier start;
+- patron funding;
+- emergency aid;
+- recall risk;
+- lower autonomy.
+
+2. `Independent Founder`
+- harder start;
+- low money;
+- no bailout;
+- free doctrine/policy identity;
+- legitimacy collapse risk instead of recall.
+
+3. `Breakaway Mandate`
+- starts with partial patron support and internal conflict;
+- low patron trust;
+- early branch: obey, switch patron, or found faction.
+
+Founder archetypes:
+
+`The Rebel`
+- bonus to unrest conversion and crisis legitimacy gains;
+- penalty to external trade/trust.
+
+`The People's Choice`
+- high citizen trust and lower protest risk;
+- penalty when harsh policies or shortages hit.
+
+`The Outcasts`
+- high autonomy and resilience;
+- low funding, weak recognition, harder trade access.
+
 MVP status:
-- not required for first MVP;
-- can be foreshadowed through mandate UI and patron trust.
+- support two starts: `Appointed Administrator` and `Independent Founder`;
+- founder archetype can be a data flag with 2-3 modifiers;
+- full custom banner/name can wait.
 
 Vertical slice status:
-- optional event chain, not full system.
+- add `Breakaway Mandate` scenario branch;
+- add one founder archetype-specific event chain.
 
 Expansion potential:
 - full custom faction mechanics;
