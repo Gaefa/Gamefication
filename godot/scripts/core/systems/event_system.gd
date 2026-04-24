@@ -152,8 +152,11 @@ func _force_issues(count: int) -> void:
 		var idx: int = _rng.range_int(0, coords.size())
 		var coord: Vector2i = coords[idx] as Vector2i
 		var bld: Dictionary = GameStateStore.get_building(coord)
+		if (bld.get("type", "") as String) == "road":
+			continue
 		bld["has_issue"] = true
 		GameStateStore.set_building(coord, bld)
+		EventBus.building_issue_added.emit(coord)
 
 
 func _damage_random_buildings(count: int) -> void:

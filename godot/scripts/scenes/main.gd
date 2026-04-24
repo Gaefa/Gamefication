@@ -71,6 +71,8 @@ func _connect_signals() -> void:
 	EventBus.building_removed.connect(_on_building_changed)
 	EventBus.building_upgraded.connect(func(_c: Vector2i, _l: int) -> void: _refresh_buildings())
 	EventBus.building_repaired.connect(func(_c: Vector2i) -> void: _refresh_buildings())
+	EventBus.building_damaged.connect(func(_c: Vector2i, _s: float) -> void: _refresh_buildings())
+	EventBus.building_issue_added.connect(func(_c: Vector2i) -> void: _refresh_buildings())
 
 
 func _input(event: InputEvent) -> void:

@@ -13,6 +13,7 @@ signal building_removed(coord: Vector2i, type_id: String)
 signal building_upgraded(coord: Vector2i, new_level: int)
 signal building_repaired(coord: Vector2i)
 signal building_damaged(coord: Vector2i, severity: float)
+signal building_issue_added(coord: Vector2i)
 
 # --- Infrastructure ---
 signal road_network_changed()

@@ -7,6 +7,7 @@ var _effects: Array = []  # Array[{coord, color, remaining}]
 func _ready() -> void:
 	EventBus.building_placed.connect(_on_building_placed)
 	EventBus.building_damaged.connect(_on_building_damaged)
+	EventBus.building_issue_added.connect(_on_building_issue_added)
 
 
 func _on_building_placed(coord: Vector2i, _type_id: String) -> void:
@@ -16,6 +17,11 @@ func _on_building_placed(coord: Vector2i, _type_id: String) -> void:
 
 func _on_building_damaged(coord: Vector2i, _severity: float) -> void:
 	_effects.append({"coord": coord, "color": Color(1.0, 0.2, 0.2, 0.8), "remaining": 1.0})
+	queue_redraw()
+
+
+func _on_building_issue_added(coord: Vector2i) -> void:
+	_effects.append({"coord": coord, "color": Color(1.0, 0.85, 0.2, 0.8), "remaining": 0.8})
 	queue_redraw()
 
 
