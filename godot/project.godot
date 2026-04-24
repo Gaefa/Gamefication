@@ -27,6 +27,7 @@ GameStateStore="*res://scripts/autoload/game_state_store.gd"
 SimulationRunner="*res://scripts/autoload/simulation_runner.gd"
 SaveService="*res://scripts/autoload/save_service.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
+Localization="*res://scripts/autoload/localization.gd"
 
 [display]
 

@@ -232,7 +232,23 @@ Godot checks:
 - short runtime launch;
 - export preset check.
 
-## 12. Immediate Technical Tasks
+## 12. Internationalization
+
+Supported base languages:
+- English;
+- Russian.
+
+Runtime:
+- `Localization` autoload;
+- `content/base/localization.json`;
+- UI subscribes to `locale_changed` when visible labels need rebuilding.
+
+Rules:
+- new player-facing UI text must use localization keys;
+- content labels/descriptions should migrate to `*_key` fields before demo;
+- release checklist must verify both English and Russian UI paths.
+
+## 13. Immediate Technical Tasks
 
 1. Add `technologies.json` and `TechnologySystem`.
 2. Add `policies.json` and `PolicySystem`.

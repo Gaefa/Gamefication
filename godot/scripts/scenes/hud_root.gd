@@ -8,6 +8,8 @@ var _city_label: Label
 var _risk_label: Label
 
 var _build_panel: PanelContainer
+var _build_title_label: Label
+var _build_gov_button: Button
 var _build_scroll: ScrollContainer
 var _build_vbox: VBoxContainer
 var _category_select: OptionButton
@@ -22,6 +24,7 @@ var _toast_label: Label
 var _toast_timer: float = 0.0
 
 var _help_panel: PanelContainer
+var _help_label: Label
 var _help_visible: bool = false
 var _governance_panel: PanelContainer
 var _governance_visible: bool = false
@@ -53,6 +56,7 @@ func _connect_signals() -> void:
 	EventBus.tick_finished.connect(_on_tick_finished)
 	EventBus.city_level_changed.connect(func(_lv: int) -> void: _rebuild_building_list())
 	EventBus.build_mode_changed.connect(_on_build_mode_changed)
+	Localization.locale_changed.connect(_on_locale_changed)
 
 
 # ===========================================================
@@ -122,7 +126,17 @@ func _update_resource_bar() -> void:
 	var lv_name: String = lv_def.get("name", "?") as String
 
 	var energy: float = GameStateStore.get_resource("energy")
-	var city_text: String = "Pop:%d  Happy:%d%%  Energy:%d  Lv%d %s" % [pop, int(happiness), int(energy), city_lv, lv_name]
+	var city_text: String = "%s:%d  %s:%d%%  %s:%d  %s%d %s" % [
+		Localization.t("ui.resource.population", "Pop"),
+		pop,
+		Localization.t("ui.resource.happiness", "Happy"),
+		int(happiness),
+		Localization.t("ui.resource.energy", "Energy"),
+		int(energy),
+		Localization.t("ui.resource.level", "Lv"),
+		city_lv,
+		lv_name,
+	]
 	# Next level hint
 	var next_def: Dictionary = ContentDB.get_level_def(city_lv + 1)
 	if not next_def.is_empty():
@@ -133,7 +147,7 @@ func _update_resource_bar() -> void:
 			for res_id: String in reqs:
 				if GameStateStore.get_resource(res_id) >= (reqs[res_id] as float):
 					met += 1
-			city_text += "  Next:%d/%d" % [met, reqs.size()]
+			city_text += "  %s:%d/%d" % [Localization.t("ui.resource.next", "Next"), met, reqs.size()]
 	_city_label.text = city_text
 
 	# --- Risk ---
@@ -147,7 +161,11 @@ func _update_resource_bar() -> void:
 		"emergency": phase_color = Color(0.9, 0.2, 0.2)
 		_: phase_color = Color.WHITE
 	_risk_label.add_theme_color_override("font_color", phase_color)
-	_risk_label.text = "Pressure: %s %.0f" % [phase.capitalize(), p_idx]
+	_risk_label.text = "%s: %s %.0f" % [
+		Localization.t("ui.risk.pressure", "Pressure"),
+		Localization.t("ui.phase.%s" % phase, phase.capitalize()),
+		p_idx,
+	]
 
 	_update_build_list_affordability()
 
@@ -157,6 +175,14 @@ func _update_resource_bar() -> void:
 # ===========================================================
 
 const CATEGORY_ORDER: Array[String] = ["Infrastructure", "Residential", "Production", "Commercial", "Culture", "Advanced"]
+const CATEGORY_KEYS := {
+	"Infrastructure": "ui.category.infrastructure",
+	"Residential": "ui.category.residential",
+	"Production": "ui.category.production",
+	"Commercial": "ui.category.commercial",
+	"Culture": "ui.category.culture",
+	"Advanced": "ui.category.advanced",
+}
 const BUILD_PANEL_W := 220.0
 
 func _build_build_panel() -> void:
@@ -181,26 +207,22 @@ func _build_build_panel() -> void:
 	header.mouse_filter = Control.MOUSE_FILTER_PASS
 	vbox.add_child(header)
 
-	var title := Label.new()
-	title.text = "Build"
-	title.add_theme_font_size_override("font_size", 12)
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.add_child(title)
+	_build_title_label = Label.new()
+	_build_title_label.add_theme_font_size_override("font_size", 12)
+	_build_title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header.add_child(_build_title_label)
 
-	var gov_btn := Button.new()
-	gov_btn.text = "Gov"
-	gov_btn.tooltip_text = "Governance (G): tech tree and policies"
-	gov_btn.add_theme_font_size_override("font_size", 10)
-	gov_btn.pressed.connect(toggle_governance)
-	header.add_child(gov_btn)
+	_build_gov_button = Button.new()
+	_build_gov_button.add_theme_font_size_override("font_size", 10)
+	_build_gov_button.pressed.connect(toggle_governance)
+	header.add_child(_build_gov_button)
 
 	_category_select = OptionButton.new()
 	_category_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_category_select.add_theme_font_size_override("font_size", 10)
-	for cat: String in CATEGORY_ORDER:
-		_category_select.add_item(cat)
 	_category_select.item_selected.connect(_on_category_selected)
 	header.add_child(_category_select)
+	_refresh_build_panel_labels()
 
 	# Scrollable building list
 	_build_scroll = ScrollContainer.new()
@@ -227,6 +249,26 @@ func _set_active_category(cat: String) -> void:
 		if idx >= 0 and _category_select.selected != idx:
 			_category_select.select(idx)
 	_rebuild_building_list()
+
+
+func _refresh_build_panel_labels() -> void:
+	if _build_title_label:
+		_build_title_label.text = Localization.t("ui.build.title", "Build")
+	if _build_gov_button:
+		_build_gov_button.text = Localization.t("ui.governance.short", "Gov")
+		_build_gov_button.tooltip_text = Localization.t("ui.governance.tooltip", "Governance (G): tech tree and policies")
+	if _category_select:
+		var selected_category := _active_category
+		_category_select.clear()
+		for cat: String in CATEGORY_ORDER:
+			_category_select.add_item(_category_label(cat))
+		var idx: int = CATEGORY_ORDER.find(selected_category)
+		if idx >= 0:
+			_category_select.select(idx)
+
+
+func _category_label(category: String) -> String:
+	return Localization.t(CATEGORY_KEYS.get(category, ""), category)
 
 
 func _rebuild_building_list() -> void:
@@ -305,10 +347,10 @@ func _format_key_effect(ldata: Dictionary) -> String:
 		parts.append("-%.0f %s" % [consumes[r] as float, rdef.get("label", r)])
 	var bld_pop: int = ldata.get("population", 0) as int
 	if bld_pop > 0:
-		parts.append("+%d pop" % bld_pop)
+		parts.append("+%d %s" % [bld_pop, Localization.t("ui.effect.population", "pop")])
 	var storage: int = ldata.get("storage", 0) as int
 	if storage > 0:
-		parts.append("+%d storage" % storage)
+		parts.append("+%d %s" % [storage, Localization.t("ui.effect.storage", "storage")])
 	if parts.is_empty():
 		return ""
 	return ", ".join(parts)
@@ -354,6 +396,20 @@ func _on_build_mode_changed(type_id: String) -> void:
 				btn.modulate = Color.WHITE
 
 
+func _on_locale_changed(_locale: String) -> void:
+	_refresh_build_panel_labels()
+	_update_resource_bar()
+	_rebuild_building_list()
+	if _selected_coord == Vector2i(-9999, -9999):
+		_info_label.text = _get_welcome_text()
+	else:
+		_update_info()
+	if _help_label:
+		_help_label.text = _get_help_text()
+	if _governance_visible:
+		_rebuild_governance_panel()
+
+
 # ===========================================================
 # INFO PANEL (bottom-left) — Status / Problem / Next Action
 # ===========================================================
@@ -394,10 +450,10 @@ func _build_info_panel() -> void:
 
 
 func _get_welcome_text() -> String:
-	return """Click tile for info
+	return Localization.t("ui.welcome.text", """Click tile for info
 WASD-Move Scroll-Zoom LMB-Select
 RMB/Esc-Cancel U-Upgrade R-Repair
-B-Bulldoze V-Range G-Gov H-Help"""
+B-Bulldoze V-Range G-Gov H-Help""")
 
 
 func _on_selection_changed(coord: Vector2i) -> void:
@@ -425,7 +481,7 @@ func _build_tile_info_text(coord: Vector2i) -> String:
 
 	var text: String = "%s (%d,%d)" % [t_label, coord.x, coord.y]
 	if not buildable:
-		text += "\nCannot build here"
+		text += "\n" + Localization.t("ui.tile.cannot_build", "Cannot build here")
 	else:
 		# Show terrain bonuses compactly
 		var bonuses: Array[String] = []
@@ -437,7 +493,7 @@ func _build_tile_info_text(coord: Vector2i) -> String:
 				if bonus > 0:
 					bonuses.append("+%d%% %s" % [int(bonus * 100), bdef.get("label", btype_id)])
 		if not bonuses.is_empty():
-			text += "\nBonus: " + ", ".join(bonuses)
+			text += "\n%s: %s" % [Localization.t("ui.tile.bonus", "Bonus"), ", ".join(bonuses)]
 	return text
 
 
@@ -461,9 +517,9 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 
 	# --- Problem ---
 	if bld.get("damaged", false) as bool:
-		text += "\nDAMAGED - press R to repair"
+		text += "\n" + Localization.t("ui.building.damaged", "DAMAGED - press R to repair")
 	elif bld.get("has_issue", false) as bool:
-		text += "\nISSUE - press R to fix"
+		text += "\n" + Localization.t("ui.building.issue", "ISSUE - press R to fix")
 
 	# --- Next Action ---
 	var max_level: int = ContentDB.max_building_level(type_id)
@@ -475,7 +531,7 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 		if not cost.is_empty():
 			var affordable: bool = GameStateStore.can_afford(cost)
 			if affordable:
-				text += "\n[U] Upgrade to %s" % next_stage
+				text += "\n%s %s" % [Localization.t("ui.building.upgrade_to", "[U] Upgrade to"), next_stage]
 			else:
 				# Show what's missing
 				var missing: Array[String] = []
@@ -485,11 +541,11 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 					if have < needed:
 						var rdef: Dictionary = ContentDB.get_resource_def(res_id)
 						missing.append("%s %d/%d" % [rdef.get("label", res_id), int(have), int(needed)])
-				text += "\nUpgrade: need " + ", ".join(missing)
+				text += "\n%s: %s" % [Localization.t("ui.building.upgrade_need", "Upgrade: need"), ", ".join(missing)]
 	else:
-		text += "\nMAX LEVEL"
+		text += "\n" + Localization.t("ui.building.max_level", "MAX LEVEL")
 
-	text += "\n[U]Up [R]Fix [B]Del [V]Range"
+	text += "\n" + Localization.t("ui.building.actions", "[U]Up [R]Fix [B]Del [V]Range")
 	return text
 
 
@@ -505,33 +561,33 @@ func _build_flow_diagnostics(coord: Vector2i, type_id: String, def: Dictionary, 
 	var condition_eff: float = 0.5 if (bld.get("has_issue", false) as bool) else 1.0
 
 	if _uses_road_flow(def, produces, consumes):
-		lines.append("Road: %s" % _ok_missing(orch.coverage.is_road_connected(coord)))
+		lines.append("%s: %s" % [Localization.t("ui.flow.road", "Road"), _ok_missing(orch.coverage.is_road_connected(coord))])
 
 	if _uses_water_flow(def, type_id, produces, consumes):
-		lines.append("Water: %s" % _ok_missing(orch.coverage.is_water_covered(coord)))
+		lines.append("%s: %s" % [Localization.t("ui.flow.water", "Water"), _ok_missing(orch.coverage.is_water_covered(coord))])
 
 	if _uses_power_flow(type_id, produces, consumes):
-		lines.append("Power: %s" % _ok_missing(orch.coverage.is_power_covered(coord)))
+		lines.append("%s: %s" % [Localization.t("ui.flow.power", "Power"), _ok_missing(orch.coverage.is_power_covered(coord))])
 
 	if not consumes.is_empty():
 		var missing_inputs: Array[String] = _missing_inputs(coord, consumes, orch.resource_flow)
 		if missing_inputs.is_empty():
-			lines.append("Inputs: OK")
+			lines.append("%s: %s" % [Localization.t("ui.flow.inputs", "Inputs"), _ok_missing(true)])
 		else:
-			lines.append("Inputs: missing " + ", ".join(missing_inputs))
+			lines.append("%s: %s %s" % [Localization.t("ui.flow.inputs", "Inputs"), Localization.t("ui.flow.missing", "missing"), ", ".join(missing_inputs)])
 
 	if not produces.is_empty():
 		var blocked_outputs: Array[String] = _blocked_outputs(coord, type_id, produces, orch.resource_flow)
 		if blocked_outputs.is_empty():
-			lines.append("Outputs: OK")
+			lines.append("%s: %s" % [Localization.t("ui.flow.outputs", "Outputs"), _ok_missing(true)])
 		else:
-			lines.append("Outputs: blocked " + ", ".join(blocked_outputs))
+			lines.append("%s: %s %s" % [Localization.t("ui.flow.outputs", "Outputs"), Localization.t("ui.flow.blocked", "blocked"), ", ".join(blocked_outputs)])
 
 	var final_eff: float = input_eff * condition_eff
 	if final_eff < 1.0:
-		lines.append("Efficiency: %d%%" % int(final_eff * 100.0))
+		lines.append("%s: %d%%" % [Localization.t("ui.flow.efficiency", "Efficiency"), int(final_eff * 100.0)])
 	else:
-		lines.append("Efficiency: 100%")
+		lines.append("%s: 100%%" % Localization.t("ui.flow.efficiency", "Efficiency"))
 
 	if lines.is_empty():
 		return ""
@@ -546,7 +602,7 @@ func _get_orchestrator() -> GameOrchestrator:
 
 
 func _ok_missing(ok: bool) -> String:
-	return "OK" if ok else "MISSING"
+	return Localization.t("ui.flow.ok", "OK") if ok else Localization.t("ui.flow.missing_caps", "MISSING")
 
 
 func _uses_road_flow(def: Dictionary, produces: Dictionary, consumes: Dictionary) -> bool:
@@ -621,16 +677,16 @@ func _build_help_panel() -> void:
 	scroll.custom_minimum_size = Vector2(470, 370)
 	margin.add_child(scroll)
 
-	var lbl := Label.new()
-	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	lbl.add_theme_font_size_override("font_size", 11)
-	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	lbl.text = _get_help_text()
-	scroll.add_child(lbl)
+	_help_label = Label.new()
+	_help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_help_label.add_theme_font_size_override("font_size", 11)
+	_help_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_help_label.text = _get_help_text()
+	scroll.add_child(_help_label)
 
 
 func _get_help_text() -> String:
-	return """=== PIXEL CITY BUILDER ===
+	return Localization.t("ui.help.text", """=== PIXEL CITY BUILDER ===
 
 QUICK START:
   1. Build Roads (Infrastructure tab)
@@ -657,7 +713,7 @@ ROADS:
   No road = 30% production! Higher roads = bigger bonus.
 
 PRESSURE: Calm > Tension > Crisis > Emergency
-  More buildings + problems = higher pressure = more events."""
+  More buildings + problems = higher pressure = more events.""")
 
 
 func toggle_help() -> void:
@@ -693,13 +749,19 @@ func _build_governance_panel() -> void:
 	root.add_child(header)
 
 	var title := Label.new()
-	title.text = "Governance"
+	title.text = Localization.t("ui.governance.title", "Governance")
 	title.add_theme_font_size_override("font_size", 18)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
+	var lang_btn := Button.new()
+	lang_btn.text = Localization.t("ui.language.toggle", "RU")
+	lang_btn.tooltip_text = Localization.t("ui.language.tooltip", "Switch language")
+	lang_btn.pressed.connect(_toggle_language)
+	header.add_child(lang_btn)
+
 	var close_btn := Button.new()
-	close_btn.text = "Close"
+	close_btn.text = Localization.t("ui.common.close", "Close")
 	close_btn.pressed.connect(toggle_governance)
 	header.add_child(close_btn)
 
@@ -729,7 +791,7 @@ func _rebuild_governance_panel() -> void:
 
 func _build_tech_tab() -> Control:
 	var scroll := ScrollContainer.new()
-	scroll.name = "Tech"
+	scroll.name = Localization.t("ui.tech.tab", "Tech")
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	var list := VBoxContainer.new()
@@ -757,7 +819,7 @@ func _build_tech_row(tech_id: String) -> Control:
 
 	var researched: bool = GameStateStore.has_technology(tech_id)
 	var title := Label.new()
-	title.text = "%s%s" % [def.get("label", tech_id), " [DONE]" if researched else ""]
+	title.text = "%s%s" % [def.get("label", tech_id), Localization.t("ui.tech.done_suffix", " [DONE]") if researched else ""]
 	title.add_theme_font_size_override("font_size", 13)
 	text_box.add_child(title)
 
@@ -768,13 +830,18 @@ func _build_tech_row(tech_id: String) -> Control:
 	text_box.add_child(desc)
 
 	var meta := Label.new()
-	meta.text = "Cost: %s | Effects: %s" % [_format_cost(def.get("cost", {})), _format_effects(def.get("effects", {}))]
+	meta.text = "%s: %s | %s: %s" % [
+		Localization.t("ui.meta.cost", "Cost"),
+		_format_cost(def.get("cost", {})),
+		Localization.t("ui.meta.effects", "Effects"),
+		_format_effects(def.get("effects", {})),
+	]
 	meta.add_theme_font_size_override("font_size", 10)
 	meta.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	text_box.add_child(meta)
 
 	var btn := Button.new()
-	btn.text = "Researched" if researched else "Research"
+	btn.text = Localization.t("ui.tech.researched", "Researched") if researched else Localization.t("ui.tech.research", "Research")
 	btn.disabled = researched or not _can_research_tech(def)
 	btn.pressed.connect(_research_technology.bind(tech_id))
 	row.add_child(btn)
@@ -784,7 +851,7 @@ func _build_tech_row(tech_id: String) -> Control:
 
 func _build_policy_tab() -> Control:
 	var scroll := ScrollContainer.new()
-	scroll.name = "Policies"
+	scroll.name = Localization.t("ui.policy.tab", "Policies")
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	var list := VBoxContainer.new()
@@ -792,7 +859,7 @@ func _build_policy_tab() -> Control:
 	scroll.add_child(list)
 
 	var active_summary := Label.new()
-	active_summary.text = "Active: " + _format_active_policies()
+	active_summary.text = Localization.t("ui.policy.active_prefix", "Active: ") + _format_active_policies()
 	active_summary.add_theme_font_size_override("font_size", 12)
 	active_summary.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
 	list.add_child(active_summary)
@@ -819,7 +886,11 @@ func _build_policy_row(policy_id: String) -> Control:
 	row.add_child(text_box)
 
 	var title := Label.new()
-	title.text = "[%s] %s%s" % [category.capitalize(), def.get("label", policy_id), " [ACTIVE]" if active else ""]
+	title.text = "[%s] %s%s" % [
+		category.capitalize(),
+		def.get("label", policy_id),
+		Localization.t("ui.policy.active_suffix", " [ACTIVE]") if active else "",
+	]
 	title.add_theme_font_size_override("font_size", 13)
 	text_box.add_child(title)
 
@@ -830,13 +901,18 @@ func _build_policy_row(policy_id: String) -> Control:
 	text_box.add_child(desc)
 
 	var meta := Label.new()
-	meta.text = "Switch: %s | Effects: %s" % [_format_cost(def.get("switch_cost", {})), _format_effects(def.get("effects", {}))]
+	meta.text = "%s: %s | %s: %s" % [
+		Localization.t("ui.meta.switch", "Switch"),
+		_format_cost(def.get("switch_cost", {})),
+		Localization.t("ui.meta.effects", "Effects"),
+		_format_effects(def.get("effects", {})),
+	]
 	meta.add_theme_font_size_override("font_size", 10)
 	meta.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	text_box.add_child(meta)
 
 	var btn := Button.new()
-	btn.text = "Active" if active else "Set"
+	btn.text = Localization.t("ui.policy.active", "Active") if active else Localization.t("ui.policy.set", "Set")
 	btn.disabled = active or not _can_set_policy(def)
 	btn.pressed.connect(_set_policy.bind(policy_id))
 	row.add_child(btn)
@@ -861,6 +937,10 @@ func _set_policy(policy_id: String) -> void:
 	orch.command_bus.execute(SetPolicyCommand.new(policy_id))
 	_update_resource_bar()
 	_rebuild_governance_panel()
+
+
+func _toggle_language() -> void:
+	Localization.toggle_locale()
 
 
 func _can_research_tech(def: Dictionary) -> bool:
@@ -889,7 +969,7 @@ func _can_set_policy(def: Dictionary) -> bool:
 
 func _format_cost(cost: Dictionary) -> String:
 	if cost.is_empty():
-		return "free"
+		return Localization.t("ui.common.free", "free")
 	var parts: Array[String] = []
 	for res_id: String in cost:
 		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
@@ -899,7 +979,7 @@ func _format_cost(cost: Dictionary) -> String:
 
 func _format_effects(effects: Dictionary) -> String:
 	if effects.is_empty():
-		return "none"
+		return Localization.t("ui.common.none", "none")
 	var parts: Array[String] = []
 	if effects.has("production_mult"):
 		var prod: Dictionary = effects.production_mult
@@ -907,18 +987,18 @@ func _format_effects(effects: Dictionary) -> String:
 			var rdef: Dictionary = ContentDB.get_resource_def(res_id)
 			parts.append("%s %+d%%" % [rdef.get("label", res_id), int((prod[res_id] as float) * 100.0)])
 	if effects.has("happiness_add"):
-		parts.append("Happy %+d" % int(effects.happiness_add as float))
+		parts.append("%s %+d" % [Localization.t("ui.effect.happiness", "Happy"), int(effects.happiness_add as float)])
 	if effects.has("pressure_delta"):
-		parts.append("Pressure %+d" % int(effects.pressure_delta as float))
+		parts.append("%s %+d" % [Localization.t("ui.effect.pressure", "Pressure"), int(effects.pressure_delta as float)])
 	if effects.has("pressure_mult"):
-		parts.append("Pressure x%.2f" % (effects.pressure_mult as float))
+		parts.append("%s x%.2f" % [Localization.t("ui.effect.pressure", "Pressure"), effects.pressure_mult as float])
 	return ", ".join(parts)
 
 
 func _format_active_policies() -> String:
 	var active: Dictionary = GameStateStore.get_active_policies()
 	if active.is_empty():
-		return "none"
+		return Localization.t("ui.common.none", "none")
 	var parts: Array[String] = []
 	for category: String in active:
 		var policy_id: String = active[category] as String
@@ -970,7 +1050,7 @@ func _on_event_spawned(event_data: Dictionary) -> void:
 		for res_id: String in (cost_raw as Dictionary):
 			var rdef: Dictionary = ContentDB.get_resource_def(res_id)
 			cp.append("%s: %d" % [rdef.get("label", res_id), int((cost_raw as Dictionary)[res_id] as float)])
-		cost_label.text = "Cost: " + ", ".join(cp)
+		cost_label.text = Localization.t("ui.meta.cost", "Cost") + ": " + ", ".join(cp)
 		cost_label.add_theme_font_size_override("font_size", 11)
 		cost_label.add_theme_color_override("font_color", Color(1.0, 0.7, 0.4))
 		cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -982,17 +1062,17 @@ func _on_event_spawned(event_data: Dictionary) -> void:
 	var ev_id: String = event_data.get("id", "") as String
 
 	var accept_btn := Button.new()
-	accept_btn.text = event_data.get("accept_label", "Accept") as String
+	accept_btn.text = event_data.get("accept_label", Localization.t("ui.event.accept", "Accept")) as String
 	var accept_cost_raw: Variant = event_data.get("accept_cost", null)
 	if accept_cost_raw is Dictionary and not (accept_cost_raw as Dictionary).is_empty():
 		if not GameStateStore.can_afford(accept_cost_raw as Dictionary):
 			accept_btn.disabled = true
-			accept_btn.tooltip_text = "Not enough resources"
+			accept_btn.tooltip_text = Localization.t("ui.event.not_enough_resources", "Not enough resources")
 	accept_btn.pressed.connect(_resolve_event.bind(ev_id, true))
 	btn_row.add_child(accept_btn)
 
 	var decline_btn := Button.new()
-	decline_btn.text = event_data.get("decline_label", "Decline") as String
+	decline_btn.text = event_data.get("decline_label", Localization.t("ui.event.decline", "Decline")) as String
 	decline_btn.pressed.connect(_resolve_event.bind(ev_id, false))
 	btn_row.add_child(decline_btn)
 
