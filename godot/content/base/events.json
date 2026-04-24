@@ -87,7 +87,7 @@
     "id": "drought",
     "min_level": 3,
     "title": "Drought",
-    "body": "Water supply is dwindling. Invest in reserves or farms suffer.",
+    "body": "Water reserves are dwindling. Spend emergency reserves or farms suffer.",
     "accept_label": "Emergency Supply",
     "decline_label": "Wait It Out",
     "accept_cost": { "coins": 200, "water_res": 10 },

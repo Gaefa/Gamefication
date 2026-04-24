@@ -71,7 +71,8 @@
 - `global`: всегда доступен;
 - `road`: нужен соседний road;
 - `energy`: нужна power coverage для потребителей;
-- `water_res`: нужна water coverage для потребителей;
+- `water_res`: глобальный запас Water Reserve для событий и кризисов;
+- water coverage: отдельный локальный utility-статус от water tower radius;
 - производители utilities сами могут производить свой utility-ресурс.
 
 Критерий: если здание не получает входные ресурсы, оно не должно нормально производить.
@@ -196,7 +197,7 @@ Demand растет с уровнем города. Early game про выжив
 ## 12. Ближайшие Задачи
 
 1. Включить `ResourceFlow` в экономику.
-2. Развести `water_res` как UI/resource и water coverage как service.
+2. Развести `water_res` как UI/resource и water coverage как service. Done in code; next step is better utility UI.
 3. Добавить building diagnostics panel.
 4. Исправить уникальный выбор целей для кризисов.
 5. Улучшить генерацию карты с guaranteed стартовой зоной.

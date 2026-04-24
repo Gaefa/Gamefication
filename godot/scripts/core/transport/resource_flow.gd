@@ -1,6 +1,6 @@
 class_name ResourceFlow
 ## Determines if a resource can reach a building based on transport type.
-## Transport modes: "global" (instant), "road" (needs road network), "pipe" (utility coverage).
+## Transport modes: "global" (stockpile), "road" (logistics), "pipe" (power utility coverage).
 
 var _coverage: CoverageMap
 
@@ -48,12 +48,9 @@ func output_efficiency_for(res_id: String, coord: Vector2i, producer_type_id: St
 func _can_deliver_utility(res_id: String, coord: Vector2i) -> bool:
 	if res_id == "energy":
 		return _coverage.is_power_covered(coord)
-	if res_id == "water_res":
-		return _coverage.is_water_covered(coord)
 	return _coverage.is_water_covered(coord)
 
 
 func _is_native_utility_output(res_id: String, producer_type_id: String) -> bool:
 	var is_power_output := res_id == "energy" and producer_type_id == "power"
-	var is_water_output := res_id == "water_res" and producer_type_id == "water_tower"
-	return is_power_output or is_water_output
+	return is_power_output

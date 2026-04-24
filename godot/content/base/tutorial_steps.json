@@ -29,8 +29,8 @@
   },
   {
     "id": "build_water",
-    "title": "Water Supply",
-    "text": "Build a WATER TOWER to supply water through the pipe network. Residential buildings without water produce at only 60% efficiency!",
+    "title": "Water Coverage",
+    "text": "Build a WATER TOWER to cover nearby residential buildings. Water Reserve is a city stockpile for crises; coverage is local and shown on selected buildings.",
     "auto_advance": true,
     "condition": { "type": "count_buildings", "building": "water_tower", "min": 1 }
   },

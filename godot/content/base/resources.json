@@ -13,5 +13,5 @@
   { "id": "science",   "label": "Science",      "icon": "R", "transport": "global", "default_cap": 200,    "starting": 0 },
   { "id": "culture",   "label": "Culture",      "icon": "A", "transport": "global", "default_cap": 200,    "starting": 0 },
   { "id": "fame",      "label": "Fame",         "icon": "!", "transport": "global", "default_cap": 999999, "starting": 0 },
-  { "id": "water_res", "label": "Water Supply", "icon": "~", "transport": "pipe",   "default_cap": 999999, "starting": 0 }
+  { "id": "water_res", "label": "Water Reserve", "icon": "~", "transport": "global", "default_cap": 999999, "starting": 0 }
 ]
