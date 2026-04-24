@@ -5,6 +5,7 @@ extends Node
 signal locale_changed(locale: String)
 
 const CONTENT_PATH := "res://content/base/localization.json"
+const SETTINGS_PATH := "user://settings.cfg"
 const DEFAULT_LOCALE := "en"
 const SUPPORTED_LOCALES: Array[String] = ["en", "ru"]
 
@@ -15,14 +16,18 @@ var _strings: Dictionary = {}
 func _ready() -> void:
 	_load_strings()
 	var engine_locale := TranslationServer.get_locale().substr(0, 2).to_lower()
-	set_locale(engine_locale if SUPPORTED_LOCALES.has(engine_locale) else DEFAULT_LOCALE, false)
+	var saved_locale := _load_saved_locale()
+	var initial_locale := saved_locale if saved_locale != "" else engine_locale
+	set_locale(initial_locale if SUPPORTED_LOCALES.has(initial_locale) else DEFAULT_LOCALE, false, false)
 
 
-func set_locale(locale: String, emit_signal: bool = true) -> void:
+func set_locale(locale: String, emit_signal: bool = true, persist: bool = true) -> void:
 	if not SUPPORTED_LOCALES.has(locale):
 		locale = DEFAULT_LOCALE
 	current_locale = locale
 	TranslationServer.set_locale(locale)
+	if persist:
+		_save_locale(locale)
 	if emit_signal:
 		locale_changed.emit(current_locale)
 
@@ -66,3 +71,20 @@ func _load_strings() -> void:
 		return
 	if json.data is Dictionary:
 		_strings = json.data as Dictionary
+
+
+func _load_saved_locale() -> String:
+	var config := ConfigFile.new()
+	if config.load(SETTINGS_PATH) != OK:
+		return ""
+	var locale: String = config.get_value("ui", "locale", "") as String
+	return locale if SUPPORTED_LOCALES.has(locale) else ""
+
+
+func _save_locale(locale: String) -> void:
+	var config := ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	config.set_value("ui", "locale", locale)
+	var err := config.save(SETTINGS_PATH)
+	if err != OK:
+		push_warning("Localization: cannot save locale settings: %s" % err)

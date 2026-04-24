@@ -68,12 +68,12 @@
     "ru": "ЧС"
   },
   "ui.welcome.text": {
-    "en": "Click tile for info\nWASD-Move Scroll-Zoom LMB-Select\nRMB/Esc-Cancel U-Upgrade R-Repair\nB-Bulldoze V-Range G-Gov H-Help",
-    "ru": "Клик по клетке - информация\nWASD-движение Колесо-зум ЛКМ-выбор\nПКМ/Esc-отмена U-улучшить R-починить\nB-снести V-радиус G-управление H-помощь"
+    "en": "Click tile for info\nWASD-Move Scroll-Zoom LMB-Select\nRMB/Esc-Cancel U-Upgrade R-Repair\nB-Bulldoze V-Range G-Gov O-Options H-Help",
+    "ru": "Клик по клетке - информация\nWASD-движение Колесо-зум ЛКМ-выбор\nПКМ/Esc-отмена U-улучшить R-починить\nB-снести V-радиус G-управление O-настройки H-помощь"
   },
   "ui.help.text": {
-    "en": "=== PIXEL CITY BUILDER ===\n\nQUICK START:\n  1. Build Roads (Infrastructure tab)\n  2. Build Huts near roads\n  3. Build Farms for food\n  4. Build Lumber Mills in forests\n\nTERRAIN:\n  Green=Grass(+20% farm) Blue=Water\n  Yellow=Sand Brown=Hill(+20% quarry)\n  DkGreen=Forest(+50% lumber) Gray=Rock(+40% quarry)\n\nWATER & POWER:\n  Water Tower: residential need water (60% without)\n  Power Plant: production boost in radius\n\nSYNERGIES:\n  Farm+Lumber: +15% food, +10% wood\n  Market+Residential: +15% coins\n  Park: happiness aura | Workshop: upgrade discount\n  Research+Library: +20%/+15% science\n\nROADS:\n  No road = 30% production! Higher roads = bigger bonus.\n\nPRESSURE: Calm > Tension > Crisis > Emergency\n  More buildings + problems = higher pressure = more events.",
-    "ru": "=== PIXEL CITY BUILDER ===\n\nБЫСТРЫЙ СТАРТ:\n  1. Построй дороги (вкладка инфраструктуры)\n  2. Поставь хижины рядом с дорогами\n  3. Построй фермы для еды\n  4. Поставь лесопилки в лесах\n\nМЕСТНОСТЬ:\n  Зеленый=трава(+20% фермы) Синий=вода\n  Желтый=песок Коричневый=холмы(+20% карьер)\n  Темно-зеленый=лес(+50% лесопилка) Серый=камень(+40% карьер)\n\nВОДА И ЭНЕРГИЯ:\n  Водонапорная башня: жилью нужна вода (60% без нее)\n  Электростанция: усиливает производство в радиусе\n\nСИНЕРГИИ:\n  Ферма+Лесопилка: +15% еда, +10% дерево\n  Рынок+Жилье: +15% монеты\n  Парк: аура счастья | Мастерская: скидка на улучшения\n  Исследования+Библиотека: +20%/+15% наука\n\nДОРОГИ:\n  Нет дороги = 30% производства. Улучшенные дороги дают больший бонус.\n\nДАВЛЕНИЕ: Спокойствие > Напряжение > Кризис > ЧС\n  Больше зданий и проблем = выше давление = больше событий."
+    "en": "=== PIXEL CITY BUILDER ===\n\nQUICK START:\n  1. Build Roads (Infrastructure tab)\n  2. Build Huts near roads\n  3. Build Farms for food\n  4. Build Lumber Mills in forests\n\nTERRAIN:\n  Green=Grass(+20% farm) Blue=Water\n  Yellow=Sand Brown=Hill(+20% quarry)\n  DkGreen=Forest(+50% lumber) Gray=Rock(+40% quarry)\n\nWATER & POWER:\n  Water Tower: residential need water (60% without)\n  Power Plant: production boost in radius\n\nSYNERGIES:\n  Farm+Lumber: +15% food, +10% wood\n  Market+Residential: +15% coins\n  Park: happiness aura | Workshop: upgrade discount\n  Research+Library: +20%/+15% science\n\nROADS:\n  No road = 30% production! Higher roads = bigger bonus.\n\nCONTROLS:\n  G=Governance O=Options H=Help V=Ranges\n\nPRESSURE: Calm > Tension > Crisis > Emergency\n  More buildings + problems = higher pressure = more events.",
+    "ru": "=== PIXEL CITY BUILDER ===\n\nБЫСТРЫЙ СТАРТ:\n  1. Построй дороги (вкладка инфраструктуры)\n  2. Поставь хижины рядом с дорогами\n  3. Построй фермы для еды\n  4. Поставь лесопилки в лесах\n\nМЕСТНОСТЬ:\n  Зеленый=трава(+20% фермы) Синий=вода\n  Желтый=песок Коричневый=холмы(+20% карьер)\n  Темно-зеленый=лес(+50% лесопилка) Серый=камень(+40% карьер)\n\nВОДА И ЭНЕРГИЯ:\n  Водонапорная башня: жилью нужна вода (60% без нее)\n  Электростанция: усиливает производство в радиусе\n\nСИНЕРГИИ:\n  Ферма+Лесопилка: +15% еда, +10% дерево\n  Рынок+Жилье: +15% монеты\n  Парк: аура счастья | Мастерская: скидка на улучшения\n  Исследования+Библиотека: +20%/+15% наука\n\nДОРОГИ:\n  Нет дороги = 30% производства. Улучшенные дороги дают больший бонус.\n\nУПРАВЛЕНИЕ:\n  G=управление O=настройки H=помощь V=радиусы\n\nДАВЛЕНИЕ: Спокойствие > Напряжение > Кризис > ЧС\n  Больше зданий и проблем = выше давление = больше событий."
   },
   "ui.tile.cannot_build": {
     "en": "Cannot build here",
@@ -1522,5 +1522,33 @@
   "ui.event.title": {
     "en": "Event",
     "ru": "Событие"
+  },
+  "ui.settings.short": {
+    "en": "Opt",
+    "ru": "Настр"
+  },
+  "ui.settings.tooltip": {
+    "en": "Options (O): language and settings",
+    "ru": "Настройки (O): язык и параметры"
+  },
+  "ui.settings.title": {
+    "en": "Options",
+    "ru": "Настройки"
+  },
+  "ui.settings.language": {
+    "en": "Language",
+    "ru": "Язык"
+  },
+  "ui.settings.language_note": {
+    "en": "Language is saved automatically.",
+    "ru": "Язык сохраняется автоматически."
+  },
+  "ui.language.english": {
+    "en": "English",
+    "ru": "Английский"
+  },
+  "ui.language.russian": {
+    "en": "Russian",
+    "ru": "Русский"
   }
 }

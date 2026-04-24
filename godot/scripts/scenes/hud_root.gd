@@ -10,6 +10,7 @@ var _risk_label: Label
 var _build_panel: PanelContainer
 var _build_title_label: Label
 var _build_gov_button: Button
+var _build_settings_button: Button
 var _build_scroll: ScrollContainer
 var _build_vbox: VBoxContainer
 var _category_select: OptionButton
@@ -29,6 +30,9 @@ var _help_visible: bool = false
 var _governance_panel: PanelContainer
 var _governance_visible: bool = false
 var _governance_tabs: TabContainer
+var _settings_panel: PanelContainer
+var _settings_visible: bool = false
+var _settings_language_select: OptionButton
 
 var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 
@@ -44,6 +48,7 @@ func _ready() -> void:
 	_build_toast()
 	_build_help_panel()
 	_build_governance_panel()
+	_build_settings_panel()
 	_connect_signals()
 	_set_active_category("Infrastructure")
 
@@ -217,6 +222,11 @@ func _build_build_panel() -> void:
 	_build_gov_button.pressed.connect(toggle_governance)
 	header.add_child(_build_gov_button)
 
+	_build_settings_button = Button.new()
+	_build_settings_button.add_theme_font_size_override("font_size", 10)
+	_build_settings_button.pressed.connect(toggle_settings)
+	header.add_child(_build_settings_button)
+
 	_category_select = OptionButton.new()
 	_category_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_category_select.add_theme_font_size_override("font_size", 10)
@@ -257,6 +267,9 @@ func _refresh_build_panel_labels() -> void:
 	if _build_gov_button:
 		_build_gov_button.text = Localization.t("ui.governance.short", "Gov")
 		_build_gov_button.tooltip_text = Localization.t("ui.governance.tooltip", "Governance (G): tech tree and policies")
+	if _build_settings_button:
+		_build_settings_button.text = Localization.t("ui.settings.short", "Opt")
+		_build_settings_button.tooltip_text = Localization.t("ui.settings.tooltip", "Options (O): language and settings")
 	if _category_select:
 		var selected_category := _active_category
 		_category_select.clear()
@@ -408,6 +421,8 @@ func _on_locale_changed(_locale: String) -> void:
 		_help_label.text = _get_help_text()
 	if _governance_visible:
 		_rebuild_governance_panel()
+	if _settings_visible:
+		_rebuild_settings_panel()
 
 
 # ===========================================================
@@ -727,6 +742,93 @@ func toggle_help() -> void:
 
 
 # ===========================================================
+# SETTINGS PANEL (center) — Language / options
+# ===========================================================
+
+func _build_settings_panel() -> void:
+	_settings_panel = PanelContainer.new()
+	_settings_panel.set_anchors_preset(PRESET_CENTER)
+	_settings_panel.size = Vector2(420, 220)
+	_settings_panel.position = Vector2(-210, -110)
+	_settings_panel.visible = false
+	_settings_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_settings_panel)
+	_rebuild_settings_panel()
+
+
+func toggle_settings() -> void:
+	_settings_visible = not _settings_visible
+	_settings_panel.visible = _settings_visible
+	if _settings_visible:
+		_rebuild_settings_panel()
+
+
+func _rebuild_settings_panel() -> void:
+	if _settings_panel == null:
+		return
+	for c: Node in _settings_panel.get_children():
+		c.queue_free()
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	_settings_panel.add_child(margin)
+
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 12)
+	margin.add_child(root)
+
+	var header := HBoxContainer.new()
+	root.add_child(header)
+
+	var title := Label.new()
+	title.text = Localization.t("ui.settings.title", "Options")
+	title.add_theme_font_size_override("font_size", 18)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title)
+
+	var close_btn := Button.new()
+	close_btn.text = Localization.t("ui.common.close", "Close")
+	close_btn.pressed.connect(toggle_settings)
+	header.add_child(close_btn)
+
+	var language_row := HBoxContainer.new()
+	language_row.add_theme_constant_override("separation", 10)
+	root.add_child(language_row)
+
+	var language_label := Label.new()
+	language_label.text = Localization.t("ui.settings.language", "Language")
+	language_label.custom_minimum_size.x = 120
+	language_row.add_child(language_label)
+
+	_settings_language_select = OptionButton.new()
+	_settings_language_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_settings_language_select.add_item(Localization.t("ui.language.english", "English"))
+	_settings_language_select.set_item_metadata(0, "en")
+	_settings_language_select.add_item(Localization.t("ui.language.russian", "Russian"))
+	_settings_language_select.set_item_metadata(1, "ru")
+	_settings_language_select.select(0 if Localization.current_locale == "en" else 1)
+	_settings_language_select.item_selected.connect(_on_settings_language_selected)
+	language_row.add_child(_settings_language_select)
+
+	var note := Label.new()
+	note.text = Localization.t("ui.settings.language_note", "Language is saved automatically.")
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note.add_theme_font_size_override("font_size", 11)
+	note.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	root.add_child(note)
+
+
+func _on_settings_language_selected(index: int) -> void:
+	if _settings_language_select == null:
+		return
+	var locale := _settings_language_select.get_item_metadata(index) as String
+	Localization.set_locale(locale)
+
+
+# ===========================================================
 # GOVERNANCE PANEL (center) — Tech / Policies
 # ===========================================================
 
@@ -758,12 +860,6 @@ func _build_governance_panel() -> void:
 	title.add_theme_font_size_override("font_size", 18)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
-
-	var lang_btn := Button.new()
-	lang_btn.text = Localization.t("ui.language.toggle", "RU")
-	lang_btn.tooltip_text = Localization.t("ui.language.tooltip", "Switch language")
-	lang_btn.pressed.connect(_toggle_language)
-	header.add_child(lang_btn)
 
 	var close_btn := Button.new()
 	close_btn.text = Localization.t("ui.common.close", "Close")
@@ -942,11 +1038,6 @@ func _set_policy(policy_id: String) -> void:
 	orch.command_bus.execute(SetPolicyCommand.new(policy_id))
 	_update_resource_bar()
 	_rebuild_governance_panel()
-
-
-func _toggle_language() -> void:
-	Localization.toggle_locale()
-
 
 func _can_research_tech(def: Dictionary) -> bool:
 	if not GameStateStore.can_afford(def.get("cost", {})):
