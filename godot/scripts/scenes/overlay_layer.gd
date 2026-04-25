@@ -35,7 +35,7 @@ func _draw() -> void:
 
 		# Range display for selected building
 		if _show_ranges:
-			_draw_building_range(center)
+			_draw_existing_building_range(center)
 
 	# Build preview cursor (snaps to hex grid)
 	if _build_preview != "":
@@ -44,9 +44,11 @@ func _draw() -> void:
 		var snap_center: Vector2 = HexCoords.axial_to_pixel(coord)
 		var color := Color(0.2, 0.8, 0.2, 0.4)
 		draw_circle(snap_center, HexCoords.HEX_SIZE * 0.7, color)
+		if _show_ranges:
+			_draw_type_range(coord, _build_preview, 0)
 
 
-func _draw_building_range(center: Vector2) -> void:
+func _draw_existing_building_range(center: Vector2) -> void:
 	if _selected == Vector2i(-9999, -9999):
 		return
 	var bld: Dictionary = GameStateStore.get_building(_selected)
@@ -54,17 +56,22 @@ func _draw_building_range(center: Vector2) -> void:
 		return
 	var type_id: String = bld.get("type", "") as String
 	var level: int = bld.get("level", 0) as int
+	_draw_type_range(_selected, type_id, level)
+
+
+func _draw_type_range(coord: Vector2i, type_id: String, level: int) -> void:
 	var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 	var desc: Dictionary = _get_range_descriptor(type_id, ldata)
 	var radius: int = desc.get("radius", 0) as int
 	if radius <= 0:
 		return
 	var range_color: Color = desc.get("color", Color(0.5, 0.8, 0.5, 0.12)) as Color
+	var center: Vector2 = HexCoords.axial_to_pixel(coord)
 
 	# Draw hex tiles in range
 	var hex_pts := _hex_polygon(HexCoords.HEX_SIZE * 0.8)
-	for tile: Vector2i in HexCoords.disk(_selected, radius):
-		if tile == _selected:
+	for tile: Vector2i in HexCoords.disk(coord, radius):
+		if tile == coord:
 			continue
 		var tile_center: Vector2 = HexCoords.axial_to_pixel(tile)
 		var pts := PackedVector2Array()

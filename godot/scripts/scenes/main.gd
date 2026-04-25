@@ -105,16 +105,22 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _is_global_hotkey(ke: InputEventKey) -> bool:
-	return ke.keycode in [
-		KEY_ESCAPE,
-		KEY_V,
-		KEY_H,
-		KEY_G,
-		KEY_O,
-		KEY_U,
-		KEY_R,
-		KEY_B,
-	]
+	return _matches_key(ke, KEY_ESCAPE) \
+		or _matches_key(ke, KEY_V) \
+		or _matches_key(ke, KEY_H) \
+		or _matches_key(ke, KEY_G) \
+		or _matches_key(ke, KEY_O) \
+		or _matches_key(ke, KEY_U) \
+		or _matches_key(ke, KEY_R) \
+		or _matches_key(ke, KEY_B) \
+		or _matches_key(ke, KEY_SPACE) \
+		or _matches_key(ke, KEY_1) \
+		or _matches_key(ke, KEY_2) \
+		or _matches_key(ke, KEY_3)
+
+
+func _matches_key(ke: InputEventKey, key: Key) -> bool:
+	return ke.keycode == key or ke.physical_keycode == key
 
 
 func _is_click_on_ui(screen_pos: Vector2) -> bool:
@@ -154,40 +160,44 @@ func _handle_click() -> void:
 
 
 func _handle_key(ke: InputEventKey) -> void:
-	if ke.keycode == KEY_ESCAPE:
+	if _matches_key(ke, KEY_ESCAPE):
 		_build_mode = ""
 		EventBus.build_mode_changed.emit("")
-	elif Input.is_action_just_pressed("toggle_ranges"):
+	elif _matches_key(ke, KEY_V) or Input.is_action_just_pressed("toggle_ranges"):
 		_show_ranges = not _show_ranges
 		_refresh_overlay_state()
-	elif ke.keycode == KEY_H:
+		EventBus.toast_requested.emit(
+			Localization.t("ui.ranges.enabled", "Ranges: on") if _show_ranges else Localization.t("ui.ranges.disabled", "Ranges: off"),
+			1.5
+		)
+	elif _matches_key(ke, KEY_H):
 		if _hud and _hud.has_method("toggle_help"):
 			_hud.call("toggle_help")
-	elif Input.is_action_just_pressed("toggle_governance"):
+	elif _matches_key(ke, KEY_G) or Input.is_action_just_pressed("toggle_governance"):
 		if _hud and _hud.has_method("toggle_governance"):
 			_hud.call("toggle_governance")
-	elif Input.is_action_just_pressed("toggle_settings"):
+	elif _matches_key(ke, KEY_O) or Input.is_action_just_pressed("toggle_settings"):
 		if _hud and _hud.has_method("toggle_settings"):
 			_hud.call("toggle_settings")
-	elif Input.is_action_just_pressed("upgrade_building"):
+	elif _matches_key(ke, KEY_U) or Input.is_action_just_pressed("upgrade_building"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := UpgradeBuildingCommand.new(_selected_coord)
 			_orchestrator.command_bus.execute(cmd)
-	elif Input.is_action_just_pressed("repair_building"):
+	elif _matches_key(ke, KEY_R) or Input.is_action_just_pressed("repair_building"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := RepairBuildingCommand.new(_selected_coord)
 			_orchestrator.command_bus.execute(cmd)
-	elif Input.is_action_just_pressed("bulldoze"):
+	elif _matches_key(ke, KEY_B) or Input.is_action_just_pressed("bulldoze"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := BulldozeCommand.new(_selected_coord)
 			_orchestrator.command_bus.execute(cmd)
-	elif ke.keycode == KEY_SPACE:
+	elif _matches_key(ke, KEY_SPACE):
 		SimulationRunner.toggle_pause()
-	elif ke.keycode == KEY_1:
+	elif _matches_key(ke, KEY_1):
 		SimulationRunner.set_speed(1.0)
-	elif ke.keycode == KEY_2:
+	elif _matches_key(ke, KEY_2):
 		SimulationRunner.set_speed(2.0)
-	elif ke.keycode == KEY_3:
+	elif _matches_key(ke, KEY_3):
 		SimulationRunner.set_speed(3.0)
 
 

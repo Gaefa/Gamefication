@@ -1626,5 +1626,13 @@
   "ui.start.autonomy": {
     "en": "Autonomy",
     "ru": "Автономия"
+  },
+  "ui.ranges.enabled": {
+    "en": "Ranges: on",
+    "ru": "Радиусы: включены"
+  },
+  "ui.ranges.disabled": {
+    "en": "Ranges: off",
+    "ru": "Радиусы: выключены"
   }
 }
