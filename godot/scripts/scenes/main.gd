@@ -76,6 +76,13 @@ func _connect_signals() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var ke := event as InputEventKey
+		if ke.pressed and not ke.echo and _is_global_hotkey(ke):
+			_handle_key(ke)
+			get_viewport().set_input_as_handled()
+			return
+
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
@@ -93,8 +100,21 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var ke := event as InputEventKey
-		if ke.pressed:
+		if ke.pressed and not ke.echo:
 			_handle_key(ke)
+
+
+func _is_global_hotkey(ke: InputEventKey) -> bool:
+	return ke.keycode in [
+		KEY_ESCAPE,
+		KEY_V,
+		KEY_H,
+		KEY_G,
+		KEY_O,
+		KEY_U,
+		KEY_R,
+		KEY_B,
+	]
 
 
 func _is_click_on_ui(screen_pos: Vector2) -> bool:

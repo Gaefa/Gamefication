@@ -14,6 +14,7 @@ var _build_settings_button: Button
 var _build_scroll: ScrollContainer
 var _build_vbox: VBoxContainer
 var _category_select: OptionButton
+var _category_buttons: Dictionary = {}
 var _active_category: String = ""
 var _active_build_type: String = ""
 
@@ -192,7 +193,7 @@ const CATEGORY_KEYS := {
 	"Culture": "ui.category.culture",
 	"Advanced": "ui.category.advanced",
 }
-const BUILD_PANEL_W := 220.0
+const BUILD_PANEL_W := 280.0
 
 func _build_build_panel() -> void:
 	_build_panel = PanelContainer.new()
@@ -235,8 +236,26 @@ func _build_build_panel() -> void:
 	_category_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_category_select.add_theme_font_size_override("font_size", 10)
 	_category_select.item_selected.connect(_on_category_selected)
+	_category_select.visible = false
 	header.add_child(_category_select)
 	_refresh_build_panel_labels()
+
+	var category_grid := GridContainer.new()
+	category_grid.columns = 2
+	category_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	category_grid.add_theme_constant_override("h_separation", 4)
+	category_grid.add_theme_constant_override("v_separation", 4)
+	vbox.add_child(category_grid)
+
+	_category_buttons.clear()
+	for cat: String in CATEGORY_ORDER:
+		var cat_btn := Button.new()
+		cat_btn.text = _category_label(cat)
+		cat_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		cat_btn.add_theme_font_size_override("font_size", 9)
+		cat_btn.pressed.connect(_set_active_category.bind(cat))
+		category_grid.add_child(cat_btn)
+		_category_buttons[cat] = cat_btn
 
 	# Scrollable building list
 	_build_scroll = ScrollContainer.new()
@@ -262,6 +281,7 @@ func _set_active_category(cat: String) -> void:
 		var idx: int = CATEGORY_ORDER.find(cat)
 		if idx >= 0 and _category_select.selected != idx:
 			_category_select.select(idx)
+	_update_category_buttons()
 	_rebuild_building_list()
 
 
@@ -282,6 +302,16 @@ func _refresh_build_panel_labels() -> void:
 		var idx: int = CATEGORY_ORDER.find(selected_category)
 		if idx >= 0:
 			_category_select.select(idx)
+	for cat: String in _category_buttons:
+		var btn: Button = _category_buttons[cat] as Button
+		btn.text = _category_label(cat)
+	_update_category_buttons()
+
+
+func _update_category_buttons() -> void:
+	for cat: String in _category_buttons:
+		var btn: Button = _category_buttons[cat] as Button
+		btn.modulate = Color(0.8, 1.0, 0.5) if cat == _active_category else Color.WHITE
 
 
 func _category_label(category: String) -> String:
@@ -476,10 +506,13 @@ func _build_info_panel() -> void:
 
 
 func _get_welcome_text() -> String:
-	return Localization.t("ui.welcome.text", """Click tile for info
-WASD-Move Scroll-Zoom LMB-Select
-RMB/Esc-Cancel U-Upgrade R-Repair
-B-Bulldoze V-Range G-Gov H-Help""")
+	return Localization.t("ui.welcome.text", """Inspect: click a tile
+Camera: WASD
+Zoom: mouse wheel
+Build: LMB select
+Cancel: RMB / Esc
+Menus: G Gov, O Options
+Help/Ranges: H Help, V Ranges""")
 
 
 func _on_selection_changed(coord: Vector2i) -> void:
@@ -691,8 +724,8 @@ func _blocked_outputs(coord: Vector2i, type_id: String, produces: Dictionary, fl
 func _build_help_panel() -> void:
 	_help_panel = PanelContainer.new()
 	_help_panel.set_anchors_preset(PRESET_CENTER)
-	_help_panel.size = Vector2(500, 400)
-	_help_panel.position = Vector2(-250, -200)
+	_help_panel.size = Vector2(560, 420)
+	_help_panel.position = Vector2(-280, -210)
 	_help_panel.visible = false
 	_help_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_help_panel)
@@ -705,46 +738,42 @@ func _build_help_panel() -> void:
 	_help_panel.add_child(margin)
 
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(470, 370)
+	scroll.custom_minimum_size = Vector2(530, 390)
 	margin.add_child(scroll)
 
 	_help_label = Label.new()
+	_help_label.custom_minimum_size.x = 510
+	_help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_help_label.add_theme_font_size_override("font_size", 11)
+	_help_label.add_theme_font_size_override("font_size", 13)
+	_help_label.add_theme_constant_override("line_spacing", 4)
+	_help_label.add_theme_color_override("font_color", Color(0.92, 0.95, 0.88))
 	_help_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_help_label.text = _get_help_text()
 	scroll.add_child(_help_label)
 
 
 func _get_help_text() -> String:
-	return Localization.t("ui.help.text", """=== PIXEL CITY BUILDER ===
+	return Localization.t("ui.help.text", """Quick start
+1. Pick a category in the right build panel.
+2. Build Roads first, then Huts, Farms and Lumber Mills.
+3. Select a building to see its needs and next action.
+4. Use V to show service ranges for the selected building.
 
-QUICK START:
-  1. Build Roads (Infrastructure tab)
-  2. Build Huts near roads
-  3. Build Farms for food
-  4. Build Lumber Mills in forests
+Hotkeys
+WASD - camera
+Mouse wheel - zoom
+LMB - select/build
+RMB or Esc - cancel build mode
+G - governance
+O - options
+H - help
+V - ranges
+U/R/B - upgrade/repair/bulldoze selected building
 
-TERRAIN:
-  Green=Grass(+20% farm) Blue=Water
-  Yellow=Sand Brown=Hill(+20% quarry)
-  DkGreen=Forest(+50% lumber) Gray=Rock(+40% quarry)
-
-WATER & POWER:
-  Water Tower: residential need water (60% without)
-  Power Plant: production boost in radius
-
-SYNERGIES:
-  Farm+Lumber: +15% food, +10% wood
-  Market+Residential: +15% coins
-  Park: happiness aura | Workshop: upgrade discount
-  Research+Library: +20%/+15% science
-
-ROADS:
-  No road = 30% production! Higher roads = bigger bonus.
-
-PRESSURE: Calm > Tension > Crisis > Emergency
-  More buildings + problems = higher pressure = more events.""")
+Rule of thumb
+Roads connect production. Water and power are local coverage.
+Pressure rises when the city grows or problems stay unresolved.""")
 
 
 func toggle_help() -> void:
@@ -1039,9 +1068,12 @@ func _rebuild_governance_panel() -> void:
 	if _governance_tabs == null:
 		return
 	for c: Node in _governance_tabs.get_children():
+		_governance_tabs.remove_child(c)
 		c.queue_free()
 	_governance_tabs.add_child(_build_tech_tab())
 	_governance_tabs.add_child(_build_policy_tab())
+	_governance_tabs.set_tab_title(0, Localization.t("ui.tech.tab", "Tech"))
+	_governance_tabs.set_tab_title(1, Localization.t("ui.policy.tab", "Policies"))
 
 
 func _build_tech_tab() -> Control:
