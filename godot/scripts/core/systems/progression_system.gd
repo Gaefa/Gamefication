@@ -2,6 +2,7 @@ class_name ProgressionSystem
 ## Updates population, happiness, checks city level advancement, and win conditions.
 
 var _aura_cache: AuraCache
+var _notified_upgrade_level: int = 0
 
 
 func _init(aura_cache: AuraCache) -> void:
@@ -104,21 +105,11 @@ func _check_level_up() -> void:
 		if GameStateStore.get_resource(res_id) < required:
 			return
 
-	# All requirements met — level up! Spend the resources.
-	for res_id: String in reqs:
-		GameStateStore.add_resource(res_id, -(reqs[res_id] as float))
-
-	GameStateStore.progression().city_level = next_level
-
-	# Grant reward
-	var reward: Variant = def.get("reward", null)
-	if reward is Dictionary:
-		for res_id: String in (reward as Dictionary):
-			GameStateStore.add_resource(res_id, (reward as Dictionary)[res_id] as float)
-
-	EventBus.city_level_changed.emit(next_level)
+	if _notified_upgrade_level == next_level:
+		return
+	_notified_upgrade_level = next_level
 	EventBus.toast_requested.emit(
-		Localization.t("ui.progress.city_advanced", "City advanced to %s (level %d)!")
+		Localization.t("ui.progress.city_upgrade_ready", "City upgrade available: %s (level %d)")
 			% [Localization.content_text(def, "name", "?"), next_level],
 		5.0
 	)

@@ -11,6 +11,7 @@ var _risk_label: Label
 
 var _build_panel: PanelContainer
 var _build_title_label: Label
+var _build_city_button: Button
 var _build_gov_button: Button
 var _build_settings_button: Button
 var _build_scroll: ScrollContainer
@@ -35,6 +36,8 @@ var _help_visible: bool = false
 var _governance_panel: PanelContainer
 var _governance_visible: bool = false
 var _governance_tabs: TabContainer
+var _city_panel: PanelContainer
+var _city_visible: bool = false
 var _settings_panel: PanelContainer
 var _settings_visible: bool = false
 var _settings_language_select: OptionButton
@@ -53,6 +56,7 @@ func _ready() -> void:
 	_build_toast()
 	_build_start_panel()
 	_build_help_panel()
+	_build_city_panel()
 	_build_governance_panel()
 	_build_settings_panel()
 	_connect_signals()
@@ -66,7 +70,11 @@ func _connect_signals() -> void:
 	EventBus.game_event_spawned.connect(_on_event_spawned)
 	EventBus.new_game_started.connect(_on_new_game_started)
 	EventBus.tick_finished.connect(_on_tick_finished)
-	EventBus.city_level_changed.connect(func(_lv: int) -> void: _rebuild_building_list())
+	EventBus.city_level_changed.connect(func(_lv: int) -> void:
+		_rebuild_building_list()
+		if _city_visible:
+			_rebuild_city_panel()
+	)
 	EventBus.build_mode_changed.connect(_on_build_mode_changed)
 	Localization.locale_changed.connect(_on_locale_changed)
 
@@ -160,6 +168,8 @@ func _update_resource_bar() -> void:
 				if GameStateStore.get_resource(res_id) >= (reqs[res_id] as float):
 					met += 1
 			city_text += "  %s:%d/%d" % [Localization.t("ui.resource.next", "Next"), met, reqs.size()]
+			if met < reqs.size():
+				city_text += " %s" % Localization.t("ui.city.open_hint", "(City)")
 	_city_label.text = city_text
 
 	# --- Risk ---
@@ -223,6 +233,11 @@ func _build_build_panel() -> void:
 	_build_title_label.add_theme_font_size_override("font_size", 12)
 	_build_title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	header.add_child(_build_title_label)
+
+	_build_city_button = Button.new()
+	_build_city_button.add_theme_font_size_override("font_size", 10)
+	_build_city_button.pressed.connect(toggle_city_panel)
+	header.add_child(_build_city_button)
 
 	_build_gov_button = Button.new()
 	_build_gov_button.add_theme_font_size_override("font_size", 10)
@@ -290,6 +305,9 @@ func _set_active_category(cat: String) -> void:
 func _refresh_build_panel_labels() -> void:
 	if _build_title_label:
 		_build_title_label.text = Localization.t("ui.build.title", "Build")
+	if _build_city_button:
+		_build_city_button.text = Localization.t("ui.city.short", "City")
+		_build_city_button.tooltip_text = Localization.t("ui.city.tooltip", "City level requirements and upgrade")
 	if _build_gov_button:
 		_build_gov_button.text = Localization.t("ui.governance.short", "Gov")
 		_build_gov_button.tooltip_text = Localization.t("ui.governance.tooltip", "Governance (G): tech tree and policies")
@@ -493,6 +511,8 @@ func _on_locale_changed(_locale: String) -> void:
 		_help_label.text = _get_help_text()
 	if _governance_visible:
 		_rebuild_governance_panel()
+	if _city_visible:
+		_rebuild_city_panel()
 	if _settings_visible:
 		_rebuild_settings_panel()
 	if _start_visible:
@@ -960,6 +980,145 @@ func _close_start_panel() -> void:
 func _on_new_game_started() -> void:
 	_update_resource_bar()
 	_rebuild_building_list()
+	if _city_visible:
+		_rebuild_city_panel()
+
+
+# ===========================================================
+# CITY PANEL (center) — Level requirements / manual upgrade
+# ===========================================================
+
+func _build_city_panel() -> void:
+	_city_panel = PanelContainer.new()
+	_city_panel.set_anchors_preset(PRESET_CENTER)
+	_city_panel.size = Vector2(500, 380)
+	_city_panel.position = Vector2(-250, -190)
+	_city_panel.visible = false
+	_city_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_city_panel)
+	_rebuild_city_panel()
+
+
+func toggle_city_panel() -> void:
+	_city_visible = not _city_visible
+	_city_panel.visible = _city_visible
+	if _city_visible:
+		_rebuild_city_panel()
+
+
+func _rebuild_city_panel() -> void:
+	if _city_panel == null:
+		return
+	for c: Node in _city_panel.get_children():
+		c.queue_free()
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	_city_panel.add_child(margin)
+
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 10)
+	margin.add_child(root)
+
+	var header := HBoxContainer.new()
+	root.add_child(header)
+
+	var title := Label.new()
+	title.text = Localization.t("ui.city.title", "City Level")
+	title.add_theme_font_size_override("font_size", 18)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title)
+
+	var close_btn := Button.new()
+	close_btn.text = Localization.t("ui.common.close", "Close")
+	close_btn.pressed.connect(toggle_city_panel)
+	header.add_child(close_btn)
+
+	var current_level: int = GameStateStore.progression().city_level as int
+	var current_def: Dictionary = ContentDB.get_level_def(current_level)
+	var current_name: String = Localization.content_text(current_def, "name", "?")
+	var current_lbl := Label.new()
+	current_lbl.text = "%s: %s %d - %s" % [
+		Localization.t("ui.city.current", "Current"),
+		Localization.t("ui.resource.level", "Lv"),
+		current_level,
+		current_name,
+	]
+	current_lbl.add_theme_font_size_override("font_size", 13)
+	current_lbl.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
+	root.add_child(current_lbl)
+
+	var next_def: Dictionary = ContentDB.get_level_def(current_level + 1)
+	if next_def.is_empty():
+		var max_lbl := Label.new()
+		max_lbl.text = Localization.t("ui.city.max_level", "Max city level reached.")
+		max_lbl.add_theme_font_size_override("font_size", 13)
+		root.add_child(max_lbl)
+		return
+
+	var next_name: String = Localization.content_text(next_def, "name", "?")
+	var next_lbl := Label.new()
+	next_lbl.text = "%s: %s %d - %s" % [
+		Localization.t("ui.city.next", "Next"),
+		Localization.t("ui.resource.level", "Lv"),
+		current_level + 1,
+		next_name,
+	]
+	next_lbl.add_theme_font_size_override("font_size", 14)
+	root.add_child(next_lbl)
+
+	var reqs: Dictionary = next_def.get("requirements", {}) as Dictionary
+	var req_title := Label.new()
+	req_title.text = Localization.t("ui.city.requirements", "Requirements")
+	req_title.add_theme_font_size_override("font_size", 13)
+	root.add_child(req_title)
+
+	var can_upgrade := true
+	for res_id: String in reqs:
+		var needed: float = reqs[res_id] as float
+		var have: float = GameStateStore.get_resource(res_id)
+		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
+		var line := Label.new()
+		line.text = "%s: %d/%d" % [Localization.content_text(rdef, "label", res_id), int(have), int(needed)]
+		line.add_theme_font_size_override("font_size", 12)
+		line.add_theme_color_override("font_color", Color(0.55, 1.0, 0.55) if have >= needed else Color(1.0, 0.55, 0.45))
+		root.add_child(line)
+		if have < needed:
+			can_upgrade = false
+
+	var reward: Dictionary = next_def.get("reward", {}) as Dictionary
+	var reward_lbl := Label.new()
+	reward_lbl.text = "%s: %s" % [Localization.t("ui.city.reward", "Reward"), _format_cost(reward)]
+	reward_lbl.add_theme_font_size_override("font_size", 12)
+	reward_lbl.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	root.add_child(reward_lbl)
+
+	var upgrade_btn := Button.new()
+	upgrade_btn.text = Localization.t("ui.city.upgrade", "Upgrade City")
+	upgrade_btn.disabled = not can_upgrade
+	upgrade_btn.pressed.connect(_upgrade_city_level)
+	root.add_child(upgrade_btn)
+
+	var note := Label.new()
+	note.text = Localization.t("ui.city.spend_note", "Upgrade spends the required resources and unlocks the next building tier.")
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note.add_theme_font_size_override("font_size", 11)
+	note.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	root.add_child(note)
+
+
+func _upgrade_city_level() -> void:
+	var orch: GameOrchestrator = _get_orchestrator()
+	if orch == null:
+		return
+	var cmd: CommandBase = load("res://scripts/core/commands/level_up_command.gd").new()
+	orch.command_bus.execute(cmd)
+	_update_resource_bar()
+	_rebuild_building_list()
+	_rebuild_city_panel()
 
 
 # ===========================================================
@@ -1442,3 +1601,5 @@ func _process(delta: float) -> void:
 func _on_tick_finished(_tick: int) -> void:
 	_update_resource_bar()
 	_update_info()
+	if _city_visible:
+		_rebuild_city_panel()

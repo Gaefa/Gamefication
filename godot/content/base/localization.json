@@ -159,6 +159,50 @@
     "en": "Governance",
     "ru": "Управление"
   },
+  "ui.city.short": {
+    "en": "City",
+    "ru": "Город"
+  },
+  "ui.city.tooltip": {
+    "en": "City level requirements and upgrade",
+    "ru": "Требования уровня города и повышение"
+  },
+  "ui.city.open_hint": {
+    "en": "(City)",
+    "ru": "(Город)"
+  },
+  "ui.city.title": {
+    "en": "City Level",
+    "ru": "Уровень города"
+  },
+  "ui.city.current": {
+    "en": "Current",
+    "ru": "Текущий"
+  },
+  "ui.city.next": {
+    "en": "Next",
+    "ru": "Следующий"
+  },
+  "ui.city.requirements": {
+    "en": "Requirements",
+    "ru": "Требования"
+  },
+  "ui.city.reward": {
+    "en": "Reward",
+    "ru": "Награда"
+  },
+  "ui.city.upgrade": {
+    "en": "Upgrade City",
+    "ru": "Повысить город"
+  },
+  "ui.city.spend_note": {
+    "en": "Upgrade spends the required resources and unlocks the next building tier.",
+    "ru": "Повышение списывает требуемые ресурсы и открывает следующий уровень зданий."
+  },
+  "ui.city.max_level": {
+    "en": "Max city level reached.",
+    "ru": "Достигнут максимальный уровень города."
+  },
   "ui.common.close": {
     "en": "Close",
     "ru": "Закрыть"
@@ -1522,6 +1566,10 @@
   "ui.progress.city_advanced": {
     "en": "City advanced to %s (level %d)!",
     "ru": "Город вырос: %s (уровень %d)!"
+  },
+  "ui.progress.city_upgrade_ready": {
+    "en": "City upgrade available: %s (level %d)",
+    "ru": "Доступно повышение города: %s (уровень %d)"
   },
   "ui.save.saved": {
     "en": "Game saved (slot %d)",
