@@ -1,6 +1,8 @@
 class_name PlaceBuildingCommand extends CommandBase
 ## Places a building on the hex grid.
 
+const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules.gd")
+
 var coord: Vector2i
 var type_id: String
 
@@ -14,30 +16,14 @@ func execute(ctx: Dictionary) -> void:
 	var hex_grid: HexGrid = ctx.hex_grid as HexGrid
 	var spatial: SpatialIndex = ctx.spatial as SpatialIndex
 
-	# Validate
 	var def: Dictionary = ContentDB.get_building_def(type_id)
-	if def.is_empty():
-		message = Localization.t("ui.command.unknown_building", "Unknown building: %s") % type_id
-		return
-
-	if not hex_grid.can_build_at(coord):
-		message = Localization.t("ui.command.cannot_build_here", "Cannot build here")
-		return
-
-	# Check unlock level
-	var req_level: int = def.get("unlock_level", 1) as int
-	var city_level: int = GameStateStore.progression().city_level as int
-	if city_level < req_level:
-		message = Localization.t("ui.command.requires_city_level", "Requires city level %d") % req_level
-		return
-
-	# Check cost
-	var build_cost: Dictionary = def.get("build_cost", {})
-	if not GameStateStore.can_afford(build_cost):
-		message = Localization.t("ui.command.not_enough_resources", "Not enough resources")
+	var validation: Dictionary = PlacementRulesRef.validate(coord, type_id, hex_grid)
+	if not (validation.get("ok", false) as bool):
+		message = validation.get("message", Localization.t("ui.command.cannot_build_here", "Cannot build here")) as String
 		return
 
 	# Spend & place
+	var build_cost: Dictionary = def.get("build_cost", {})
 	GameStateStore.spend(build_cost)
 	var bld: Dictionary = {
 		"type": type_id,

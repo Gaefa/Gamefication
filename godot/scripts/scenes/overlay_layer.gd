@@ -1,9 +1,17 @@
 extends Node2D
 ## Draws selection highlight, build preview overlays, and building range circles.
 
+const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules.gd")
+
 var _selected: Vector2i = Vector2i(-9999, -9999)
 var _build_preview: String = ""
 var _show_ranges: bool = false
+var _hex_grid: HexGrid
+
+
+func set_hex_grid(grid: HexGrid) -> void:
+	_hex_grid = grid
+	queue_redraw()
 
 
 func _ready() -> void:
@@ -42,8 +50,9 @@ func _draw() -> void:
 		var mouse_pos: Vector2 = get_global_mouse_position()
 		var coord: Vector2i = HexCoords.pixel_to_axial(mouse_pos)
 		var snap_center: Vector2 = HexCoords.axial_to_pixel(coord)
-		var color := Color(0.2, 0.8, 0.2, 0.4)
-		draw_circle(snap_center, HexCoords.HEX_SIZE * 0.7, color)
+		var validation: Dictionary = PlacementRulesRef.validate(coord, _build_preview, _hex_grid)
+		var color := Color(0.2, 0.9, 0.25, 0.45) if (validation.get("ok", false) as bool) else Color(1.0, 0.2, 0.12, 0.5)
+		_draw_preview_hex(snap_center, color)
 		if _show_ranges:
 			_draw_type_range(coord, _build_preview, 0)
 
@@ -107,6 +116,14 @@ func _hex_polygon(hex_size: float) -> PackedVector2Array:
 		pts.append(Vector2(cos(angle), sin(angle) * HexCoords.ISO_Y) * hex_size)
 	pts.append(pts[0])
 	return pts
+
+
+func _draw_preview_hex(center: Vector2, color: Color) -> void:
+	var pts := PackedVector2Array()
+	for p: Vector2 in _hex_polygon(HexCoords.HEX_SIZE * 0.84):
+		pts.append(center + p)
+	draw_colored_polygon(pts, color)
+	draw_polyline(pts, color.lerp(Color.WHITE, 0.35), 2.0)
 
 
 func _process(_delta: float) -> void:

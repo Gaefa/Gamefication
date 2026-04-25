@@ -63,6 +63,7 @@ func _setup_scene_tree() -> void:
 	# Initialize rendering
 	terrain_layer.call("render_terrain", _orchestrator.hex_grid)
 	building_layer.call("set_hex_grid", _orchestrator.hex_grid)
+	overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
 
 
 func _connect_signals() -> void:
@@ -228,6 +229,9 @@ func start_new_run(profile_id: String) -> void:
 	if building_layer:
 		building_layer.call("set_hex_grid", _orchestrator.hex_grid)
 		building_layer.call("refresh")
+	var overlay_layer: Node = get_node_or_null("World/OverlayLayer")
+	if overlay_layer and overlay_layer.has_method("set_hex_grid"):
+		overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
 	EventBus.build_mode_changed.emit("")
 	EventBus.selection_changed.emit(_selected_coord)
 	_refresh_overlay_state()

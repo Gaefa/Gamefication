@@ -2,6 +2,8 @@ extends Control
 ## HUD: compact resource bar (3 blocks), right-anchored build menu with category tabs,
 ## actionable info panel, event popup, toast, and help.
 
+const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules.gd")
+
 # --- References ---
 var _core_label: Label
 var _city_label: Label
@@ -421,6 +423,7 @@ func _update_build_list_affordability() -> void:
 func _on_build_button(type_id: String) -> void:
 	_active_build_type = type_id
 	EventBus.build_mode_changed.emit(type_id)
+	_info_label.text = _build_build_mode_info_text(type_id)
 	# Refresh button highlights
 	for entry: Dictionary in _build_entries:
 		var btn: Button = entry.btn
@@ -433,6 +436,8 @@ func _on_build_button(type_id: String) -> void:
 
 func _on_build_mode_changed(type_id: String) -> void:
 	_active_build_type = type_id
+	if _info_label and type_id != "":
+		_info_label.text = _build_build_mode_info_text(type_id)
 	# Update button highlights when build mode changes externally (e.g. RMB cancel)
 	for entry: Dictionary in _build_entries:
 		var btn: Button = entry.btn
@@ -441,6 +446,39 @@ func _on_build_mode_changed(type_id: String) -> void:
 				btn.modulate = Color(0.8, 1.0, 0.5)
 			else:
 				btn.modulate = Color.WHITE
+
+
+func _build_build_mode_info_text(type_id: String) -> String:
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	if def.is_empty():
+		return Localization.t("ui.command.unknown_building", "Unknown building: %s") % type_id
+
+	var ldata: Dictionary = ContentDB.building_level_data(type_id, 0)
+	var lines: Array[String] = []
+	lines.append("%s: %s" % [Localization.t("ui.build.selected", "Selected"), Localization.content_text(def, "label", type_id)])
+	lines.append("%s: %s" % [Localization.t("ui.meta.cost", "Cost"), _format_cost(def.get("build_cost", {}))])
+	var effect: String = _format_key_effect(ldata)
+	if effect != "":
+		lines.append("%s: %s" % [Localization.t("ui.meta.effects", "Effects"), effect])
+
+	var req_level: int = def.get("unlock_level", 1) as int
+	if (GameStateStore.progression().city_level as int) < req_level:
+		lines.append(Localization.t("ui.command.requires_city_level", "Requires city level %d") % req_level)
+	elif not GameStateStore.can_afford(def.get("build_cost", {})):
+		lines.append("%s: %s" % [
+			Localization.t("ui.command.not_enough_resources", "Not enough resources"),
+			PlacementRulesRef.missing_cost_text(def.get("build_cost", {})),
+		])
+	else:
+		lines.append(Localization.t("ui.placement.preview_hint", "Move over the map: green can build, red cannot."))
+
+	if def.get("requires_road", false) as bool:
+		lines.append(Localization.t("ui.placement.road_hint", "Road access affects efficiency."))
+	var desc: String = Localization.content_text(def, "description", "")
+	if desc != "":
+		lines.append("")
+		lines.append(desc.substr(0, 140) + ("..." if desc.length() > 140 else ""))
+	return "\n".join(lines)
 
 
 func _on_locale_changed(_locale: String) -> void:

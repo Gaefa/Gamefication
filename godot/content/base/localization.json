@@ -1399,6 +1399,30 @@
     "en": "Built %s",
     "ru": "Построено: %s"
   },
+  "ui.build.selected": {
+    "en": "Selected",
+    "ru": "Выбрано"
+  },
+  "ui.placement.out_of_bounds": {
+    "en": "Outside city bounds",
+    "ru": "За пределами города"
+  },
+  "ui.placement.occupied": {
+    "en": "Tile already occupied",
+    "ru": "Клетка уже занята"
+  },
+  "ui.placement.valid": {
+    "en": "Can build here",
+    "ru": "Здесь можно строить"
+  },
+  "ui.placement.preview_hint": {
+    "en": "Move over the map: green can build, red cannot.",
+    "ru": "Наведи на карту: зелёный можно строить, красный нельзя."
+  },
+  "ui.placement.road_hint": {
+    "en": "Road access affects efficiency.",
+    "ru": "Доступ к дороге влияет на эффективность."
+  },
   "ui.command.nothing_to_bulldoze": {
     "en": "Nothing to bulldoze",
     "ru": "Нечего сносить"
