@@ -443,29 +443,34 @@ func _build_info_panel() -> void:
 	_info_panel.anchor_top = 1.0
 	_info_panel.anchor_bottom = 1.0
 	_info_panel.offset_left = 0
-	_info_panel.offset_right = 280
-	_info_panel.offset_top = -200
+	_info_panel.offset_right = 360
+	_info_panel.offset_top = -190
 	_info_panel.offset_bottom = 0
 	add_child(_info_panel)
 
 	var margin := MarginContainer.new()
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 6)
-	margin.add_theme_constant_override("margin_top", 4)
-	margin.add_theme_constant_override("margin_right", 6)
-	margin.add_theme_constant_override("margin_bottom", 4)
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 8)
 	_info_panel.add_child(margin)
 
 	var scroll := ScrollContainer.new()
 	scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	scroll.custom_minimum_size = Vector2(340, 174)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	margin.add_child(scroll)
 
 	_info_label = Label.new()
 	_info_label.text = _get_welcome_text()
+	_info_label.custom_minimum_size.x = 330
+	_info_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_info_label.add_theme_font_size_override("font_size", 11)
+	_info_label.add_theme_font_size_override("font_size", 12)
+	_info_label.add_theme_color_override("font_color", Color(0.9, 0.95, 0.85))
+	_info_label.add_theme_constant_override("line_spacing", 3)
 	_info_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	scroll.add_child(_info_label)
 

@@ -68,8 +68,8 @@
     "ru": "ЧС"
   },
   "ui.welcome.text": {
-    "en": "Click tile for info\nWASD-Move Scroll-Zoom LMB-Select\nRMB/Esc-Cancel U-Upgrade R-Repair\nB-Bulldoze V-Range G-Gov O-Options H-Help",
-    "ru": "Клик по клетке - информация\nWASD-движение Колесо-зум ЛКМ-выбор\nПКМ/Esc-отмена U-улучшить R-починить\nB-снести V-радиус G-управление O-настройки H-помощь"
+    "en": "Click a tile to inspect it\nCamera: WASD / Mouse wheel\nBuild: LMB select, RMB/Esc cancel\nCity: G Gov, O Options\nHelp/Ranges: H / V",
+    "ru": "Клик по клетке - осмотр\nКамера: WASD / колесо мыши\nСтройка: ЛКМ выбор, ПКМ/Esc отмена\nГород: G управление, O настройки\nПомощь/радиусы: H / V"
   },
   "ui.help.text": {
     "en": "=== PIXEL CITY BUILDER ===\n\nQUICK START:\n  1. Build Roads (Infrastructure tab)\n  2. Build Huts near roads\n  3. Build Farms for food\n  4. Build Lumber Mills in forests\n\nTERRAIN:\n  Green=Grass(+20% farm) Blue=Water\n  Yellow=Sand Brown=Hill(+20% quarry)\n  DkGreen=Forest(+50% lumber) Gray=Rock(+40% quarry)\n\nWATER & POWER:\n  Water Tower: residential need water (60% without)\n  Power Plant: production boost in radius\n\nSYNERGIES:\n  Farm+Lumber: +15% food, +10% wood\n  Market+Residential: +15% coins\n  Park: happiness aura | Workshop: upgrade discount\n  Research+Library: +20%/+15% science\n\nROADS:\n  No road = 30% production! Higher roads = bigger bonus.\n\nCONTROLS:\n  G=Governance O=Options H=Help V=Ranges\n\nPRESSURE: Calm > Tension > Crisis > Emergency\n  More buildings + problems = higher pressure = more events.",
