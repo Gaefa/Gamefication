@@ -147,6 +147,10 @@
     "en": "blocked",
     "ru": "заблокировано"
   },
+  "ui.needs.title": {
+    "en": "Needs",
+    "ru": "Потребности"
+  },
   "ui.governance.short": {
     "en": "Gov",
     "ru": "Упр"
@@ -202,6 +206,50 @@
   "ui.city.max_level": {
     "en": "Max city level reached.",
     "ru": "Достигнут максимальный уровень города."
+  },
+  "ui.city.diagnostics": {
+    "en": "City Diagnostics",
+    "ru": "Диагностика города"
+  },
+  "ui.city.diagnostics_unavailable": {
+    "en": "Diagnostics unavailable",
+    "ru": "Диагностика недоступна"
+  },
+  "ui.city.buildings": {
+    "en": "Buildings",
+    "ru": "Здания"
+  },
+  "ui.city.residential": {
+    "en": "Residential",
+    "ru": "Жильё"
+  },
+  "ui.city.no_water": {
+    "en": "No water",
+    "ru": "Без воды"
+  },
+  "ui.city.road_connected": {
+    "en": "Road connected",
+    "ru": "Подключено к дорогам"
+  },
+  "ui.city.powered": {
+    "en": "Powered",
+    "ru": "С энергией"
+  },
+  "ui.city.issues": {
+    "en": "Issues",
+    "ru": "Проблемы"
+  },
+  "ui.city.damaged": {
+    "en": "Damaged",
+    "ru": "Повреждено"
+  },
+  "ui.city.water_reserve": {
+    "en": "Water Reserve",
+    "ru": "Резерв воды"
+  },
+  "ui.city.coverage_note": {
+    "en": "Water Reserve is a stockpile; water coverage is local.",
+    "ru": "Резерв воды - склад. Покрытие водой работает локально."
   },
   "ui.common.close": {
     "en": "Close",

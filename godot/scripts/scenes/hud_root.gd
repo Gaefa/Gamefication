@@ -633,6 +633,10 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	if effect != "":
 		text += effect + "\n"
 
+	var needs_text: String = _build_building_needs_text(coord, type_id, def, ldata)
+	if needs_text != "":
+		text += needs_text + "\n"
+
 	var flow_text: String = _build_flow_diagnostics(coord, type_id, def, ldata, bld)
 	if flow_text != "":
 		text += flow_text + "\n"
@@ -669,6 +673,28 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 
 	text += "\n" + Localization.t("ui.building.actions", "[U]Up [R]Fix [B]Del [V]Range")
 	return text
+
+
+func _build_building_needs_text(coord: Vector2i, type_id: String, def: Dictionary, ldata: Dictionary) -> String:
+	var orch := _get_orchestrator()
+	if orch == null or orch.coverage == null:
+		return ""
+
+	var needs: Array[String] = []
+	if def.get("requires_road", false) as bool:
+		needs.append("%s %s" % [Localization.t("ui.flow.road", "Road"), _ok_missing(orch.coverage.is_road_connected(coord))])
+	if (def.get("category", "") as String) == "Residential":
+		needs.append("%s %s" % [Localization.t("ui.flow.water", "Water"), _ok_missing(orch.coverage.is_water_covered(coord))])
+
+	var consumes: Dictionary = ldata.get("consumes", {})
+	if consumes.has("energy") and type_id != "power":
+		needs.append("%s %s" % [Localization.t("ui.flow.power", "Power"), _ok_missing(orch.coverage.is_power_covered(coord))])
+	if not consumes.is_empty():
+		needs.append("%s: %s" % [Localization.t("ui.flow.inputs", "Inputs"), _format_cost(consumes)])
+
+	if needs.is_empty():
+		return ""
+	return "%s:\n%s" % [Localization.t("ui.needs.title", "Needs"), "\n".join(needs)]
 
 
 func _build_flow_diagnostics(coord: Vector2i, type_id: String, def: Dictionary, ldata: Dictionary, bld: Dictionary) -> String:
@@ -991,8 +1017,8 @@ func _on_new_game_started() -> void:
 func _build_city_panel() -> void:
 	_city_panel = PanelContainer.new()
 	_city_panel.set_anchors_preset(PRESET_CENTER)
-	_city_panel.size = Vector2(500, 380)
-	_city_panel.position = Vector2(-250, -190)
+	_city_panel.size = Vector2(560, 540)
+	_city_panel.position = Vector2(-280, -270)
 	_city_panel.visible = false
 	_city_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_city_panel)
@@ -1109,6 +1135,23 @@ func _rebuild_city_panel() -> void:
 	note.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	root.add_child(note)
 
+	var sep := HSeparator.new()
+	root.add_child(sep)
+
+	var diag_title := Label.new()
+	diag_title.text = Localization.t("ui.city.diagnostics", "City Diagnostics")
+	diag_title.add_theme_font_size_override("font_size", 14)
+	root.add_child(diag_title)
+
+	var diag := Label.new()
+	diag.text = _build_city_diagnostics_text()
+	diag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	diag.custom_minimum_size.x = 520
+	diag.add_theme_font_size_override("font_size", 12)
+	diag.add_theme_constant_override("line_spacing", 3)
+	diag.add_theme_color_override("font_color", Color(0.9, 0.95, 0.85))
+	root.add_child(diag)
+
 
 func _upgrade_city_level() -> void:
 	var orch: GameOrchestrator = _get_orchestrator()
@@ -1119,6 +1162,87 @@ func _upgrade_city_level() -> void:
 	_update_resource_bar()
 	_rebuild_building_list()
 	_rebuild_city_panel()
+
+
+func _build_city_diagnostics_text() -> String:
+	var orch: GameOrchestrator = _get_orchestrator()
+	if orch == null or orch.coverage == null:
+		return Localization.t("ui.city.diagnostics_unavailable", "Diagnostics unavailable")
+
+	var total_buildings := 0
+	var residential := 0
+	var residential_without_water := 0
+	var road_required := 0
+	var road_missing := 0
+	var power_users := 0
+	var power_missing := 0
+	var issues := 0
+	var damaged := 0
+
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		total_buildings += 1
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		var type_id: String = bld.get("type", "") as String
+		var def: Dictionary = ContentDB.get_building_def(type_id)
+		var level: int = bld.get("level", 0) as int
+		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
+		var consumes: Dictionary = ldata.get("consumes", {})
+
+		if (def.get("category", "") as String) == "Residential":
+			residential += 1
+			if not orch.coverage.is_water_covered(coord):
+				residential_without_water += 1
+		if def.get("requires_road", false) as bool:
+			road_required += 1
+			if not orch.coverage.is_road_connected(coord):
+				road_missing += 1
+		if consumes.has("energy"):
+			power_users += 1
+			if not orch.coverage.is_power_covered(coord):
+				power_missing += 1
+		if bld.get("has_issue", false) as bool:
+			issues += 1
+		if bld.get("damaged", false) as bool:
+			damaged += 1
+
+	var lines: Array[String] = []
+	lines.append("%s: %d" % [Localization.t("ui.city.buildings", "Buildings"), total_buildings])
+	lines.append("%s: %d | %s: %d" % [
+		Localization.t("ui.city.residential", "Residential"),
+		residential,
+		Localization.t("ui.city.no_water", "No water"),
+		residential_without_water,
+	])
+	lines.append("%s: %d/%d %s" % [
+		Localization.t("ui.city.road_connected", "Road connected"),
+		maxi(road_required - road_missing, 0),
+		road_required,
+		_status_word(road_missing == 0),
+	])
+	lines.append("%s: %d/%d %s" % [
+		Localization.t("ui.city.powered", "Powered"),
+		maxi(power_users - power_missing, 0),
+		power_users,
+		_status_word(power_missing == 0),
+	])
+	lines.append("%s: %d | %s: %d" % [
+		Localization.t("ui.city.issues", "Issues"),
+		issues,
+		Localization.t("ui.city.damaged", "Damaged"),
+		damaged,
+	])
+	lines.append("%s: %d | %s: %d" % [
+		Localization.t("ui.city.water_reserve", "Water Reserve"),
+		int(GameStateStore.get_resource("water_res")),
+		Localization.t("ui.resource.energy", "Energy"),
+		int(GameStateStore.get_resource("energy")),
+	])
+	lines.append(Localization.t("ui.city.coverage_note", "Water Reserve is a stockpile; water coverage is local."))
+	return "\n".join(lines)
+
+
+func _status_word(ok: bool) -> String:
+	return Localization.t("ui.flow.ok", "OK") if ok else Localization.t("ui.flow.missing_caps", "MISSING")
 
 
 # ===========================================================
