@@ -117,7 +117,7 @@
   },
   "ui.flow.power": {
     "en": "Power",
-    "ru": "Энергия"
+    "ru": "Энергосеть"
   },
   "ui.flow.inputs": {
     "en": "Inputs",
@@ -147,9 +147,21 @@
     "en": "blocked",
     "ru": "заблокировано"
   },
+  "ui.flow.delivery": {
+    "en": "delivery",
+    "ru": "доставка"
+  },
+  "ui.flow.stock": {
+    "en": "stock",
+    "ru": "склад"
+  },
   "ui.needs.title": {
     "en": "Needs",
     "ru": "Потребности"
+  },
+  "ui.utility.title": {
+    "en": "Utility",
+    "ru": "Коммуналка"
   },
   "ui.governance.short": {
     "en": "Gov",
@@ -247,9 +259,17 @@
     "en": "Water Reserve",
     "ru": "Резерв воды"
   },
+  "ui.city.water_reserve_short": {
+    "en": "Reserve",
+    "ru": "Резерв"
+  },
+  "ui.city.local_utilities": {
+    "en": "Local utilities",
+    "ru": "Локальная коммуналка"
+  },
   "ui.city.coverage_note": {
-    "en": "Water Reserve is a stockpile; water coverage is local.",
-    "ru": "Резерв воды - склад. Покрытие водой работает локально."
+    "en": "Reserve/Energy are stockpiles. Water/Power are local coverage.",
+    "ru": "Резерв/энергия - склад. Вода/энергосеть работают через локальное покрытие."
   },
   "ui.common.close": {
     "en": "Close",

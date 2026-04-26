@@ -7,6 +7,7 @@ const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules
 # --- References ---
 var _core_label: Label
 var _city_label: Label
+var _utility_label: Label
 var _risk_label: Label
 
 var _build_panel: PanelContainer
@@ -70,6 +71,7 @@ func _connect_signals() -> void:
 	EventBus.game_event_spawned.connect(_on_event_spawned)
 	EventBus.new_game_started.connect(_on_new_game_started)
 	EventBus.tick_finished.connect(_on_tick_finished)
+	EventBus.coverage_recalculated.connect(_on_coverage_recalculated)
 	EventBus.city_level_changed.connect(func(_lv: int) -> void:
 		_rebuild_building_list()
 		if _city_visible:
@@ -80,7 +82,7 @@ func _connect_signals() -> void:
 
 
 # ===========================================================
-# RESOURCE BAR (top) — 3 compact blocks: Core | City | Risk
+# RESOURCE BAR (top) — compact blocks: Core | City | Utilities | Risk
 # ===========================================================
 
 func _build_resource_bar() -> void:
@@ -117,6 +119,17 @@ func _build_resource_bar() -> void:
 	sep2.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hbox.add_child(sep2)
 
+	# Utilities block
+	_utility_label = Label.new()
+	_utility_label.add_theme_font_size_override("font_size", 12)
+	_utility_label.add_theme_color_override("font_color", Color(0.65, 0.85, 1.0))
+	_utility_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hbox.add_child(_utility_label)
+
+	var sep3 := VSeparator.new()
+	sep3.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hbox.add_child(sep3)
+
 	# Risk block
 	_risk_label = Label.new()
 	_risk_label.add_theme_font_size_override("font_size", 12)
@@ -126,6 +139,7 @@ func _build_resource_bar() -> void:
 
 func _on_resources_changed(_resources: Dictionary) -> void:
 	_update_resource_bar()
+	_update_build_list_affordability()
 
 
 func _update_resource_bar() -> void:
@@ -145,14 +159,11 @@ func _update_resource_bar() -> void:
 	var lv_def: Dictionary = ContentDB.get_level_def(city_lv)
 	var lv_name: String = Localization.content_text(lv_def, "name", "?")
 
-	var energy: float = GameStateStore.get_resource("energy")
-	var city_text: String = "%s:%d  %s:%d%%  %s:%d  %s%d %s" % [
+	var city_text: String = "%s:%d  %s:%d%%  %s%d %s" % [
 		Localization.t("ui.resource.population", "Pop"),
 		pop,
 		Localization.t("ui.resource.happiness", "Happy"),
 		int(happiness),
-		Localization.t("ui.resource.energy", "Energy"),
-		int(energy),
 		Localization.t("ui.resource.level", "Lv"),
 		city_lv,
 		lv_name,
@@ -172,6 +183,22 @@ func _update_resource_bar() -> void:
 				city_text += " %s" % Localization.t("ui.city.open_hint", "(City)")
 	_city_label.text = city_text
 
+	# --- Utilities ---
+	var utility_stats: Dictionary = _collect_utility_stats()
+	var water_total: int = utility_stats.get("residential", 0) as int
+	var water_ok: int = utility_stats.get("residential_watered", 0) as int
+	var power_total: int = utility_stats.get("power_users", 0) as int
+	var power_ok: int = utility_stats.get("power_covered", 0) as int
+	_utility_label.text = "%s  %s  %s  %s:%d  %s:%d" % [
+		Localization.t("ui.utility.title", "Utility"),
+		_coverage_ratio_text(Localization.t("ui.flow.water", "Water"), water_ok, water_total),
+		_coverage_ratio_text(Localization.t("ui.flow.power", "Power"), power_ok, power_total),
+		Localization.t("ui.city.water_reserve_short", "Reserve"),
+		int(GameStateStore.get_resource("water_res")),
+		Localization.t("ui.resource.energy", "Energy"),
+		int(GameStateStore.get_resource("energy")),
+	]
+
 	# --- Risk ---
 	var phase: String = GameStateStore.pressure().phase as String
 	var p_idx: float = GameStateStore.pressure().index as float
@@ -189,7 +216,41 @@ func _update_resource_bar() -> void:
 		p_idx,
 	]
 
-	_update_build_list_affordability()
+
+func _coverage_ratio_text(label: String, covered: int, total: int) -> String:
+	if total <= 0:
+		return "%s:-" % label
+	return "%s:%d/%d" % [label, covered, total]
+
+
+func _collect_utility_stats() -> Dictionary:
+	var stats: Dictionary = {
+		"residential": 0,
+		"residential_watered": 0,
+		"power_users": 0,
+		"power_covered": 0,
+	}
+	var orch := _get_orchestrator()
+	if orch == null or orch.coverage == null:
+		return stats
+
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		var type_id: String = bld.get("type", "") as String
+		var def: Dictionary = ContentDB.get_building_def(type_id)
+		var level: int = bld.get("level", 0) as int
+		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
+		var consumes: Dictionary = ldata.get("consumes", {})
+
+		if (def.get("category", "") as String) == "Residential":
+			stats["residential"] = (stats.get("residential", 0) as int) + 1
+			if orch.coverage.is_water_covered(coord):
+				stats["residential_watered"] = (stats.get("residential_watered", 0) as int) + 1
+		if consumes.has("energy") and type_id != "power":
+			stats["power_users"] = (stats.get("power_users", 0) as int) + 1
+			if orch.coverage.is_power_covered(coord):
+				stats["power_covered"] = (stats.get("power_covered", 0) as int) + 1
+	return stats
 
 
 # ===========================================================
@@ -784,10 +845,14 @@ func _has_transport(resources: Dictionary, transport: String) -> bool:
 func _missing_inputs(coord: Vector2i, consumes: Dictionary, flow: ResourceFlow) -> Array[String]:
 	var missing: Array[String] = []
 	for res_id: String in consumes:
-		if flow.delivery_efficiency(res_id, coord) >= 1.0:
-			continue
 		var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-		missing.append(Localization.content_text(rdef, "label", res_id))
+		var label: String = Localization.content_text(rdef, "label", res_id)
+		if flow.delivery_efficiency(res_id, coord) < 1.0:
+			missing.append("%s (%s)" % [label, Localization.t("ui.flow.delivery", "delivery")])
+			continue
+		var required: float = consumes[res_id] as float
+		if GameStateStore.get_resource(res_id) < required:
+			missing.append("%s (%s)" % [label, Localization.t("ui.flow.stock", "stock")])
 	return missing
 
 
@@ -1177,60 +1242,45 @@ func _build_city_diagnostics_text() -> String:
 		return Localization.t("ui.city.diagnostics_unavailable", "Diagnostics unavailable")
 
 	var total_buildings := 0
-	var residential := 0
-	var residential_without_water := 0
 	var road_required := 0
 	var road_missing := 0
-	var power_users := 0
-	var power_missing := 0
 	var issues := 0
 	var damaged := 0
+	var utility_stats: Dictionary = _collect_utility_stats()
 
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		total_buildings += 1
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		var type_id: String = bld.get("type", "") as String
 		var def: Dictionary = ContentDB.get_building_def(type_id)
-		var level: int = bld.get("level", 0) as int
-		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
-		var consumes: Dictionary = ldata.get("consumes", {})
 
-		if (def.get("category", "") as String) == "Residential":
-			residential += 1
-			if not orch.coverage.is_water_covered(coord):
-				residential_without_water += 1
 		if def.get("requires_road", false) as bool:
 			road_required += 1
 			if not orch.coverage.is_road_connected(coord):
 				road_missing += 1
-		if consumes.has("energy"):
-			power_users += 1
-			if not orch.coverage.is_power_covered(coord):
-				power_missing += 1
 		if bld.get("has_issue", false) as bool:
 			issues += 1
 		if bld.get("damaged", false) as bool:
 			damaged += 1
 
 	var lines: Array[String] = []
+	var residential: int = utility_stats.get("residential", 0) as int
+	var residential_watered: int = utility_stats.get("residential_watered", 0) as int
+	var power_users: int = utility_stats.get("power_users", 0) as int
+	var power_covered: int = utility_stats.get("power_covered", 0) as int
 	lines.append("%s: %d" % [Localization.t("ui.city.buildings", "Buildings"), total_buildings])
-	lines.append("%s: %d | %s: %d" % [
-		Localization.t("ui.city.residential", "Residential"),
-		residential,
-		Localization.t("ui.city.no_water", "No water"),
-		residential_without_water,
+	lines.append("%s: %s" % [
+		Localization.t("ui.city.local_utilities", "Local utilities"),
+		"%s | %s" % [
+			_coverage_ratio_text(Localization.t("ui.flow.water", "Water"), residential_watered, residential),
+			_coverage_ratio_text(Localization.t("ui.flow.power", "Power"), power_covered, power_users),
+		],
 	])
 	lines.append("%s: %d/%d %s" % [
 		Localization.t("ui.city.road_connected", "Road connected"),
 		maxi(road_required - road_missing, 0),
 		road_required,
 		_status_word(road_missing == 0),
-	])
-	lines.append("%s: %d/%d %s" % [
-		Localization.t("ui.city.powered", "Powered"),
-		maxi(power_users - power_missing, 0),
-		power_users,
-		_status_word(power_missing == 0),
 	])
 	lines.append("%s: %d | %s: %d" % [
 		Localization.t("ui.city.issues", "Issues"),
@@ -1244,7 +1294,7 @@ func _build_city_diagnostics_text() -> String:
 		Localization.t("ui.resource.energy", "Energy"),
 		int(GameStateStore.get_resource("energy")),
 	])
-	lines.append(Localization.t("ui.city.coverage_note", "Water Reserve is a stockpile; water coverage is local."))
+	lines.append(Localization.t("ui.city.coverage_note", "Reserve/Energy are stockpiles. Water/Power are local coverage."))
 	return "\n".join(lines)
 
 
@@ -1732,5 +1782,13 @@ func _process(delta: float) -> void:
 func _on_tick_finished(_tick: int) -> void:
 	_update_resource_bar()
 	_update_info()
+	if _city_visible:
+		_rebuild_city_panel()
+
+
+func _on_coverage_recalculated() -> void:
+	_update_resource_bar()
+	if _selected_coord != Vector2i(-9999, -9999):
+		_update_info()
 	if _city_visible:
 		_rebuild_city_panel()
