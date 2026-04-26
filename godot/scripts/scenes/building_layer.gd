@@ -2,6 +2,7 @@ extends Node2D
 ## Renders buildings on the hex grid with drawn icons per building type.
 
 var _hex_grid: HexGrid
+var _sprite_cache: Dictionary = {}
 
 # Category colors for base hex fill
 const CAT_COLORS: Dictionary = {
@@ -78,6 +79,9 @@ func _draw() -> void:
 # ============================================================
 
 func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Color) -> void:
+	if _draw_building_sprite(c, type_id, level):
+		return
+
 	match type_id:
 		"hut":
 			_draw_house(c, level)
@@ -119,6 +123,42 @@ func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Co
 			# Fallback: draw letter
 			draw_string(ThemeDB.fallback_font, c + Vector2(-6, 5),
 				type_id.left(1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 20, 14, Color.WHITE)
+
+
+func _draw_building_sprite(c: Vector2, type_id: String, level: int) -> bool:
+	var texture: Texture2D = _get_building_sprite(type_id, level)
+	if texture == null:
+		return false
+	var tex_size: Vector2 = texture.get_size()
+	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
+		return false
+
+	var max_size := Vector2(HexCoords.HEX_SIZE * 1.45, HexCoords.HEX_SIZE * 1.45)
+	var scale: float = minf(max_size.x / tex_size.x, max_size.y / tex_size.y)
+	var draw_size: Vector2 = tex_size * scale
+	var rect := Rect2(c - draw_size * 0.5 + Vector2(0, -4), draw_size)
+	draw_texture_rect(texture, rect, false)
+	return true
+
+
+func _get_building_sprite(type_id: String, level: int) -> Texture2D:
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	var sprites: Array = def.get("sprites_by_level", []) as Array
+	if sprites.is_empty():
+		return null
+	var idx: int = clampi(level, 0, sprites.size() - 1)
+	var sprite_path: String = sprites[idx] as String
+	if sprite_path == "":
+		return null
+	if _sprite_cache.has(sprite_path):
+		return _sprite_cache[sprite_path] as Texture2D
+	if not ResourceLoader.exists(sprite_path):
+		return null
+	var texture := ResourceLoader.load(sprite_path) as Texture2D
+	if texture == null:
+		return null
+	_sprite_cache[sprite_path] = texture
+	return texture
 
 
 ## House: triangle roof + square body

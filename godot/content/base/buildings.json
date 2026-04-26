@@ -104,7 +104,14 @@
       }
     ],
     "label_key": "building.hut.label",
-    "description_key": "building.hut.description"
+    "description_key": "building.hut.description",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/hut_t1.png",
+      "res://assets/buildings/tiers/hut_t2.png",
+      "res://assets/buildings/tiers/hut_t3.png",
+      "res://assets/buildings/tiers/hut_t4.png",
+      "res://assets/buildings/tiers/hut_t5.png"
+    ]
   },
   "apartment": {
     "label": "Apartment",
@@ -323,7 +330,14 @@
       }
     ],
     "label_key": "building.farm.label",
-    "description_key": "building.farm.description"
+    "description_key": "building.farm.description",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/farm_t1.png",
+      "res://assets/buildings/tiers/farm_t2.png",
+      "res://assets/buildings/tiers/farm_t3.png",
+      "res://assets/buildings/tiers/farm_t4.png",
+      "res://assets/buildings/tiers/farm_t5.png"
+    ]
   },
   "lumber": {
     "label": "Lumber Mill",
@@ -1424,7 +1438,14 @@
       }
     ],
     "label_key": "building.power.label",
-    "description_key": "building.power.description"
+    "description_key": "building.power.description",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/power_t1.png",
+      "res://assets/buildings/tiers/power_t2.png",
+      "res://assets/buildings/tiers/power_t3.png",
+      "res://assets/buildings/tiers/power_t4.png",
+      "res://assets/buildings/tiers/power_t5.png"
+    ]
   },
   "water_tower": {
     "label": "Water Tower",
@@ -1535,7 +1556,14 @@
       }
     ],
     "label_key": "building.water_tower.label",
-    "description_key": "building.water_tower.description"
+    "description_key": "building.water_tower.description",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/water_tower_t1.png",
+      "res://assets/buildings/tiers/water_tower_t2.png",
+      "res://assets/buildings/tiers/water_tower_t3.png",
+      "res://assets/buildings/tiers/water_tower_t4.png",
+      "res://assets/buildings/tiers/water_tower_t5.png"
+    ]
   },
   "road": {
     "label": "Road",
@@ -1630,7 +1658,14 @@
       }
     ],
     "label_key": "building.road.label",
-    "description_key": "building.road.description"
+    "description_key": "building.road.description",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/road_t1.png",
+      "res://assets/buildings/tiers/road_t2.png",
+      "res://assets/buildings/tiers/road_t3.png",
+      "res://assets/buildings/tiers/road_t4.png",
+      "res://assets/buildings/tiers/road_t5.png"
+    ]
   },
   "warehouse": {
     "label": "Warehouse",
@@ -1715,7 +1750,14 @@
       }
     ],
     "label_key": "building.warehouse.label",
-    "description_key": "building.warehouse.description"
+    "description_key": "building.warehouse.description",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/warehouse_t1.png",
+      "res://assets/buildings/tiers/warehouse_t2.png",
+      "res://assets/buildings/tiers/warehouse_t3.png",
+      "res://assets/buildings/tiers/warehouse_t4.png",
+      "res://assets/buildings/tiers/warehouse_t5.png"
+    ]
   },
   "research": {
     "label": "Research Center",
