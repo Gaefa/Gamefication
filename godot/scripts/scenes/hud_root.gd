@@ -1045,9 +1045,16 @@ func _rebuild_city_panel() -> void:
 	margin.add_theme_constant_override("margin_bottom", 14)
 	_city_panel.add_child(margin)
 
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(532, 512)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margin.add_child(scroll)
+
 	var root := VBoxContainer.new()
+	root.custom_minimum_size.x = 520
 	root.add_theme_constant_override("separation", 10)
-	margin.add_child(root)
+	scroll.add_child(root)
 
 	var header := HBoxContainer.new()
 	root.add_child(header)

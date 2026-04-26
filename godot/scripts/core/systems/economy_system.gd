@@ -13,8 +13,10 @@ func _init(interactions: BuildingInteractions, resource_flow: ResourceFlow) -> v
 
 func process_tick() -> void:
 	var net_production: Dictionary = {}
+	var available_inputs: Dictionary = {}
 	for res_id: String in ContentDB.get_resource_ids():
 		net_production[res_id] = 0.0
+		available_inputs[res_id] = GameStateStore.get_resource(res_id)
 
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
@@ -28,7 +30,9 @@ func process_tick() -> void:
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 		var produces: Dictionary = ldata.get("produces", {})
 		var consumes: Dictionary = ldata.get("consumes", {})
-		var input_efficiency: float = _resource_flow.input_efficiency_for(coord, consumes)
+		var delivery_efficiency: float = _resource_flow.input_efficiency_for(coord, consumes)
+		var stock_efficiency: float = _input_stock_efficiency_for(consumes, delivery_efficiency, available_inputs)
+		var input_efficiency: float = delivery_efficiency * stock_efficiency
 		var condition_efficiency := 0.5 if (bld.get("has_issue", false) as bool) else 1.0
 
 		# Get multipliers
@@ -47,6 +51,7 @@ func process_tick() -> void:
 		for res_id: String in consumes:
 			var amount: float = (consumes[res_id] as float) * input_efficiency
 			net_production[res_id] = (net_production[res_id] as float) - amount
+			available_inputs[res_id] = maxf((available_inputs.get(res_id, 0.0) as float) - amount, 0.0)
 
 	# Bank interest (special mechanic)
 	_process_bank_interest(net_production)
@@ -68,6 +73,21 @@ func process_tick() -> void:
 	for res_id: String in ContentDB.get_resource_ids():
 		if GameStateStore.get_resource(res_id) <= 0.0 and (net_production.get(res_id, 0.0) as float) < 0.0:
 			EventBus.resource_depleted.emit(res_id)
+
+
+func _input_stock_efficiency_for(consumes: Dictionary, delivery_efficiency: float, available_inputs: Dictionary) -> float:
+	if consumes.is_empty():
+		return 1.0
+	if delivery_efficiency <= 0.0:
+		return 0.0
+	var efficiency := 1.0
+	for res_id: String in consumes:
+		var required: float = (consumes[res_id] as float) * delivery_efficiency
+		if required <= 0.0:
+			continue
+		var available: float = available_inputs.get(res_id, 0.0) as float
+		efficiency = minf(efficiency, clampf(available / required, 0.0, 1.0))
+	return efficiency
 
 
 func _process_bank_interest(net: Dictionary) -> void:

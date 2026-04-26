@@ -103,6 +103,8 @@ func _check_level_up() -> void:
 	for res_id: String in reqs:
 		var required: float = reqs[res_id] as float
 		if GameStateStore.get_resource(res_id) < required:
+			if _notified_upgrade_level == next_level:
+				_notified_upgrade_level = 0
 			return
 
 	if _notified_upgrade_level == next_level:
