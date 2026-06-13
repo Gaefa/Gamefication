@@ -38,6 +38,9 @@ func _check_triggers() -> void:
 			continue
 		if _is_on_cooldown(event_id):
 			continue
+		# One-shot events (письма Койл, развилки) фаярятся ровно один раз за игру.
+		if (def.get("once", false) as bool) and _has_fired(event_id):
+			continue
 		if _trigger_met(def):
 			var event_data: Dictionary = def.duplicate(true)
 			event_data["runtime_id"] = event_id
@@ -56,7 +59,18 @@ func _trigger_met(def: Dictionary) -> bool:
 	var current_level: int = GameStateStore.progression().get("city_level", 1) as int
 	if current_level < min_level:
 		return false
-	
+
+	# Дневной триггер: событие доступно только с N-го игрового дня (письма по срокам).
+	if def.has("trigger_day"):
+		var total_day: int = GameStateStore.climate().get("total_day", 1) as int
+		if total_day < (def.get("trigger_day", 1) as int):
+			return false
+		# Если есть и условие — требуем оба; иначе достижение дня само по себе триггер.
+		var day_cond: String = def.get("trigger_condition", "") as String
+		if day_cond != "":
+			return _evaluate_trigger(day_cond)
+		return true
+
 	# Проверка строковых триггеров из TDD (типа "stat_unrest_pressure >= 50")
 	var trigger: String = def.get("trigger_condition", "") as String
 	if trigger != "":
@@ -108,6 +122,10 @@ func _get_stat_value(stat_name: String) -> float:
 			return GameStateStore.mandate().get("support", 50) as float
 		"stat_league_trust":
 			return GameStateStore.mandate().get("patron_trust", 50) as float
+		"stat_happiness":
+			return GameStateStore.population().get("happiness", 50.0) as float
+		"stat_population":
+			return float(GameStateStore.population().get("total", 0) as int)
 	return 0.0
 
 
@@ -138,6 +156,9 @@ func _on_option_selected(event_id: String, option_index: int, effects: Dictionar
 			break
 	if idx >= 0:
 		pending_events.remove_at(idx)
+	# One-shot events never return once resolved.
+	if ContentDB.get_event_def(event_id).get("once", false) as bool:
+		_mark_fired(event_id)
 
 
 func _apply_effects(effects: Dictionary) -> void:
@@ -252,6 +273,23 @@ func _tick_cooldowns(delta: float) -> void:
 
 func _is_on_cooldown(event_id: String) -> bool:
 	return _event_cooldowns().has(event_id)
+
+
+func _fired_events() -> Array:
+	var ev_state: Dictionary = GameStateStore.events()
+	if not ev_state.has("fired"):
+		ev_state["fired"] = []
+	return ev_state["fired"] as Array
+
+
+func _has_fired(event_id: String) -> bool:
+	return _fired_events().has(event_id)
+
+
+func _mark_fired(event_id: String) -> void:
+	var fired: Array = _fired_events()
+	if not fired.has(event_id):
+		fired.append(event_id)
 
 
 func _set_cooldown(event_id: String) -> void:
