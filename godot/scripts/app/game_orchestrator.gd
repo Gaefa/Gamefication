@@ -99,9 +99,17 @@ func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator")
 
 
 func load_game() -> void:
+	# Rebuild the runtime from already-loaded state. Mirrors new_game() EXCEPT we
+	# do NOT regenerate terrain (it is serialized in the save) and do NOT bootstrap
+	# the starter layout. State must already be in GameStateStore (SaveService loads
+	# it before emitting game_loaded), since build() reads world().map_radius.
 	build()
 	spatial.rebuild_from_state()
+	coverage.invalidate()
+	road_graph.invalidate()
+	aura_cache.invalidate()
 	season_sys.initialize()
+	infrastructure_sys.process_tick()
 
 
 func _build_context() -> Dictionary:

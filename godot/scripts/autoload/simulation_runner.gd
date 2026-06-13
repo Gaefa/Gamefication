@@ -69,6 +69,15 @@ func _start_new_day() -> void:
 	EventBus.phase_changed.emit("day")
 
 
+func resume_after_load() -> void:
+	## A loaded game resumes in the DAY phase, not stuck in a paused/evening state.
+	## SeasonSystem.initialize() already re-synced day_count from climate.total_day.
+	current_phase = Phase.DAY
+	day_timer = day_duration
+	_accumulator = 0.0
+	paused = false
+
+
 func set_speed(multiplier: float) -> void:
 	speed_scale = clampf(multiplier, 0.5, 5.0)
 

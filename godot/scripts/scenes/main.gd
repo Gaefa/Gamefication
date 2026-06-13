@@ -82,6 +82,7 @@ func _connect_signals() -> void:
 	EventBus.building_repaired.connect(func(_c: Vector2i) -> void: _refresh_buildings())
 	EventBus.building_damaged.connect(func(_c: Vector2i, _s: float) -> void: _refresh_buildings())
 	EventBus.building_issue_added.connect(func(_c: Vector2i) -> void: _refresh_buildings())
+	EventBus.game_loaded.connect(_on_game_loaded)
 
 
 func _input(event: InputEvent) -> void:
@@ -239,6 +240,32 @@ func start_new_run(profile_id: String) -> void:
 	var overlay_layer: Node = get_node_or_null("World/OverlayLayer")
 	if overlay_layer and overlay_layer.has_method("set_hex_grid"):
 		overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
+	EventBus.build_mode_changed.emit("")
+	EventBus.selection_changed.emit(_selected_coord)
+	EventBus.ranges_changed.emit(_show_ranges)
+	EventBus.logistics_lens_changed.emit(_show_logistics)
+	_refresh_overlay_state()
+
+
+func _on_game_loaded(_slot: int) -> void:
+	# SaveService has already filled GameStateStore. Rebuild the runtime from that
+	# state and re-render the world (same steps as start_new_run, but loading).
+	_selected_coord = Vector2i(-9999, -9999)
+	_build_mode = ""
+	_show_ranges = false
+	_show_logistics = false
+	_orchestrator.load_game()
+	var terrain_layer: Node = get_node_or_null("World/TerrainLayer")
+	if terrain_layer:
+		terrain_layer.call("render_terrain", _orchestrator.hex_grid)
+	var building_layer: Node = get_node_or_null("World/BuildingLayer")
+	if building_layer:
+		building_layer.call("set_hex_grid", _orchestrator.hex_grid)
+		building_layer.call("refresh")
+	var overlay_layer: Node = get_node_or_null("World/OverlayLayer")
+	if overlay_layer and overlay_layer.has_method("set_hex_grid"):
+		overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
+	SimulationRunner.resume_after_load()
 	EventBus.build_mode_changed.emit("")
 	EventBus.selection_changed.emit(_selected_coord)
 	EventBus.ranges_changed.emit(_show_ranges)
