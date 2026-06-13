@@ -12,6 +12,8 @@ func _init(interactions: BuildingInteractions, resource_flow: ResourceFlow) -> v
 
 
 func process_tick() -> void:
+	var season_mods: Dictionary = GameStateStore.climate().get("modifiers", {})
+
 	var net_production: Dictionary = {}
 	var available_inputs: Dictionary = {}
 	for res_id: String in ContentDB.get_resource_ids():
@@ -44,12 +46,13 @@ func process_tick() -> void:
 			var mult: float = mults.get(res_id, 1.0) as float
 			var output_efficiency: float = _resource_flow.output_efficiency_for(res_id, coord, type_id)
 			var gov_mult: float = _governance_production_multiplier(res_id)
-			var amount: float = base * mult * gov_mult * input_efficiency * output_efficiency * condition_efficiency
+			var season_mult: float = _season_production_mult(res_id, season_mods)
+			var amount: float = base * mult * gov_mult * season_mult * input_efficiency * output_efficiency * condition_efficiency
 			net_production[res_id] = (net_production[res_id] as float) + amount
 
 		# If inputs cannot be delivered, the building stalls instead of silently draining stockpiles.
 		for res_id: String in consumes:
-			var amount: float = (consumes[res_id] as float) * input_efficiency
+			var amount: float = (consumes[res_id] as float) * input_efficiency * _season_consumption_mult(res_id, season_mods)
 			net_production[res_id] = (net_production[res_id] as float) - amount
 			available_inputs[res_id] = maxf((available_inputs.get(res_id, 0.0) as float) - amount, 0.0)
 
@@ -93,15 +96,15 @@ func _input_stock_efficiency_for(consumes: Dictionary, delivery_efficiency: floa
 func _process_bank_interest(net: Dictionary) -> void:
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
-		if (bld.get("type", "") as String) != "bank":
+		if (bld.get("type", "") as String) != "bank" and (bld.get("type", "") as String) != "bld_bank":
 			continue
 		var level: int = bld.get("level", 0) as int
 		var ldata: Dictionary = ContentDB.building_level_data("bank", level)
 		var rate: float = ldata.get("interest_per_min", 0.0) as float
 		if rate > 0.0:
 			var per_tick: float = rate / 60.0
-			var interest: float = GameStateStore.get_resource("coins") * per_tick
-			net["coins"] = (net.get("coins", 0.0) as float) + interest
+			var interest: float = GameStateStore.get_resource("res_money") * per_tick
+			net["res_money"] = (net.get("res_money", 0.0) as float) + interest
 
 
 func _apply_maintenance() -> void:
@@ -112,7 +115,25 @@ func _apply_maintenance() -> void:
 	# Scaling: pop*0.01 + buildings*0.02 coins/tick (no base cost)
 	var cost: float = pop * 0.01 + bld_count * 0.02
 	if cost > 0.0:
-		GameStateStore.add_resource("coins", -cost)
+		GameStateStore.add_resource("res_money", -cost)
+
+
+func _season_production_mult(res_id: String, season_mods: Dictionary) -> float:
+	## Пыль режет урожай: crop_mult применяется к производству еды.
+	if season_mods.is_empty():
+		return 1.0
+	if res_id == "res_food":
+		return season_mods.get("crop_mult", 1.0) as float
+	return 1.0
+
+
+func _season_consumption_mult(res_id: String, season_mods: Dictionary) -> float:
+	## Пыль/Жара поднимают расход воды: water_mult применяется к потреблению воды.
+	if season_mods.is_empty():
+		return 1.0
+	if res_id == "res_water_stockpile":
+		return season_mods.get("water_mult", 1.0) as float
+	return 1.0
 
 
 func _governance_production_multiplier(res_id: String) -> float:

@@ -43,6 +43,7 @@ func reset(start_profile_id: String = "appointed_administrator") -> void:
 			"policy_cooldowns": {},   # policy_id -> ticks_remaining
 		},
 		"mandate": _default_mandate(),
+		"climate": _default_climate(),
 		"pressure": {
 			"index": 0.0,
 			"phase": "calm",
@@ -107,6 +108,11 @@ func mandate() -> Dictionary:
 		_state["mandate"] = _default_mandate()
 	return _state.mandate
 
+func climate() -> Dictionary:
+	if not _state.has("climate"):
+		_state["climate"] = _default_climate()
+	return _state.climate
+
 func events() -> Dictionary:
 	return _state.events
 
@@ -114,23 +120,45 @@ func save_meta() -> Dictionary:
 	return _state.meta
 
 
+# --- Resource ID normalization ---
+# Bidirectional aliasing: legacy ↔ canonical.
+# All resource methods resolve through _canonical() so both old systems
+# (EconomySystem using "coins") and new content (using "res_money") hit
+# the same slot in the dictionary.
+
+const _RES_ALIASES: Dictionary = {
+	"coins": "res_money",
+	"money": "res_money",
+	"food": "res_food",
+	"wood": "res_wood",
+	"stone": "res_stone",
+	"tools": "res_tools",
+	"water_res": "res_water_stockpile",
+	"water_stock": "res_water_stockpile",
+}
+
+func _canonical(res_id: String) -> String:
+	return _RES_ALIASES.get(res_id, res_id)
+
+
 # --- Resource helpers ---
 
 func get_resource(res_id: String) -> float:
-	return _state.economy.resources.get(res_id, 0.0) as float
+	return _state.economy.resources.get(_canonical(res_id), 0.0) as float
 
 func set_resource(res_id: String, value: float) -> void:
-	var cap: float = _state.economy.caps.get(res_id, 9999.0) as float
-	_state.economy.resources[res_id] = clampf(value, 0.0, cap)
+	var cid: String = _canonical(res_id)
+	var cap: float = _state.economy.caps.get(cid, 9999.0) as float
+	_state.economy.resources[cid] = clampf(value, 0.0, cap)
 
 func add_resource(res_id: String, amount: float) -> void:
 	set_resource(res_id, get_resource(res_id) + amount)
 
 func get_cap(res_id: String) -> float:
-	return _state.economy.caps.get(res_id, 9999.0) as float
+	return _state.economy.caps.get(_canonical(res_id), 9999.0) as float
 
 func set_cap(res_id: String, value: float) -> void:
-	_state.economy.caps[res_id] = value
+	_state.economy.caps[_canonical(res_id)] = value
 
 func can_afford(costs: Dictionary) -> bool:
 	for res_id: String in costs:
@@ -298,6 +326,14 @@ func _ensure_runtime_defaults() -> void:
 		_state["pressure"] = {"index": 0.0, "phase": "calm", "active_policy": ""}
 	elif not (_state.pressure as Dictionary).has("active_policy"):
 		_state.pressure["active_policy"] = ""
+	if not _state.has("climate"):
+		_state["climate"] = _default_climate()
+	else:
+		var climate_state: Dictionary = _state.climate
+		var climate_defaults: Dictionary = _default_climate()
+		for key: String in climate_defaults:
+			if not climate_state.has(key):
+				climate_state[key] = climate_defaults[key]
 
 
 func _default_governance() -> Dictionary:
@@ -305,6 +341,16 @@ func _default_governance() -> Dictionary:
 		"technologies": [],
 		"active_policies": {},
 		"policy_cooldowns": {},
+	}
+
+
+func _default_climate() -> Dictionary:
+	return {
+		"season_id": "",        # filled by SeasonSystem.initialize()
+		"season_index": 0,      # index into ContentDB.season_order
+		"day_in_season": 1,     # 1-based day within the current season
+		"total_day": 1,         # 1-based game day since the mandate began
+		"modifiers": {},        # active season modifiers (water_mult, crop_mult, ...)
 	}
 
 

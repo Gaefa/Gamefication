@@ -15,6 +15,8 @@ var _build_title_label: Label
 var _build_city_button: Button
 var _build_gov_button: Button
 var _build_settings_button: Button
+var _range_lens_button: Button
+var _logistics_lens_button: Button
 var _build_scroll: ScrollContainer
 var _build_vbox: VBoxContainer
 var _category_select: OptionButton
@@ -47,6 +49,14 @@ var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 
 var _build_entries: Array[Dictionary] = []  # {type_id, btn, cost_label}
 
+# --- Minimap ---
+var _minimap_panel: PanelContainer
+var _minimap_viewport: SubViewport
+var _minimap_camera: Camera2D
+
+# --- Menu State ---
+var _start_menu_mode: String = "main" # "main", "campaign", "sandbox"
+
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -56,6 +66,7 @@ func _ready() -> void:
 	_build_event_panel()
 	_build_toast()
 	_build_start_panel()
+	_build_minimap()
 	_build_help_panel()
 	_build_city_panel()
 	_build_governance_panel()
@@ -64,11 +75,25 @@ func _ready() -> void:
 	_set_active_category("Infrastructure")
 
 
+func _process(delta: float) -> void:
+	_update_minimap_camera()
+	_update_toast_fade(delta)
+
+
+func _update_minimap_camera() -> void:
+	if _minimap_camera == null: return
+	var main_node = get_tree().current_scene
+	var main_cam = main_node.get_node_or_null("Camera")
+	if main_cam:
+		_minimap_camera.global_position = main_cam.global_position
+
+
 func _connect_signals() -> void:
 	EventBus.resources_changed.connect(_on_resources_changed)
 	EventBus.toast_requested.connect(_on_toast)
 	EventBus.selection_changed.connect(_on_selection_changed)
-	EventBus.game_event_spawned.connect(_on_event_spawned)
+	# DISABLED for MVP v0.2: events now route through EventManager → DeskUI
+	# EventBus.game_event_spawned.connect(_on_event_spawned)
 	EventBus.new_game_started.connect(_on_new_game_started)
 	EventBus.tick_finished.connect(_on_tick_finished)
 	EventBus.coverage_recalculated.connect(_on_coverage_recalculated)
@@ -78,6 +103,8 @@ func _connect_signals() -> void:
 			_rebuild_city_panel()
 	)
 	EventBus.build_mode_changed.connect(_on_build_mode_changed)
+	EventBus.ranges_changed.connect(_on_ranges_changed)
+	EventBus.logistics_lens_changed.connect(_on_logistics_lens_changed)
 	Localization.locale_changed.connect(_on_locale_changed)
 
 
@@ -137,6 +164,28 @@ func _build_resource_bar() -> void:
 	hbox.add_child(_risk_label)
 
 
+func _top_resource_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for pair: Array in [
+		["res_money", "coins"],
+		["res_food", "food"],
+		["res_water_stockpile", "water_res"],
+		["res_wood", "wood"],
+		["res_stone", "stone"],
+		["res_tools", "tools"],
+	]:
+		var preferred: String = pair[0] as String
+		var fallback: String = pair[1] as String
+		ids.append(preferred if not ContentDB.get_resource_def(preferred).is_empty() else fallback)
+	return ids
+
+
+func _resource_value(preferred_id: String, fallback_id: String) -> float:
+	if not ContentDB.get_resource_def(preferred_id).is_empty():
+		return GameStateStore.get_resource(preferred_id)
+	return GameStateStore.get_resource(fallback_id)
+
+
 func _on_resources_changed(_resources: Dictionary) -> void:
 	_update_resource_bar()
 	_update_build_list_affordability()
@@ -145,7 +194,7 @@ func _on_resources_changed(_resources: Dictionary) -> void:
 func _update_resource_bar() -> void:
 	# --- Core ---
 	var core_parts: Array[String] = []
-	for res_id: String in ["coins", "food", "wood", "stone"]:
+	for res_id: String in _top_resource_ids():
 		var val: float = GameStateStore.get_resource(res_id)
 		var def: Dictionary = ContentDB.get_resource_def(res_id)
 		var lbl: String = Localization.content_text(def, "label", res_id)
@@ -181,6 +230,10 @@ func _update_resource_bar() -> void:
 			city_text += "  %s:%d/%d" % [Localization.t("ui.resource.next", "Next"), met, reqs.size()]
 			if met < reqs.size():
 				city_text += " %s" % Localization.t("ui.city.open_hint", "(City)")
+	# Season segment: current season + day X/N + inexact forecast of the next one.
+	var season_text: String = _season_bar_text()
+	if season_text != "":
+		city_text += "  " + season_text
 	_city_label.text = city_text
 
 	# --- Utilities ---
@@ -189,14 +242,11 @@ func _update_resource_bar() -> void:
 	var water_ok: int = utility_stats.get("residential_watered", 0) as int
 	var power_total: int = utility_stats.get("power_users", 0) as int
 	var power_ok: int = utility_stats.get("power_covered", 0) as int
-	_utility_label.text = "%s  %s  %s  %s:%d  %s:%d" % [
+	_utility_label.text = "%s  %s  %s:%d" % [
 		Localization.t("ui.utility.title", "Utility"),
 		_coverage_ratio_text(Localization.t("ui.flow.water", "Water"), water_ok, water_total),
-		_coverage_ratio_text(Localization.t("ui.flow.power", "Power"), power_ok, power_total),
 		Localization.t("ui.city.water_reserve_short", "Reserve"),
-		int(GameStateStore.get_resource("water_res")),
-		Localization.t("ui.resource.energy", "Energy"),
-		int(GameStateStore.get_resource("energy")),
+		int(_resource_value("res_water_stockpile", "water_res")),
 	]
 
 	# --- Risk ---
@@ -221,6 +271,32 @@ func _coverage_ratio_text(label: String, covered: int, total: int) -> String:
 	if total <= 0:
 		return "%s:-" % label
 	return "%s:%d/%d" % [label, covered, total]
+
+
+func _season_bar_text() -> String:
+	var climate: Dictionary = GameStateStore.climate()
+	var sid: String = climate.get("season_id", "") as String
+	if sid == "":
+		return ""
+	var sdef: Dictionary = ContentDB.get_season_def(sid)
+	var sname: String = Localization.content_text(sdef, "label", sid)
+	var din: int = climate.get("day_in_season", 1) as int
+	var slen: int = sdef.get("length_days", 0) as int
+	var text: String = "%s:%s %d/%d" % [Localization.t("ui.season.title", "Сезон"), sname, din, slen]
+	# Inexact forecast of the next season (GDD: точный прогноз даёт только Прогнозист).
+	var order: Array = ContentDB.get_season_order()
+	if order.size() > 1 and slen > 0:
+		var idx: int = climate.get("season_index", 0) as int
+		var next_id: String = order[(idx + 1) % order.size()] as String
+		var next_name: String = Localization.content_text(ContentDB.get_season_def(next_id), "label", next_id)
+		var days_left: int = maxi(slen - din, 0)
+		text += " %s %s ~%d%s" % [
+			Localization.t("ui.season.next_arrow", "→"),
+			next_name,
+			days_left,
+			Localization.t("ui.season.days_short", "д"),
+		]
+	return text
 
 
 func _collect_utility_stats() -> Dictionary:
@@ -335,6 +411,30 @@ func _build_build_panel() -> void:
 		category_grid.add_child(cat_btn)
 		_category_buttons[cat] = cat_btn
 
+
+	var lens_grid := GridContainer.new()
+	lens_grid.columns = 2
+	lens_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lens_grid.add_theme_constant_override("h_separation", 4)
+	lens_grid.add_theme_constant_override("v_separation", 4)
+	vbox.add_child(lens_grid)
+
+	_range_lens_button = Button.new()
+	_range_lens_button.toggle_mode = true
+	_range_lens_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_range_lens_button.add_theme_font_size_override("font_size", 10)
+	_range_lens_button.pressed.connect(_toggle_ranges_from_button)
+	lens_grid.add_child(_range_lens_button)
+
+	_logistics_lens_button = Button.new()
+	_logistics_lens_button.toggle_mode = true
+	_logistics_lens_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_logistics_lens_button.add_theme_font_size_override("font_size", 10)
+	_logistics_lens_button.pressed.connect(_toggle_logistics_lens_from_button)
+	lens_grid.add_child(_logistics_lens_button)
+	_refresh_lens_buttons(false, false)
+	_refresh_build_panel_labels()
+
 	# Scrollable building list
 	_build_scroll = ScrollContainer.new()
 	_build_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -345,6 +445,33 @@ func _build_build_panel() -> void:
 	_build_vbox.mouse_filter = Control.MOUSE_FILTER_PASS
 	_build_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_build_scroll.add_child(_build_vbox)
+
+
+func _toggle_ranges_from_button() -> void:
+	var main_node: Node = get_tree().current_scene
+	if main_node and main_node.has_method("toggle_ranges"):
+		main_node.call("toggle_ranges")
+
+
+func _toggle_logistics_lens_from_button() -> void:
+	var main_node: Node = get_tree().current_scene
+	if main_node and main_node.has_method("toggle_logistics_lens"):
+		main_node.call("toggle_logistics_lens")
+
+
+func _on_ranges_changed(enabled: bool) -> void:
+	_refresh_lens_buttons(enabled, _logistics_lens_button.button_pressed if _logistics_lens_button else false)
+
+
+func _on_logistics_lens_changed(enabled: bool) -> void:
+	_refresh_lens_buttons(_range_lens_button.button_pressed if _range_lens_button else false, enabled)
+
+
+func _refresh_lens_buttons(ranges_enabled: bool, logistics_enabled: bool) -> void:
+	if _range_lens_button:
+		_range_lens_button.set_pressed_no_signal(ranges_enabled)
+	if _logistics_lens_button:
+		_logistics_lens_button.set_pressed_no_signal(logistics_enabled)
 
 
 func _on_category_selected(index: int) -> void:
@@ -375,6 +502,12 @@ func _refresh_build_panel_labels() -> void:
 	if _build_settings_button:
 		_build_settings_button.text = Localization.t("ui.settings.short", "Opt")
 		_build_settings_button.tooltip_text = Localization.t("ui.settings.tooltip", "Options (O): language and settings")
+	if _range_lens_button:
+		_range_lens_button.text = Localization.t("ui.lens.ranges", "Радиусы V")
+		_range_lens_button.tooltip_text = Localization.t("ui.lens.ranges_tooltip", "Показать радиус выбранного здания")
+	if _logistics_lens_button:
+		_logistics_lens_button.text = Localization.t("ui.lens.logistics", "Логистика L")
+		_logistics_lens_button.tooltip_text = Localization.t("ui.lens.logistics_tooltip", "Подсветить дороги и здания без дорожного доступа")
 	if _category_select:
 		var selected_category := _active_category
 		_category_select.clear()
@@ -408,6 +541,8 @@ func _rebuild_building_list() -> void:
 
 	for type_id: String in ContentDB.get_building_ids():
 		var def: Dictionary = ContentDB.get_building_def(type_id)
+		if not (def.get("player_buildable", true) as bool):
+			continue
 		var cat: String = def.get("category", "") as String
 		if cat != _active_category:
 			continue
@@ -476,9 +611,16 @@ func _format_key_effect(ldata: Dictionary) -> String:
 	var bld_pop: int = ldata.get("population", 0) as int
 	if bld_pop > 0:
 		parts.append("+%d %s" % [bld_pop, Localization.t("ui.effect.population", "pop")])
-	var storage: int = ldata.get("storage", 0) as int
-	if storage > 0:
-		parts.append("+%d %s" % [storage, Localization.t("ui.effect.storage", "storage")])
+	var storage_value: Variant = ldata.get("storage", 0)
+	if storage_value is Dictionary:
+		for r: String in storage_value as Dictionary:
+			var rdef: Dictionary = ContentDB.get_resource_def(r)
+			parts.append("+%.0f %s %s" % [(storage_value as Dictionary)[r] as float, Localization.content_text(rdef, "label", r), Localization.t("ui.effect.storage", "storage")])
+	elif (storage_value as float) > 0.0:
+		parts.append("+%d %s" % [int(storage_value as float), Localization.t("ui.effect.storage", "storage")])
+	var synergy: Dictionary = ldata.get("synergy", {})
+	if synergy.has("water_radius"):
+		parts.append("%s r%d" % [Localization.t("ui.effect.water_coverage", "water cover"), synergy["water_radius"] as int])
 	if parts.is_empty():
 		return ""
 	return ", ".join(parts)
@@ -825,7 +967,7 @@ func _uses_water_flow(def: Dictionary, type_id: String, produces: Dictionary, co
 		return true
 	if type_id == "water_tower":
 		return true
-	return produces.has("water_res") or consumes.has("water_res")
+	return produces.has("water_res") or consumes.has("water_res") or produces.has("res_water_stockpile") or consumes.has("res_water_stockpile")
 
 
 func _uses_power_flow(type_id: String, produces: Dictionary, consumes: Dictionary) -> bool:
@@ -945,6 +1087,80 @@ func _build_start_panel() -> void:
 	_rebuild_start_panel()
 
 
+func _build_minimap() -> void:
+	_minimap_panel = PanelContainer.new()
+	_minimap_panel.custom_minimum_size = Vector2(180, 120)
+	_minimap_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	# Position: Top-left, under resource bar
+	_minimap_panel.anchor_left = 0.0
+	_minimap_panel.anchor_right = 0.0
+	_minimap_panel.anchor_top = 0.0
+	_minimap_panel.anchor_bottom = 0.0
+	_minimap_panel.offset_left = 10
+	_minimap_panel.offset_top = 55
+	# Add some styling to the panel
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.4, 0.4, 0.4)
+	_minimap_panel.add_theme_stylebox_override("panel", style)
+	add_child(_minimap_panel)
+
+	var v_box := VBoxContainer.new()
+	_minimap_panel.add_child(v_box)
+
+	var label := Label.new()
+	label.text = Localization.t("ui.minimap.title", "MINIMAP")
+	label.add_theme_font_size_override("font_size", 10)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	v_box.add_child(label)
+
+	var sub_v_cont := SubViewportContainer.new()
+	sub_v_cont.stretch = true
+	sub_v_cont.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sub_v_cont.gui_input.connect(_on_minimap_gui_input)
+	v_box.add_child(sub_v_cont)
+
+	_minimap_viewport = SubViewport.new()
+	_minimap_viewport.handle_input_locally = false
+	_minimap_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	# Share the world with main viewport
+	_minimap_viewport.world_2d = get_viewport().world_2d
+	sub_v_cont.add_child(_minimap_viewport)
+
+	_minimap_camera = Camera2D.new()
+	_minimap_camera.zoom = Vector2(0.15, 0.15) # Show broad area
+	_minimap_viewport.add_child(_minimap_camera)
+
+
+func _on_minimap_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+			_teleport_camera_to_minimap_pos(mb.position)
+
+
+func _teleport_camera_to_minimap_pos(click_pos: Vector2) -> void:
+	if _minimap_viewport == null or _minimap_camera == null: return
+	
+	# Calculate world position from click
+	# Viewport is 180x100 approx. Camera is at global_position with 0.15 zoom.
+	# WorldPos = CameraPos + (ClickPos - ViewportCenter) / Zoom
+	var vp_size = _minimap_viewport.size
+	var world_pos = _minimap_camera.global_position + (click_pos - vp_size / 2.0) / _minimap_camera.zoom
+	
+	var main_node = get_tree().current_scene
+	var main_cam = main_node.get_node_or_null("Camera")
+	if main_cam:
+		# Use global_position as target
+		main_cam.global_position = world_pos
+		EventBus.toast_requested.emit("Jump to position", 0.5)
+
+
 func _rebuild_start_panel() -> void:
 	if _start_panel == null:
 		return
@@ -966,27 +1182,71 @@ func _rebuild_start_panel() -> void:
 	root.add_child(header)
 
 	var title := Label.new()
-	title.text = Localization.t("ui.start.title", "Choose Your Mandate")
-	title.add_theme_font_size_override("font_size", 18)
+	title.text = Localization.t("ui.start.title", "Mandate Cities")
+	title.add_theme_font_size_override("font_size", 22)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
-	var close_btn := Button.new()
-	close_btn.text = Localization.t("ui.start.keep_current", "Keep Current")
-	close_btn.tooltip_text = Localization.t("ui.start.keep_current_tooltip", "Close this panel and keep the current default start.")
-	close_btn.pressed.connect(_close_start_panel)
-	header.add_child(close_btn)
+	if _start_menu_mode != "main":
+		var back_btn := Button.new()
+		back_btn.text = "< " + Localization.t("ui.common.back", "Back")
+		back_btn.pressed.connect(func(): _start_menu_mode = "main"; _rebuild_start_panel())
+		header.add_child(back_btn)
 
+	var sep := HSeparator.new()
+	root.add_child(sep)
+
+	if _start_menu_mode == "main":
+		_build_main_menu_options(root)
+	elif _start_menu_mode == "campaign":
+		_build_campaign_list(root)
+	elif _start_menu_mode == "sandbox":
+		_build_sandbox_options(root)
+
+
+func _build_main_menu_options(container: Control) -> void:
+	var desc := Label.new()
+	desc.text = "Welcome to the Mandate. Choose your path to build and survive."
+	desc.add_theme_font_size_override("font_size", 12)
+	container.add_child(desc)
+
+	var btn_campaign := Button.new()
+	btn_campaign.text = Localization.t("ui.menu.campaign", "NEW CAMPAIGN")
+	btn_campaign.custom_minimum_size.y = 50
+	btn_campaign.pressed.connect(func(): _start_menu_mode = "campaign"; _rebuild_start_panel())
+	container.add_child(btn_campaign)
+
+	var btn_sandbox := Button.new()
+	btn_sandbox.text = Localization.t("ui.menu.sandbox", "SANDBOX MODE")
+	btn_sandbox.custom_minimum_size.y = 50
+	btn_sandbox.pressed.connect(func(): _start_menu_mode = "sandbox"; _rebuild_start_panel())
+	container.add_child(btn_sandbox)
+
+	var btn_continue := Button.new()
+	btn_continue.text = Localization.t("ui.menu.continue", "CONTINUE CITY")
+	btn_continue.custom_minimum_size.y = 50
+	btn_continue.disabled = not SaveService.has_save(0)
+	btn_continue.pressed.connect(_on_continue_pressed)
+	container.add_child(btn_continue)
+
+
+func _on_continue_pressed() -> void:
+	if SaveService.load_game(0):
+		_close_start_panel()
+		_update_resource_bar()
+		_rebuild_building_list()
+
+
+func _build_campaign_list(container: Control) -> void:
 	var intro := Label.new()
-	intro.text = Localization.t("ui.start.intro", "Start profile changes your resources, mandate pressure and early strategic identity.")
-	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	intro.text = Localization.t("ui.start.campaign_intro", "Select a scenario to begin your mandate.")
 	intro.add_theme_font_size_override("font_size", 11)
 	intro.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
-	root.add_child(intro)
+	container.add_child(intro)
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	root.add_child(scroll)
+	container.add_child(scroll)
 
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 8)
@@ -994,6 +1254,22 @@ func _rebuild_start_panel() -> void:
 
 	for profile_id: String in ContentDB.get_start_profile_ids():
 		list.add_child(_build_start_profile_row(profile_id))
+
+
+func _build_sandbox_options(container: Control) -> void:
+	var intro := Label.new()
+	intro.text = "Sandbox mode: unlimited potential, no pressure."
+	intro.add_theme_font_size_override("font_size", 11)
+	container.add_child(intro)
+	
+	# For now, just use the first profile as default sandbox
+	var profiles = ContentDB.get_start_profile_ids()
+	if not profiles.is_empty():
+		var btn := Button.new()
+		btn.text = "Start Default Sandbox"
+		btn.custom_minimum_size.y = 60
+		btn.pressed.connect(_start_new_run.bind(profiles[0]))
+		container.add_child(btn)
 
 
 func _build_start_profile_row(profile_id: String) -> Control:
@@ -1290,7 +1566,7 @@ func _build_city_diagnostics_text() -> String:
 	])
 	lines.append("%s: %d | %s: %d" % [
 		Localization.t("ui.city.water_reserve", "Water Reserve"),
-		int(GameStateStore.get_resource("water_res")),
+		int(GameStateStore.get_resource("res_water_stockpile")),
 		Localization.t("ui.resource.energy", "Energy"),
 		int(GameStateStore.get_resource("energy")),
 	])
@@ -1770,7 +2046,7 @@ func _on_toast(text: String, duration: float) -> void:
 	_toast_timer = duration
 
 
-func _process(delta: float) -> void:
+func _update_toast_fade(delta: float) -> void:
 	if _toast_timer > 0.0:
 		_toast_timer -= delta
 		if _toast_timer <= 0.0:

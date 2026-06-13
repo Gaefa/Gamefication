@@ -9,9 +9,9 @@
     "accept_cost": null,
     "accept_effects": {
       "add_resources": {
-        "wood": 30,
-        "stone": 20,
-        "food": 15
+        "res_wood": 30,
+        "res_stone": 20,
+        "res_food": 15
       }
     },
     "decline_effects": {
@@ -40,7 +40,7 @@
     "accept_cost": null,
     "accept_effects": {
       "add_resources": {
-        "coins": 80
+        "res_money": 80
       }
     },
     "decline_effects": {
@@ -69,9 +69,9 @@
     "accept_cost": null,
     "accept_effects": {
       "add_resources": {
-        "coins": 400,
-        "wood": 120,
-        "stone": 120
+        "res_money": 400,
+        "res_wood": 120,
+        "res_stone": 120
       }
     },
     "decline_effects": {
@@ -98,8 +98,8 @@
     "accept_label": "Fund Festival",
     "decline_label": "Skip",
     "accept_cost": {
-      "coins": 300,
-      "food": 150
+      "res_money": 300,
+      "res_food": 150
     },
     "accept_effects": {
       "add_buff": {
@@ -136,8 +136,8 @@
     "accept_label": "Mitigate",
     "decline_label": "Risk It",
     "accept_cost": {
-      "coins": 400,
-      "tools": 40
+      "res_money": 400,
+      "res_tools": 40
     },
     "accept_effects": {
       "add_buff": {
@@ -152,9 +152,9 @@
     "decline_effects": {
       "force_issues": 6,
       "remove_resources": {
-        "wood": 100,
-        "stone": 100,
-        "food": 80
+        "res_wood": 100,
+        "res_stone": 100,
+        "res_food": 80
       },
       "message": "Storm caused damage.",
       "message_key": "event.storm.decline_message"
@@ -174,7 +174,7 @@
   },
   {
     "id": "innovation",
-    "min_level": 5,
+    "min_level": 99,
     "title": "Innovation Grant",
     "body": "A grant can accelerate high-tech growth.",
     "accept_label": "Accept Grant",
@@ -211,8 +211,8 @@
     "accept_label": "Emergency Supply",
     "decline_label": "Wait It Out",
     "accept_cost": {
-      "coins": 200,
-      "water_res": 10
+      "res_money": 200,
+      "res_water_stockpile": 10
     },
     "accept_effects": {
       "add_buff": {
@@ -251,7 +251,7 @@
   },
   {
     "id": "earthquake",
-    "min_level": 5,
+    "min_level": 99,
     "title": "Earthquake",
     "body": "Seismic activity detected! Reinforce infrastructure or suffer massive damage.",
     "accept_label": "Emergency Reinforcement",
@@ -300,7 +300,7 @@
   },
   {
     "id": "blackout",
-    "min_level": 4,
+    "min_level": 99,
     "title": "Grid Blackout",
     "body": "Power grid overloaded! Industry halts and crime rises without electricity.",
     "accept_label": "Emergency Repairs",
@@ -347,7 +347,7 @@
   },
   {
     "id": "housing_crisis",
-    "min_level": 3,
+    "min_level": 99,
     "title": "Housing Crisis",
     "body": "Population is growing faster than housing. Citizens demand action!",
     "accept_label": "Emergency Shelters",
@@ -386,7 +386,7 @@
   },
   {
     "id": "epidemic",
-    "min_level": 5,
+    "min_level": 99,
     "title": "Epidemic Outbreak",
     "body": "Disease spreading rapidly! Fund quarantine or lose workforce.",
     "accept_label": "Quarantine & Treat",
@@ -440,9 +440,9 @@
     "accept_label": "Emergency Road Crews",
     "decline_label": "Endure It",
     "accept_cost": {
-      "coins": 400,
-      "stone": 100,
-      "tools": 60
+      "res_money": 400,
+      "res_stone": 100,
+      "res_tools": 60
     },
     "accept_effects": {
       "add_buff": {

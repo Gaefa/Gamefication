@@ -22,11 +22,11 @@ func execute(_ctx: Dictionary) -> void:
 		message = Localization.t("ui.command.building_fine", "Building is fine")
 		return
 
-	if not GameStateStore.can_afford({"coins": REPAIR_COST_COINS}):
+	if not GameStateStore.can_afford({"res_money": REPAIR_COST_COINS}):
 		message = Localization.t("ui.command.need_coins", "Need %d coins") % int(REPAIR_COST_COINS)
 		return
 
-	GameStateStore.spend({"coins": REPAIR_COST_COINS})
+	GameStateStore.spend({"res_money": REPAIR_COST_COINS})
 	bld["damaged"] = false
 	bld["has_issue"] = false
 	GameStateStore.set_building(coord, bld)

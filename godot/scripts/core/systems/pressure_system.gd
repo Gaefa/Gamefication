@@ -32,7 +32,7 @@ func _deficit_score() -> float:
 	## Negative production in key resources raises pressure.
 	var score: float = 0.0
 	var production: Dictionary = GameStateStore.economy().production
-	var key_resources: Array = ["food", "coins", "energy", "water_res"]
+	var key_resources: Array = ["res_food", "res_money", "res_water_stockpile"]
 	for res_id: String in key_resources:
 		var net: float = production.get(res_id, 0.0) as float
 		if net < 0.0:

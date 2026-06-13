@@ -6,6 +6,8 @@ static func validate(coord: Vector2i, type_id: String, hex_grid: HexGrid = null)
 	var def: Dictionary = ContentDB.get_building_def(type_id)
 	if def.is_empty():
 		return _fail(Localization.t("ui.command.unknown_building", "Unknown building: %s") % type_id)
+	if not (def.get("player_buildable", true) as bool):
+		return _fail(Localization.t("ui.command.cannot_build_here", "Cannot build here"))
 
 	if hex_grid != null and not hex_grid.is_valid(coord):
 		return _fail(Localization.t("ui.placement.out_of_bounds", "Outside city bounds"))

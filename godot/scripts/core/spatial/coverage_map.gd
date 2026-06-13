@@ -69,9 +69,8 @@ func water_efficiency(coord: Vector2i) -> float:
 
 func _rebuild_road_coverage() -> void:
 	_road_connected.clear()
-	var road_coords: Array[Vector2i] = _spatial.get_coords_of_type("road")
 	var road_set: Dictionary = {}
-	for c: Vector2i in road_coords:
+	for c: Vector2i in _coords_with_tag_or_type("road", ["road", "bld_road"]):
 		road_set[c] = true
 	# A building is "road connected" if any neighbor is a road
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
@@ -83,11 +82,11 @@ func _rebuild_road_coverage() -> void:
 
 func _rebuild_water_coverage() -> void:
 	_water_covered.clear()
-	var water_coords: Array[Vector2i] = _spatial.get_coords_of_type("water_tower")
-	for wc: Vector2i in water_coords:
+	for wc: Vector2i in _coords_with_tag_or_type("water_source", ["water_tower", "bld_well_pump"]):
 		var bld: Dictionary = GameStateStore.get_building(wc)
+		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
-		var ldata: Dictionary = ContentDB.building_level_data("water_tower", level)
+		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 		var syn: Dictionary = ldata.get("synergy", {})
 		var r: int = syn.get("water_radius", 4) as int
 		for cell: Vector2i in HexCoords.disk(wc, r):
@@ -96,13 +95,25 @@ func _rebuild_water_coverage() -> void:
 
 func _rebuild_power_coverage() -> void:
 	_power_covered.clear()
-	var power_coords: Array[Vector2i] = _spatial.get_coords_of_type("power")
-	for pc: Vector2i in power_coords:
+	for pc: Vector2i in _coords_with_tag_or_type("power_source", ["power", "bld_power"]):
 		var bld: Dictionary = GameStateStore.get_building(pc)
+		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
-		var ldata: Dictionary = ContentDB.building_level_data("power", level)
+		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 		var syn: Dictionary = ldata.get("synergy", {})
 		var r: int = syn.get("radius", 0) as int
 		if r > 0:
 			for cell: Vector2i in HexCoords.disk(pc, r):
 				_power_covered[cell] = true
+
+
+func _coords_with_tag_or_type(tag: String, type_ids: Array) -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		var type_id: String = bld.get("type", "") as String
+		var def: Dictionary = ContentDB.get_building_def(type_id)
+		var tags: Array = def.get("tags", []) as Array
+		if tags.has(tag) or type_ids.has(type_id):
+			result.append(coord)
+	return result

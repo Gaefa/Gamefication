@@ -52,5 +52,8 @@ func _can_deliver_utility(res_id: String, coord: Vector2i) -> bool:
 
 
 func _is_native_utility_output(res_id: String, producer_type_id: String) -> bool:
-	var is_power_output := res_id == "energy" and producer_type_id == "power"
-	return is_power_output
+	var producer_def: Dictionary = ContentDB.get_building_def(producer_type_id)
+	var tags: Array = producer_def.get("tags", []) as Array
+	var is_power_output := res_id == "energy" and (producer_type_id == "power" or tags.has("power_source"))
+	var is_water_output := (res_id == "water_res" or res_id == "res_water_stockpile") and tags.has("water_source")
+	return is_power_output or is_water_output

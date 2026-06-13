@@ -6,6 +6,7 @@ var _build_mode: String = ""  # "" = none, otherwise building type_id
 var _hud: Control
 var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 var _show_ranges: bool = false
+var _show_logistics: bool = false
 
 
 func _ready() -> void:
@@ -60,6 +61,13 @@ func _setup_scene_tree() -> void:
 	_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(_hud)
 
+	# DeskUI (Стол Администратора — полноэкранный, поверх HUD)
+	var desk_ui := Control.new()
+	desk_ui.name = "DeskUI"
+	desk_ui.set_script(load("res://scenes/ui/desk_ui.gd"))
+	desk_ui.set_anchors_preset(Control.PRESET_FULL_RECT)
+	canvas.add_child(desk_ui)
+
 	# Initialize rendering
 	terrain_layer.call("render_terrain", _orchestrator.hex_grid)
 	building_layer.call("set_hex_grid", _orchestrator.hex_grid)
@@ -108,6 +116,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _is_global_hotkey(ke: InputEventKey) -> bool:
 	return _matches_key(ke, KEY_ESCAPE) \
 		or _matches_key(ke, KEY_V) \
+		or _matches_key(ke, KEY_L) \
 		or _matches_key(ke, KEY_H) \
 		or _matches_key(ke, KEY_G) \
 		or _matches_key(ke, KEY_O) \
@@ -165,12 +174,9 @@ func _handle_key(ke: InputEventKey) -> void:
 		_build_mode = ""
 		EventBus.build_mode_changed.emit("")
 	elif _matches_key(ke, KEY_V) or Input.is_action_just_pressed("toggle_ranges"):
-		_show_ranges = not _show_ranges
-		_refresh_overlay_state()
-		EventBus.toast_requested.emit(
-			Localization.t("ui.ranges.enabled", "Ranges: on") if _show_ranges else Localization.t("ui.ranges.disabled", "Ranges: off"),
-			1.5
-		)
+		toggle_ranges()
+	elif _matches_key(ke, KEY_L):
+		toggle_logistics_lens()
 	elif _matches_key(ke, KEY_H):
 		if _hud and _hud.has_method("toggle_help"):
 			_hud.call("toggle_help")
@@ -221,6 +227,7 @@ func start_new_run(profile_id: String) -> void:
 	_selected_coord = Vector2i(-9999, -9999)
 	_build_mode = ""
 	_show_ranges = false
+	_show_logistics = false
 	_orchestrator.new_game(0, profile_id)
 	var terrain_layer: Node = get_node_or_null("World/TerrainLayer")
 	if terrain_layer:
@@ -234,13 +241,37 @@ func start_new_run(profile_id: String) -> void:
 		overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
 	EventBus.build_mode_changed.emit("")
 	EventBus.selection_changed.emit(_selected_coord)
+	EventBus.ranges_changed.emit(_show_ranges)
+	EventBus.logistics_lens_changed.emit(_show_logistics)
 	_refresh_overlay_state()
+
+
+func toggle_ranges() -> void:
+	_show_ranges = not _show_ranges
+	_refresh_overlay_state()
+	EventBus.ranges_changed.emit(_show_ranges)
+	EventBus.toast_requested.emit(
+		Localization.t("ui.ranges.enabled", "Ranges: on") if _show_ranges else Localization.t("ui.ranges.disabled", "Ranges: off"),
+		1.5
+	)
+
+
+func toggle_logistics_lens() -> void:
+	_show_logistics = not _show_logistics
+	_refresh_overlay_state()
+	EventBus.logistics_lens_changed.emit(_show_logistics)
+	EventBus.toast_requested.emit(
+		Localization.t("ui.lens.logistics_on", "Логистика: включена") if _show_logistics else Localization.t("ui.lens.logistics_off", "Логистика: выключена"),
+		1.5
+	)
 
 
 func _refresh_overlay_state() -> void:
 	var overlay: Node = get_node_or_null("World/OverlayLayer")
 	if overlay and overlay.has_method("set_show_ranges"):
 		overlay.call("set_show_ranges", _show_ranges, _selected_coord)
+	if overlay and overlay.has_method("set_show_logistics"):
+		overlay.call("set_show_logistics", _show_logistics)
 
 
 func get_orchestrator() -> GameOrchestrator:

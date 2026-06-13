@@ -8,7 +8,7 @@
     "start_path": "appointed",
     "founder_archetype": "",
     "patron_id": "restoration_league",
-    "starting_resources": { "coins": 250, "food": 80, "wood": 110, "stone": 70, "tools": 10 },
+    "starting_resources": { "res_money": 250, "res_food": 80, "res_wood": 110, "res_stone": 70, "res_tools": 10 },
     "default_policies": ["balanced_budget"],
     "mandate": {
       "patron_trust": 70,
@@ -19,7 +19,7 @@
     },
     "effects": {
       "pressure_delta": -2.0,
-      "production_mult": { "coins": 0.05 }
+      "production_mult": { "res_money": 0.05 }
     }
   },
   {
@@ -31,7 +31,7 @@
     "start_path": "independent_founder",
     "founder_archetype": "the_rebel",
     "patron_id": "",
-    "starting_resources": { "coins": 85, "food": 45, "wood": 75, "stone": 35, "tools": 5, "fame": 5 },
+    "starting_resources": { "res_money": 85, "res_food": 45, "res_wood": 75, "res_stone": 35, "res_tools": 5 },
     "default_policies": ["labor_mobilization"],
     "mandate": {
       "patron_trust": 0,
@@ -42,7 +42,7 @@
     },
     "effects": {
       "pressure_delta": 4.0,
-      "production_mult": { "wood": 0.08, "stone": 0.08 }
+      "production_mult": { "res_wood": 0.08, "res_stone": 0.08 }
     }
   },
   {
@@ -54,7 +54,7 @@
     "start_path": "independent_founder",
     "founder_archetype": "the_peoples_choice",
     "patron_id": "",
-    "starting_resources": { "coins": 120, "food": 70, "wood": 70, "stone": 35, "culture": 5 },
+    "starting_resources": { "res_money": 120, "res_food": 70, "res_wood": 70, "res_stone": 35 },
     "default_policies": ["low_taxes"],
     "mandate": {
       "patron_trust": 0,
@@ -65,7 +65,7 @@
     },
     "effects": {
       "happiness_add": 5.0,
-      "production_mult": { "coins": -0.05 }
+      "production_mult": { "res_money": -0.05 }
     }
   },
   {
@@ -77,7 +77,7 @@
     "start_path": "independent_founder",
     "founder_archetype": "the_outcasts",
     "patron_id": "",
-    "starting_resources": { "coins": 55, "food": 90, "wood": 95, "stone": 25, "tools": 15 },
+    "starting_resources": { "res_money": 55, "res_food": 90, "res_wood": 95, "res_stone": 25, "res_tools": 15 },
     "default_policies": [],
     "mandate": {
       "patron_trust": 0,
@@ -88,7 +88,7 @@
     },
     "effects": {
       "pressure_delta": 2.0,
-      "production_mult": { "food": 0.05, "wood": 0.05, "coins": -0.10 }
+      "production_mult": { "res_food": 0.05, "res_wood": 0.05, "res_money": -0.10 }
     }
   }
 ]

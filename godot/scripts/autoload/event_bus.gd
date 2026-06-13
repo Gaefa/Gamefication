@@ -37,6 +37,10 @@ signal game_event_resolved(event_id: String, accepted: bool)
 # --- Pressure Director ---
 signal pressure_updated(index: float, phase: String)
 
+# --- Climate / Seasons ---
+signal season_changed(season_id: String, day_in_season: int, length_days: int)
+signal season_day_advanced(season_id: String, day_in_season: int, length_days: int)
+
 # --- Save / Load ---
 signal game_saved(slot: int)
 signal game_loaded(slot: int)
@@ -46,7 +50,20 @@ signal new_game_started()
 signal toast_requested(text: String, duration: float)
 signal build_mode_changed(type_id: String)
 signal selection_changed(coord: Vector2i)
+signal ranges_changed(enabled: bool)
+signal logistics_lens_changed(enabled: bool)
 
 # --- Tick ---
 signal tick_started(tick_number: int)
 signal tick_finished(tick_number: int)
+
+# --- Phase System (День / Вечер / Утро) ---
+signal phase_changed(new_phase: String)
+signal day_timer_updated(seconds_left: float)
+signal evening_started(pending_events: Array)
+signal morning_consequences(results: Array)
+
+# --- Стол Администратора ---
+signal desk_opened(events: Array)
+signal desk_option_selected(event_id: String, option_index: int, effects: Dictionary, cost: Dictionary)
+signal desk_closed()

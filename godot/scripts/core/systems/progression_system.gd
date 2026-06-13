@@ -131,7 +131,7 @@ func _record_history() -> void:
 		"tick": tick,
 		"population": GameStateStore.population().total,
 		"happiness": GameStateStore.population().happiness,
-		"coins": GameStateStore.get_resource("coins"),
+		"res_money": GameStateStore.get_resource("res_money"),
 		"city_level": GameStateStore.progression().city_level,
 	}
 	(GameStateStore.progression().history as Array).append(entry)

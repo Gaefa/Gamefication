@@ -19,6 +19,7 @@ var tick_scheduler: TickScheduler
 var rng: SeededRNG
 
 # Systems
+var season_sys: SeasonSystem
 var economy_sys: EconomySystem
 var infrastructure_sys: InfrastructureSystem
 var maintenance_sys: MaintenanceSystem
@@ -51,6 +52,7 @@ func build() -> void:
 	rng = SeededRNG.new(seed_val)
 
 	# Systems
+	season_sys = SeasonSystem.new()
 	economy_sys = EconomySystem.new(interactions, resource_flow)
 	infrastructure_sys = InfrastructureSystem.new(coverage, road_graph, aura_cache)
 	maintenance_sys = MaintenanceSystem.new()
@@ -61,6 +63,7 @@ func build() -> void:
 
 	# Tick scheduler
 	tick_scheduler = TickScheduler.new(
+		season_sys,
 		infrastructure_sys,
 		economy_sys,
 		maintenance_sys,
@@ -85,13 +88,20 @@ func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator")
 	GameStateStore.save_meta().rng_seed = seed_val
 	build()
 	_generate_terrain()
+	_bootstrap_campaign_hub()
 	spatial.rebuild_from_state()
+	coverage.invalidate()
+	road_graph.invalidate()
+	aura_cache.invalidate()
+	season_sys.initialize()
+	infrastructure_sys.process_tick()
 	EventBus.new_game_started.emit()
 
 
 func load_game() -> void:
 	build()
 	spatial.rebuild_from_state()
+	season_sys.initialize()
 
 
 func _build_context() -> Dictionary:
@@ -108,3 +118,28 @@ func _build_context() -> Dictionary:
 func _generate_terrain() -> void:
 	var gen := TerrainGenerator.new(rng, hex_grid.radius)
 	gen.generate()
+
+
+func _bootstrap_campaign_hub() -> void:
+	var starter_layout: Array[Dictionary] = [
+		{"coord": Vector2i(0, 0), "type": "bld_road"},
+		{"coord": Vector2i(1, -1), "type": "bld_road"},
+		{"coord": Vector2i(-1, 1), "type": "bld_road"},
+		{"coord": Vector2i(-1, 0), "type": "bld_admin_post"},
+		{"coord": Vector2i(1, 0), "type": "bld_main_cistern"},
+		{"coord": Vector2i(0, -1), "type": "bld_warehouse"},
+		{"coord": Vector2i(0, 1), "type": "bld_well_pump"},
+		{"coord": Vector2i(-2, 1), "type": "bld_shelter"},
+		{"coord": Vector2i(2, -1), "type": "bld_field_strip"},
+	]
+	for entry: Dictionary in starter_layout:
+		var coord: Vector2i = entry.get("coord", Vector2i.ZERO) as Vector2i
+		var type_id: String = entry.get("type", "") as String
+		if type_id == "":
+			continue
+		GameStateStore.set_building(coord, {
+			"type": type_id,
+			"level": 0,
+			"damaged": false,
+			"has_issue": false,
+		})

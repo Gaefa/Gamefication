@@ -72,8 +72,8 @@
     "ru": "Осмотр: клик по клетке\nКамера: WASD\nЗум: колесо мыши\nСтройка: ЛКМ выбор\nОтмена: ПКМ / Esc\nМеню: G управление, O настройки\nПомощь/радиусы: H помощь, V радиусы"
   },
   "ui.help.text": {
-    "en": "Quick start\n1. Pick a category in the right build panel.\n2. Build Roads first, then Huts, Farms and Lumber Mills.\n3. Select a building to see its needs and next action.\n4. Use V to show service ranges for the selected building.\n\nHotkeys\nWASD - camera\nMouse wheel - zoom\nLMB - select/build\nRMB or Esc - cancel build mode\nG - governance\nO - options\nH - help\nV - ranges\nU/R/B - upgrade/repair/bulldoze selected building\n\nRule of thumb\nRoads connect production. Water and power are local coverage. Pressure rises when the city grows or problems stay unresolved.",
-    "ru": "Быстрый старт\n1. Выбери категорию зданий справа.\n2. Сначала строй дороги, потом жильё, фермы и лесопилки.\n3. Клик по зданию показывает потребности и следующее действие.\n4. Нажми V, чтобы показать радиусы выбранного здания.\n\nКлавиши\nWASD - камера\nКолесо мыши - зум\nЛКМ - выбрать/строить\nПКМ или Esc - отмена стройки\nG - управление\nO - настройки\nH - помощь\nV - радиусы\nU/R/B - улучшить/починить/снести выбранное здание\n\nПравило\nДороги связывают производство. Вода и энергия работают через локальное покрытие. Давление растёт от масштаба города и нерешённых проблем."
+    "en": "Quick start\n1. The campaign begins with an admin post, cistern, warehouse, pump, and a short road spine.\n2. Expand with Shelters, Fields, and raw production around that hub.\n3. The Well Pump gives local water coverage; the cistern is only a reserve buffer.\n4. Use V to show service ranges for the selected building.\n\nHotkeys\nWASD - camera\nMouse wheel - zoom\nLMB - select/build\nRMB or Esc - cancel build mode\nG - governance\nO - options\nH - help\nV - ranges\nU/R/B - upgrade/repair/bulldoze selected building\n\nRule of thumb\nRoads connect production. Water and power are local coverage. Pressure rises when the city grows or problems stay unresolved.",
+    "ru": "Быстрый старт\n1. Кампания начинается с поста администрации, цистерны, склада, насоса и короткой дорожной оси.\n2. Расширяй этот узел жильем, грядками и добычей.\n3. Колодец-насос дает локальное покрытие водой; цистерна это только буфер запаса.\n4. Нажми V, чтобы показать радиусы выбранного здания.\n\nКлавиши\nWASD - камера\nКолесо мыши - зум\nЛКМ - выбрать/строить\nПКМ или Esc - отмена стройки\nG - управление\nO - настройки\nH - помощь\nV - радиусы\nU/R/B - улучшить/починить/снести выбранное здание\n\nПравило\nДороги связывают производство. Вода и энергия работают через локальное покрытие. Давление растёт от масштаба города и нерешённых проблем."
   },
   "ui.tile.cannot_build": {
     "en": "Cannot build here",
@@ -347,6 +347,10 @@
     "en": "storage",
     "ru": "склад"
   },
+  "ui.effect.water_coverage": {
+    "en": "water cover",
+    "ru": "покрытие воды"
+  },
   "ui.event.accept": {
     "en": "Accept",
     "ru": "Принять"
@@ -426,6 +430,14 @@
   "resource.water_res.label": {
     "en": "Water Reserve",
     "ru": "Резерв воды"
+  },
+  "resource.money.label": {
+    "en": "Money",
+    "ru": "Деньги"
+  },
+  "resource.water_stockpile.label": {
+    "en": "Water Stockpile",
+    "ru": "Запас воды"
   },
   "terrain.grass.label": {
     "en": "Grass",
@@ -1416,8 +1428,8 @@
     "ru": "Покрытие водой"
   },
   "tutorial.build_water.text": {
-    "en": "Build a WATER TOWER to cover nearby residential buildings. Water Reserve is a city stockpile for crises; coverage is local and shown on selected buildings.",
-    "ru": "Построй ВОДОНАПОРНУЮ БАШНЮ, чтобы покрыть ближайшее жилье. Резерв воды - городской запас для кризисов; покрытие локальное и видно на выбранных зданиях."
+    "en": "Build a WELL PUMP to cover nearby residential buildings. Water Reserve is a city stockpile for crises; coverage is local and shown on selected buildings.",
+    "ru": "Построй КОЛОДЕЦ-НАСОС, чтобы покрыть ближайшее жилье. Резерв воды - городской запас для кризисов; покрытие локальное и видно на выбранных зданиях."
   },
   "tutorial.upgrade.title": {
     "en": "Upgrade Buildings",
@@ -1768,11 +1780,35 @@
     "ru": "Автономия"
   },
   "ui.ranges.enabled": {
-    "en": "Ranges: on",
-    "ru": "Радиусы: включены"
+    "en": "Services: on",
+    "ru": "Сервисы: включены"
   },
   "ui.ranges.disabled": {
-    "en": "Ranges: off",
-    "ru": "Радиусы: выключены"
+    "en": "Services: off",
+    "ru": "Сервисы: выключены"
+  },
+  "ui.lens.ranges": {
+    "en": "Services V",
+    "ru": "Сервисы V"
+  },
+  "ui.lens.ranges_tooltip": {
+    "en": "Show service radius and hidden utility links for the selected building",
+    "ru": "Показать радиус действия и скрытые коммунальные связи выбранного здания"
+  },
+  "ui.lens.logistics": {
+    "en": "Logistics L",
+    "ru": "Логистика L"
+  },
+  "ui.lens.logistics_tooltip": {
+    "en": "Highlight roads and buildings without road access",
+    "ru": "Подсветить дороги и здания без дорожного доступа"
+  },
+  "ui.lens.logistics_on": {
+    "en": "Logistics: on",
+    "ru": "Логистика: включена"
+  },
+  "ui.lens.logistics_off": {
+    "en": "Logistics: off",
+    "ru": "Логистика: выключена"
   }
 }

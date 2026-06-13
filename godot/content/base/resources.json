@@ -1,6 +1,6 @@
 [
   {
-    "id": "wood",
+    "id": "res_wood",
     "label": "Wood",
     "icon": "W",
     "transport": "road",
@@ -9,7 +9,7 @@
     "label_key": "resource.wood.label"
   },
   {
-    "id": "stone",
+    "id": "res_stone",
     "label": "Stone",
     "icon": "S",
     "transport": "road",
@@ -18,43 +18,7 @@
     "label_key": "resource.stone.label"
   },
   {
-    "id": "food",
-    "label": "Food",
-    "icon": "F",
-    "transport": "road",
-    "default_cap": 300,
-    "starting": 20,
-    "label_key": "resource.food.label"
-  },
-  {
-    "id": "coins",
-    "label": "Coins",
-    "icon": "$",
-    "transport": "road",
-    "default_cap": 999999,
-    "starting": 100,
-    "label_key": "resource.coins.label"
-  },
-  {
-    "id": "planks",
-    "label": "Planks",
-    "icon": "P",
-    "transport": "road",
-    "default_cap": 150,
-    "starting": 0,
-    "label_key": "resource.planks.label"
-  },
-  {
-    "id": "bricks",
-    "label": "Bricks",
-    "icon": "B",
-    "transport": "road",
-    "default_cap": 150,
-    "starting": 0,
-    "label_key": "resource.bricks.label"
-  },
-  {
-    "id": "tools",
+    "id": "res_tools",
     "label": "Tools",
     "icon": "T",
     "transport": "road",
@@ -63,75 +27,30 @@
     "label_key": "resource.tools.label"
   },
   {
-    "id": "cloth",
-    "label": "Cloth",
-    "icon": "C",
+    "id": "res_food",
+    "label": "Food",
+    "icon": "F",
     "transport": "road",
-    "default_cap": 120,
-    "starting": 0,
-    "label_key": "resource.cloth.label"
+    "default_cap": 300,
+    "starting": 20,
+    "label_key": "resource.food.label"
   },
   {
-    "id": "metal",
-    "label": "Metal",
-    "icon": "M",
-    "transport": "road",
-    "default_cap": 120,
-    "starting": 0,
-    "label_key": "resource.metal.label"
-  },
-  {
-    "id": "glass",
-    "label": "Glass",
-    "icon": "G",
-    "transport": "road",
-    "default_cap": 120,
-    "starting": 0,
-    "label_key": "resource.glass.label"
-  },
-  {
-    "id": "energy",
-    "label": "Energy",
-    "icon": "E",
-    "transport": "pipe",
-    "default_cap": 200,
-    "starting": 0,
-    "label_key": "resource.energy.label"
-  },
-  {
-    "id": "science",
-    "label": "Science",
-    "icon": "R",
-    "transport": "global",
-    "default_cap": 200,
-    "starting": 0,
-    "label_key": "resource.science.label"
-  },
-  {
-    "id": "culture",
-    "label": "Culture",
-    "icon": "A",
-    "transport": "global",
-    "default_cap": 200,
-    "starting": 0,
-    "label_key": "resource.culture.label"
-  },
-  {
-    "id": "fame",
-    "label": "Fame",
-    "icon": "!",
+    "id": "res_money",
+    "label": "Money",
+    "icon": "$",
     "transport": "global",
     "default_cap": 999999,
-    "starting": 0,
-    "label_key": "resource.fame.label"
+    "starting": 100,
+    "label_key": "resource.money.label"
   },
   {
-    "id": "water_res",
-    "label": "Water Reserve",
+    "id": "res_water_stockpile",
+    "label": "Water Stockpile",
     "icon": "~",
-    "transport": "global",
+    "transport": "pipe",
     "default_cap": 999999,
-    "starting": 0,
-    "label_key": "resource.water_res.label"
+    "starting": 100,
+    "label_key": "resource.water_stockpile.label"
   }
 ]
