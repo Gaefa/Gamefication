@@ -139,6 +139,9 @@ func _bootstrap_campaign_hub() -> void:
 		{"coord": Vector2i(0, 1), "type": "bld_well_pump"},
 		{"coord": Vector2i(-2, 1), "type": "bld_shelter"},
 		{"coord": Vector2i(2, -1), "type": "bld_field_strip"},
+		# Material traces of the old owner (Компания Чистого Истока) — landmarks, flavor + hooks.
+		{"coord": Vector2i(2, 1), "type": "bld_source_tower"},
+		{"coord": Vector2i(-2, 2), "type": "bld_company_office"},
 	]
 	for entry: Dictionary in starter_layout:
 		var coord: Vector2i = entry.get("coord", Vector2i.ZERO) as Vector2i

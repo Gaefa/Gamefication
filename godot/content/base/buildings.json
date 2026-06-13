@@ -1,4 +1,34 @@
 {
+  "bld_source_tower": {
+    "name": "Башня Истока",
+    "description": "Памятник старой Компании Чистого Истока. Логотип-капля когда-то горел по ночам, и под ним играли дети. Теперь ржавеет. Снести, сохранить как память или восстановить — решать вам.",
+    "size": [1, 1],
+    "player_buildable": false,
+    "sprites_by_level": ["res://assets/buildings/source_tower.svg"],
+    "cost_build": {},
+    "outputs": {},
+    "consumes": {},
+    "cycle_time": 0.0,
+    "levels": [
+      {"stage": "Памятник Компании"}
+    ],
+    "tags": ["landmark"]
+  },
+  "bld_company_office": {
+    "name": "Опечатанный офис Компании",
+    "description": "Три этажа, заколоченные окна, на двери — выцветший синий ромб с каплей. На третьем этаже, говорят, спит ИИ «Прогнозист», и он всё ещё считает Компанию своим хозяином. Точный прогноз Пыли — там, если его оживить.",
+    "size": [1, 1],
+    "player_buildable": false,
+    "sprites_by_level": ["res://assets/buildings/company_office.svg"],
+    "cost_build": {},
+    "outputs": {},
+    "consumes": {},
+    "cycle_time": 0.0,
+    "levels": [
+      {"stage": "Заколоченные окна"}
+    ],
+    "tags": ["landmark"]
+  },
   "bld_admin_post": {
     "name": "Пост администрации",
     "description": "Здание администрации, где принимаются решения. Обязательно.",

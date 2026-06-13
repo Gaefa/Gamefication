@@ -836,6 +836,13 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	if effect != "":
 		text += effect + "\n"
 
+	# Landmarks (material traces of the old owner) carry flavor, not production —
+	# show their description so clicking them tells the district's story.
+	if (def.get("tags", []) as Array).has("landmark"):
+		var flavor: String = Localization.content_text(def, "description", "")
+		if flavor != "":
+			text += "\n" + flavor + "\n"
+
 	var needs_text: String = _build_building_needs_text(coord, type_id, def, ldata)
 	if needs_text != "":
 		text += needs_text + "\n"
