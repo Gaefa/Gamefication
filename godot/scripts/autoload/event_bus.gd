@@ -44,6 +44,9 @@ signal season_day_advanced(season_id: String, day_in_season: int, length_days: i
 # --- Diary ---
 signal diary_fragment_found(fragment_id: String)
 
+# --- Mandate / Audit ---
+signal audit_completed(passed: bool, score: int)
+
 # --- Save / Load ---
 signal game_saved(slot: int)
 signal game_loaded(slot: int)
