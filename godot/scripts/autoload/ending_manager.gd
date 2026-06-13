@@ -8,7 +8,7 @@ extends Node
 ## resets on new game. All thresholds are first-pass tuning.
 
 # --- Tuning thresholds ---
-const WIN_DAY := 24                 # survived the cycle (Окно 18 + into Пыль) → win
+const WIN_DAY := 27                 # survive deep into Пыль (Окно ~18 + Пыль ~11) → win
 const EXODUS_PEAK_MIN := 30         # only call it an exodus if the city was sizeable
 const EXODUS_FRACTION := 0.4        # ...and shrank to ≤40% of its peak
 const RIOT_PRESSURE := 90.0         # unrest at the top of the scale → riot

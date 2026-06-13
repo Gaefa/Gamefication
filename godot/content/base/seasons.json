@@ -12,6 +12,7 @@
       "forecast_intensity": "calm",
       "modifiers": {
         "water_mult": 1.0,
+        "water_supply_mult": 1.0,
         "crop_mult": 1.0,
         "solar_mult": 1.0,
         "wear_mult": 1.0,
@@ -28,7 +29,8 @@
       "enabled_in_mvp": true,
       "forecast_intensity": "harsh",
       "modifiers": {
-        "water_mult": 1.3,
+        "water_mult": 1.4,
+        "water_supply_mult": 0.5,
         "crop_mult": 0.6,
         "solar_mult": 0.5,
         "wear_mult": 1.5,
@@ -46,6 +48,7 @@
       "forecast_intensity": "harsh",
       "modifiers": {
         "water_mult": 1.6,
+        "water_supply_mult": 0.85,
         "crop_mult": 0.85,
         "solar_mult": 1.0,
         "wear_mult": 1.1,

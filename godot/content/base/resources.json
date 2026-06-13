@@ -49,7 +49,7 @@
     "label": "Water Stockpile",
     "icon": "~",
     "transport": "pipe",
-    "default_cap": 999999,
+    "default_cap": 50,
     "starting": 100,
     "label_key": "resource.water_stockpile.label"
   }

@@ -119,11 +119,15 @@ func _apply_maintenance() -> void:
 
 
 func _season_production_mult(res_id: String, season_mods: Dictionary) -> float:
-	## Пыль режет урожай: crop_mult применяется к производству еды.
+	## Пыль режет урожай (crop_mult на еду) и душит добычу воды (water_supply_mult на
+	## насосы: засорённые фильтры, просадка водоносных слоёв). Вместе с ×water_mult на
+	## потребление это и делает Пыль настоящим экзаменом запаса воды.
 	if season_mods.is_empty():
 		return 1.0
 	if res_id == "res_food":
 		return season_mods.get("crop_mult", 1.0) as float
+	if res_id == "res_water_stockpile":
+		return season_mods.get("water_supply_mult", 1.0) as float
 	return 1.0
 
 

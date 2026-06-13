@@ -56,12 +56,49 @@ func _update_happiness() -> void:
 		buff_happiness += buff.get("happiness_add", 0.0) as float
 	var governance_happiness: float = _governance_happiness_add()
 
-	# Happiness = base 50 + building happiness scaled + buff happiness, clamped 0-100
-	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness, 0.0, 100.0)
+	# Happiness = base 50 + building happiness + buffs + governance + supply, clamped 0-100.
+	# Supply term ties happiness to water/food (GDD §11.3): thirst/hunger drives people
+	# down, comfortable reserves lift them. This is what powers petitions, strikes,
+	# thanks, the pressure director and the audit's "are people staying" check.
+	var supply_term: float = _supply_happiness_term()
+	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term, 0.0, 100.0)
 	var prev: float = GameStateStore.population().happiness as float
 	GameStateStore.population().happiness = happiness
 	if absf(happiness - prev) > 0.5:
 		EventBus.happiness_changed.emit(happiness)
+
+
+func _supply_happiness_term() -> float:
+	## Water/food effect on happiness. Empty stores hurt a lot; a draining trend hurts
+	## some; comfortable reserves help; a fully-provisioned city is "thriving".
+	var prod: Dictionary = GameStateStore.economy().get("production", {})
+	var term: float = 0.0
+
+	var water: float = GameStateStore.get_resource("res_water_stockpile")
+	var water_cap: float = maxf(GameStateStore.get_cap("res_water_stockpile"), 1.0)
+	var water_net: float = prod.get("res_water_stockpile", 0.0) as float
+	if water <= 1.0:
+		term -= 30.0
+	elif water_net < 0.0:
+		term -= 12.0
+	elif water >= 0.5 * water_cap:
+		term += 6.0
+
+	var food: float = GameStateStore.get_resource("res_food")
+	var food_cap: float = maxf(GameStateStore.get_cap("res_food"), 1.0)
+	var food_net: float = prod.get("res_food", 0.0) as float
+	if food <= 1.0:
+		term -= 30.0
+	elif food_net < 0.0:
+		term -= 10.0
+	elif food >= 0.5 * food_cap:
+		term += 6.0
+
+	# Thriving: both comfortably stocked and not draining.
+	if water > 0.5 * water_cap and food > 0.5 * food_cap and water_net >= 0.0 and food_net >= 0.0:
+		term += 12.0
+
+	return term
 
 
 func _governance_happiness_add() -> float:
