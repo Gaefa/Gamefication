@@ -367,6 +367,7 @@
     "id": "crisis.recall_ultimatum",
     "category": "mandate",
     "min_level": 1,
+    "is_critical": true,
     "trigger_condition": "stat_league_trust <= 25",
     "cooldown_sec": 600.0,
     "tags": ["crisis", "mandate", "recall"],

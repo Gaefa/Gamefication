@@ -45,10 +45,12 @@ func _check_triggers() -> void:
 			var event_data: Dictionary = def.duplicate(true)
 			event_data["runtime_id"] = event_id
 			
-			# Критические события (ультиматум Лиги) — немедленная пауза
+			# Критические события (ультиматум Лиги) — немедленная пауза и карточка,
+			# не дожидаясь вечернего Стола (GDD §3.2: срочное не ждёт Стола).
 			if def.get("is_critical", false) as bool:
 				SimulationRunner.paused = true
 				critical_event_fired.emit(event_data)
+				EventBus.critical_event_started.emit(event_data)
 			else:
 				pending_events.append(event_data)
 

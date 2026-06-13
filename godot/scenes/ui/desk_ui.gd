@@ -6,6 +6,9 @@ extends Control
 var _events: Array = []
 var _current_index: int = 0
 var _resolved_count: int = 0
+## Критический режим: одна срочная карточка посреди дня. По завершении просто
+## снимаем паузу и возвращаемся в день, НЕ переходя к новому дню (в отличие от Стола).
+var _critical_mode: bool = false
 
 # UI nodes (создаются динамически)
 var _bg: ColorRect
@@ -22,6 +25,7 @@ func _ready() -> void:
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	EventBus.evening_started.connect(_on_evening_started)
+	EventBus.critical_event_started.connect(_on_critical_event_started)
 	_build_ui()
 
 
@@ -108,11 +112,25 @@ func _build_ui() -> void:
 	vbox.add_child(_finish_btn)
 
 
+func _on_critical_event_started(event_data: Dictionary) -> void:
+	# Срочная карточка посреди дня. Игра уже на паузе (EventManager).
+	_critical_mode = true
+	_events = [event_data]
+	_current_index = 0
+	_resolved_count = 0
+	_title_label.text = "СРОЧНО"
+	_show_event(0)
+	visible = true
+	EventBus.desk_opened.emit(_events)
+
+
 func _on_evening_started(events: Array) -> void:
+	_critical_mode = false
+	_title_label.text = "СТОЛ АДМИНИСТРАТОРА"
 	_events = events
 	_current_index = 0
 	_resolved_count = 0
-	
+
 	if _events.is_empty():
 		# Нет почты — тихий вечер
 		_show_empty_desk()
@@ -207,12 +225,18 @@ func _show_next_event() -> void:
 
 
 func _show_all_resolved() -> void:
-	_header_label.text = "Вся почта разобрана"
-	_body_label.text = "Вы обработали %d писем. Готовы начать новый день?" % _resolved_count
 	_counter_label.text = ""
 	for child: Node in _options_container.get_children():
 		child.queue_free()
 	_next_btn.visible = false
+	if _critical_mode:
+		_header_label.text = "Решение принято"
+		_body_label.text = "Последствия уже в силе. Возвращаемся к делам района."
+		_finish_btn.text = "Вернуться к городу"
+	else:
+		_header_label.text = "Вся почта разобрана"
+		_body_label.text = "Вы обработали %d писем. Готовы начать новый день?" % _resolved_count
+		_finish_btn.text = "Завершить вечер — начать новый день"
 	_finish_btn.visible = true
 
 
@@ -229,4 +253,9 @@ func _show_empty_desk() -> void:
 func _finish_evening() -> void:
 	visible = false
 	EventBus.desk_closed.emit()
-	SimulationRunner.transition_to_morning()
+	if _critical_mode:
+		# Срочная карточка: просто снимаем паузу и продолжаем тот же день.
+		_critical_mode = false
+		SimulationRunner.paused = false
+	else:
+		SimulationRunner.transition_to_morning()

@@ -64,6 +64,7 @@ signal evening_started(pending_events: Array)
 signal morning_consequences(results: Array)
 
 # --- Стол Администратора ---
+signal critical_event_started(event_data: Dictionary)
 signal desk_opened(events: Array)
 signal desk_option_selected(event_id: String, option_index: int, effects: Dictionary, cost: Dictionary)
 signal desk_closed()
