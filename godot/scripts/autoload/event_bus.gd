@@ -41,6 +41,9 @@ signal pressure_updated(index: float, phase: String)
 signal season_changed(season_id: String, day_in_season: int, length_days: int)
 signal season_day_advanced(season_id: String, day_in_season: int, length_days: int)
 
+# --- Diary ---
+signal diary_fragment_found(fragment_id: String)
+
 # --- Save / Load ---
 signal game_saved(slot: int)
 signal game_loaded(slot: int)

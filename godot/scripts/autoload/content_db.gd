@@ -16,6 +16,7 @@ var start_profiles: Dictionary = {}
 var seasons: Dictionary = {}
 var season_order: Array = []
 var endings: Dictionary = {}
+var diary_fragments: Array = []   # ordered fragment defs
 
 const CONTENT_ROOT := "res://content/base/"
 
@@ -65,6 +66,7 @@ func _ready() -> void:
 	start_profiles = _load_keyed_array(CONTENT_ROOT + "start_profiles.json", "id")
 	_load_seasons()
 	_load_endings()
+	_load_diary()
 	_normalize_governance_defs()
 	_normalize_start_profiles()
 
@@ -243,6 +245,17 @@ func get_ending_def(ending_id: String) -> Dictionary:
 	return endings.get(ending_id, {})
 
 
+func get_diary_fragments() -> Array:
+	return diary_fragments
+
+
+func get_diary_fragment_def(fragment_id: String) -> Dictionary:
+	for frag: Variant in diary_fragments:
+		if (frag as Dictionary).get("id", "") as String == fragment_id:
+			return frag as Dictionary
+	return {}
+
+
 func get_level_def(level: int) -> Dictionary:
 	if level >= 1 and level <= city_levels.size():
 		return city_levels[level - 1]
@@ -320,6 +333,22 @@ func _load_seasons() -> void:
 		if seasons.has(sid_var as String):
 			clean_order.append(sid_var)
 	season_order = clean_order
+
+
+func _load_diary() -> void:
+	var raw: Variant = _load_json_raw(CONTENT_ROOT + "diary.json")
+	var frags: Array = []
+	if raw is Dictionary:
+		frags = (raw as Dictionary).get("fragments", []) as Array
+	elif raw is Array:
+		frags = raw as Array
+	var clean: Array = []
+	for entry: Variant in frags:
+		if entry is Dictionary and ((entry as Dictionary).get("id", "") as String) != "":
+			clean.append(entry)
+	clean.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return (a.get("order", 0) as int) < (b.get("order", 0) as int))
+	diary_fragments = clean
 
 
 func _load_endings() -> void:

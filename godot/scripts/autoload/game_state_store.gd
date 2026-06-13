@@ -44,6 +44,7 @@ func reset(start_profile_id: String = "appointed_administrator") -> void:
 		},
 		"mandate": _default_mandate(),
 		"climate": _default_climate(),
+		"diary": { "discovered": [] },
 		"pressure": {
 			"index": 0.0,
 			"phase": "calm",
@@ -112,6 +113,11 @@ func climate() -> Dictionary:
 	if not _state.has("climate"):
 		_state["climate"] = _default_climate()
 	return _state.climate
+
+func diary() -> Dictionary:
+	if not _state.has("diary"):
+		_state["diary"] = { "discovered": [] }
+	return _state.diary
 
 func events() -> Dictionary:
 	return _state.events
@@ -334,6 +340,10 @@ func _ensure_runtime_defaults() -> void:
 		for key: String in climate_defaults:
 			if not climate_state.has(key):
 				climate_state[key] = climate_defaults[key]
+	if not _state.has("diary"):
+		_state["diary"] = { "discovered": [] }
+	elif not (_state.diary as Dictionary).has("discovered"):
+		_state.diary["discovered"] = []
 
 
 func _default_governance() -> Dictionary:
