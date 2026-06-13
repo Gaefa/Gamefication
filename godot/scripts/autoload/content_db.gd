@@ -15,6 +15,7 @@ var policies: Dictionary = {}
 var start_profiles: Dictionary = {}
 var seasons: Dictionary = {}
 var season_order: Array = []
+var endings: Dictionary = {}
 
 const CONTENT_ROOT := "res://content/base/"
 
@@ -63,6 +64,7 @@ func _ready() -> void:
 	policies = _load_keyed_array(CONTENT_ROOT + "policies.json", "id")
 	start_profiles = _load_keyed_array(CONTENT_ROOT + "start_profiles.json", "id")
 	_load_seasons()
+	_load_endings()
 	_normalize_governance_defs()
 	_normalize_start_profiles()
 
@@ -237,6 +239,10 @@ func get_season_order() -> Array:
 	return season_order.duplicate()
 
 
+func get_ending_def(ending_id: String) -> Dictionary:
+	return endings.get(ending_id, {})
+
+
 func get_level_def(level: int) -> Dictionary:
 	if level >= 1 and level <= city_levels.size():
 		return city_levels[level - 1]
@@ -314,6 +320,20 @@ func _load_seasons() -> void:
 		if seasons.has(sid_var as String):
 			clean_order.append(sid_var)
 	season_order = clean_order
+
+
+func _load_endings() -> void:
+	var raw: Variant = _load_json_raw(CONTENT_ROOT + "endings.json")
+	var ending_list: Array = []
+	if raw is Dictionary:
+		ending_list = (raw as Dictionary).get("endings", []) as Array
+	elif raw is Array:
+		ending_list = raw as Array
+	for entry: Variant in ending_list:
+		if entry is Dictionary:
+			var eid: String = (entry as Dictionary).get("id", "") as String
+			if eid != "":
+				endings[eid] = entry
 
 
 # --- Internal loaders ---

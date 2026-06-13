@@ -185,11 +185,22 @@ func _apply_effects(effects: Dictionary) -> void:
 				_damage_random_buildings(effects[key] as int)
 			"message":
 				EventBus.toast_requested.emit(Localization.content_text(effects, "message", effects[key] as String), 5.0)
+			"set_flag":
+				_set_mandate_flag(effects[key] as String)
 			_:
 				if key.begins_with("res_"):
 					GameStateStore.add_resource(key, effects[key] as float)
 				elif key.begins_with("stat_"):
 					_apply_stat_delta(key, effects[key] as float)
+
+
+func _set_mandate_flag(flag_id: String) -> void:
+	if flag_id == "":
+		return
+	var mandate_state: Dictionary = GameStateStore.mandate()
+	if not mandate_state.has("flags"):
+		mandate_state["flags"] = {}
+	(mandate_state["flags"] as Dictionary)[flag_id] = true
 
 
 func _apply_resource_delta(raw: Variant, sign: float) -> void:

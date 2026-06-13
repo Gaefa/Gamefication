@@ -385,7 +385,7 @@
       },
       {
         "text": "Готовить разрыв",
-        "effects": { "stat_league_trust": -15, "stat_unrest_pressure": 10, "message": "Вы готовите разрыв. В MVP это плохо кончается — путь к отзыву и Конвою." }
+        "effects": { "stat_league_trust": -15, "stat_unrest_pressure": 10, "set_flag": "disclosure", "message": "Вы готовите разрыв и разоблачение. В MVP это плохо кончается — путь к Конвою без номеров." }
       }
     ]
   }
