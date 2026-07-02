@@ -9,7 +9,7 @@ extends Node
 ## Presented as a dynamic result card via the critical-card path (DeskUI critical mode).
 ## Self-contained autoload — no orchestrator/tick-pipeline changes.
 
-const AUDIT_DAY := 10               # control date (tuning)
+const AUDIT_DAY := 20               # control date — mid-Пыль, so it tests preparation (tuning)
 const WATER_OK := 60.0              # reserve considered "ready" (tuning)
 const FOOD_OK := 30.0
 const HAPPINESS_OK := 40.0          # people are staying, not fleeing

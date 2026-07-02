@@ -8,7 +8,8 @@ extends Node
 ## resets on new game. All thresholds are first-pass tuning.
 
 # --- Tuning thresholds ---
-const WIN_DAY := 27                 # survive deep into Пыль (Окно ~18 + Пыль ~11) → win
+const WIN_DAY := 30                 # survive the whole Пыль and out the other side → win
+const WIN_HAPPINESS := 40.0         # ...and the city is actually stable, not in ruins
 const EXODUS_PEAK_MIN := 30         # only call it an exodus if the city was sizeable
 const EXODUS_FRACTION := 0.4        # ...and shrank to ≤40% of its peak
 const RIOT_PRESSURE := 90.0         # unrest at the top of the scale → riot
@@ -56,6 +57,7 @@ func _evaluate() -> void:
 	var support: float = mandate.get("support", 50) as float
 	var disclosure: bool = (mandate.get("flags", {}) as Dictionary).get("disclosure", false) as bool
 	var pressure_idx: float = GameStateStore.pressure().get("index", 0.0) as float
+	var happiness: float = GameStateStore.population().get("happiness", 50.0) as float
 
 	# Losses take priority over wins.
 	if trust <= 0.0:
@@ -65,8 +67,9 @@ func _evaluate() -> void:
 		_trigger("ending.lose.exodus")
 	elif pressure_idx >= RIOT_PRESSURE:
 		_trigger("ending.lose.riot")
-	elif day >= WIN_DAY:
-		# Held the mandate to the end — loyal to the League or the city's protector.
+	elif day >= WIN_DAY and happiness >= WIN_HAPPINESS:
+		# Survived to the end AND the city is stable — a real win, not a hollow one.
+		# A devastated city (low happiness) simply doesn't win yet; it must recover.
 		_trigger("ending.win.protector" if support > trust else "ending.win.loyal")
 
 

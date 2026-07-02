@@ -21,7 +21,7 @@
     "category": "mandate",
     "min_level": 1,
     "once": true,
-    "trigger_day": 8,
+    "trigger_day": 15,
     "cooldown_sec": 999999,
     "tags": ["patron", "letter", "audit"],
     "title": "Письмо Лиги — перед аудитом",
