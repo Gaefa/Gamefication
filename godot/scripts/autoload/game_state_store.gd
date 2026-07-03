@@ -46,6 +46,7 @@ func reset(start_profile_id: String = "appointed_administrator") -> void:
 		"climate": _default_climate(),
 		"diary": { "discovered": [] },
 		"onboarding": { "shown": [] },
+		"style_flags": {},       # style_id → count, accumulated from decisions
 		"pressure": {
 			"index": 0.0,
 			"phase": "calm",
@@ -124,6 +125,27 @@ func onboarding() -> Dictionary:
 	if not _state.has("onboarding"):
 		_state["onboarding"] = { "shown": [] }
 	return _state.onboarding
+
+func style_flags() -> Dictionary:
+	if not _state.has("style_flags"):
+		_state["style_flags"] = {}
+	return _state.style_flags
+
+func add_style_flag(flag_id: String, amount: int = 1) -> void:
+	if flag_id == "":
+		return
+	var flags: Dictionary = style_flags()
+	flags[flag_id] = (flags.get(flag_id, 0) as int) + amount
+
+func dominant_style(default_id: String = "") -> String:
+	var best_id: String = default_id
+	var best_val: int = 0
+	for flag_id: String in style_flags():
+		var val: int = style_flags()[flag_id] as int
+		if val > best_val:
+			best_val = val
+			best_id = flag_id
+	return best_id
 
 func events() -> Dictionary:
 	return _state.events
@@ -354,6 +376,8 @@ func _ensure_runtime_defaults() -> void:
 		_state["onboarding"] = { "shown": [] }
 	elif not (_state.onboarding as Dictionary).has("shown"):
 		_state.onboarding["shown"] = []
+	if not _state.has("style_flags"):
+		_state["style_flags"] = {}
 
 
 func _default_governance() -> Dictionary:

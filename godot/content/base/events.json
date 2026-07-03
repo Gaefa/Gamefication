@@ -50,6 +50,7 @@
         "effects": {
           "stat_league_trust": 10,
           "stat_city_trust": -8,
+          "style": "loyal",
           "message": "Цистерны ушли на рассвете. Койл прислала короткое «спасибо». Ваш квартал сел на половину нормы."
         }
       },
@@ -58,6 +59,7 @@
         "effects": {
           "stat_league_trust": -12,
           "stat_city_trust": 8,
+          "style": "protector",
           "message": "Вы оставили воду себе. Вечером пришло письмо в три строки: «Принято к сведению. Лига помнит, кому помогает, и кому — нет.»"
         }
       }
@@ -128,12 +130,13 @@
         "effects": {
           "add_resources": { "res_water_stockpile": 120 },
           "stat_league_trust": -8,
+          "style": "pragmatist",
           "message": "Вода пришла к ночи. Люди пили и не спрашивали откуда. Вы знали — и знали, что теперь должны."
         }
       },
       {
         "text": "Отказать, держать нормирование по правилам Лиги",
-        "effects": { "stat_league_trust": 3, "message": "Вы отказали. Дефицит остался, но репутация перед Лигой чище." }
+        "effects": { "stat_league_trust": 3, "style": "loyal", "message": "Вы отказали. Дефицит остался, но репутация перед Лигой чище." }
       },
       {
         "text": "Позвать Грача посредником",
@@ -224,7 +227,7 @@
       {
         "text": "Уступить (нормы, паёк)",
         "cost": { "res_food": 30 },
-        "effects": { "stat_city_trust": 5, "stat_unrest_pressure": -8, "message": "Вы уступили по нормам. Причина погашена — ценой запаса." }
+        "effects": { "stat_city_trust": 5, "stat_unrest_pressure": -8, "style": "protector", "message": "Вы уступили по нормам. Причина погашена — ценой запаса." }
       },
       {
         "text": "Объясниться честно",
@@ -232,7 +235,7 @@
       },
       {
         "text": "Подавить",
-        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -6, "message": "Вы подавили ропот. Толпа разошлась, но запомнит. Прямой путь к бунту." }
+        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -6, "style": "pragmatist", "message": "Вы подавили ропот. Толпа разошлась, но запомнит. Прямой путь к бунту." }
       }
     ]
   },
@@ -250,11 +253,11 @@
       {
         "text": "Раздать экстренный паёк",
         "cost": { "res_money": 100 },
-        "effects": { "add_resources": { "res_food": 30 }, "stat_unrest_pressure": -10, "message": "Паёк роздан. Толпа разошлась, но город оголён перед сезоном." }
+        "effects": { "add_resources": { "res_food": 30 }, "stat_unrest_pressure": -10, "style": "protector", "message": "Паёк роздан. Толпа разошлась, но город оголён перед сезоном." }
       },
       {
         "text": "Подавить силой",
-        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -8, "message": "Толпа разошлась. И запомнила." }
+        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -8, "style": "pragmatist", "message": "Толпа разошлась. И запомнила." }
       },
       {
         "text": "Просить Лигу о пайках",
@@ -377,15 +380,15 @@
       {
         "text": "Выполнить требование",
         "cost": { "res_water_stockpile": 80, "res_food": 40 },
-        "effects": { "stat_league_trust": 12, "message": "Вы дали Койл результат. Последний шанс удержать мандат — дорогой ценой." }
+        "effects": { "stat_league_trust": 12, "style": "loyal", "message": "Вы дали Койл результат. Последний шанс удержать мандат — дорогой ценой." }
       },
       {
         "text": "Спорить, опираясь на город",
-        "effects": { "stat_league_trust": -5, "stat_city_trust": 4, "message": "Вы спорили с опорой на город. Работает только при высокой поддержке жителей." }
+        "effects": { "stat_league_trust": -5, "stat_city_trust": 4, "style": "protector", "message": "Вы спорили с опорой на город. Работает только при высокой поддержке жителей." }
       },
       {
         "text": "Готовить разрыв",
-        "effects": { "stat_league_trust": -15, "stat_unrest_pressure": 10, "set_flag": "disclosure", "message": "Вы готовите разрыв и разоблачение. В MVP это плохо кончается — путь к Конвою без номеров." }
+        "effects": { "stat_league_trust": -15, "stat_unrest_pressure": 10, "set_flag": "disclosure", "style": "autonomist", "message": "Вы готовите разрыв и разоблачение. В MVP это плохо кончается — путь к Конвою без номеров." }
       }
     ]
   }

@@ -73,7 +73,12 @@ func _evaluate() -> void:
 	elif day >= WIN_DAY and happiness >= WIN_HAPPINESS:
 		# Survived to the end AND the city is stable — a real win, not a hollow one.
 		# A devastated city (low happiness) simply doesn't win yet; it must recover.
-		_trigger("ending.win.protector" if support > trust else "ending.win.loyal")
+		# Which win shade depends on how the player governed (style flags), with the
+		# trust-vs-support balance as a fallback when no strong style emerged.
+		var style: String = GameStateStore.dominant_style("")
+		var protector_side: bool = style == "protector" or style == "autonomist" \
+			or (style == "" and support > trust)
+		_trigger("ending.win.protector" if protector_side else "ending.win.loyal")
 
 
 func _trigger(ending_id: String) -> void:
@@ -157,8 +162,22 @@ func _show_finale(def: Dictionary) -> void:
 		"font_color",
 		Color(0.6, 0.9, 0.6) if kind == "win" else Color(0.9, 0.55, 0.5)
 	)
-	_body_label.text = def.get("body", "") as String
+	_body_label.text = (def.get("body", "") as String) + _style_epilogue()
 	_layer.visible = true
+
+
+func _style_epilogue() -> String:
+	# A closing line naming the political shade the player's decisions added up to.
+	var labels := {
+		"loyal": "лояльный администратор Лиги",
+		"protector": "защитник города",
+		"pragmatist": "жёсткий прагматик",
+		"autonomist": "будущий автономист",
+	}
+	var style: String = GameStateStore.dominant_style("")
+	if style == "" or not labels.has(style):
+		return ""
+	return "\n\n[i]Оттенок: %s.[/i]" % labels[style]
 
 
 func _on_menu_pressed() -> void:

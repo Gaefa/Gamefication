@@ -187,6 +187,8 @@ func _apply_effects(effects: Dictionary) -> void:
 				EventBus.toast_requested.emit(Localization.content_text(effects, "message", effects[key] as String), 5.0)
 			"set_flag":
 				_set_mandate_flag(effects[key] as String)
+			"style":
+				GameStateStore.add_style_flag(effects[key] as String)
 			_:
 				if key.begins_with("res_"):
 					GameStateStore.add_resource(key, effects[key] as float)

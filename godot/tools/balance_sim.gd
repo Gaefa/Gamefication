@@ -29,6 +29,14 @@ func _ready() -> void:
 	_run("A) BOOTSTRAP (всё L0, неподготовлен)", false)
 	print("")
 	_run("B) PREPARED (насос+цистерна L2, вложился в воду)", true)
+
+	# Sanity-check the style-flag plumbing (events don't fire in this headless harness).
+	GameStateStore.style_flags().clear()
+	GameStateStore.add_style_flag("protector", 3)
+	GameStateStore.add_style_flag("loyal", 1)
+	print("\n=== style flags check: %s → dominant=%s ===" % [
+		str(GameStateStore.style_flags()), GameStateStore.dominant_style("")])
+
 	get_tree().quit()
 
 
