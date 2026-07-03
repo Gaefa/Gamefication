@@ -98,22 +98,22 @@
     "cost_build": {},
     "outputs": {},
     "consumes": {},
-    "storage": {"res_water_stockpile": 500},
+    "storage": {"res_water_stockpile": 750},
     "cycle_time": 0.0,
     "levels": [
       {
         "stage": "Ржавая цистерна",
-        "storage": {"res_water_stockpile": 500}
+        "storage": {"res_water_stockpile": 750}
       },
       {
         "stage": "Усиленная цистерна",
         "cost": {"res_stone": 30, "res_tools": 2},
-        "storage": {"res_water_stockpile": 750}
+        "storage": {"res_water_stockpile": 1050}
       },
       {
         "stage": "Городской водосборник",
         "cost": {"res_stone": 60, "res_tools": 5, "res_money": 100},
-        "storage": {"res_water_stockpile": 1100}
+        "storage": {"res_water_stockpile": 1450}
       }
     ],
     "tags": ["water_storage", "core"]

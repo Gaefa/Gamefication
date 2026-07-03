@@ -30,8 +30,8 @@
       "forecast_intensity": "harsh",
       "modifiers": {
         "water_mult": 1.4,
-        "water_supply_mult": 0.5,
-        "crop_mult": 0.6,
+        "water_supply_mult": 0.65,
+        "crop_mult": 0.72,
         "solar_mult": 0.5,
         "wear_mult": 1.5,
         "build_cost_mult": 1.0
