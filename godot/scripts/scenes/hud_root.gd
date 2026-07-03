@@ -242,14 +242,16 @@ func _update_resource_bar() -> void:
 	var water_ok: int = utility_stats.get("residential_watered", 0) as int
 	var power_total: int = utility_stats.get("power_users", 0) as int
 	var power_ok: int = utility_stats.get("power_covered", 0) as int
-	_utility_label.text = "%s  %s  %s:%d" % [
+	_utility_label.text = "%s  %s  %s:%d%s" % [
 		Localization.t("ui.utility.title", "Utility"),
 		_coverage_ratio_text(Localization.t("ui.flow.water", "Water"), water_ok, water_total),
 		Localization.t("ui.city.water_reserve_short", "Reserve"),
 		int(_resource_value("res_water_stockpile", "water_res")),
+		_power_readout(),
 	]
 
 	# --- Risk ---
+	# (electricity readout appended to the utility block via _power_readout)
 	var phase: String = GameStateStore.pressure().phase as String
 	var p_idx: float = GameStateStore.pressure().index as float
 	var phase_color: Color
@@ -265,6 +267,28 @@ func _update_resource_bar() -> void:
 		Localization.t("ui.phase.%s" % phase, phase.capitalize()),
 		p_idx,
 	]
+
+
+func _power_readout() -> String:
+	var pw: Dictionary = GameStateStore.power()
+	if not (pw.get("enabled", true) as bool):
+		return ""
+	var gen: float = pw.get("generation", 0.0) as float
+	var dem: float = pw.get("demand", 0.0) as float
+	if gen <= 0.0 and dem <= 0.0:
+		return ""
+	var text: String = "  %s %.0f/%.0f" % [Localization.t("ui.flow.power", "Power"), gen, dem]
+	var tp: Dictionary = pw.get("tier_powered", {}) as Dictionary
+	var shed: Array[String] = []
+	if not (tp.get("priority", true) as bool):
+		shed.append(Localization.t("ui.flow.water", "Water"))
+	if not (tp.get("secondary", true) as bool):
+		shed.append(Localization.t("ui.power.shed_production", "цеха"))
+	if not (tp.get("tertiary", true) as bool):
+		shed.append(Localization.t("ui.power.shed_housing", "жильё"))
+	if not shed.is_empty():
+		text += " %s %s" % [Localization.t("ui.power.dark", "⚠ без света:"), ", ".join(shed)]
+	return text
 
 
 func _coverage_ratio_text(label: String, covered: int, total: int) -> String:
