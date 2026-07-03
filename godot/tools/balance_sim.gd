@@ -78,7 +78,13 @@ func _log_day(day: int) -> void:
 	var sdef: Dictionary = ContentDB.get_season_def(sid)
 	var sname: String = sdef.get("label", sid) as String
 	var prod: Dictionary = GameStateStore.economy().production
-	print("%2d | %-9s %d/%-2d | %6.0f (%+5.2f) | %5.0f (%+5.2f) | %3d | %2.0f | %3.0f | %3.0f" % [
+	var pw: Dictionary = GameStateStore.power()
+	var tp: Dictionary = pw.get("tier_powered", {}) as Dictionary
+	var pwr: String = "%s%s%s" % [
+		"P" if tp.get("priority", true) else "·",
+		"S" if tp.get("secondary", true) else "·",
+		"T" if tp.get("tertiary", true) else "·"]
+	print("%2d | %-9s %d/%-2d | %6.0f (%+5.2f) | %5.0f (%+5.2f) | %3d | %2.0f | %3.0f | %3.0f | эл %2.0f/%2.0f %s" % [
 		day,
 		sname,
 		c.get("day_in_season", 0) as int,
@@ -91,4 +97,7 @@ func _log_day(day: int) -> void:
 		GameStateStore.population().get("happiness", 0.0) as float,
 		GameStateStore.mandate().get("patron_trust", 0) as float,
 		GameStateStore.pressure().get("index", 0.0) as float,
+		pw.get("generation", 0.0) as float,
+		pw.get("demand", 0.0) as float,
+		pwr,
 	])

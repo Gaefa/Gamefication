@@ -19,6 +19,7 @@ signal building_issue_added(coord: Vector2i)
 signal road_network_changed()
 signal pipe_network_changed()
 signal power_network_changed()
+signal power_updated(generation: float, demand: float, tier_powered: Dictionary)
 signal coverage_recalculated()
 
 # --- Population & Happiness ---

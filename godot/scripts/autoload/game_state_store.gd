@@ -47,6 +47,7 @@ func reset(start_profile_id: String = "appointed_administrator") -> void:
 		"diary": { "discovered": [] },
 		"onboarding": { "shown": [] },
 		"style_flags": {},       # style_id → count, accumulated from decisions
+		"power": _default_power(),
 		"pressure": {
 			"index": 0.0,
 			"phase": "calm",
@@ -130,6 +131,11 @@ func style_flags() -> Dictionary:
 	if not _state.has("style_flags"):
 		_state["style_flags"] = {}
 	return _state.style_flags
+
+func power() -> Dictionary:
+	if not _state.has("power"):
+		_state["power"] = _default_power()
+	return _state.power
 
 func add_style_flag(flag_id: String, amount: int = 1) -> void:
 	if flag_id == "":
@@ -378,6 +384,8 @@ func _ensure_runtime_defaults() -> void:
 		_state.onboarding["shown"] = []
 	if not _state.has("style_flags"):
 		_state["style_flags"] = {}
+	if not _state.has("power"):
+		_state["power"] = _default_power()
 
 
 func _default_governance() -> Dictionary:
@@ -385,6 +393,15 @@ func _default_governance() -> Dictionary:
 		"technologies": [],
 		"active_policies": {},
 		"policy_cooldowns": {},
+	}
+
+
+func _default_power() -> Dictionary:
+	return {
+		"enabled": true,
+		"generation": 0.0,
+		"demand": 0.0,
+		"tier_powered": { "priority": true, "secondary": true, "tertiary": true },
 	}
 
 

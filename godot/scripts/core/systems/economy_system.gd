@@ -36,6 +36,9 @@ func process_tick() -> void:
 		var stock_efficiency: float = _input_stock_efficiency_for(consumes, delivery_efficiency, available_inputs)
 		var input_efficiency: float = delivery_efficiency * stock_efficiency
 		var condition_efficiency := 0.5 if (bld.get("has_issue", false) as bool) else 1.0
+		# Unpowered producers limp (electricity, GDD §6.2). PowerSystem set this flag.
+		if not (bld.get("powered", true) as bool):
+			condition_efficiency *= 0.3
 
 		# Get multipliers
 		var mults: Dictionary = _interactions.get_total_multipliers(coord)

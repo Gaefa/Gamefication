@@ -2,6 +2,7 @@ class_name TickScheduler
 ## 8-phase tick pipeline. Called once per game second by SimulationRunner.
 
 var _season: SeasonSystem
+var _power: PowerSystem
 var _infrastructure: InfrastructureSystem
 var _economy: EconomySystem
 var _maintenance: MaintenanceSystem
@@ -13,6 +14,7 @@ var _pressure: PressureSystem
 
 func _init(
 	season: SeasonSystem,
+	power: PowerSystem,
 	infrastructure: InfrastructureSystem,
 	economy: EconomySystem,
 	maintenance: MaintenanceSystem,
@@ -22,6 +24,7 @@ func _init(
 	pressure: PressureSystem,
 ) -> void:
 	_season = season
+	_power = power
 	_infrastructure = infrastructure
 	_economy = economy
 	_maintenance = maintenance
@@ -42,6 +45,9 @@ func run_tick() -> void:
 
 	# Phase 1: Refresh caches
 	_infrastructure.process_tick()
+
+	# Phase 1b: Electricity — decide who is powered before production/happiness read it.
+	_power.process_tick()
 
 	# Phase 2: Decay buffs
 	_maintenance.process_tick()

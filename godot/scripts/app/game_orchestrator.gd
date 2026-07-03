@@ -20,6 +20,7 @@ var rng: SeededRNG
 
 # Systems
 var season_sys: SeasonSystem
+var power_sys: PowerSystem
 var economy_sys: EconomySystem
 var infrastructure_sys: InfrastructureSystem
 var maintenance_sys: MaintenanceSystem
@@ -53,6 +54,7 @@ func build() -> void:
 
 	# Systems
 	season_sys = SeasonSystem.new()
+	power_sys = PowerSystem.new()
 	economy_sys = EconomySystem.new(interactions, resource_flow)
 	infrastructure_sys = InfrastructureSystem.new(coverage, road_graph, aura_cache)
 	maintenance_sys = MaintenanceSystem.new()
@@ -64,6 +66,7 @@ func build() -> void:
 	# Tick scheduler
 	tick_scheduler = TickScheduler.new(
 		season_sys,
+		power_sys,
 		infrastructure_sys,
 		economy_sys,
 		maintenance_sys,
@@ -139,6 +142,7 @@ func _bootstrap_campaign_hub() -> void:
 		{"coord": Vector2i(0, 1), "type": "bld_well_pump"},
 		{"coord": Vector2i(-2, 1), "type": "bld_shelter"},
 		{"coord": Vector2i(2, -1), "type": "bld_field_strip"},
+		{"coord": Vector2i(-1, -1), "type": "bld_solar_panel"},
 		# Material traces of the old owner (Компания Чистого Истока) — landmarks, flavor + hooks.
 		{"coord": Vector2i(2, 1), "type": "bld_source_tower"},
 		{"coord": Vector2i(-2, 2), "type": "bld_company_office"},

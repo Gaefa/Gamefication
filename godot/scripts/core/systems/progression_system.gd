@@ -65,6 +65,7 @@ func _update_population() -> void:
 func _update_happiness() -> void:
 	var total_happiness: float = 0.0
 	var bld_count: int = 0
+	var dark_housing: int = 0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("damaged", false) as bool:
@@ -77,6 +78,9 @@ func _update_happiness() -> void:
 		var aura_h: float = _aura_cache.get_happiness_bonus(coord)
 		total_happiness += base_h + aura_h
 		bld_count += 1
+		# Dark housing (shed by the power director) drags morale — the "кому свет" cost.
+		if (ldata.get("population", 0) as int) > 0 and not (bld.get("powered", true) as bool):
+			dark_housing += 1
 
 	# Apply happiness from active buffs (happiness_add from events)
 	var buff_happiness: float = 0.0
@@ -89,7 +93,8 @@ func _update_happiness() -> void:
 	# down, comfortable reserves lift them. This is what powers petitions, strikes,
 	# thanks, the pressure director and the audit's "are people staying" check.
 	var supply_term: float = _supply_happiness_term()
-	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term, 0.0, 100.0)
+	var power_term: float = float(dark_housing) * -6.0
+	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term, 0.0, 100.0)
 	var prev: float = GameStateStore.population().happiness as float
 	GameStateStore.population().happiness = happiness
 	if absf(happiness - prev) > 0.5:
