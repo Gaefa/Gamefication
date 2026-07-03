@@ -10,7 +10,7 @@ extends Node
 # --- Tuning thresholds ---
 const WIN_DAY := 30                 # survive the whole Пыль and out the other side → win
 const WIN_HAPPINESS := 40.0         # ...and the city is actually stable, not in ruins
-const EXODUS_PEAK_MIN := 30         # only call it an exodus if the city was sizeable
+const EXODUS_PEAK_MIN := 12         # only call it an exodus if the city was sizeable
 const EXODUS_FRACTION := 0.4        # ...and shrank to ≤40% of its peak
 const RIOT_PRESSURE := 90.0         # unrest at the top of the scale → riot
 
@@ -65,6 +65,9 @@ func _evaluate() -> void:
 		_trigger("ending.lose.convoy" if disclosure else "ending.lose.isolation")
 	elif _peak_pop >= EXODUS_PEAK_MIN and pop <= int(float(_peak_pop) * EXODUS_FRACTION):
 		_trigger("ending.lose.exodus")
+	elif _peak_pop >= 4 and pop <= 0:
+		# Total desertion — even a small district emptying out is an exodus.
+		_trigger("ending.lose.exodus")
 	elif pressure_idx >= RIOT_PRESSURE:
 		_trigger("ending.lose.riot")
 	elif day >= WIN_DAY and happiness >= WIN_HAPPINESS:
@@ -82,6 +85,7 @@ func _trigger(ending_id: String) -> void:
 	_active = false
 	SimulationRunner.paused = true
 	_show_finale(def)
+	EventBus.ending_triggered.emit(ending_id, def.get("kind", "") as String)
 	if (def.get("kind", "") as String) == "win":
 		EventBus.win_condition_met.emit()
 

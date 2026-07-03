@@ -17,8 +17,12 @@ const DAYS := 31             # one full Окно(18) → Пыль(11) cycle + ta
 func _ready() -> void:
 	EventBus.audit_completed.connect(func(passed: bool, score: int) -> void:
 		print("      >> АУДИТ: score=%d/3 passed=%s → доверие=%.0f" % [score, str(passed), GameStateStore.mandate().get("patron_trust", 0) as float]))
-	EventBus.win_condition_met.connect(func() -> void:
-		print("      >> ФИНАЛ-ПОБЕДА достигнут"))
+	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
+		print("      >> ФИНАЛ [%s]: %s (день %d, нас %d, сч %.0f)" % [
+			kind, eid,
+			GameStateStore.climate().get("total_day", 0) as int,
+			GameStateStore.population().get("total", 0) as int,
+			GameStateStore.population().get("happiness", 0.0) as float]))
 	EventBus.season_changed.connect(func(sid: String, _d: int, _l: int) -> void:
 		print("      >> СЕЗОН → %s" % sid))
 

@@ -4,6 +4,12 @@ class_name ProgressionSystem
 var _aura_cache: AuraCache
 var _notified_upgrade_level: int = 0
 
+# --- Population retention (tuning) ---
+const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick under duress
+const INFLOW_RATE := 0.0006     # fraction of the empty gap that fills per tick when content
+const MISERY_HAPPINESS := 25.0  # below this people start leaving even if fed
+const CONTENT_HAPPINESS := 55.0 # at/above this newcomers arrive to fill housing
+
 
 func _init(aura_cache: AuraCache) -> void:
 	_aura_cache = aura_cache
@@ -18,7 +24,10 @@ func process_tick() -> void:
 
 
 func _update_population() -> void:
-	var total: int = 0
+	# Housing gives a capacity ceiling; the actual resident count drifts toward it.
+	# People leave under duress (famine, thirst, misery) and arrive when the city is
+	# content. This gives Пыль an irreversible cost and feeds the exodus/riot endings.
+	var capacity: int = 0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("damaged", false) as bool:
@@ -26,10 +35,29 @@ func _update_population() -> void:
 		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
-		total += ldata.get("population", 0) as int
+		capacity += ldata.get("population", 0) as int
 
-	var prev: int = GameStateStore.population().total as int
-	GameStateStore.population().total = total
+	var pop_state: Dictionary = GameStateStore.population()
+	var residents: float = pop_state.get("residents", float(capacity)) as float
+	if not pop_state.has("residents"):
+		residents = float(capacity)  # a freshly-settled district starts full
+
+	var food: float = GameStateStore.get_resource("res_food")
+	var water: float = GameStateStore.get_resource("res_water_stockpile")
+	var happiness: float = pop_state.get("happiness", 50.0) as float
+	var under_duress: bool = food <= 0.0 or water <= 0.0 or happiness < MISERY_HAPPINESS
+
+	if under_duress:
+		residents -= float(capacity) * OUTFLOW_RATE
+	elif residents < float(capacity) and happiness >= CONTENT_HAPPINESS:
+		residents += (float(capacity) - residents) * INFLOW_RATE
+	residents = clampf(residents, 0.0, float(capacity))
+
+	pop_state["residents"] = residents
+	pop_state["capacity"] = capacity
+	var total: int = int(round(residents))
+	var prev: int = pop_state.total as int
+	pop_state.total = total
 	if total != prev:
 		EventBus.population_changed.emit(total)
 

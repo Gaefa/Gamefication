@@ -47,6 +47,9 @@ signal diary_fragment_found(fragment_id: String)
 # --- Mandate / Audit ---
 signal audit_completed(passed: bool, score: int)
 
+# --- Endings ---
+signal ending_triggered(ending_id: String, kind: String)
+
 # --- Save / Load ---
 signal game_saved(slot: int)
 signal game_loaded(slot: int)
