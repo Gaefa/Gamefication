@@ -1091,6 +1091,9 @@ G - governance
 O - options
 H - help
 V - ranges
+C - water panel (reserve / coverage)
+K - season & forecast
+J - diary of the previous administrator
 U/R/B - upgrade/repair/bulldoze selected building
 
 Rule of thumb
