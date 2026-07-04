@@ -9,6 +9,7 @@ const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick unde
 const INFLOW_RATE := 0.0006     # fraction of the empty gap that fills per tick when content
 const MISERY_HAPPINESS := 25.0  # below this people start leaving even if fed
 const CONTENT_HAPPINESS := 55.0 # at/above this newcomers arrive to fill housing
+const HAPPINESS_SMOOTH := 0.04  # per-tick easing toward target; damps scarcity jitter
 
 
 func _init(aura_cache: AuraCache) -> void:
@@ -94,8 +95,12 @@ func _update_happiness() -> void:
 	# thanks, the pressure director and the audit's "are people staying" check.
 	var supply_term: float = _supply_happiness_term()
 	var power_term: float = float(dark_housing) * -6.0
-	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term, 0.0, 100.0)
+	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term, 0.0, 100.0)
+	# Ease happiness toward the target instead of snapping. At the scarcity boundary the
+	# instantaneous supply term jitters tick-to-tick (food produced then eaten); a mood
+	# is slow-moving, so this low-pass filter turns that jitter into a steady slide.
 	var prev: float = GameStateStore.population().happiness as float
+	var happiness: float = lerpf(prev, target, HAPPINESS_SMOOTH)
 	GameStateStore.population().happiness = happiness
 	if absf(happiness - prev) > 0.5:
 		EventBus.happiness_changed.emit(happiness)
