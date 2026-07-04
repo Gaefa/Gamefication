@@ -267,8 +267,18 @@ func _update_resource_bar() -> void:
 		"crisis": phase_color = Color(0.9, 0.5, 0.2)
 		"emergency": phase_color = Color(0.9, 0.2, 0.2)
 		_: phase_color = Color.WHITE
-	_risk_label.add_theme_color_override("font_color", phase_color)
-	_risk_label.text = "%s: %s %.0f" % [
+	# League trust (GDD §13.3): central to the mandate but previously invisible in play.
+	# Low trust is more dangerous than pressure (it drives the recall), so it colours the block.
+	var trust: float = GameStateStore.mandate().get("patron_trust", 50) as float
+	var block_color: Color = phase_color
+	if trust < 25.0:
+		block_color = Color(0.9, 0.2, 0.2)
+	elif trust < 45.0:
+		block_color = Color(0.9, 0.5, 0.2)
+	_risk_label.add_theme_color_override("font_color", block_color)
+	_risk_label.text = "%s: %.0f  ·  %s: %s %.0f" % [
+		Localization.t("ui.risk.trust", "Лига"),
+		trust,
 		Localization.t("ui.risk.pressure", "Pressure"),
 		Localization.t("ui.phase.%s" % phase, phase.capitalize()),
 		p_idx,
