@@ -77,11 +77,16 @@ func _compose() -> String:
 		var next_def: Dictionary = ContentDB.get_season_def(order[(idx + 1) % order.size()] as String)
 		var next_name: String = next_def.get("label", "?") as String
 		var days_left: int = maxi(slen - din, 0)
-		var lo: int = maxi(days_left - 2, 0)
-		var hi: int = days_left + 2
 		lines.append("[b]Прогноз[/b]")
-		lines.append("— %s ожидается через ~%d–%d дн. (прогноз приблизительный)" % [next_name, lo, hi])
-		lines.append("— Точный прогноз мог бы дать старый ИИ Компании, если его оживить.")
+		var forecaster: bool = (GameStateStore.mandate().get("flags", {}) as Dictionary).get("forecaster_active", false) as bool
+		if forecaster:
+			# Прогнозист оживлён — точный прогноз (GDD §14.3).
+			lines.append("— %s наступит через [b]%d дн.[/b] (точно — Прогнозист), сила: %s" % [next_name, days_left, _intensity_word(next_def.get("forecast_intensity", "") as String)])
+		else:
+			var lo: int = maxi(days_left - 2, 0)
+			var hi: int = days_left + 2
+			lines.append("— %s ожидается через ~%d–%d дн. (прогноз приблизительный)" % [next_name, lo, hi])
+			lines.append("— Точный прогноз мог бы дать старый ИИ Компании в опечатанном офисе, если его оживить.")
 		lines.append("")
 
 	# Готовность.
@@ -117,6 +122,13 @@ func _modifier_lines(mods: Dictionary) -> Array[String]:
 	if not is_equal_approx(wear_mult, 1.0):
 		out.append("износ техники %+d%%" % int(round((wear_mult - 1.0) * 100.0)))
 	return out
+
+
+func _intensity_word(intensity: String) -> String:
+	match intensity:
+		"calm": return "слабая"
+		"harsh": return "высокая"
+	return "средняя"
 
 
 func _net_text(net: float) -> String:
