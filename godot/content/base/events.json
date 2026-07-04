@@ -4,6 +4,7 @@
     "category": "mandate",
     "min_level": 1,
     "once": true,
+    "patron": "restoration_league",
     "trigger_day": 1,
     "cooldown_sec": 999999,
     "tags": ["patron", "letter"],
@@ -17,10 +18,29 @@
     ]
   },
   {
+    "id": "patron.letter.directorate_welcome",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "civic_directorate",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "directorate"],
+    "title": "Директорат — предписание о назначении",
+    "body": "Администратор.\n\nГражданский Директорат передаёт вам зону восстановления «Ржавая Нора». Не ищите в этом доверия — это процедура. От вас требуется порядок: вода, еда, учёт, отсутствие беспорядков к началу Сезона Пыли.\n\nОтчётность регулярная. Отклонения фиксируются. Комиссар приедет с проверкой. Не заставляйте его приезжать дважды.",
+    "options": [
+      {
+        "text": "Принять предписание",
+        "effects": { "message": "Печать Директората у вас. И его комиссар — где-то рядом." }
+      }
+    ]
+  },
+  {
     "id": "patron.letter.audit_warning",
     "category": "mandate",
     "min_level": 1,
     "once": true,
+    "patron": "restoration_league",
     "trigger_day": 15,
     "cooldown_sec": 999999,
     "tags": ["patron", "letter", "audit"],
@@ -38,6 +58,7 @@
     "category": "mandate",
     "min_level": 1,
     "once": true,
+    "patron": "restoration_league",
     "trigger_day": 12,
     "cooldown_sec": 999999,
     "tags": ["patron", "letter", "branch"],

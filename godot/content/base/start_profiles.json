@@ -23,6 +23,29 @@
     }
   },
   {
+    "id": "directorate_administrator",
+    "label": "Комиссарский мандат (Гражданский Директорат)",
+    "label_key": "start_profile.directorate_administrator.label",
+    "description": "Директорат ценит порядок выше симпатий: больше денег и полномочий, но холодный контроль, ниже поддержка жителей и жёсткий отзыв — Чрезвычайный комиссар вместо «заботы» Лиги.",
+    "description_key": "start_profile.directorate_administrator.description",
+    "start_path": "appointed",
+    "founder_archetype": "",
+    "patron_id": "civic_directorate",
+    "starting_resources": { "res_money": 320, "res_food": 70, "res_wood": 100, "res_stone": 90, "res_tools": 12 },
+    "default_policies": ["balanced_budget"],
+    "mandate": {
+      "patron_trust": 60,
+      "legitimacy": 55,
+      "autonomy": 15,
+      "recall_risk": 20,
+      "support": 35
+    },
+    "effects": {
+      "pressure_delta": -1.0,
+      "production_mult": { "res_money": 0.10 }
+    }
+  },
+  {
     "id": "founder_rebel",
     "label": "Independent Founder: The Rebel",
     "label_key": "start_profile.founder_rebel.label",

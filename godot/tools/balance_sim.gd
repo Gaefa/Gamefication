@@ -30,6 +30,15 @@ func _ready() -> void:
 	print("")
 	_run("B) PREPARED (насос+цистерна L2, вложился в воду)", true)
 
+	# Scenario C: second patron — recall must use the Directorate's method (Комиссар),
+	# proving the recall is data-driven by patron, not hardcoded to the League.
+	print("\n=== C) DIRECTORATE recall test ===")
+	var orch := GameOrchestrator.new()
+	orch.new_game(12345, "directorate_administrator")
+	print("patron_id = %s (ожидается civic_directorate)" % (GameStateStore.mandate().get("patron_id", "") as String))
+	GameStateStore.mandate()["patron_trust"] = 0.0
+	orch.tick_scheduler.run_tick()  # EndingManager evaluates on tick_finished
+
 	# Sanity-check the style-flag plumbing (events don't fire in this headless harness).
 	GameStateStore.style_flags().clear()
 	GameStateStore.add_style_flag("protector", 3)

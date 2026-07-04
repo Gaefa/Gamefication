@@ -38,6 +38,10 @@ func _check_triggers() -> void:
 			continue
 		if _is_on_cooldown(event_id):
 			continue
+		# Patron-specific events (письма покровителя) fire only under that patron.
+		var event_patron: String = def.get("patron", "") as String
+		if event_patron != "" and event_patron != (GameStateStore.mandate().get("patron_id", "") as String):
+			continue
 		# One-shot events (письма Койл, развилки) фаярятся ровно один раз за игру.
 		if (def.get("once", false) as bool) and _has_fired(event_id):
 			continue

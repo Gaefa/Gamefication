@@ -61,8 +61,13 @@ func _evaluate() -> void:
 
 	# Losses take priority over wins.
 	if trust <= 0.0:
-		# League recall: Конвой if the player tried to expose the League, else Социальная изоляция.
-		_trigger("ending.lose.convoy" if disclosure else "ending.lose.isolation")
+		# Recall method is the patron's, not hardcoded: Конвой is the cross-faction emergency
+		# tool (any patron, if the player tried to expose them); otherwise each patron has
+		# its own procedure — Лига's Социальная изоляция, Директорат's Чрезвычайный комиссар.
+		if disclosure:
+			_trigger("ending.lose.convoy")
+		else:
+			_trigger(_patron_recall_ending())
 	elif _peak_pop >= EXODUS_PEAK_MIN and pop <= int(float(_peak_pop) * EXODUS_FRACTION):
 		_trigger("ending.lose.exodus")
 	elif _peak_pop >= 4 and pop <= 0:
@@ -79,6 +84,14 @@ func _evaluate() -> void:
 		var protector_side: bool = style == "protector" or style == "autonomist" \
 			or (style == "" and support > trust)
 		_trigger("ending.win.protector" if protector_side else "ending.win.loyal")
+
+
+func _patron_recall_ending() -> String:
+	match GameStateStore.mandate().get("patron_id", "restoration_league") as String:
+		"civic_directorate":
+			return "ending.lose.commissar"
+		_:
+			return "ending.lose.isolation"
 
 
 func _trigger(ending_id: String) -> void:
