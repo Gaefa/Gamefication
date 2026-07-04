@@ -37,6 +37,13 @@ func _toggle() -> void:
 	_layer.visible = _visible
 
 
+## Public entry point (e.g. clicking the water block in the HUD).
+func open() -> void:
+	_visible = true
+	_body.text = _compose()
+	_layer.visible = true
+
+
 func _compose() -> String:
 	var lines: Array[String] = []
 	var reserve: float = GameStateStore.get_resource("res_water_stockpile")

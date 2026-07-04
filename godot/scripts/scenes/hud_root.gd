@@ -135,22 +135,28 @@ func _build_resource_bar() -> void:
 	sep1.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hbox.add_child(sep1)
 
-	# City block
+	# City block — click to open season & forecast (UX_BIBLE §3.3, §7).
 	_city_label = Label.new()
 	_city_label.add_theme_font_size_override("font_size", 12)
 	_city_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
-	_city_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_city_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	_city_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_city_label.tooltip_text = Localization.t("ui.season.panel_hint", "Клик — сезон и прогноз (K)")
+	_city_label.gui_input.connect(_on_city_gui_input)
 	hbox.add_child(_city_label)
 
 	var sep2 := VSeparator.new()
 	sep2.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hbox.add_child(sep2)
 
-	# Utilities block
+	# Utilities block — click to open the water panel (UX_BIBLE §6).
 	_utility_label = Label.new()
 	_utility_label.add_theme_font_size_override("font_size", 12)
 	_utility_label.add_theme_color_override("font_color", Color(0.65, 0.85, 1.0))
-	_utility_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_utility_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	_utility_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_utility_label.tooltip_text = Localization.t("ui.water.panel_hint", "Клик — панель воды (C)")
+	_utility_label.gui_input.connect(_on_utility_gui_input)
 	hbox.add_child(_utility_label)
 
 	var sep3 := VSeparator.new()
@@ -267,6 +273,20 @@ func _update_resource_bar() -> void:
 		Localization.t("ui.phase.%s" % phase, phase.capitalize()),
 		p_idx,
 	]
+
+
+func _on_utility_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+			WaterPanel.open()
+
+
+func _on_city_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+			SeasonPanel.open()
 
 
 func _power_readout() -> String:
