@@ -83,7 +83,17 @@ func _evaluate() -> void:
 		var style: String = GameStateStore.dominant_style("")
 		var protector_side: bool = style == "protector" or style == "autonomist" \
 			or (style == "" and support > trust)
-		_trigger("ending.win.protector" if protector_side else "ending.win.loyal")
+		_trigger(_patron_win_ending(protector_side))
+
+
+func _patron_win_ending(protector_side: bool) -> String:
+	# The win shade (loyal-to-patron vs the city's protector) is told in the patron's
+	# own voice, so a Directorate victory doesn't read as if Coyle signed it.
+	match GameStateStore.mandate().get("patron_id", "restoration_league") as String:
+		"civic_directorate":
+			return "ending.win.directorate_defiant" if protector_side else "ending.win.directorate_order"
+		_:
+			return "ending.win.protector" if protector_side else "ending.win.loyal"
 
 
 func _patron_recall_ending() -> String:

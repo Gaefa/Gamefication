@@ -39,6 +39,16 @@ func _ready() -> void:
 	GameStateStore.mandate()["patron_trust"] = 0.0
 	orch.tick_scheduler.run_tick()  # EndingManager evaluates on tick_finished
 
+	# Scenario D: second patron WIN — should be told in the Directorate's voice.
+	print("\n=== D) DIRECTORATE win test ===")
+	var orch2 := GameOrchestrator.new()
+	orch2.new_game(12345, "directorate_administrator")
+	GameStateStore.climate()["total_day"] = 30
+	GameStateStore.population()["happiness"] = 60.0
+	GameStateStore.mandate()["patron_trust"] = 60.0
+	GameStateStore.mandate()["support"] = 35.0
+	orch2.tick_scheduler.run_tick()
+
 	# Sanity-check the style-flag plumbing (events don't fire in this headless harness).
 	GameStateStore.style_flags().clear()
 	GameStateStore.add_style_flag("protector", 3)
