@@ -66,8 +66,8 @@ func _run(label: String, prepared: bool) -> void:
 		_upgrade_water_infra(orch)
 
 	print("=== %s ===" % label)
-	print(" д | сезон     дн | вода   (нет/т) | еда   (нет/т) | нас | сч | дов | давл")
-	print("---+--------------+---------------+--------------+-----+----+-----+-----")
+	print(" д | сезон     дн | вода   (нет/т) | еда   (нет/т) | нас | сч | Лига | Город | давл")
+	print("---+--------------+---------------+--------------+-----+----+------+-------+-----")
 	for day: int in range(1, DAYS + 1):
 		if day > 1:
 			SimulationRunner.day_count += 1
@@ -103,7 +103,7 @@ func _log_day(day: int) -> void:
 		"P" if tp.get("priority", true) else "·",
 		"S" if tp.get("secondary", true) else "·",
 		"T" if tp.get("tertiary", true) else "·"]
-	print("%2d | %-9s %d/%-2d | %6.0f (%+5.2f) | %5.0f (%+5.2f) | %3d | %2.0f | %3.0f | %3.0f | эл %2.0f/%2.0f %s" % [
+	print("%2d | %-9s %d/%-2d | %6.0f (%+5.2f) | %5.0f (%+5.2f) | %3d | %2.0f | %4.0f | %5.0f | %3.0f | эл %2.0f/%2.0f %s" % [
 		day,
 		sname,
 		c.get("day_in_season", 0) as int,
@@ -115,6 +115,7 @@ func _log_day(day: int) -> void:
 		GameStateStore.population().get("total", 0) as int,
 		GameStateStore.population().get("happiness", 0.0) as float,
 		GameStateStore.mandate().get("patron_trust", 0) as float,
+		GameStateStore.mandate().get("support", 0) as float,
 		GameStateStore.pressure().get("index", 0.0) as float,
 		pw.get("generation", 0.0) as float,
 		pw.get("demand", 0.0) as float,

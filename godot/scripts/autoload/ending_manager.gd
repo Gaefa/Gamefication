@@ -68,6 +68,10 @@ func _evaluate() -> void:
 			_trigger("ending.lose.convoy")
 		else:
 			_trigger(_patron_recall_ending())
+	elif support <= 0.0:
+		# The other master: the city withdraws all backing → it comes for you (bunt).
+		# Symmetric to trust ≤ 0 → recall; together they are the vice the player walks.
+		_trigger("ending.lose.riot")
 	elif _peak_pop >= EXODUS_PEAK_MIN and pop <= int(float(_peak_pop) * EXODUS_FRACTION):
 		_trigger("ending.lose.exodus")
 	elif _peak_pop >= 4 and pop <= 0:

@@ -8,7 +8,7 @@ const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules
 var _core_label: Label
 var _city_label: Label
 var _utility_label: Label
-var _risk_label: Label
+var _risk_label: RichTextLabel
 
 var _build_panel: PanelContainer
 var _build_title_label: Label
@@ -163,9 +163,13 @@ func _build_resource_bar() -> void:
 	sep3.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hbox.add_child(sep3)
 
-	# Risk block
-	_risk_label = Label.new()
-	_risk_label.add_theme_font_size_override("font_size", 12)
+	# Risk block — the two masters (League vs City) with per-meter colour, plus pressure.
+	_risk_label = RichTextLabel.new()
+	_risk_label.bbcode_enabled = true
+	_risk_label.fit_content = true
+	_risk_label.scroll_active = false
+	_risk_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_risk_label.add_theme_font_size_override("normal_font_size", 12)
 	_risk_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hbox.add_child(_risk_label)
 
@@ -256,33 +260,33 @@ func _update_resource_bar() -> void:
 		_power_readout(),
 	]
 
-	# --- Risk ---
-	# (electricity readout appended to the utility block via _power_readout)
+	# --- The two masters (the vice: League ↕ City) + pressure ---
+	# This is what the player is actually fighting: keeping both high is impossible.
+	# Trust at zero → recall; support at zero → riot. Each meter is coloured on its own.
 	var phase: String = GameStateStore.pressure().phase as String
 	var p_idx: float = GameStateStore.pressure().index as float
-	var phase_color: Color
-	match phase:
-		"calm": phase_color = Color(0.5, 0.8, 0.5)
-		"tension": phase_color = Color(0.9, 0.8, 0.3)
-		"crisis": phase_color = Color(0.9, 0.5, 0.2)
-		"emergency": phase_color = Color(0.9, 0.2, 0.2)
-		_: phase_color = Color.WHITE
-	# League trust (GDD §13.3): central to the mandate but previously invisible in play.
-	# Low trust is more dangerous than pressure (it drives the recall), so it colours the block.
 	var trust: float = GameStateStore.mandate().get("patron_trust", 50) as float
-	var block_color: Color = phase_color
-	if trust < 25.0:
-		block_color = Color(0.9, 0.2, 0.2)
-	elif trust < 45.0:
-		block_color = Color(0.9, 0.5, 0.2)
-	_risk_label.add_theme_color_override("font_color", block_color)
-	_risk_label.text = "%s: %.0f  ·  %s: %s %.0f" % [
-		Localization.t("ui.risk.trust", "Лига"),
-		trust,
-		Localization.t("ui.risk.pressure", "Pressure"),
+	var support: float = GameStateStore.mandate().get("support", 50) as float
+	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s: %s %.0f" % [
+		Localization.t("ui.risk.league", "Лига"),
+		_meter_bb(trust),
+		Localization.t("ui.risk.city", "Город"),
+		_meter_bb(support),
+		Localization.t("ui.risk.pressure", "Давление"),
 		Localization.t("ui.phase.%s" % phase, phase.capitalize()),
 		p_idx,
 	]
+
+
+func _meter_bb(value: float) -> String:
+	var color: String
+	if value < 25.0:
+		color = "#e63535"   # danger — this master is about to end you
+	elif value < 45.0:
+		color = "#e6902b"
+	else:
+		color = "#7fbf7f"
+	return "[color=%s]%.0f[/color]" % [color, value]
 
 
 func _on_utility_gui_input(event: InputEvent) -> void:

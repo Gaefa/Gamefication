@@ -10,6 +10,7 @@ const INFLOW_RATE := 0.0006     # fraction of the empty gap that fills per tick 
 const MISERY_HAPPINESS := 25.0  # below this people start leaving even if fed
 const CONTENT_HAPPINESS := 55.0 # at/above this newcomers arrive to fill housing
 const HAPPINESS_SMOOTH := 0.04  # per-tick easing toward target; damps scarcity jitter
+const SUPPORT_DRIFT := 0.0015   # city backing drifts toward mood; decisions leave lasting marks
 
 
 func _init(aura_cache: AuraCache) -> void:
@@ -19,6 +20,7 @@ func _init(aura_cache: AuraCache) -> void:
 func process_tick() -> void:
 	_update_population()
 	_update_happiness()
+	_update_support()
 	_check_level_up()
 	_check_win_condition()
 	_record_history()
@@ -137,6 +139,17 @@ func _supply_happiness_term() -> float:
 		term += 12.0
 
 	return term
+
+
+func _update_support() -> void:
+	# City backing (the "Город" master) drifts toward the city's mood — a content city
+	# stands behind you, a miserable one withdraws — while decision jumps (stat_city_trust)
+	# stay meaningful for a while before the drift reabsorbs them. Hits 0 → riot.
+	var mandate: Dictionary = GameStateStore.mandate()
+	var support: float = mandate.get("support", 45) as float
+	var happiness: float = GameStateStore.population().get("happiness", 50.0) as float
+	support += (happiness - support) * SUPPORT_DRIFT
+	mandate["support"] = clampf(support, 0.0, 100.0)
 
 
 func _governance_happiness_add() -> float:
