@@ -24,3 +24,4 @@ func process_tick() -> void:
 		if _rng.chance(ISSUE_CHANCE_PER_BUILDING):
 			bld["has_issue"] = true
 			GameStateStore.set_building(coord, bld)
+			EventBus.building_issue_added.emit(coord)

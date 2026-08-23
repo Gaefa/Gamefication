@@ -1,170 +1,443 @@
 [
   {
-    "id": "wanderer",
+    "id": "patron.letter.welcome",
+    "category": "mandate",
     "min_level": 1,
-    "title": "Wandering Trader",
-    "body": "A wandering trader offers a small supply of materials.",
-    "accept_label": "Trade",
-    "decline_label": "Pass",
-    "accept_cost": null,
-    "accept_effects": { "add_resources": { "wood": 30, "stone": 20, "food": 15 } },
-    "decline_effects": { "message": "Trader wandered away." },
-    "accept_message": "Trader left some supplies.",
-    "pressure_phase_min": 0,
-    "tags": ["trade", "positive"]
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter"],
+    "title": "Письмо Лиги — Инспектор Койл",
+    "body": "Администратор.\n\nЯ Инспектор Койл, Лига Восстановления. С этого дня Ржавая Нора — ваша ответственность, а вы — наша.\n\nЯ прошу немного и почти невозможное: чтобы к началу Пыли у людей была вода и еда, и чтобы никто не ушёл искать лучшей доли. Люди важнее цифр, но цифры — то, по чему вас будут судить.\n\nБашня ваша. Печать ваша. Не подведите тех, кто уже здесь живёт.",
+    "options": [
+      {
+        "text": "Принять мандат",
+        "effects": { "message": "Мандат принят. До Сезона Пыли меньше двух недель — копите воду и еду." }
+      }
+    ]
   },
   {
-    "id": "settlers",
+    "id": "patron.letter.directorate_welcome",
+    "category": "mandate",
     "min_level": 1,
-    "title": "Settlers Arrive",
-    "body": "A group of settlers wants to join your settlement. Accept for extra coins!",
-    "accept_label": "Welcome!",
-    "decline_label": "Turn Away",
-    "accept_cost": null,
-    "accept_effects": { "add_resources": { "coins": 80 } },
-    "decline_effects": { "message": "Settlers moved on." },
-    "accept_message": "Settlers brought some coins.",
-    "pressure_phase_min": 0,
-    "tags": ["social", "positive"]
+    "once": true,
+    "patron": "civic_directorate",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "directorate"],
+    "title": "Директорат — предписание о назначении",
+    "body": "Администратор.\n\nГражданский Директорат передаёт вам зону восстановления «Ржавая Нора». Не ищите в этом доверия — это процедура. От вас требуется порядок: вода, еда, учёт, отсутствие беспорядков к началу Сезона Пыли.\n\nОтчётность регулярная. Отклонения фиксируются. Комиссар приедет с проверкой. Не заставляйте его приезжать дважды.",
+    "options": [
+      {
+        "text": "Принять предписание",
+        "effects": { "message": "Печать Директората у вас. И его комиссар — где-то рядом." }
+      }
+    ]
   },
   {
-    "id": "caravan",
-    "min_level": 2,
-    "title": "Trade Caravan",
-    "body": "A caravan offers supplies for cash flow.",
-    "accept_label": "Take Deal",
-    "decline_label": "Ignore",
-    "accept_cost": null,
-    "accept_effects": { "add_resources": { "coins": 400, "wood": 120, "stone": 120 } },
-    "decline_effects": { "message": "Caravan moved on." },
-    "accept_message": "Caravan delivered resources.",
-    "pressure_phase_min": 0,
-    "tags": ["trade", "positive"]
+    "id": "patron.letter.audit_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 15,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "audit"],
+    "title": "Письмо Лиги — перед аудитом",
+    "body": "Администратор.\n\nЧерез несколько дней я приеду с проверкой. Это не каприз — это процедура. Я посмотрю на воду, на запасы, на то, сколько людей ещё с вами.\n\nЕсли вода идёт по часам, а склады пусты перед Пылью, я не смогу защищать ваш мандат перед теми, кто наверху. Подготовьтесь. Я предпочитаю уезжать с хорошими новостями.",
+    "options": [
+      {
+        "text": "Готовиться к аудиту",
+        "effects": { "message": "Аудит близко. Лига смотрит на воду и запасы." }
+      }
+    ]
   },
   {
-    "id": "festival",
-    "min_level": 3,
-    "title": "City Festival",
-    "body": "Hold a festival to boost morale and production for 3 minutes.",
-    "accept_label": "Fund Festival",
-    "decline_label": "Skip",
-    "accept_cost": { "coins": 300, "food": 150 },
-    "accept_effects": { "add_buff": { "id": "festival-buff", "name": "Festival", "remaining": 180, "production_mult": 0.2, "happiness_add": 15 } },
-    "decline_effects": { "happiness_penalty_ticks": 60, "message": "Citizens are disappointed." },
-    "accept_message": "Festival started.",
-    "pressure_phase_min": 0,
-    "tags": ["social", "positive"]
+    "id": "patron.letter.share_water",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 12,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "branch"],
+    "title": "Письмо Лиги — тяжёлая просьба",
+    "body": "Администратор.\n\nВ дальнем лагере за границей вашего района — люди без воды. Завтра у них кончится последнее. Ближе вас — никого.\n\nЯ знаю, что ваш собственный запас на пределе. Я не прошу вас быть хорошим человеком. Я прошу выбрать, кого город сможет ненавидеть живым. Решайте. Но решайте сегодня.",
+    "options": [
+      {
+        "text": "Поделиться водой с лагерем",
+        "cost": { "res_water_stockpile": 60 },
+        "effects": {
+          "stat_league_trust": 10,
+          "stat_city_trust": -8,
+          "style": "loyal",
+          "message": "Цистерны ушли на рассвете. Койл прислала короткое «спасибо». Ваш квартал сел на половину нормы."
+        }
+      },
+      {
+        "text": "Отказать ради своих",
+        "effects": {
+          "stat_league_trust": -12,
+          "stat_city_trust": 8,
+          "style": "protector",
+          "message": "Вы оставили воду себе. Вечером пришло письмо в три строки: «Принято к сведению. Лига помнит, кому помогает, и кому — нет.»"
+        }
+      }
+    ]
+  },
+
+  {
+    "id": "petition.water_hours",
+    "category": "water",
+    "min_level": 1,
+    "trigger_condition": "res_water_stockpile <= 40",
+    "cooldown_sec": 200.0,
+    "tags": ["petition", "families"],
+    "title": "Обращение — вода по часам",
+    "body": "Администратор, у нас вода идёт по часам, и не всегда тогда, когда дети не спят. Мать носит вёдра через полрайона. Это пока — или это теперь навсегда?",
+    "options": [
+      {
+        "text": "Признать и пообещать срок: «Чиню, дайте мне три дня»",
+        "effects": { "stat_city_trust": 5, "message": "Вы пообещали починить за три дня. Теперь придётся." }
+      },
+      {
+        "text": "Ввести нормирование честно: «Воды на всех не хватает, делим поровну»",
+        "effects": { "stat_city_trust": -3, "stat_unrest_pressure": 5, "message": "Нормирование введено. Недовольны все, но без чувства несправедливости." }
+      },
+      {
+        "text": "Отмолчаться",
+        "effects": { "stat_unrest_pressure": 10, "message": "Вы промолчали. По кварталу пошёл слух: новый хозяин такой же, как старый." }
+      }
+    ]
   },
   {
-    "id": "storm",
-    "min_level": 4,
-    "title": "Storm Warning",
-    "body": "Bad weather incoming. Protect infrastructure or risk widespread issues.",
-    "accept_label": "Mitigate",
-    "decline_label": "Risk It",
-    "accept_cost": { "coins": 400, "tools": 40 },
-    "accept_effects": { "add_buff": { "id": "storm-shield", "name": "Protected Grid", "remaining": 120, "production_mult": 0.1, "happiness_add": 5 } },
-    "decline_effects": { "force_issues": 6, "remove_resources": { "wood": 100, "stone": 100, "food": 80 }, "message": "Storm caused damage." },
-    "accept_message": "Storm defenses active.",
-    "pressure_phase_min": 1,
-    "tags": ["disaster", "natural", "fragility"]
+    "id": "petition.dry_quarter",
+    "category": "water",
+    "min_level": 1,
+    "trigger_condition": "stat_happiness <= 40",
+    "cooldown_sec": 220.0,
+    "tags": ["petition", "workers"],
+    "title": "Обращение — дальний квартал",
+    "body": "Слушайте. Мы на стройке с рассвета, а в наш квартал вода доходит последней и еле-еле. Мы не просим больше других. Поставьте нам башню поближе или скажите прямо, что мы тут лишние.",
+    "options": [
+      {
+        "text": "Построить башню ближе",
+        "cost": { "res_stone": 20, "res_wood": 10 },
+        "effects": { "stat_city_trust": 6, "message": "Вы пообещали башню ближе к их кварталу. Это чинит причину." }
+      },
+      {
+        "text": "Поднять им приоритет",
+        "effects": { "stat_city_trust": 2, "stat_unrest_pressure": 3, "message": "Дальний квартал получил приоритет. Другой теперь просядет." }
+      },
+      {
+        "text": "Попросить потерпеть до Окна",
+        "effects": { "stat_unrest_pressure": 8, "message": "Вы попросили потерпеть. Риск забастовки растёт." }
+      }
+    ]
   },
   {
-    "id": "innovation",
-    "min_level": 5,
-    "title": "Innovation Grant",
-    "body": "A grant can accelerate high-tech growth.",
-    "accept_label": "Accept Grant",
-    "decline_label": "Pass",
-    "accept_cost": null,
-    "accept_effects": { "add_resources": { "science": 180, "energy": 200, "coins": 600 } },
-    "decline_effects": { "message": "Grant was offered elsewhere." },
-    "accept_message": "Grant applied to city labs.",
-    "pressure_phase_min": 0,
-    "tags": ["tech", "positive"]
+    "id": "petition.ruben_offer",
+    "category": "water",
+    "min_level": 1,
+    "trigger_condition": "res_water_stockpile <= 15",
+    "cooldown_sec": 260.0,
+    "tags": ["petition", "shadow", "branch"],
+    "title": "Обращение — предложение водовоза",
+    "body": "Администратор, давай без долгих разговоров. У меня есть вода, у тебя её нет. Лига пришлёт бумагу и сочувствие, а я пришлю цистерны сегодня к ночи. Цена честная — для тебя. Потом сочтёмся. Я ж не зверь, я бизнес. — Рубен Каст",
+    "options": [
+      {
+        "text": "Принять воду Рубена",
+        "effects": {
+          "add_resources": { "res_water_stockpile": 120 },
+          "stat_league_trust": -8,
+          "style": "pragmatist",
+          "message": "Вода пришла к ночи. Люди пили и не спрашивали откуда. Вы знали — и знали, что теперь должны."
+        }
+      },
+      {
+        "text": "Отказать, держать нормирование по правилам Лиги",
+        "effects": { "stat_league_trust": 3, "style": "loyal", "message": "Вы отказали. Дефицит остался, но репутация перед Лигой чище." }
+      },
+      {
+        "text": "Позвать Грача посредником",
+        "effects": {
+          "add_resources": { "res_water_stockpile": 80 },
+          "stat_league_trust": -4,
+          "message": "Грач свёл вас мягче. Условия чуть лучше — но вы глубже в тени."
+        }
+      }
+    ]
   },
   {
-    "id": "drought",
-    "min_level": 3,
-    "title": "Drought",
-    "body": "Water supply is dwindling. Invest in reserves or farms suffer.",
-    "accept_label": "Emergency Supply",
-    "decline_label": "Wait It Out",
-    "accept_cost": { "coins": 200, "water_res": 10 },
-    "accept_effects": { "add_buff": { "id": "drought-shield", "name": "Water Reserves", "remaining": 90, "production_mult": 0.05, "happiness_add": 3 } },
-    "decline_effects": { "add_buff": { "id": "drought-debuff", "name": "Drought", "remaining": 120, "production_mult": -0.15, "happiness_add": 0 }, "message": "Farms are suffering from drought." },
-    "accept_message": "Emergency water distributed.",
-    "pressure_phase_min": 1,
-    "tags": ["disaster", "natural", "water"]
+    "id": "petition.debt_lists",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 6,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "families", "moral"],
+    "title": "Обращение — долговые списки Компании",
+    "body": "Администратор, в офисе нашли старые списки — кто сколько задолжал Компании за воду. Моя семья там есть. Компании нет двадцать лет, а долг, выходит, есть? Вы уж определитесь: мы людям должны или призраку?",
+    "options": [
+      {
+        "text": "Списать старые долги",
+        "effects": { "stat_city_trust": 8, "stat_league_trust": -3, "message": "Долги списаны. Люди благодарны. Лига видит в этом прецедент прощения." }
+      },
+      {
+        "text": "Признать долг перед городом",
+        "effects": { "add_resources": { "res_money": 60 }, "stat_unrest_pressure": 6, "message": "Долг признан перед казной. В кассе прибыло, в сердцах — чувство несправедливости." }
+      },
+      {
+        "text": "Отложить решение",
+        "effects": { "stat_unrest_pressure": 5, "message": "Вы отложили решение. Пошёл слух: новый хозяин такой же, как старый." }
+      }
+    ]
   },
   {
-    "id": "earthquake",
-    "min_level": 5,
-    "title": "Earthquake",
-    "body": "Seismic activity detected! Reinforce infrastructure or suffer massive damage.",
-    "accept_label": "Emergency Reinforcement",
-    "decline_label": "Brace for Impact",
-    "accept_cost": { "coins": 800, "metal": 200, "tools": 100 },
-    "accept_effects": { "add_buff": { "id": "quake-shield", "name": "Reinforced", "remaining": 120, "production_mult": 0.05, "happiness_add": 0 } },
-    "decline_effects": { "force_issues": 10, "damage_buildings": 5, "add_buff": { "id": "aftershock", "name": "Aftershock", "remaining": 300, "production_mult": -0.1, "happiness_add": -5 }, "message": "Earthquake devastated the city." },
-    "accept_message": "Reinforcements held. Minimal damage.",
-    "pressure_phase_min": 2,
-    "tags": ["disaster", "natural", "fragility"]
+    "id": "petition.grach_intro",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 5,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "shadow"],
+    "title": "Обращение — Грач просится в дело",
+    "body": "Слышь, начальник. Меня Грач звать. Я тут по-разному кручусь. Я не бандит, ты не думай. Я могу полезным быть — кого надо найти, чё надо достать. Только не как с собакой со мной, лады? По-человечески если — я нормальный.",
+    "options": [
+      {
+        "text": "По-человечески, с уважением",
+        "effects": { "message": "Грач повеселел. Похоже, на него можно будет опереться." }
+      },
+      {
+        "text": "Сухо и по делу",
+        "effects": { "message": "Грач полезен, но обиделся. Может подвести в кризис." }
+      },
+      {
+        "text": "Прогнать",
+        "effects": { "message": "Вы прогнали Грача. Линия тени закрыта — дефициты теперь только через Лигу." }
+      }
+    ]
   },
   {
-    "id": "blackout",
-    "min_level": 4,
-    "title": "Grid Blackout",
-    "body": "Power grid overloaded! Industry halts and crime rises without electricity.",
-    "accept_label": "Emergency Repairs",
-    "decline_label": "Wait for Recovery",
-    "accept_cost": { "coins": 500, "metal": 150, "tools": 50 },
-    "accept_effects": { "add_buff": { "id": "grid-restore", "name": "Grid Restored", "remaining": 60, "production_mult": 0.1, "happiness_add": 5 } },
-    "decline_effects": { "add_buff": { "id": "blackout-debuff", "name": "Blackout", "remaining": 180, "production_mult": -0.2, "happiness_add": -10 }, "message": "The city plunged into darkness." },
-    "accept_message": "Power grid restored.",
-    "pressure_phase_min": 1,
-    "tags": ["disaster", "tech", "energy"]
+    "id": "petition.thanks",
+    "category": "happiness",
+    "min_level": 1,
+    "trigger_condition": "stat_happiness >= 70",
+    "cooldown_sec": 400.0,
+    "tags": ["petition", "positive"],
+    "title": "Обращение — благодарность",
+    "body": "Администратор, мы вечером сидели и поняли — давно никто не уезжал. Воду дали, склад полный, дети не кашляют. Не знаем, надолго ли, но спасибо. Прежний бы порадовался за район.",
+    "options": [
+      {
+        "text": "Поблагодарить в ответ",
+        "effects": { "stat_city_trust": 4, "message": "Тёплая передышка перед сезоном. Люди вам верят." }
+      }
+    ]
   },
   {
-    "id": "housing_crisis",
-    "min_level": 3,
-    "title": "Housing Crisis",
-    "body": "Population is growing faster than housing. Citizens demand action!",
-    "accept_label": "Emergency Shelters",
-    "decline_label": "Ignore Demands",
-    "accept_cost": { "coins": 300, "planks": 100, "bricks": 80 },
-    "accept_effects": { "add_buff": { "id": "shelter-buff", "name": "Emergency Housing", "remaining": 120, "production_mult": 0.0, "happiness_add": 10 } },
-    "decline_effects": { "happiness_penalty_ticks": 120, "message": "Citizens are furious about housing shortage." },
-    "accept_message": "Emergency shelters built. Crisis averted.",
-    "pressure_phase_min": 1,
-    "tags": ["social", "housing"]
+    "id": "petition.strike_warning",
+    "category": "happiness",
+    "min_level": 1,
+    "trigger_condition": "stat_happiness <= 32",
+    "cooldown_sec": 240.0,
+    "tags": ["petition", "workers"],
+    "title": "Обращение — предупреждение о забастовке",
+    "body": "Администратор, мы по-хорошему предупреждаем. Ещё немного такого — инструмент на землю и сядем у Башни. Нам стройка не враг, но и мы не камни. Реши что-нибудь, пока мы ещё разговариваем, а не кричим.",
+    "options": [
+      {
+        "text": "Уступить (нормы, паёк)",
+        "cost": { "res_food": 30 },
+        "effects": { "stat_city_trust": 5, "stat_unrest_pressure": -8, "style": "protector", "message": "Вы уступили по нормам. Причина погашена — ценой запаса." }
+      },
+      {
+        "text": "Объясниться честно",
+        "effects": { "stat_city_trust": 2, "message": "Вы вышли и объяснились. При высоком доверии это сработает." }
+      },
+      {
+        "text": "Подавить",
+        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -6, "style": "pragmatist", "message": "Вы подавили ропот. Толпа разошлась, но запомнит. Прямой путь к бунту." }
+      }
+    ]
+  },
+
+  {
+    "id": "crisis.food_riot",
+    "category": "food",
+    "min_level": 1,
+    "trigger_condition": "res_food <= 0",
+    "cooldown_sec": 300.0,
+    "tags": ["crisis", "food"],
+    "title": "Кризис — продовольственный бунт",
+    "body": "На площади у рынка собралась толпа. Не митинг — голодные люди. Кто-то уже бьёт пустые лотки. Это не бунт против вас лично. Это бунт против пустого склада. Пока — против склада.",
+    "options": [
+      {
+        "text": "Раздать экстренный паёк",
+        "cost": { "res_money": 100 },
+        "effects": { "add_resources": { "res_food": 30 }, "stat_unrest_pressure": -10, "style": "protector", "message": "Паёк роздан. Толпа разошлась, но город оголён перед сезоном." }
+      },
+      {
+        "text": "Подавить силой",
+        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -8, "style": "pragmatist", "message": "Толпа разошлась. И запомнила." }
+      },
+      {
+        "text": "Просить Лигу о пайках",
+        "effects": { "add_resources": { "res_food": 60 }, "stat_league_trust": -6, "message": "Койл помогла пайками. Это долг и условие: контроль усилится." }
+      }
+    ]
   },
   {
-    "id": "epidemic",
-    "min_level": 5,
-    "title": "Epidemic Outbreak",
-    "body": "Disease spreading rapidly! Fund quarantine or lose workforce.",
-    "accept_label": "Quarantine & Treat",
-    "decline_label": "Let It Pass",
-    "accept_cost": { "coins": 600, "food": 200, "water_res": 50 },
-    "accept_effects": { "add_buff": { "id": "quarantine", "name": "Quarantine Active", "remaining": 90, "production_mult": -0.05, "happiness_add": 0 } },
-    "decline_effects": { "add_buff": { "id": "epidemic-debuff", "name": "Epidemic", "remaining": 240, "production_mult": -0.25, "happiness_add": -15 }, "force_issues": 8, "message": "Disease ravaged the population." },
-    "accept_message": "Quarantine measures containing the outbreak.",
-    "pressure_phase_min": 2,
-    "tags": ["disaster", "social", "health"]
+    "id": "crisis.water_fight",
+    "category": "water",
+    "min_level": 1,
+    "trigger_condition": "res_water_stockpile <= 5",
+    "cooldown_sec": 280.0,
+    "tags": ["crisis", "water"],
+    "title": "Кризис — драка у цистерны",
+    "body": "У Главной Цистерны давка. В пик жары напора не хватает, и очередь превратилась в драку. Воды в городе мало, и до сюда она не доходит. Люди знают только, что у них пустые канистры.",
+    "options": [
+      {
+        "text": "Ввести нормирование",
+        "effects": { "stat_unrest_pressure": -5, "stat_city_trust": -3, "message": "Порядок восстановлен ценой недовольства. Причина не решена." }
+      },
+      {
+        "text": "Строить башню ближе",
+        "cost": { "res_stone": 25, "res_wood": 12 },
+        "effects": { "message": "Вы заложили башню ближе. Чинит причину, но сейчас не поможет." }
+      },
+      {
+        "text": "Позвать водовоза",
+        "effects": { "add_resources": { "res_water_stockpile": 90 }, "stat_league_trust": -6, "message": "Водовоз привёз воду быстро. И долг, и тень." }
+      }
+    ]
   },
   {
-    "id": "transport_collapse",
-    "min_level": 4,
-    "title": "Transport Collapse",
-    "body": "Road network overwhelmed. Supply chains breaking down!",
-    "accept_label": "Emergency Road Crews",
-    "decline_label": "Endure It",
-    "accept_cost": { "coins": 400, "stone": 100, "tools": 60 },
-    "accept_effects": { "add_buff": { "id": "road-fix", "name": "Road Repair Crews", "remaining": 90, "production_mult": 0.05, "happiness_add": 3 } },
-    "decline_effects": { "add_buff": { "id": "transport-debuff", "name": "Transport Jam", "remaining": 150, "production_mult": -0.15, "happiness_add": -8 }, "message": "Supply chains disrupted." },
-    "accept_message": "Road crews dispatched. Traffic clearing.",
-    "pressure_phase_min": 1,
-    "tags": ["disaster", "infrastructure", "transport"]
+    "id": "crisis.water_sickness",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 10,
+    "cooldown_sec": 999999,
+    "tags": ["crisis", "water"],
+    "title": "Кризис — вспышка болезни из-за воды",
+    "body": "В дальнем квартале слегли несколько семей. Фельдшер говорит — вода. Где-то старая труба Компании дала течь, и в неё попало что-то нехорошее. Болезнь пока в одном квартале. Пока.",
+    "options": [
+      {
+        "text": "Карантин квартала",
+        "cost": { "res_money": 40 },
+        "effects": { "stat_unrest_pressure": 4, "message": "Квартал на карантине. Зараза остановлена ценой экономики и нервов." }
+      },
+      {
+        "text": "Чинить источник",
+        "cost": { "res_tools": 3, "res_stone": 10 },
+        "effects": { "message": "Вы взялись чинить трубу. Решает корень, но не мгновенно." }
+      },
+      {
+        "text": "Просить помощь Лиги",
+        "effects": { "stat_league_trust": -5, "message": "Медики Лиги приедут. Койл занесёт это в «не справляется сам»." }
+      }
+    ]
+  },
+  {
+    "id": "crisis.collective_letter",
+    "category": "happiness",
+    "min_level": 1,
+    "trigger_condition": "stat_unrest_pressure >= 55",
+    "cooldown_sec": 300.0,
+    "tags": ["crisis", "happiness"],
+    "title": "Кризис — коллективное письмо",
+    "body": "Вам принесли лист, исписанный десятками рук. Это не угроза и не ультиматум — это хуже. Это спокойное перечисление всего, что вы не сделали и обещали. Люди не злятся. Люди перестают верить.",
+    "options": [
+      {
+        "text": "Уступить по главному пункту",
+        "cost": { "res_food": 20 },
+        "effects": { "stat_unrest_pressure": -12, "message": "Вы уступили по главному. Вера возвращается — ценой запаса." }
+      },
+      {
+        "text": "Выйти и объясниться",
+        "effects": { "stat_unrest_pressure": -4, "message": "Вы вышли к людям. Сработает при доверии, иначе — нет." }
+      },
+      {
+        "text": "Отмолчаться",
+        "effects": { "stat_unrest_pressure": 8, "message": "Вы промолчали. Прямой шаг к бунту." }
+      }
+    ]
+  },
+  {
+    "id": "crisis.grant_freeze",
+    "category": "mandate",
+    "min_level": 1,
+    "trigger_condition": "stat_league_trust <= 40",
+    "cooldown_sec": 320.0,
+    "tags": ["crisis", "mandate"],
+    "title": "Кризис — заморозка гранта",
+    "body": "Письмо от Лиги короче обычного. Очередной транш «временно приостановлен до прояснения ситуации с показателями». Перевод с языка Койл: денег не будет, пока вы не докажете, что город под контролем.",
+    "options": [
+      {
+        "text": "Подчиниться и выправить показатели",
+        "effects": { "stat_league_trust": 6, "message": "Вы подчинились. Свободы меньше, доверие со временем вернётся." }
+      },
+      {
+        "text": "Торговаться",
+        "effects": { "add_resources": { "res_money": 40 }, "stat_league_trust": 2, "message": "Вы выторговали часть транша. Зависит от доверия." }
+      },
+      {
+        "text": "Искать деньги внутри",
+        "effects": { "add_resources": { "res_money": 80 }, "stat_unrest_pressure": 6, "message": "Вы нашли деньги внутри — рынок, налоги, долги. Это давит на счастье." }
+      }
+    ]
+  },
+  {
+    "id": "crisis.recall_ultimatum",
+    "category": "mandate",
+    "min_level": 1,
+    "is_critical": true,
+    "trigger_condition": "stat_league_trust <= 25",
+    "cooldown_sec": 600.0,
+    "tags": ["crisis", "mandate", "recall"],
+    "title": "Кризис — ультиматум перед отзывом",
+    "body": "Койл приехала сама. Без свиты, без бумаг на стол. Села напротив и сказала тихо: «Я держала вашу сторону, сколько могла. Дальше — либо вы даёте мне результат, который я покажу наверху, либо я больше не смогу вас защищать. И тогда приедут не ко мне.»",
+    "options": [
+      {
+        "text": "Выполнить требование",
+        "cost": { "res_water_stockpile": 80, "res_food": 40 },
+        "effects": { "stat_league_trust": 12, "style": "loyal", "message": "Вы дали Койл результат. Последний шанс удержать мандат — дорогой ценой." }
+      },
+      {
+        "text": "Спорить, опираясь на город",
+        "effects": { "stat_league_trust": -5, "stat_city_trust": 4, "style": "protector", "message": "Вы спорили с опорой на город. Работает только при высокой поддержке жителей." }
+      },
+      {
+        "text": "Готовить разрыв",
+        "effects": { "stat_league_trust": -15, "stat_unrest_pressure": 10, "set_flag": "disclosure", "style": "autonomist", "message": "Вы готовите разрыв и разоблачение. В MVP это плохо кончается — путь к Конвою без номеров." }
+      }
+    ]
+  },
+  {
+    "id": "quest.forecaster",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_condition": "res_tools >= 3",
+    "cooldown_sec": 999999,
+    "tags": ["quest", "forecaster"],
+    "title": "Опечатанный офис — «Прогнозист»",
+    "body": "На третьем этаже офиса Компании спит ИИ «Прогнозист». Инженеры говорят: восстановить питание, охлаждение и батареи — и он снова начнёт считать Пыль точно, до дня. Но он всё ещё считает Компанию своим хозяином и просыпается с оговорками.\n\n«…пит-ание вос-становлено. Запрос не авторизован. Я обслуживаю Компанию Чистого Истока. …Ожидание.»",
+    "options": [
+      {
+        "text": "Оживить Прогнозиста (восстановить питание и охлаждение)",
+        "cost": { "res_tools": 3, "res_money": 80 },
+        "effects": {
+          "set_flag": "forecaster_active",
+          "message": "Прогнозист ожил. Теперь прогноз Пыли точный — смотрите панель сезона (K). Он всё ещё зовёт вас оператором Компании."
+        }
+      },
+      {
+        "text": "Оставить офис опечатанным",
+        "effects": {
+          "message": "Вы не тронули офис. Прогноз Пыли остаётся приблизительным — придётся готовиться с запасом."
+        }
+      }
+    ]
   }
 ]

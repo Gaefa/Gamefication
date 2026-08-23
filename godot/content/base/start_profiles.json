@@ -1,0 +1,117 @@
+[
+  {
+    "id": "appointed_administrator",
+    "label": "Appointed Administrator",
+    "label_key": "start_profile.appointed_administrator.label",
+    "description": "Easier start with patron funding, moderate legitimacy and recall risk. Best default path for first-time players.",
+    "description_key": "start_profile.appointed_administrator.description",
+    "start_path": "appointed",
+    "founder_archetype": "",
+    "patron_id": "restoration_league",
+    "starting_resources": { "res_money": 250, "res_food": 80, "res_wood": 110, "res_stone": 70, "res_tools": 10 },
+    "default_policies": ["balanced_budget"],
+    "mandate": {
+      "patron_trust": 70,
+      "legitimacy": 45,
+      "autonomy": 25,
+      "recall_risk": 10,
+      "support": 45
+    },
+    "effects": {
+      "pressure_delta": -2.0,
+      "production_mult": { "res_money": 0.05 }
+    }
+  },
+  {
+    "id": "directorate_administrator",
+    "label": "Комиссарский мандат (Гражданский Директорат)",
+    "label_key": "start_profile.directorate_administrator.label",
+    "description": "Директорат ценит порядок выше симпатий: больше денег и полномочий, но холодный контроль, ниже поддержка жителей и жёсткий отзыв — Чрезвычайный комиссар вместо «заботы» Лиги.",
+    "description_key": "start_profile.directorate_administrator.description",
+    "start_path": "appointed",
+    "founder_archetype": "",
+    "patron_id": "civic_directorate",
+    "starting_resources": { "res_money": 320, "res_food": 70, "res_wood": 100, "res_stone": 90, "res_tools": 12 },
+    "default_policies": ["balanced_budget"],
+    "mandate": {
+      "patron_trust": 60,
+      "legitimacy": 55,
+      "autonomy": 15,
+      "recall_risk": 20,
+      "support": 35
+    },
+    "effects": {
+      "pressure_delta": -1.0,
+      "production_mult": { "res_money": 0.10 }
+    }
+  },
+  {
+    "id": "founder_rebel",
+    "label": "Independent Founder: The Rebel",
+    "label_key": "start_profile.founder_rebel.label",
+    "description": "Hard start with high autonomy and strong defiant support. External trust is low and early pressure is higher.",
+    "description_key": "start_profile.founder_rebel.description",
+    "start_path": "independent_founder",
+    "founder_archetype": "the_rebel",
+    "patron_id": "",
+    "starting_resources": { "res_money": 85, "res_food": 45, "res_wood": 75, "res_stone": 35, "res_tools": 5 },
+    "default_policies": ["labor_mobilization"],
+    "mandate": {
+      "patron_trust": 0,
+      "legitimacy": 35,
+      "autonomy": 90,
+      "recall_risk": 0,
+      "support": 55
+    },
+    "effects": {
+      "pressure_delta": 4.0,
+      "production_mult": { "res_wood": 0.08, "res_stone": 0.08 }
+    }
+  },
+  {
+    "id": "founder_people_choice",
+    "label": "Independent Founder: The People's Choice",
+    "label_key": "start_profile.founder_people_choice.label",
+    "description": "Community-backed start with strong citizen support and happiness. Funding is limited and unpopular shortages hurt more later.",
+    "description_key": "start_profile.founder_people_choice.description",
+    "start_path": "independent_founder",
+    "founder_archetype": "the_peoples_choice",
+    "patron_id": "",
+    "starting_resources": { "res_money": 120, "res_food": 70, "res_wood": 70, "res_stone": 35 },
+    "default_policies": ["low_taxes"],
+    "mandate": {
+      "patron_trust": 0,
+      "legitimacy": 60,
+      "autonomy": 80,
+      "recall_risk": 0,
+      "support": 70
+    },
+    "effects": {
+      "happiness_add": 5.0,
+      "production_mult": { "res_money": -0.05 }
+    }
+  },
+  {
+    "id": "founder_outcasts",
+    "label": "Independent Founder: The Outcasts",
+    "label_key": "start_profile.founder_outcasts.label",
+    "description": "Very hard start with almost no recognition, high autonomy and improvised resilience. Money is scarce, but basic survival production is stronger.",
+    "description_key": "start_profile.founder_outcasts.description",
+    "start_path": "independent_founder",
+    "founder_archetype": "the_outcasts",
+    "patron_id": "",
+    "starting_resources": { "res_money": 55, "res_food": 90, "res_wood": 95, "res_stone": 25, "res_tools": 15 },
+    "default_policies": [],
+    "mandate": {
+      "patron_trust": 0,
+      "legitimacy": 25,
+      "autonomy": 95,
+      "recall_risk": 0,
+      "support": 40
+    },
+    "effects": {
+      "pressure_delta": 2.0,
+      "production_mult": { "res_food": 0.05, "res_wood": 0.05, "res_money": -0.10 }
+    }
+  }
+]

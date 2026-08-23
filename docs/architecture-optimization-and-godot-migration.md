@@ -108,17 +108,27 @@ Core на старте:
 - Интеграция: сценарный DSL/JSON + objective engine.
 - Изоляция: сценарий не меняет глобальные формулы, только конфигурирует их.
 
-4. `Governance & Belief Expansion`
-- Модуль: `GovernancePlugin` + `BeliefPlugin`.
+4. `Transit Expansion`
+- Модуль: `TransportExpansionPlugin`.
 - Интеграция:
-  - `CitizenNeedHooks` для политических/идеологических ожиданий;
-  - `PressureHooks` для легитимности, протестов и радикализации;
-  - `TickHooks` для политики и влияния доктрин.
+  - `CoverageProviderHooks` для станций;
+  - `TransportProviderHooks` для rail/metro/freight;
+  - `CitizenDemandHooks` для commute demand.
 - Изоляция:
-  - технологии, политики и идеологии хранятся в отдельных графах/таблицах;
-  - core получает только агрегированные модификаторы через capability API.
+  - road core остается в базовой игре;
+  - rail/metro state хранится в отдельном save namespace.
 
-5. `Cosmetic Pack`
+5. `Leisure / Building Expansion`
+- Модуль: `DistrictContentPlugin`.
+- Интеграция:
+  - content packs для зданий, развлечений, туризма;
+  - modifiers через общий pipeline;
+  - scenario hooks для новых целей.
+- Изоляция:
+  - не меняет базовые формулы напрямую;
+  - новые здания используют те же contracts, что base buildings.
+
+6. `Cosmetic Pack`
 - Модуль: `VisualThemePlugin`.
 - Интеграция: только renderer/UI theme registry.
 - Изоляция: полный запрет на изменение simulation state.
@@ -133,12 +143,13 @@ Core на старте:
 - При повторном включении DLC:
   - state rehydration по `saveNamespace`.
 
-## 3.4.6 Governance & Belief: структура модуля
+## 3.4.6 Base Tech/Policy: структура core-модуля
+Технологии и политики входят в базовую игру, а не в DLC.
+
 Рекомендуемая декомпозиция:
 - `TechTreeSystem` (граф технологий, prerequisites, cost, unlocks).
 - `PolicyEngine` (активные политики, бюджетные режимы, законы).
-- `BeliefDynamicsSystem` (фракции, лояльность, напряжение, протестный риск).
-- `LegitimacyIndexSystem` (агрегатор общественного доверия).
+- `LegitimacyIndexSystem` (агрегатор общественного доверия, если нужен для base policies).
 
 Контракт output в core:
 - `policyModifiers` (экономика/сервисы/риски);
@@ -280,8 +291,8 @@ Core на старте:
 ## 7.1 Дорожная карта DLC-архитектуры (дополнение)
 1. Сперва ввести plugin contracts и save namespaces.
 2. Затем портировать `Crisis Pack` как первый "тестовый" DLC-модуль.
-3. После стабилизации контрактов внедрять `Governance & Belief`.
-4. Только после этого масштабировать на Biome/Scenario packs.
+3. Не выносить базовые технологии и политики в DLC: они входят в core/base game.
+4. После стабилизации контрактов внедрять expansion packs: Transit, Leisure, Building, Biome/Scenario.
 
 ## 8. Definition of Done для переезда
 1. Все core-системы не зависят от web API.

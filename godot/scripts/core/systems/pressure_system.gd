@@ -16,7 +16,8 @@ func _calculate_index() -> float:
 	var deficit: float = _deficit_score()
 	var unrest: float = _unrest_score()
 	var fragility: float = _fragility_score()
-	return city_scale * 0.25 + deficit * 0.3 + unrest * 0.25 + fragility * 0.2
+	var base: float = city_scale * 0.25 + deficit * 0.3 + unrest * 0.25 + fragility * 0.2
+	return _apply_governance_pressure(base)
 
 
 func _city_scale_score() -> float:
@@ -31,7 +32,7 @@ func _deficit_score() -> float:
 	## Negative production in key resources raises pressure.
 	var score: float = 0.0
 	var production: Dictionary = GameStateStore.economy().production
-	var key_resources: Array = ["food", "coins", "energy", "water_res"]
+	var key_resources: Array = ["res_food", "res_money", "res_water_stockpile"]
 	for res_id: String in key_resources:
 		var net: float = production.get(res_id, 0.0) as float
 		if net < 0.0:
@@ -70,3 +71,24 @@ func _index_to_phase(index: float) -> String:
 		return "crisis"
 	else:
 		return "emergency"
+
+
+func _apply_governance_pressure(base: float) -> float:
+	var pressure := base
+	var multiplier := 1.0
+	for tech_var: Variant in GameStateStore.get_technologies():
+		var tech_id: String = tech_var as String
+		var tech_def: Dictionary = ContentDB.get_technology_def(tech_id)
+		var effects: Dictionary = tech_def.get("effects", {})
+		pressure += effects.get("pressure_delta", 0.0) as float
+		multiplier *= effects.get("pressure_mult", 1.0) as float
+	for policy_var: Variant in GameStateStore.get_active_policies().values():
+		var policy_id: String = policy_var as String
+		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
+		var effects: Dictionary = policy_def.get("effects", {})
+		pressure += effects.get("pressure_delta", 0.0) as float
+		multiplier *= effects.get("pressure_mult", 1.0) as float
+	var mandate_effects: Dictionary = GameStateStore.mandate().get("effects", {})
+	pressure += mandate_effects.get("pressure_delta", 0.0) as float
+	multiplier *= mandate_effects.get("pressure_mult", 1.0) as float
+	return pressure * multiplier

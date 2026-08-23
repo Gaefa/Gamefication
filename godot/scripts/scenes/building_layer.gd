@@ -2,6 +2,7 @@ extends Node2D
 ## Renders buildings on the hex grid with drawn icons per building type.
 
 var _hex_grid: HexGrid
+var _sprite_cache: Dictionary = {}
 
 # Category colors for base hex fill
 const CAT_COLORS: Dictionary = {
@@ -26,8 +27,23 @@ func refresh() -> void:
 func _draw() -> void:
 	var hex_fill := _hex_polygon(HexCoords.HEX_SIZE * 0.82)
 	var hex_border := _hex_polygon(HexCoords.HEX_SIZE * 0.85)
+	var road_coords: Array[Vector2i] = []
+	var building_coords: Array[Vector2i] = []
 
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		var type_id: String = bld.get("type", "") as String
+		var def: Dictionary = ContentDB.get_building_def(type_id)
+		if _is_road_building(type_id, def):
+			road_coords.append(coord)
+		else:
+			building_coords.append(coord)
+
+	for coord: Vector2i in road_coords:
+		var road_bld: Dictionary = GameStateStore.get_building(coord)
+		_draw_road_tile(coord, road_bld)
+
+	for coord: Vector2i in building_coords:
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
@@ -73,12 +89,83 @@ func _draw() -> void:
 			_draw_level_dots(center, level)
 
 
+func _draw_road_tile(coord: Vector2i, bld: Dictionary) -> void:
+	var center: Vector2 = HexCoords.axial_to_pixel(coord)
+	var damaged: bool = bld.get("damaged", false) as bool
+	var has_issue: bool = bld.get("has_issue", false) as bool
+	var level: int = bld.get("level", 0) as int
+
+	var dust_fill := Color(0.39, 0.30, 0.18, 0.10)
+	var translated_underlay := PackedVector2Array()
+	for p: Vector2 in _hex_polygon(HexCoords.HEX_SIZE * 0.66):
+		translated_underlay.append(center + p)
+	draw_colored_polygon(translated_underlay, dust_fill)
+
+	var style: Dictionary = _road_style_for_level(level)
+	var shoulder_color: Color = style["shoulder"] as Color
+	var surface_color: Color = style["surface"] as Color
+	var rut_color: Color = style["rut"] as Color
+	if damaged:
+		surface_color = surface_color.lerp(Color("b36c4d"), 0.55)
+		rut_color = rut_color.lerp(Color("8e4936"), 0.45)
+	elif has_issue:
+		surface_color = surface_color.lerp(Color("c79d58"), 0.35)
+		rut_color = rut_color.lerp(Color("9f7c3f"), 0.25)
+
+	var endpoints: Array[Vector2] = _road_connection_endpoints(coord)
+	for end_point: Vector2 in endpoints:
+		_draw_road_segment(center, end_point, shoulder_color, surface_color)
+		_draw_road_ruts(center, end_point, rut_color)
+
+	var hub_radius: float = 6.0 if endpoints.size() <= 2 else 7.0
+	draw_circle(center, hub_radius + 1.8, shoulder_color)
+	draw_circle(center, hub_radius, surface_color)
+	_draw_road_gravel(center, hub_radius, rut_color)
+
+	if endpoints.is_empty():
+		var stub_end: Vector2 = center + Vector2(HexCoords.HEX_SIZE * 0.28, 0.0)
+		var stub_start: Vector2 = center - Vector2(HexCoords.HEX_SIZE * 0.28, 0.0)
+		_draw_road_segment(stub_start, stub_end, shoulder_color, surface_color)
+		_draw_road_ruts(stub_start, stub_end, rut_color)
+
+	if damaged:
+		_draw_crack(center)
+	elif has_issue:
+		_draw_alert(center)
+
+	if level > 0:
+		_draw_level_dots(center, level)
+
+
 # ============================================================
 # Building-specific icon drawing
 # ============================================================
 
 func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Color) -> void:
+	if _draw_building_sprite(c, type_id, level):
+		return
+
 	match type_id:
+		"bld_admin_post":
+			_draw_bank(c)
+		"bld_main_cistern":
+			_draw_water(c)
+		"bld_road":
+			_draw_road(c)
+		"bld_warehouse":
+			_draw_warehouse(c)
+		"bld_shelter":
+			_draw_house(c, level)
+		"bld_well_pump":
+			_draw_water(c)
+		"bld_field_strip":
+			_draw_farm(c)
+		"bld_lumber_yard":
+			_draw_tree(c)
+		"bld_quarry_pit":
+			_draw_pickaxe(c)
+		"bld_tool_workshop":
+			_draw_gear(c)
 		"hut":
 			_draw_house(c, level)
 		"apartment":
@@ -119,6 +206,50 @@ func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Co
 			# Fallback: draw letter
 			draw_string(ThemeDB.fallback_font, c + Vector2(-6, 5),
 				type_id.left(1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 20, 14, Color.WHITE)
+
+
+func _draw_building_sprite(c: Vector2, type_id: String, level: int) -> bool:
+	var texture: Texture2D = _get_building_sprite(type_id, level)
+	if texture == null:
+		return false
+	var tex_size: Vector2 = texture.get_size()
+	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
+		return false
+
+	var max_width: float = HexCoords.HEX_SIZE * 1.85
+	var scale_x: float = max_width / tex_size.x
+	var scale_y: float = scale_x * HexCoords.ISO_Y
+	var draw_size := Vector2(tex_size.x * scale_x, tex_size.y * scale_y)
+	var rect := Rect2(c - draw_size * 0.5, draw_size)
+	draw_texture_rect(texture, rect, false)
+	return true
+
+
+func _get_building_sprite(type_id: String, level: int) -> Texture2D:
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	var sprites: Array = def.get("sprites_by_level", []) as Array
+	if sprites.is_empty():
+		return null
+	var idx: int = clampi(level, 0, sprites.size() - 1)
+	var sprite_path: String = sprites[idx] as String
+	if sprite_path == "":
+		return null
+	if _sprite_cache.has(sprite_path):
+		return _sprite_cache[sprite_path] as Texture2D
+	var texture: Texture2D = null
+	if sprite_path.ends_with(".svg") and FileAccess.file_exists(sprite_path):
+		var svg_text: String = FileAccess.get_file_as_string(sprite_path)
+		if svg_text != "":
+			var image := Image.new()
+			var err: Error = image.load_svg_from_string(svg_text, 1.0)
+			if err == OK:
+				texture = ImageTexture.create_from_image(image)
+	elif ResourceLoader.exists(sprite_path):
+		texture = ResourceLoader.load(sprite_path) as Texture2D
+	if texture == null:
+		return null
+	_sprite_cache[sprite_path] = texture
+	return texture
 
 
 ## House: triangle roof + square body
@@ -429,3 +560,74 @@ func _hex_polygon(hex_size: float) -> PackedVector2Array:
 		pts.append(Vector2(cos(angle), sin(angle) * HexCoords.ISO_Y) * hex_size)
 	pts.append(pts[0])
 	return pts
+
+
+func _is_road_building(type_id: String, def: Dictionary) -> bool:
+	if type_id == "road" or type_id == "bld_road":
+		return true
+	var tags: Array = def.get("tags", []) as Array
+	return tags.has("road")
+
+
+func _road_connection_endpoints(coord: Vector2i) -> Array[Vector2]:
+	var center: Vector2 = HexCoords.axial_to_pixel(coord)
+	var endpoints: Array[Vector2] = []
+	for nb: Vector2i in HexCoords.neighbors_of(coord):
+		var bld: Dictionary = GameStateStore.get_building(nb)
+		if bld.is_empty():
+			continue
+		var type_id: String = bld.get("type", "") as String
+		if not _is_road_building(type_id, ContentDB.get_building_def(type_id)):
+			continue
+		var neighbor_center: Vector2 = HexCoords.axial_to_pixel(nb)
+		endpoints.append(center.lerp(neighbor_center, 0.5))
+	return endpoints
+
+
+func _draw_road_segment(start: Vector2, end_point: Vector2, shoulder_color: Color, surface_color: Color) -> void:
+	draw_line(start, end_point, shoulder_color, 10.0)
+	draw_line(start, end_point, surface_color, 7.2)
+
+
+func _draw_road_ruts(start: Vector2, end_point: Vector2, rut_color: Color) -> void:
+	var segment: Vector2 = end_point - start
+	var length: float = segment.length()
+	if length <= 10.0:
+		return
+	var dir: Vector2 = segment / length
+	var normal := Vector2(-dir.y, dir.x) * 1.5
+	var inner_start := start + dir * 2.5
+	var inner_end := end_point - dir * 1.5
+	draw_line(inner_start + normal, inner_end + normal, rut_color, 1.2)
+	draw_line(inner_start - normal, inner_end - normal, rut_color, 1.2)
+
+
+func _draw_road_gravel(center: Vector2, radius: float, pebble_color: Color) -> void:
+	var pebble_offsets: Array[Vector2] = [
+		Vector2(-radius * 0.45, -1.0),
+		Vector2(radius * 0.35, -radius * 0.2),
+		Vector2(-radius * 0.15, radius * 0.42),
+		Vector2(radius * 0.28, radius * 0.32),
+	]
+	for offset: Vector2 in pebble_offsets:
+		draw_circle(center + offset, 0.9, pebble_color)
+
+
+func _road_style_for_level(level: int) -> Dictionary:
+	if level <= 0:
+		return {
+			"shoulder": Color("5b442d"),
+			"surface": Color("8c6a42"),
+			"rut": Color("4d3925"),
+		}
+	if level == 1:
+		return {
+			"shoulder": Color("6b6252"),
+			"surface": Color("a99d86"),
+			"rut": Color("72654c"),
+		}
+	return {
+		"shoulder": Color("756f63"),
+		"surface": Color("b9b0a0"),
+		"rut": Color("807663"),
+	}

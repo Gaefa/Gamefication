@@ -2,6 +2,15 @@ class_name ProgressionSystem
 ## Updates population, happiness, checks city level advancement, and win conditions.
 
 var _aura_cache: AuraCache
+var _notified_upgrade_level: int = 0
+
+# --- Population retention (tuning) ---
+const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick under duress
+const INFLOW_RATE := 0.0006     # fraction of the empty gap that fills per tick when content
+const MISERY_HAPPINESS := 25.0  # below this people start leaving even if fed
+const CONTENT_HAPPINESS := 55.0 # at/above this newcomers arrive to fill housing
+const HAPPINESS_SMOOTH := 0.04  # per-tick easing toward target; damps scarcity jitter
+const SUPPORT_DRIFT := 0.0015   # city backing drifts toward mood; decisions leave lasting marks
 
 
 func _init(aura_cache: AuraCache) -> void:
@@ -11,13 +20,17 @@ func _init(aura_cache: AuraCache) -> void:
 func process_tick() -> void:
 	_update_population()
 	_update_happiness()
+	_update_support()
 	_check_level_up()
 	_check_win_condition()
 	_record_history()
 
 
 func _update_population() -> void:
-	var total: int = 0
+	# Housing gives a capacity ceiling; the actual resident count drifts toward it.
+	# People leave under duress (famine, thirst, misery) and arrive when the city is
+	# content. This gives Пыль an irreversible cost and feeds the exodus/riot endings.
+	var capacity: int = 0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("damaged", false) as bool:
@@ -25,10 +38,29 @@ func _update_population() -> void:
 		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
-		total += ldata.get("population", 0) as int
+		capacity += ldata.get("population", 0) as int
 
-	var prev: int = GameStateStore.population().total as int
-	GameStateStore.population().total = total
+	var pop_state: Dictionary = GameStateStore.population()
+	var residents: float = pop_state.get("residents", float(capacity)) as float
+	if not pop_state.has("residents"):
+		residents = float(capacity)  # a freshly-settled district starts full
+
+	var food: float = GameStateStore.get_resource("res_food")
+	var water: float = GameStateStore.get_resource("res_water_stockpile")
+	var happiness: float = pop_state.get("happiness", 50.0) as float
+	var under_duress: bool = food <= 0.0 or water <= 0.0 or happiness < MISERY_HAPPINESS
+
+	if under_duress:
+		residents -= float(capacity) * OUTFLOW_RATE
+	elif residents < float(capacity) and happiness >= CONTENT_HAPPINESS:
+		residents += (float(capacity) - residents) * INFLOW_RATE
+	residents = clampf(residents, 0.0, float(capacity))
+
+	pop_state["residents"] = residents
+	pop_state["capacity"] = capacity
+	var total: int = int(round(residents))
+	var prev: int = pop_state.total as int
+	pop_state.total = total
 	if total != prev:
 		EventBus.population_changed.emit(total)
 
@@ -36,6 +68,7 @@ func _update_population() -> void:
 func _update_happiness() -> void:
 	var total_happiness: float = 0.0
 	var bld_count: int = 0
+	var dark_housing: int = 0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("damaged", false) as bool:
@@ -48,18 +81,92 @@ func _update_happiness() -> void:
 		var aura_h: float = _aura_cache.get_happiness_bonus(coord)
 		total_happiness += base_h + aura_h
 		bld_count += 1
+		# Dark housing (shed by the power director) drags morale — the "кому свет" cost.
+		if (ldata.get("population", 0) as int) > 0 and not (bld.get("powered", true) as bool):
+			dark_housing += 1
 
 	# Apply happiness from active buffs (happiness_add from events)
 	var buff_happiness: float = 0.0
 	for buff: Dictionary in GameStateStore.get_buffs():
 		buff_happiness += buff.get("happiness_add", 0.0) as float
+	var governance_happiness: float = _governance_happiness_add()
 
-	# Happiness = base 50 + building happiness scaled + buff happiness, clamped 0-100
-	var happiness: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness, 0.0, 100.0)
+	# Happiness = base 50 + building happiness + buffs + governance + supply, clamped 0-100.
+	# Supply term ties happiness to water/food (GDD §11.3): thirst/hunger drives people
+	# down, comfortable reserves lift them. This is what powers petitions, strikes,
+	# thanks, the pressure director and the audit's "are people staying" check.
+	var supply_term: float = _supply_happiness_term()
+	var power_term: float = float(dark_housing) * -6.0
+	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term, 0.0, 100.0)
+	# Ease happiness toward the target instead of snapping. At the scarcity boundary the
+	# instantaneous supply term jitters tick-to-tick (food produced then eaten); a mood
+	# is slow-moving, so this low-pass filter turns that jitter into a steady slide.
 	var prev: float = GameStateStore.population().happiness as float
+	var happiness: float = lerpf(prev, target, HAPPINESS_SMOOTH)
 	GameStateStore.population().happiness = happiness
 	if absf(happiness - prev) > 0.5:
 		EventBus.happiness_changed.emit(happiness)
+
+
+func _supply_happiness_term() -> float:
+	## Water/food effect on happiness. Empty stores hurt a lot; a draining trend hurts
+	## some; comfortable reserves help; a fully-provisioned city is "thriving".
+	var prod: Dictionary = GameStateStore.economy().get("production", {})
+	var term: float = 0.0
+
+	var water: float = GameStateStore.get_resource("res_water_stockpile")
+	var water_cap: float = maxf(GameStateStore.get_cap("res_water_stockpile"), 1.0)
+	var water_net: float = prod.get("res_water_stockpile", 0.0) as float
+	if water <= 1.0:
+		term -= 30.0
+	elif water_net < 0.0:
+		term -= 12.0
+	elif water >= 0.5 * water_cap:
+		term += 6.0
+
+	var food: float = GameStateStore.get_resource("res_food")
+	var food_cap: float = maxf(GameStateStore.get_cap("res_food"), 1.0)
+	var food_net: float = prod.get("res_food", 0.0) as float
+	if food <= 1.0:
+		term -= 30.0
+	elif food_net < 0.0:
+		term -= 10.0
+	elif food >= 0.5 * food_cap:
+		term += 6.0
+
+	# Thriving: both comfortably stocked and not draining.
+	if water > 0.5 * water_cap and food > 0.5 * food_cap and water_net >= 0.0 and food_net >= 0.0:
+		term += 12.0
+
+	return term
+
+
+func _update_support() -> void:
+	# City backing (the "Город" master) drifts toward the city's mood — a content city
+	# stands behind you, a miserable one withdraws — while decision jumps (stat_city_trust)
+	# stay meaningful for a while before the drift reabsorbs them. Hits 0 → riot.
+	var mandate: Dictionary = GameStateStore.mandate()
+	var support: float = mandate.get("support", 45) as float
+	var happiness: float = GameStateStore.population().get("happiness", 50.0) as float
+	support += (happiness - support) * SUPPORT_DRIFT
+	mandate["support"] = clampf(support, 0.0, 100.0)
+
+
+func _governance_happiness_add() -> float:
+	var total := 0.0
+	for tech_var: Variant in GameStateStore.get_technologies():
+		var tech_id: String = tech_var as String
+		var tech_def: Dictionary = ContentDB.get_technology_def(tech_id)
+		var effects: Dictionary = tech_def.get("effects", {})
+		total += effects.get("happiness_add", 0.0) as float
+	for policy_var: Variant in GameStateStore.get_active_policies().values():
+		var policy_id: String = policy_var as String
+		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
+		var effects: Dictionary = policy_def.get("effects", {})
+		total += effects.get("happiness_add", 0.0) as float
+	var mandate_effects: Dictionary = GameStateStore.mandate().get("effects", {})
+	total += mandate_effects.get("happiness_add", 0.0) as float
+	return total
 
 
 func _check_level_up() -> void:
@@ -84,22 +191,18 @@ func _check_level_up() -> void:
 	for res_id: String in reqs:
 		var required: float = reqs[res_id] as float
 		if GameStateStore.get_resource(res_id) < required:
+			if _notified_upgrade_level == next_level:
+				_notified_upgrade_level = 0
 			return
 
-	# All requirements met — level up! Spend the resources.
-	for res_id: String in reqs:
-		GameStateStore.add_resource(res_id, -(reqs[res_id] as float))
-
-	GameStateStore.progression().city_level = next_level
-
-	# Grant reward
-	var reward: Variant = def.get("reward", null)
-	if reward is Dictionary:
-		for res_id: String in (reward as Dictionary):
-			GameStateStore.add_resource(res_id, (reward as Dictionary)[res_id] as float)
-
-	EventBus.city_level_changed.emit(next_level)
-	EventBus.toast_requested.emit("City advanced to %s (level %d)!" % [def.get("name", "?"), next_level], 5.0)
+	if _notified_upgrade_level == next_level:
+		return
+	_notified_upgrade_level = next_level
+	EventBus.toast_requested.emit(
+		Localization.t("ui.progress.city_upgrade_ready", "City upgrade available: %s (level %d)")
+			% [Localization.content_text(def, "name", "?"), next_level],
+		5.0
+	)
 
 
 func _check_win_condition() -> void:
@@ -116,7 +219,7 @@ func _record_history() -> void:
 		"tick": tick,
 		"population": GameStateStore.population().total,
 		"happiness": GameStateStore.population().happiness,
-		"coins": GameStateStore.get_resource("coins"),
+		"res_money": GameStateStore.get_resource("res_money"),
 		"city_level": GameStateStore.progression().city_level,
 	}
 	(GameStateStore.progression().history as Array).append(entry)

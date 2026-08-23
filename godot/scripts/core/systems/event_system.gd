@@ -100,7 +100,7 @@ func resolve_event(ev_id: String, accept: bool) -> Dictionary:
 		var cost: Dictionary = cost_raw as Dictionary if cost_raw is Dictionary else {}
 		if not cost.is_empty():
 			if not GameStateStore.can_afford(cost):
-				return {"success": false, "reason": "Not enough resources"}
+				return {"success": false, "reason": Localization.t("ui.command.not_enough_resources", "Not enough resources")}
 			GameStateStore.spend(cost)
 		var eff_raw: Variant = def.get("accept_effects", null)
 		var accept_effects: Dictionary = eff_raw as Dictionary if eff_raw is Dictionary else {}
@@ -127,7 +127,9 @@ func _apply_effects(effects: Dictionary) -> void:
 		if key == "add_buff":
 			var buff_raw: Variant = effects[key]
 			if buff_raw is Dictionary:
-				GameStateStore.add_buff((buff_raw as Dictionary).duplicate())
+				var buff := (buff_raw as Dictionary).duplicate()
+				buff["name"] = Localization.content_text(buff, "name", buff.get("name", "") as String)
+				GameStateStore.add_buff(buff)
 		elif key == "add_resources":
 			var res_dict: Variant = effects[key]
 			if res_dict is Dictionary:
@@ -143,30 +145,49 @@ func _apply_effects(effects: Dictionary) -> void:
 		elif key == "damage_buildings":
 			_damage_random_buildings(effects[key] as int)
 		elif key == "message":
-			EventBus.toast_requested.emit(effects[key] as String, 5.0)
+			EventBus.toast_requested.emit(Localization.content_text(effects, "message", effects[key] as String), 5.0)
 
 
 func _force_issues(count: int) -> void:
-	var coords: Array = GameStateStore.get_all_building_coords()
-	for i: int in mini(count, coords.size()):
-		var idx: int = _rng.range_int(0, coords.size())
-		var coord: Vector2i = coords[idx] as Vector2i
+	var coords: Array = _pick_unique_coords(_candidate_problem_coords(true, true), count)
+	for coord: Vector2i in coords:
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		bld["has_issue"] = true
 		GameStateStore.set_building(coord, bld)
+		EventBus.building_issue_added.emit(coord)
 
 
 func _damage_random_buildings(count: int) -> void:
-	var coords: Array = GameStateStore.get_all_building_coords()
-	for i: int in mini(count, coords.size()):
-		var idx: int = _rng.range_int(0, coords.size())
-		var coord: Vector2i = coords[idx] as Vector2i
+	var coords: Array = _pick_unique_coords(_candidate_problem_coords(true, false), count)
+	for coord: Vector2i in coords:
 		var bld: Dictionary = GameStateStore.get_building(coord)
-		if (bld.get("type", "") as String) == "road":
-			continue
 		bld["damaged"] = true
 		GameStateStore.set_building(coord, bld)
 		EventBus.building_damaged.emit(coord, 1.0)
+
+
+func _candidate_problem_coords(skip_damaged: bool, skip_issues: bool) -> Array:
+	var result: Array = []
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		if (bld.get("type", "") as String) == "road":
+			continue
+		if skip_damaged and (bld.get("damaged", false) as bool):
+			continue
+		if skip_issues and (bld.get("has_issue", false) as bool):
+			continue
+		result.append(coord)
+	return result
+
+
+func _pick_unique_coords(candidates: Array, count: int) -> Array:
+	var pool: Array = candidates.duplicate()
+	var picked: Array = []
+	while picked.size() < count and not pool.is_empty():
+		var idx: int = _rng.range_int(0, pool.size())
+		picked.append(pool[idx])
+		pool.remove_at(idx)
+	return picked
 
 
 func _phase_to_int(phase: String) -> int:

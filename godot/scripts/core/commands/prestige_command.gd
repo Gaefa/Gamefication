@@ -5,7 +5,7 @@ func execute(_ctx: Dictionary) -> void:
 	var prog: Dictionary = GameStateStore.progression()
 	var city_level: int = prog.city_level as int
 	if city_level < 3:
-		message = "Need at least level 3 to prestige"
+		message = Localization.t("ui.command.need_prestige_level", "Need at least level 3 to prestige")
 		return
 
 	# Stars = city_level - 2 (so level 3 = 1 star, level 7 = 5 stars)
@@ -19,5 +19,5 @@ func execute(_ctx: Dictionary) -> void:
 	GameStateStore.progression().prestige_count = count
 
 	success = true
-	message = "Prestige! Earned %d stars (total: %d)" % [stars, total_stars]
+	message = Localization.t("ui.command.prestige_done", "Prestige! Earned %d stars (total: %d)") % [stars, total_stars]
 	EventBus.prestige_triggered.emit(stars)

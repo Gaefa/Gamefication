@@ -54,4 +54,4 @@ func _apply_market_boost(coord: Vector2i, type_id: String, result: Dictionary) -
 		var syn: Dictionary = ldata.get("synergy", {})
 		var boost: float = syn.get("residential_coins", 0.0) as float
 		if boost > 0.0:
-			result["coins"] = (result.get("coins", 1.0) as float) + boost
+			result["res_money"] = (result.get("res_money", 1.0) as float) + boost

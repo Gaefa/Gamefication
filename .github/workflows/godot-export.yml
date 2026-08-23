@@ -1,0 +1,91 @@
+name: Godot Export
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: "4.6.1"
+  GODOT_STATUS: "stable"
+  PROJECT_DIR: "godot"
+  EXPORT_NAME: "PixelCityBuilder"
+
+jobs:
+  windows-exe:
+    name: Windows EXE
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot and export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_STATUS}/Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64.zip" -o godot.zip
+          curl -L "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_STATUS}/Godot_v${GODOT_VERSION}-${GODOT_STATUS}_export_templates.tpz" -o templates.tpz
+          unzip -q godot.zip
+          chmod +x "Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64"
+          unzip -q templates.tpz
+          mkdir -p "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}"
+          cp -R templates/* "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}/"
+
+      - name: Export Windows build
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHORT_SHA="${GITHUB_SHA::7}"
+          mkdir -p "${PROJECT_DIR}/export/windows"
+          "./Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64" --headless --path "${PROJECT_DIR}" --export-release "Windows Desktop" "export/windows/${EXPORT_NAME}-${SHORT_SHA}.exe"
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ env.EXPORT_NAME }}-windows-${{ github.sha }}"
+          path: "${{ env.PROJECT_DIR }}/export/windows/*.exe"
+          if-no-files-found: error
+
+  macos-dmg:
+    name: macOS DMG
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot and export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_STATUS}/Godot_v${GODOT_VERSION}-${GODOT_STATUS}_macos.universal.zip" -o godot.zip
+          curl -L "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_STATUS}/Godot_v${GODOT_VERSION}-${GODOT_STATUS}_export_templates.tpz" -o templates.tpz
+          unzip -q godot.zip
+          chmod +x Godot.app/Contents/MacOS/Godot
+          unzip -q templates.tpz
+          mkdir -p "${HOME}/Library/Application Support/Godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}"
+          cp -R templates/* "${HOME}/Library/Application Support/Godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}/"
+
+      - name: Export macOS app
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${PROJECT_DIR}/export/macos"
+          Godot.app/Contents/MacOS/Godot --headless --path "${PROJECT_DIR}" --export-release "macOS" "export/macos/${EXPORT_NAME}.zip"
+
+      - name: Package DMG
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHORT_SHA="${GITHUB_SHA::7}"
+          rm -rf "${PROJECT_DIR}/export/macos/app"
+          mkdir -p "${PROJECT_DIR}/export/macos/app"
+          unzip -q "${PROJECT_DIR}/export/macos/${EXPORT_NAME}.zip" -d "${PROJECT_DIR}/export/macos/app"
+          hdiutil create -volname "Pixel City Builder" -srcfolder "${PROJECT_DIR}/export/macos/app" -ov -format UDZO "${PROJECT_DIR}/export/macos/${EXPORT_NAME}-${SHORT_SHA}.dmg"
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ env.EXPORT_NAME }}-macos-${{ github.sha }}"
+          path: "${{ env.PROJECT_DIR }}/export/macos/*.dmg"
+          if-no-files-found: error

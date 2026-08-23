@@ -12,7 +12,7 @@ func _ready() -> void:
 
 # --- State reset (new game) ---
 
-func reset() -> void:
+func reset(start_profile_id: String = "appointed_administrator") -> void:
 	_tick = 0
 	_state = {
 		"world": {
@@ -37,6 +37,17 @@ func reset() -> void:
 			"prestige_count": 0,
 			"history": [],       # Array[{tick, event}] for stats
 		},
+		"governance": {
+			"technologies": [],       # Array[tech_id]
+			"active_policies": {},    # category -> policy_id
+			"policy_cooldowns": {},   # policy_id -> ticks_remaining
+		},
+		"mandate": _default_mandate(),
+		"climate": _default_climate(),
+		"diary": { "discovered": [] },
+		"onboarding": { "shown": [] },
+		"style_flags": {},       # style_id → count, accumulated from decisions
+		"power": _default_power(),
 		"pressure": {
 			"index": 0.0,
 			"phase": "calm",
@@ -54,6 +65,7 @@ func reset() -> void:
 		},
 	}
 	_init_resources()
+	apply_start_profile(start_profile_id)
 
 
 func _init_resources() -> void:
@@ -90,6 +102,57 @@ func progression() -> Dictionary:
 func pressure() -> Dictionary:
 	return _state.pressure
 
+func governance() -> Dictionary:
+	if not _state.has("governance"):
+		_state["governance"] = _default_governance()
+	return _state.governance
+
+func mandate() -> Dictionary:
+	if not _state.has("mandate"):
+		_state["mandate"] = _default_mandate()
+	return _state.mandate
+
+func climate() -> Dictionary:
+	if not _state.has("climate"):
+		_state["climate"] = _default_climate()
+	return _state.climate
+
+func diary() -> Dictionary:
+	if not _state.has("diary"):
+		_state["diary"] = { "discovered": [] }
+	return _state.diary
+
+func onboarding() -> Dictionary:
+	if not _state.has("onboarding"):
+		_state["onboarding"] = { "shown": [] }
+	return _state.onboarding
+
+func style_flags() -> Dictionary:
+	if not _state.has("style_flags"):
+		_state["style_flags"] = {}
+	return _state.style_flags
+
+func power() -> Dictionary:
+	if not _state.has("power"):
+		_state["power"] = _default_power()
+	return _state.power
+
+func add_style_flag(flag_id: String, amount: int = 1) -> void:
+	if flag_id == "":
+		return
+	var flags: Dictionary = style_flags()
+	flags[flag_id] = (flags.get(flag_id, 0) as int) + amount
+
+func dominant_style(default_id: String = "") -> String:
+	var best_id: String = default_id
+	var best_val: int = 0
+	for flag_id: String in style_flags():
+		var val: int = style_flags()[flag_id] as int
+		if val > best_val:
+			best_val = val
+			best_id = flag_id
+	return best_id
+
 func events() -> Dictionary:
 	return _state.events
 
@@ -97,23 +160,45 @@ func save_meta() -> Dictionary:
 	return _state.meta
 
 
+# --- Resource ID normalization ---
+# Bidirectional aliasing: legacy ↔ canonical.
+# All resource methods resolve through _canonical() so both old systems
+# (EconomySystem using "coins") and new content (using "res_money") hit
+# the same slot in the dictionary.
+
+const _RES_ALIASES: Dictionary = {
+	"coins": "res_money",
+	"money": "res_money",
+	"food": "res_food",
+	"wood": "res_wood",
+	"stone": "res_stone",
+	"tools": "res_tools",
+	"water_res": "res_water_stockpile",
+	"water_stock": "res_water_stockpile",
+}
+
+func _canonical(res_id: String) -> String:
+	return _RES_ALIASES.get(res_id, res_id)
+
+
 # --- Resource helpers ---
 
 func get_resource(res_id: String) -> float:
-	return _state.economy.resources.get(res_id, 0.0) as float
+	return _state.economy.resources.get(_canonical(res_id), 0.0) as float
 
 func set_resource(res_id: String, value: float) -> void:
-	var cap: float = _state.economy.caps.get(res_id, 9999.0) as float
-	_state.economy.resources[res_id] = clampf(value, 0.0, cap)
+	var cid: String = _canonical(res_id)
+	var cap: float = _state.economy.caps.get(cid, 9999.0) as float
+	_state.economy.resources[cid] = clampf(value, 0.0, cap)
 
 func add_resource(res_id: String, amount: float) -> void:
 	set_resource(res_id, get_resource(res_id) + amount)
 
 func get_cap(res_id: String) -> float:
-	return _state.economy.caps.get(res_id, 9999.0) as float
+	return _state.economy.caps.get(_canonical(res_id), 9999.0) as float
 
 func set_cap(res_id: String, value: float) -> void:
-	_state.economy.caps[res_id] = value
+	_state.economy.caps[_canonical(res_id)] = value
 
 func can_afford(costs: Dictionary) -> bool:
 	for res_id: String in costs:
@@ -175,6 +260,69 @@ func clear_expired_buffs() -> void:
 	_state.economy.buffs = keep
 
 
+# --- Governance helpers ---
+
+func has_technology(technology_id: String) -> bool:
+	return (governance().technologies as Array).has(technology_id)
+
+func add_technology(technology_id: String) -> void:
+	if not has_technology(technology_id):
+		(governance().technologies as Array).append(technology_id)
+
+func get_technologies() -> Array:
+	return governance().technologies as Array
+
+func set_active_policy(category: String, policy_id: String) -> void:
+	governance().active_policies[category] = policy_id
+	# Keep legacy pressure key populated until older UI/save paths are removed.
+	pressure().active_policy = policy_id
+
+func get_active_policy(category: String) -> String:
+	return governance().active_policies.get(category, "") as String
+
+func get_active_policies() -> Dictionary:
+	return governance().active_policies
+
+
+# --- Start profile / mandate helpers ---
+
+func apply_start_profile(profile_id: String) -> void:
+	var profile: Dictionary = ContentDB.get_start_profile_def(profile_id)
+	if profile.is_empty():
+		profile_id = "appointed_administrator"
+		profile = ContentDB.get_start_profile_def(profile_id)
+	if profile.is_empty():
+		return
+
+	save_meta().start_profile_id = profile_id
+	var mandate_state: Dictionary = mandate()
+	mandate_state.start_profile_id = profile_id
+	mandate_state.start_path = profile.get("start_path", "appointed") as String
+	mandate_state.founder_archetype = profile.get("founder_archetype", "") as String
+	mandate_state.patron_id = profile.get("patron_id", "") as String
+	mandate_state.effects = (profile.get("effects", {}) as Dictionary).duplicate(true)
+
+	var profile_mandate: Dictionary = profile.get("mandate", {})
+	for key: String in profile_mandate:
+		mandate_state[key] = profile_mandate[key]
+
+	var resources: Dictionary = profile.get("starting_resources", {})
+	for res_id: String in resources:
+		set_resource(res_id, resources[res_id] as float)
+
+	var policies: Array = profile.get("default_policies", [])
+	for policy_var: Variant in policies:
+		var policy_id: String = policy_var as String
+		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
+		if policy_def.is_empty():
+			continue
+		set_active_policy(policy_def.get("category", "general") as String, policy_id)
+
+
+func get_start_profile_id() -> String:
+	return mandate().get("start_profile_id", "appointed_administrator") as String
+
+
 # --- Serialization ---
 
 func to_save_dict() -> Dictionary:
@@ -189,9 +337,97 @@ func load_from_dict(data: Dictionary) -> void:
 	_tick = data.get("tick", 0) as int
 	_state = data.duplicate(true)
 	_state.erase("tick")
+	_ensure_runtime_defaults()
 	# Restore Vector2i keys
 	_state.world.terrain = _dict_str_to_v2i(_state.world.terrain)
 	_state.world.buildings = _dict_str_to_v2i(_state.world.buildings)
+
+
+func _ensure_runtime_defaults() -> void:
+	if not _state.has("governance"):
+		_state["governance"] = _default_governance()
+	else:
+		var gov: Dictionary = _state.governance
+		if not gov.has("technologies"):
+			gov["technologies"] = []
+		if not gov.has("active_policies"):
+			gov["active_policies"] = {}
+		if not gov.has("policy_cooldowns"):
+			gov["policy_cooldowns"] = {}
+	if not _state.has("mandate"):
+		_state["mandate"] = _default_mandate()
+	else:
+		var mandate_state: Dictionary = _state.mandate
+		var defaults: Dictionary = _default_mandate()
+		for key: String in defaults:
+			if not mandate_state.has(key):
+				mandate_state[key] = defaults[key]
+	if not _state.has("pressure"):
+		_state["pressure"] = {"index": 0.0, "phase": "calm", "active_policy": ""}
+	elif not (_state.pressure as Dictionary).has("active_policy"):
+		_state.pressure["active_policy"] = ""
+	if not _state.has("climate"):
+		_state["climate"] = _default_climate()
+	else:
+		var climate_state: Dictionary = _state.climate
+		var climate_defaults: Dictionary = _default_climate()
+		for key: String in climate_defaults:
+			if not climate_state.has(key):
+				climate_state[key] = climate_defaults[key]
+	if not _state.has("diary"):
+		_state["diary"] = { "discovered": [] }
+	elif not (_state.diary as Dictionary).has("discovered"):
+		_state.diary["discovered"] = []
+	if not _state.has("onboarding"):
+		_state["onboarding"] = { "shown": [] }
+	elif not (_state.onboarding as Dictionary).has("shown"):
+		_state.onboarding["shown"] = []
+	if not _state.has("style_flags"):
+		_state["style_flags"] = {}
+	if not _state.has("power"):
+		_state["power"] = _default_power()
+
+
+func _default_governance() -> Dictionary:
+	return {
+		"technologies": [],
+		"active_policies": {},
+		"policy_cooldowns": {},
+	}
+
+
+func _default_power() -> Dictionary:
+	return {
+		"enabled": true,
+		"generation": 0.0,
+		"demand": 0.0,
+		"tier_powered": { "priority": true, "secondary": true, "tertiary": true },
+	}
+
+
+func _default_climate() -> Dictionary:
+	return {
+		"season_id": "",        # filled by SeasonSystem.initialize()
+		"season_index": 0,      # index into ContentDB.season_order
+		"day_in_season": 1,     # 1-based day within the current season
+		"total_day": 1,         # 1-based game day since the mandate began
+		"modifiers": {},        # active season modifiers (water_mult, crop_mult, ...)
+	}
+
+
+func _default_mandate() -> Dictionary:
+	return {
+		"start_profile_id": "appointed_administrator",
+		"start_path": "appointed",
+		"founder_archetype": "",
+		"patron_id": "restoration_league",
+		"patron_trust": 50,
+		"legitimacy": 50,
+		"autonomy": 30,
+		"recall_risk": 0,
+		"support": 50,
+		"effects": {},
+	}
 
 
 func _dict_v2i_to_str(src: Dictionary) -> Dictionary:
