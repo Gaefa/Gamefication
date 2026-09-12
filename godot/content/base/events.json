@@ -115,7 +115,7 @@
     "id": "petition.dry_quarter",
     "category": "water",
     "min_level": 1,
-    "trigger_condition": "stat_happiness <= 40",
+    "trigger_condition": "stat_low_pressure_housing >= 1",
     "cooldown_sec": 220.0,
     "tags": ["petition", "workers"],
     "title": "Обращение — дальний квартал",

@@ -159,6 +159,8 @@ func _get_stat_value(stat_name: String) -> float:
 			return GameStateStore.population().get("happiness", 50.0) as float
 		"stat_population":
 			return float(GameStateStore.population().get("total", 0) as int)
+		"stat_low_pressure_housing":
+			return float(GameStateStore.population().get("low_pressure_housing", 0) as int)
 	return 0.0
 
 

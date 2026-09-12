@@ -4,11 +4,12 @@ extends Node
 ## Панель (клавиша C) показывает:
 ##   • Запас — сколько воды в цистернах и на сколько дней хватит при текущем расходе;
 ##   • Покрытие — доля жилья, реально подключённого к воде (из CoverageMap);
-##   • Давление — в MVP отдельно не моделируется (честная пометка на будущее).
+##   • Давление — напор: слабеет к краю радиуса насоса и при перегрузке источника.
 ##
 ## Self-contained: владеет своей панелью, читает состояние при каждом открытии.
 
 const TICKS_PER_DAY := 300  # matches SimulationRunner (day_duration 300s @ 1 tick/s)
+const WEAK_PRESSURE := 0.8  # below this a consumer sits on a weak branch
 
 var _visible: bool = false
 var _layer: CanvasLayer
@@ -78,9 +79,39 @@ func _compose() -> String:
 
 	# --- Давление (хватает ли напора) ---
 	lines.append("[b]Давление — хватает ли напора[/b]")
-	lines.append("[color=#8a8a99]В MVP напор отдельно не считается: вода доходит, если есть покрытие. Падение давления на дальних ветках — после MVP.[/color]")
+	var pr: Dictionary = _pressure_stats()
+	if (pr.get("count", 0) as int) <= 0:
+		lines.append("— Потребителей воды в зоне покрытия пока нет.")
+	else:
+		var weak: int = pr.get("weak", 0) as int
+		var worst: int = int(round(100.0 * (pr.get("worst", 1.0) as float)))
+		var pcolor: String = "#7fbf7f" if weak == 0 else "#d98c66"
+		lines.append("— Слабый напор: [color=%s]%d из %d потребителей[/color], худший — %d%%" % [pcolor, weak, pr.get("count", 0) as int, worst])
+		if weak > 0:
+			lines.append("— Напор падает к краю радиуса насоса и когда на один источник висит слишком много домов. Помогает насос ближе к дальним домам или второй источник — запас и радиус тут не спасут.")
 
 	return "\n".join(lines)
+
+
+func _pressure_stats() -> Dictionary:
+	var result := { "count": 0, "weak": 0, "worst": 1.0 }
+	var orch: Object = _orchestrator()
+	if orch == null or orch.get("coverage") == null:
+		return result
+	var coverage: Object = orch.get("coverage")
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		var ldata: Dictionary = ContentDB.building_level_data(bld.get("type", "") as String, bld.get("level", 0) as int)
+		if not (ldata.get("consumes", {}) as Dictionary).has("res_water_stockpile"):
+			continue
+		if not coverage.is_water_covered(coord):
+			continue
+		var p: float = coverage.water_pressure(coord)
+		result.count = (result.count as int) + 1
+		if p < WEAK_PRESSURE:
+			result.weak = (result.weak as int) + 1
+		result.worst = minf(result.worst as float, p)
+	return result
 
 
 func _gross_daily_consumption() -> float:

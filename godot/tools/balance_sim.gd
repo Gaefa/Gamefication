@@ -48,6 +48,22 @@ func _ready() -> void:
 	GameStateStore.mandate()["support"] = 35.0
 	orch2.tick_scheduler.run_tick()
 
+	# Scenario E: напор — pressure fades at the radius edge and under load; a second pump
+	# placed by the far house fixes it (a bigger reserve or radius alone would not).
+	print("\n=== E) WATER PRESSURE test ===")
+	var orch3 := GameOrchestrator.new()
+	orch3.new_game(12345, "appointed_administrator")
+	var far := Vector2i(4, 1)   # 4 hexes from the pump at (0,1): the edge of its radius
+	var shelter := {"type": "bld_shelter", "level": 0, "damaged": false, "has_issue": false}
+	GameStateStore.set_building(far, shelter.duplicate())
+	for c: Vector2i in [Vector2i(1, 1), Vector2i(-1, 2), Vector2i(0, 2)]:
+		GameStateStore.set_building(c, shelter.duplicate())
+	orch3.coverage.invalidate()
+	print("one pump:  far %.2f | near %.2f (6 consumers on a cap-3 pump)" % [orch3.coverage.water_pressure(far), orch3.coverage.water_pressure(Vector2i(-2, 1))])
+	GameStateStore.set_building(Vector2i(4, 0), {"type": "bld_well_pump", "level": 0, "damaged": false, "has_issue": false})
+	orch3.coverage.invalidate()
+	print("two pumps: far %.2f | near %.2f (far house moved to its own pump)" % [orch3.coverage.water_pressure(far), orch3.coverage.water_pressure(Vector2i(-2, 1))])
+
 	# Sanity-check the style-flag plumbing (events don't fire in this headless harness).
 	GameStateStore.style_flags().clear()
 	GameStateStore.add_style_flag("protector", 3)

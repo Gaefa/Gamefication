@@ -62,7 +62,7 @@ func build() -> void:
 	infrastructure_sys = InfrastructureSystem.new(coverage, road_graph, aura_cache)
 	maintenance_sys = MaintenanceSystem.new()
 	issue_sys = IssueSystem.new(rng)
-	progression_sys = ProgressionSystem.new(aura_cache)
+	progression_sys = ProgressionSystem.new(aura_cache, coverage)
 	event_sys = EventSystem.new(rng)
 	pressure_sys = PressureSystem.new()
 

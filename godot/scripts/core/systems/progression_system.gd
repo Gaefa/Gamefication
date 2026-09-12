@@ -2,6 +2,7 @@ class_name ProgressionSystem
 ## Updates population, happiness, checks city level advancement, and win conditions.
 
 var _aura_cache: AuraCache
+var _coverage: CoverageMap
 var _notified_upgrade_level: int = 0
 
 # --- Population retention (tuning) ---
@@ -11,10 +12,12 @@ const MISERY_HAPPINESS := 25.0  # below this people start leaving even if fed
 const CONTENT_HAPPINESS := 55.0 # at/above this newcomers arrive to fill housing
 const HAPPINESS_SMOOTH := 0.04  # per-tick easing toward target; damps scarcity jitter
 const SUPPORT_DRIFT := 0.0015   # city backing drifts toward mood; decisions leave lasting marks
+const WEAK_PRESSURE := 0.8      # housing below this напор gets water, but not enough
 
 
-func _init(aura_cache: AuraCache) -> void:
+func _init(aura_cache: AuraCache, coverage: CoverageMap) -> void:
 	_aura_cache = aura_cache
+	_coverage = coverage
 
 
 func process_tick() -> void:
@@ -69,6 +72,7 @@ func _update_happiness() -> void:
 	var total_happiness: float = 0.0
 	var bld_count: int = 0
 	var dark_housing: int = 0
+	var weak_water_housing: int = 0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("damaged", false) as bool:
@@ -84,6 +88,9 @@ func _update_happiness() -> void:
 		# Dark housing (shed by the power director) drags morale — the "кому свет" cost.
 		if (ldata.get("population", 0) as int) > 0 and not (bld.get("powered", true) as bool):
 			dark_housing += 1
+		# Weak напор on a far/overloaded branch: water comes, but not enough — people grumble.
+		if (ldata.get("population", 0) as int) > 0 and _coverage.is_water_covered(coord) and _coverage.water_pressure(coord) < WEAK_PRESSURE:
+			weak_water_housing += 1
 
 	# Apply happiness from active buffs (happiness_add from events)
 	var buff_happiness: float = 0.0
@@ -97,7 +104,9 @@ func _update_happiness() -> void:
 	# thanks, the pressure director and the audit's "are people staying" check.
 	var supply_term: float = _supply_happiness_term()
 	var power_term: float = float(dark_housing) * -6.0
-	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term, 0.0, 100.0)
+	var pressure_term: float = float(weak_water_housing) * -3.0
+	GameStateStore.population()["low_pressure_housing"] = weak_water_housing
+	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term + pressure_term, 0.0, 100.0)
 	# Ease happiness toward the target instead of snapping. At the scarcity boundary the
 	# instantaneous supply term jitters tick-to-tick (food produced then eaten); a mood
 	# is slow-moving, so this low-pass filter turns that jitter into a steady slide.

@@ -23,9 +23,11 @@ func can_deliver(res_id: String, coord: Vector2i) -> bool:
 
 
 func delivery_efficiency(res_id: String, coord: Vector2i) -> float:
-	if can_deliver(res_id, coord):
-		return 1.0
-	return 0.0  # No transport → no delivery
+	if not can_deliver(res_id, coord):
+		return 0.0  # No transport → no delivery
+	if res_id == "res_water_stockpile" or res_id == "water_res":
+		return _coverage.water_pressure(coord)  # напор: weak branches get partial supply
+	return 1.0
 
 
 func input_efficiency_for(coord: Vector2i, consumes: Dictionary) -> float:
