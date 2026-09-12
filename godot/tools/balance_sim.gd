@@ -25,7 +25,6 @@ func _ready() -> void:
 			GameStateStore.population().get("happiness", 0.0) as float]))
 	EventBus.season_changed.connect(func(sid: String, _d: int, _l: int) -> void:
 		print("      >> СЕЗОН → %s" % sid))
-
 	_run("A) BOOTSTRAP (всё L0, неподготовлен)", false)
 	print("")
 	_run("B) PREPARED (насос+цистерна L2, вложился в воду)", true)
@@ -60,6 +59,7 @@ func _ready() -> void:
 
 
 func _run(label: String, prepared: bool) -> void:
+	EventManager.clear_pending()
 	var orch := GameOrchestrator.new()
 	orch.new_game(12345, "appointed_administrator")
 	if prepared:
@@ -68,12 +68,18 @@ func _run(label: String, prepared: bool) -> void:
 	print("=== %s ===" % label)
 	print(" д | сезон     дн | вода   (нет/т) | еда   (нет/т) | нас | сч | Лига | Город | давл")
 	print("---+--------------+---------------+--------------+-----+----+------+-------+-----")
+	var seen: int = 0
 	for day: int in range(1, DAYS + 1):
 		if day > 1:
 			SimulationRunner.day_count += 1
 		for _t: int in range(TICKS_PER_DAY):
 			orch.tick_scheduler.run_tick()
 		_log_day(day)
+		while seen < EventManager.pending_events.size():
+			print("      >> КРИЗИС из давления: %s (день %d)" % [EventManager.pending_events[seen].get("runtime_id", "") as String, day])
+			seen += 1
+	var raised: Array = EventManager.pending_events.map(func(e: Dictionary) -> String: return e.get("runtime_id", "") as String)
+	print("      >> КРИЗИСЫ НА СТОЛЕ: %s" % str(raised))
 
 
 func _upgrade_water_infra(orch: GameOrchestrator) -> void:

@@ -17,6 +17,7 @@ const DEFAULT_COOLDOWN_SEC := 300.0
 func _ready() -> void:
 	EventBus.phase_changed.connect(_on_phase_changed)
 	EventBus.desk_option_selected.connect(_on_option_selected)
+	EventBus.pressure_threshold_reached.connect(_on_pressure_threshold)
 
 
 func _process(delta: float) -> void:
@@ -45,18 +46,44 @@ func _check_triggers() -> void:
 		# One-shot events (письма Койл, развилки) фаярятся ровно один раз за игру.
 		if (def.get("once", false) as bool) and _has_fired(event_id):
 			continue
+		# Pressure-driven crises are raised by the pressure director, not polled (GDD §15).
+		if (def.get("driver", "") as String) == "pressure":
+			continue
 		if _trigger_met(def):
-			var event_data: Dictionary = def.duplicate(true)
-			event_data["runtime_id"] = event_id
-			
-			# Критические события (ультиматум Лиги) — немедленная пауза и карточка,
-			# не дожидаясь вечернего Стола (GDD §3.2: срочное не ждёт Стола).
-			if def.get("is_critical", false) as bool:
-				SimulationRunner.paused = true
-				critical_event_fired.emit(event_data)
-				EventBus.critical_event_started.emit(event_data)
-			else:
-				pending_events.append(event_data)
+			_raise(event_id, def)
+
+
+func _raise(event_id: String, def: Dictionary) -> void:
+	var event_data: Dictionary = def.duplicate(true)
+	event_data["runtime_id"] = event_id
+	# Критические события (ультиматум Лиги) — немедленная пауза и карточка,
+	# не дожидаясь вечернего Стола (GDD §3.2: срочное не ждёт Стола).
+	if def.get("is_critical", false) as bool:
+		SimulationRunner.paused = true
+		critical_event_fired.emit(event_data)
+		EventBus.critical_event_started.emit(event_data)
+	else:
+		pending_events.append(event_data)
+
+
+func _on_pressure_threshold(category: String) -> void:
+	# A pressure category filled up: raise the first eligible crisis of that category.
+	for event_id: String in ContentDB.get_event_ids():
+		var def: Dictionary = ContentDB.get_event_def(event_id)
+		if (def.get("driver", "") as String) != "pressure" or (def.get("category", "") as String) != category:
+			continue
+		if _is_already_pending(event_id) or _is_on_cooldown(event_id):
+			continue
+		if (def.get("once", false) as bool) and _has_fired(event_id):
+			continue
+		var event_patron: String = def.get("patron", "") as String
+		if event_patron != "" and event_patron != (GameStateStore.mandate().get("patron_id", "") as String):
+			continue
+		_raise(event_id, def)
+		# The crisis landed: drop the category back only partway — the cause keeps pushing (§15.3).
+		var cats: Dictionary = GameStateStore.pressure().get("categories", {}) as Dictionary
+		cats[category] = PressureSystem.RESET_TO
+		return
 
 
 func _trigger_met(def: Dictionary) -> bool:
@@ -123,7 +150,7 @@ func _get_stat_value(stat_name: String) -> float:
 	# Потом статы из mandate/pressure
 	match stat_name:
 		"stat_unrest_pressure":
-			return GameStateStore.pressure().get("index", 0.0) as float
+			return (GameStateStore.pressure().get("categories", {}) as Dictionary).get("happiness", 0.0) as float
 		"stat_city_trust":
 			return GameStateStore.mandate().get("support", 50) as float
 		"stat_league_trust":
@@ -225,8 +252,13 @@ func _apply_stat_delta(stat_id: String, amount: float) -> void:
 			var mandate_state: Dictionary = GameStateStore.mandate()
 			mandate_state["patron_trust"] = clampf((mandate_state.get("patron_trust", 50) as float) + amount, 0.0, 100.0)
 		"stat_unrest_pressure":
+			# Unrest effects (suppression +, relief −) now land in the persistent people
+			# accumulator; before, the per-tick index recompute silently erased them.
 			var pressure_state: Dictionary = GameStateStore.pressure()
-			pressure_state["index"] = clampf((pressure_state.get("index", 0.0) as float) + amount, 0.0, 100.0)
+			if not pressure_state.has("categories"):
+				pressure_state["categories"] = {}
+			var cats: Dictionary = pressure_state["categories"] as Dictionary
+			cats["happiness"] = clampf((cats.get("happiness", 0.0) as float) + amount, 0.0, 100.0)
 
 
 func _force_issues(count: int) -> void:

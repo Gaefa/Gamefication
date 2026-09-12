@@ -37,6 +37,7 @@ signal game_event_resolved(event_id: String, accepted: bool)
 
 # --- Pressure Director ---
 signal pressure_updated(index: float, phase: String)
+signal pressure_threshold_reached(category: String)
 
 # --- Climate / Seasons ---
 signal season_changed(season_id: String, day_in_season: int, length_days: int)

@@ -1,65 +1,68 @@
 class_name PressureSystem
-## RimWorld-style pressure director.
-## Calculates a 0-100 pressure index based on city state.
-## Higher pressure → more/harder events.
+## Pressure director (GDD §15): an honest counter — not an AI, not dice.
+## Four categories — food, water, happiness (people), mandate — each accumulate
+## points while their risk is present and drain while it isn't. When a category
+## fills it raises pressure_threshold_reached(category); EventManager turns that
+## into a crisis of that category. The category then drops back only partway:
+## the root cause keeps pushing, so treating the symptom only delays the next one.
+##
+## `index` (the fullest category) and `phase` stay for existing readers.
+
+const THRESHOLD := 100.0
+const RESET_TO := 40.0          # partial reset after a crisis fires (§15.3)
+const GAIN_PER_TICK := 0.15     # at full risk a category fills in ~2 days, ~1.5 in Пыль (tuning)
+const DECAY_PER_TICK := 0.08    # drains once the risk is gone (tuning)
+const DUST_AMPLIFY := 1.5       # Пыль feeds food and water faster (§15.4)
+
+const FOOD_SAFE := 60.0         # reserves/levels below these start to build pressure
+const WATER_SAFE := 150.0
+const HAPPINESS_SAFE := 45.0
+const TRUST_SAFE := 50.0
+
+const CATEGORIES := ["food", "water", "happiness", "mandate"]
+
 
 func process_tick() -> void:
 	var pressure_state: Dictionary = GameStateStore.pressure()
-	var index: float = _calculate_index()
-	pressure_state.index = clampf(index, 0.0, 100.0)
-	pressure_state.phase = _index_to_phase(index)
-	EventBus.pressure_updated.emit(pressure_state.index, pressure_state.phase as String)
+	var cats: Dictionary = pressure_state.get("categories", {}) as Dictionary
+	pressure_state.categories = cats
+	var dust: bool = (GameStateStore.climate().get("season_id", "") as String) == "season_dust"
+	var gov: float = _governance_factor()
+	var risks := {
+		"food": _below(GameStateStore.get_resource("res_food"), FOOD_SAFE),
+		"water": _below(GameStateStore.get_resource("res_water_stockpile"), WATER_SAFE),
+		"happiness": _below(GameStateStore.population().get("happiness", 50.0) as float, HAPPINESS_SAFE),
+		"mandate": _below(GameStateStore.mandate().get("patron_trust", 50) as float, TRUST_SAFE),
+	}
+
+	var top: float = 0.0
+	for cat: String in CATEGORIES:
+		var value: float = cats.get(cat, 0.0) as float
+		var risk: float = risks[cat] as float
+		if risk > 0.0:
+			var gain: float = GAIN_PER_TICK * risk * gov
+			if dust and (cat == "food" or cat == "water"):
+				gain *= DUST_AMPLIFY
+			value += gain
+		else:
+			value -= DECAY_PER_TICK
+		value = clampf(value, 0.0, THRESHOLD)
+		cats[cat] = value
+		if value >= THRESHOLD:
+			# Stays full (and keeps signalling) until a crisis actually lands — the handler
+			# drops it back to RESET_TO. If every crisis of the category is cooling down,
+			# the pressure waits at the top instead of being silently absorbed.
+			EventBus.pressure_threshold_reached.emit(cat)
+		top = maxf(top, cats[cat] as float)
+
+	pressure_state.index = top
+	pressure_state.phase = _index_to_phase(top)
+	EventBus.pressure_updated.emit(top, pressure_state.phase as String)
 
 
-func _calculate_index() -> float:
-	var city_scale: float = _city_scale_score()
-	var deficit: float = _deficit_score()
-	var unrest: float = _unrest_score()
-	var fragility: float = _fragility_score()
-	var base: float = city_scale * 0.25 + deficit * 0.3 + unrest * 0.25 + fragility * 0.2
-	return _apply_governance_pressure(base)
-
-
-func _city_scale_score() -> float:
-	## Larger city = higher base pressure.
-	var pop: int = GameStateStore.population().total as int
-	var level: int = GameStateStore.progression().city_level as int
-	var bld_count: int = GameStateStore.get_all_building_coords().size()
-	return clampf(pop * 0.02 + level * 5.0 + bld_count * 0.1, 0.0, 100.0)
-
-
-func _deficit_score() -> float:
-	## Negative production in key resources raises pressure.
-	var score: float = 0.0
-	var production: Dictionary = GameStateStore.economy().production
-	var key_resources: Array = ["res_food", "res_money", "res_water_stockpile"]
-	for res_id: String in key_resources:
-		var net: float = production.get(res_id, 0.0) as float
-		if net < 0.0:
-			score += absf(net) * 5.0
-	return clampf(score, 0.0, 100.0)
-
-
-func _unrest_score() -> float:
-	## Low happiness increases pressure.
-	var happiness: float = GameStateStore.population().happiness as float
-	if happiness >= 60.0:
-		return 0.0
-	return (60.0 - happiness) * 1.5
-
-
-func _fragility_score() -> float:
-	## Damaged buildings increase fragility.
-	var damaged: int = 0
-	var total: int = 0
-	for coord: Vector2i in GameStateStore.get_all_building_coords():
-		total += 1
-		var bld: Dictionary = GameStateStore.get_building(coord)
-		if bld.get("damaged", false) as bool or bld.get("has_issue", false) as bool:
-			damaged += 1
-	if total == 0:
-		return 0.0
-	return (float(damaged) / float(total)) * 100.0
+func _below(value: float, safe: float) -> float:
+	## 0 when at/above the safe level, rising to 1 at zero.
+	return clampf((safe - value) / safe, 0.0, 1.0)
 
 
 func _index_to_phase(index: float) -> String:
@@ -73,22 +76,21 @@ func _index_to_phase(index: float) -> String:
 		return "emergency"
 
 
-func _apply_governance_pressure(base: float) -> float:
-	var pressure := base
-	var multiplier := 1.0
+func _governance_factor() -> float:
+	## Technologies, policies and the start profile tune how fast pressure builds.
+	var delta := 0.0
+	var mult := 1.0
 	for tech_var: Variant in GameStateStore.get_technologies():
-		var tech_id: String = tech_var as String
-		var tech_def: Dictionary = ContentDB.get_technology_def(tech_id)
+		var tech_def: Dictionary = ContentDB.get_technology_def(tech_var as String)
 		var effects: Dictionary = tech_def.get("effects", {})
-		pressure += effects.get("pressure_delta", 0.0) as float
-		multiplier *= effects.get("pressure_mult", 1.0) as float
+		delta += effects.get("pressure_delta", 0.0) as float
+		mult *= effects.get("pressure_mult", 1.0) as float
 	for policy_var: Variant in GameStateStore.get_active_policies().values():
-		var policy_id: String = policy_var as String
-		var policy_def: Dictionary = ContentDB.get_policy_def(policy_id)
+		var policy_def: Dictionary = ContentDB.get_policy_def(policy_var as String)
 		var effects: Dictionary = policy_def.get("effects", {})
-		pressure += effects.get("pressure_delta", 0.0) as float
-		multiplier *= effects.get("pressure_mult", 1.0) as float
+		delta += effects.get("pressure_delta", 0.0) as float
+		mult *= effects.get("pressure_mult", 1.0) as float
 	var mandate_effects: Dictionary = GameStateStore.mandate().get("effects", {})
-	pressure += mandate_effects.get("pressure_delta", 0.0) as float
-	multiplier *= mandate_effects.get("pressure_mult", 1.0) as float
-	return pressure * multiplier
+	delta += mandate_effects.get("pressure_delta", 0.0) as float
+	mult *= mandate_effects.get("pressure_mult", 1.0) as float
+	return maxf(mult * (1.0 + delta / 100.0), 0.0)

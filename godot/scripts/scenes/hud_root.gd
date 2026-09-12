@@ -263,18 +263,20 @@ func _update_resource_bar() -> void:
 	# --- The two masters (the vice: League ↕ City) + pressure ---
 	# This is what the player is actually fighting: keeping both high is impossible.
 	# Trust at zero → recall; support at zero → riot. Each meter is coloured on its own.
-	var phase: String = GameStateStore.pressure().phase as String
-	var p_idx: float = GameStateStore.pressure().index as float
 	var trust: float = GameStateStore.mandate().get("patron_trust", 50) as float
 	var support: float = GameStateStore.mandate().get("support", 50) as float
-	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s: %s %.0f" % [
+	# Pressure director (GDD §15): four accumulators, each filling toward a crisis at 100.
+	var cats: Dictionary = GameStateStore.pressure().get("categories", {}) as Dictionary
+	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s %s %s %s %s" % [
 		Localization.t("ui.risk.league", "Лига"),
 		_meter_bb(trust),
 		Localization.t("ui.risk.city", "Город"),
 		_meter_bb(support),
-		Localization.t("ui.risk.pressure", "Давление"),
-		Localization.t("ui.phase.%s" % phase, phase.capitalize()),
-		p_idx,
+		Localization.t("ui.risk.pressure", "Давление:"),
+		_pressure_bb(Localization.t("ui.pressure.food", "еда"), cats.get("food", 0.0) as float),
+		_pressure_bb(Localization.t("ui.pressure.water", "вода"), cats.get("water", 0.0) as float),
+		_pressure_bb(Localization.t("ui.pressure.people", "люди"), cats.get("happiness", 0.0) as float),
+		_pressure_bb(Localization.t("ui.pressure.mandate", "мандат"), cats.get("mandate", 0.0) as float),
 	]
 
 
@@ -287,6 +289,16 @@ func _meter_bb(value: float) -> String:
 	else:
 		color = "#7fbf7f"
 	return "[color=%s]%.0f[/color]" % [color, value]
+
+
+func _pressure_bb(label: String, value: float) -> String:
+	# Quiet while low, loud as the category nears its crisis threshold (100).
+	var color: String = "#8a8a99"
+	if value >= 70.0:
+		color = "#e63535"
+	elif value >= 40.0:
+		color = "#e6902b"
+	return "[color=%s]%s %.0f[/color]" % [color, label, value]
 
 
 func _on_utility_gui_input(event: InputEvent) -> void:

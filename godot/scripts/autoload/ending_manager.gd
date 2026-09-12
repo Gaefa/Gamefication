@@ -12,7 +12,6 @@ const WIN_DAY := 30                 # survive the whole Пыль and out the oth
 const WIN_HAPPINESS := 40.0         # ...and the city is actually stable, not in ruins
 const EXODUS_PEAK_MIN := 12         # only call it an exodus if the city was sizeable
 const EXODUS_FRACTION := 0.4        # ...and shrank to ≤40% of its peak
-const RIOT_PRESSURE := 90.0         # unrest at the top of the scale → riot
 
 var _active: bool = false
 var _ended: bool = false
@@ -56,7 +55,6 @@ func _evaluate() -> void:
 	var trust: float = mandate.get("patron_trust", 50) as float
 	var support: float = mandate.get("support", 50) as float
 	var disclosure: bool = (mandate.get("flags", {}) as Dictionary).get("disclosure", false) as bool
-	var pressure_idx: float = GameStateStore.pressure().get("index", 0.0) as float
 	var happiness: float = GameStateStore.population().get("happiness", 50.0) as float
 
 	# Losses take priority over wins.
@@ -77,8 +75,6 @@ func _evaluate() -> void:
 	elif _peak_pop >= 4 and pop <= 0:
 		# Total desertion — even a small district emptying out is an exodus.
 		_trigger("ending.lose.exodus")
-	elif pressure_idx >= RIOT_PRESSURE:
-		_trigger("ending.lose.riot")
 	elif day >= WIN_DAY and happiness >= WIN_HAPPINESS:
 		# Survived to the end AND the city is stable — a real win, not a hollow one.
 		# A devastated city (low happiness) simply doesn't win yet; it must recover.
