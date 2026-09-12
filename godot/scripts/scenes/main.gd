@@ -6,6 +6,7 @@ var _build_mode: String = ""  # "" = none, otherwise building type_id
 var _hud: Control
 var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 var _show_ranges: bool = false
+var _show_logistics: bool = false
 
 
 func _ready() -> void:
@@ -60,9 +61,17 @@ func _setup_scene_tree() -> void:
 	_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	canvas.add_child(_hud)
 
+	# DeskUI (Стол Администратора — полноэкранный, поверх HUD)
+	var desk_ui := Control.new()
+	desk_ui.name = "DeskUI"
+	desk_ui.set_script(load("res://scenes/ui/desk_ui.gd"))
+	desk_ui.set_anchors_preset(Control.PRESET_FULL_RECT)
+	canvas.add_child(desk_ui)
+
 	# Initialize rendering
 	terrain_layer.call("render_terrain", _orchestrator.hex_grid)
 	building_layer.call("set_hex_grid", _orchestrator.hex_grid)
+	overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
 
 
 func _connect_signals() -> void:
@@ -71,9 +80,19 @@ func _connect_signals() -> void:
 	EventBus.building_removed.connect(_on_building_changed)
 	EventBus.building_upgraded.connect(func(_c: Vector2i, _l: int) -> void: _refresh_buildings())
 	EventBus.building_repaired.connect(func(_c: Vector2i) -> void: _refresh_buildings())
+	EventBus.building_damaged.connect(func(_c: Vector2i, _s: float) -> void: _refresh_buildings())
+	EventBus.building_issue_added.connect(func(_c: Vector2i) -> void: _refresh_buildings())
+	EventBus.game_loaded.connect(_on_game_loaded)
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		var ke := event as InputEventKey
+		if ke.pressed and not ke.echo and _is_global_hotkey(ke):
+			_handle_key(ke)
+			get_viewport().set_input_as_handled()
+			return
+
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
@@ -91,8 +110,28 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var ke := event as InputEventKey
-		if ke.pressed:
+		if ke.pressed and not ke.echo:
 			_handle_key(ke)
+
+
+func _is_global_hotkey(ke: InputEventKey) -> bool:
+	return _matches_key(ke, KEY_ESCAPE) \
+		or _matches_key(ke, KEY_V) \
+		or _matches_key(ke, KEY_L) \
+		or _matches_key(ke, KEY_H) \
+		or _matches_key(ke, KEY_G) \
+		or _matches_key(ke, KEY_O) \
+		or _matches_key(ke, KEY_U) \
+		or _matches_key(ke, KEY_R) \
+		or _matches_key(ke, KEY_B) \
+		or _matches_key(ke, KEY_SPACE) \
+		or _matches_key(ke, KEY_1) \
+		or _matches_key(ke, KEY_2) \
+		or _matches_key(ke, KEY_3)
+
+
+func _matches_key(ke: InputEventKey, key: Key) -> bool:
+	return ke.keycode == key or ke.physical_keycode == key
 
 
 func _is_click_on_ui(screen_pos: Vector2) -> bool:
@@ -132,34 +171,41 @@ func _handle_click() -> void:
 
 
 func _handle_key(ke: InputEventKey) -> void:
-	if ke.keycode == KEY_ESCAPE:
+	if _matches_key(ke, KEY_ESCAPE):
 		_build_mode = ""
 		EventBus.build_mode_changed.emit("")
-	elif Input.is_action_just_pressed("toggle_ranges"):
-		_show_ranges = not _show_ranges
-		_refresh_overlay_state()
-	elif ke.keycode == KEY_H:
+	elif _matches_key(ke, KEY_V) or Input.is_action_just_pressed("toggle_ranges"):
+		toggle_ranges()
+	elif _matches_key(ke, KEY_L):
+		toggle_logistics_lens()
+	elif _matches_key(ke, KEY_H):
 		if _hud and _hud.has_method("toggle_help"):
 			_hud.call("toggle_help")
-	elif Input.is_action_just_pressed("upgrade_building"):
+	elif _matches_key(ke, KEY_G) or Input.is_action_just_pressed("toggle_governance"):
+		if _hud and _hud.has_method("toggle_governance"):
+			_hud.call("toggle_governance")
+	elif _matches_key(ke, KEY_O) or Input.is_action_just_pressed("toggle_settings"):
+		if _hud and _hud.has_method("toggle_settings"):
+			_hud.call("toggle_settings")
+	elif _matches_key(ke, KEY_U) or Input.is_action_just_pressed("upgrade_building"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := UpgradeBuildingCommand.new(_selected_coord)
 			_orchestrator.command_bus.execute(cmd)
-	elif Input.is_action_just_pressed("repair_building"):
+	elif _matches_key(ke, KEY_R) or Input.is_action_just_pressed("repair_building"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := RepairBuildingCommand.new(_selected_coord)
 			_orchestrator.command_bus.execute(cmd)
-	elif Input.is_action_just_pressed("bulldoze"):
+	elif _matches_key(ke, KEY_B) or Input.is_action_just_pressed("bulldoze"):
 		if _selected_coord != Vector2i(-9999, -9999):
 			var cmd := BulldozeCommand.new(_selected_coord)
 			_orchestrator.command_bus.execute(cmd)
-	elif ke.keycode == KEY_SPACE:
+	elif _matches_key(ke, KEY_SPACE):
 		SimulationRunner.toggle_pause()
-	elif ke.keycode == KEY_1:
+	elif _matches_key(ke, KEY_1):
 		SimulationRunner.set_speed(1.0)
-	elif ke.keycode == KEY_2:
+	elif _matches_key(ke, KEY_2):
 		SimulationRunner.set_speed(2.0)
-	elif ke.keycode == KEY_3:
+	elif _matches_key(ke, KEY_3):
 		SimulationRunner.set_speed(3.0)
 
 
@@ -178,10 +224,81 @@ func _refresh_buildings() -> void:
 	_refresh_overlay_state()
 
 
+func start_new_run(profile_id: String) -> void:
+	_selected_coord = Vector2i(-9999, -9999)
+	_build_mode = ""
+	_show_ranges = false
+	_show_logistics = false
+	_orchestrator.new_game(0, profile_id)
+	var terrain_layer: Node = get_node_or_null("World/TerrainLayer")
+	if terrain_layer:
+		terrain_layer.call("render_terrain", _orchestrator.hex_grid)
+	var building_layer: Node = get_node_or_null("World/BuildingLayer")
+	if building_layer:
+		building_layer.call("set_hex_grid", _orchestrator.hex_grid)
+		building_layer.call("refresh")
+	var overlay_layer: Node = get_node_or_null("World/OverlayLayer")
+	if overlay_layer and overlay_layer.has_method("set_hex_grid"):
+		overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
+	EventBus.build_mode_changed.emit("")
+	EventBus.selection_changed.emit(_selected_coord)
+	EventBus.ranges_changed.emit(_show_ranges)
+	EventBus.logistics_lens_changed.emit(_show_logistics)
+	_refresh_overlay_state()
+
+
+func _on_game_loaded(_slot: int) -> void:
+	# SaveService has already filled GameStateStore. Rebuild the runtime from that
+	# state and re-render the world (same steps as start_new_run, but loading).
+	_selected_coord = Vector2i(-9999, -9999)
+	_build_mode = ""
+	_show_ranges = false
+	_show_logistics = false
+	_orchestrator.load_game()
+	var terrain_layer: Node = get_node_or_null("World/TerrainLayer")
+	if terrain_layer:
+		terrain_layer.call("render_terrain", _orchestrator.hex_grid)
+	var building_layer: Node = get_node_or_null("World/BuildingLayer")
+	if building_layer:
+		building_layer.call("set_hex_grid", _orchestrator.hex_grid)
+		building_layer.call("refresh")
+	var overlay_layer: Node = get_node_or_null("World/OverlayLayer")
+	if overlay_layer and overlay_layer.has_method("set_hex_grid"):
+		overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
+	SimulationRunner.resume_after_load()
+	EventBus.build_mode_changed.emit("")
+	EventBus.selection_changed.emit(_selected_coord)
+	EventBus.ranges_changed.emit(_show_ranges)
+	EventBus.logistics_lens_changed.emit(_show_logistics)
+	_refresh_overlay_state()
+
+
+func toggle_ranges() -> void:
+	_show_ranges = not _show_ranges
+	_refresh_overlay_state()
+	EventBus.ranges_changed.emit(_show_ranges)
+	EventBus.toast_requested.emit(
+		Localization.t("ui.ranges.enabled", "Ranges: on") if _show_ranges else Localization.t("ui.ranges.disabled", "Ranges: off"),
+		1.5
+	)
+
+
+func toggle_logistics_lens() -> void:
+	_show_logistics = not _show_logistics
+	_refresh_overlay_state()
+	EventBus.logistics_lens_changed.emit(_show_logistics)
+	EventBus.toast_requested.emit(
+		Localization.t("ui.lens.logistics_on", "Логистика: включена") if _show_logistics else Localization.t("ui.lens.logistics_off", "Логистика: выключена"),
+		1.5
+	)
+
+
 func _refresh_overlay_state() -> void:
 	var overlay: Node = get_node_or_null("World/OverlayLayer")
 	if overlay and overlay.has_method("set_show_ranges"):
 		overlay.call("set_show_ranges", _show_ranges, _selected_coord)
+	if overlay and overlay.has_method("set_show_logistics"):
+		overlay.call("set_show_logistics", _show_logistics)
 
 
 func get_orchestrator() -> GameOrchestrator:

@@ -15,10 +15,13 @@ func road_boost_at(coord: Vector2i) -> float:
 		var bld: Dictionary = GameStateStore.get_building(nb)
 		if bld.is_empty():
 			continue
-		if (bld.get("type", "") as String) != "road":
+		var type_id: String = bld.get("type", "") as String
+		var def: Dictionary = ContentDB.get_building_def(type_id)
+		var tags: Array = def.get("tags", []) as Array
+		if type_id != "road" and type_id != "bld_road" and not tags.has("road"):
 			continue
 		var level: int = bld.get("level", 0) as int
-		var ldata: Dictionary = ContentDB.building_level_data("road", level)
+		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 		var bonus: Dictionary = ldata.get("bonus", {})
 		total += bonus.get("road_boost", 0.0) as float
 	return total

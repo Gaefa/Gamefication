@@ -10,7 +10,7 @@ func _init(p_coord: Vector2i) -> void:
 
 func execute(ctx: Dictionary) -> void:
 	if not GameStateStore.has_building(coord):
-		message = "No building here"
+		message = Localization.t("ui.command.no_building_here", "No building here")
 		return
 
 	var bld: Dictionary = GameStateStore.get_building(coord)
@@ -19,13 +19,13 @@ func execute(ctx: Dictionary) -> void:
 	var max_level: int = ContentDB.max_building_level(type_id)
 
 	if current_level + 1 >= max_level:
-		message = "Already at max level"
+		message = Localization.t("ui.command.already_max_level", "Already at max level")
 		return
 
 	var next_ldata: Dictionary = ContentDB.building_level_data(type_id, current_level + 1)
 	var cost: Dictionary = next_ldata.get("cost", {})
 	if cost.is_empty():
-		message = "No upgrade available"
+		message = Localization.t("ui.command.no_upgrade_available", "No upgrade available")
 		return
 
 	# Apply upgrade discount from aura
@@ -38,7 +38,7 @@ func execute(ctx: Dictionary) -> void:
 		adjusted_cost[res_id] = (cost[res_id] as float) * maxf(1.0 - discount, 0.5)
 
 	if not GameStateStore.can_afford(adjusted_cost):
-		message = "Not enough resources"
+		message = Localization.t("ui.command.not_enough_resources", "Not enough resources")
 		return
 
 	GameStateStore.spend(adjusted_cost)
@@ -53,6 +53,6 @@ func execute(ctx: Dictionary) -> void:
 		coverage.invalidate()
 
 	success = true
-	var stage: String = next_ldata.get("stage", "Level %d" % (current_level + 1)) as String
-	message = "Upgraded to %s" % stage
+	var stage: String = Localization.content_text(next_ldata, "stage", "Level %d" % (current_level + 1))
+	message = Localization.t("ui.command.upgraded_to", "Upgraded to %s") % stage
 	EventBus.building_upgraded.emit(coord, current_level + 1)

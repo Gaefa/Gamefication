@@ -1,0 +1,59 @@
+{
+  "order": ["season_window", "season_dust"],
+  "seasons": [
+    {
+      "id": "season_window",
+      "label": "Окно",
+      "label_key": "season.window.label",
+      "description": "Спокойный период. Время строить, чинить и копить запасы перед сезоном.",
+      "length_days": 18,
+      "expert_faction": "",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "calm",
+      "modifiers": {
+        "water_mult": 1.0,
+        "water_supply_mult": 1.0,
+        "crop_mult": 1.0,
+        "solar_mult": 1.0,
+        "wear_mult": 1.0,
+        "build_cost_mult": 0.9
+      }
+    },
+    {
+      "id": "season_dust",
+      "label": "Пыль",
+      "label_key": "season.dust.label",
+      "description": "Сезон Пыли. Урожай гибнет, воды уходит больше, техника засоряется. Главный экзамен подготовки.",
+      "length_days": 11,
+      "expert_faction": "union_engineers",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "harsh",
+      "modifiers": {
+        "water_mult": 1.4,
+        "water_supply_mult": 0.65,
+        "crop_mult": 0.72,
+        "solar_mult": 0.5,
+        "wear_mult": 1.5,
+        "build_cost_mult": 1.0
+      }
+    },
+    {
+      "id": "season_heat",
+      "label": "Жара",
+      "label_key": "season.heat.label",
+      "description": "Упрощённая Жара. Резко растёт потребление воды, продукты портятся без холода.",
+      "length_days": 9,
+      "expert_faction": "green_covenant",
+      "enabled_in_mvp": false,
+      "forecast_intensity": "harsh",
+      "modifiers": {
+        "water_mult": 1.6,
+        "water_supply_mult": 0.85,
+        "crop_mult": 0.85,
+        "solar_mult": 1.0,
+        "wear_mult": 1.1,
+        "build_cost_mult": 1.0
+      }
+    }
+  ]
+}

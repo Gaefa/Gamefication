@@ -24,3 +24,6 @@ func process_tick() -> void:
 		if _rng.chance(ISSUE_CHANCE_PER_BUILDING):
 			bld["has_issue"] = true
 			GameStateStore.set_building(coord, bld)
+			EventBus.building_issue_added.emit(coord)
+	# Mirror the random sequence into the save so a load continues it exactly.
+	GameStateStore.save_meta().rng_state = _rng.get_state()

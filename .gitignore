@@ -15,4 +15,6 @@ godot/.godot/
 
 # Build
 export/
+godot/export/
 *.pck
+godot/*.exe
