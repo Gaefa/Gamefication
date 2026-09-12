@@ -51,6 +51,9 @@ func build() -> void:
 	# RNG
 	var seed_val: int = GameStateStore.save_meta().get("rng_seed", 12345) as int
 	rng = SeededRNG.new(seed_val)
+	# A loaded game continues the exact random sequence it was saved with (tick-for-tick load).
+	if GameStateStore.save_meta().has("rng_state"):
+		rng.set_state(GameStateStore.save_meta().get("rng_state", 0) as int)
 
 	# Systems
 	season_sys = SeasonSystem.new()
@@ -91,6 +94,7 @@ func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator")
 	GameStateStore.save_meta().rng_seed = seed_val
 	build()
 	_generate_terrain()
+	GameStateStore.save_meta().rng_state = rng.get_state()
 	_bootstrap_campaign_hub()
 	spatial.rebuild_from_state()
 	coverage.invalidate()

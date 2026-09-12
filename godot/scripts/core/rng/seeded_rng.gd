@@ -12,6 +12,15 @@ func _init(rng_seed: int = 12345) -> void:
 	_state = rng_seed & MASK
 
 
+## Save/load: the 32-bit state fits exactly in a JSON number.
+func get_state() -> int:
+	return _state
+
+
+func set_state(value: int) -> void:
+	_state = value & MASK
+
+
 func next_int() -> int:
 	_state = (_state + 0x6D2B79F5) & MASK
 	var t: int = _state

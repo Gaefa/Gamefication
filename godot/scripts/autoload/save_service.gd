@@ -24,7 +24,9 @@ func save_game(slot: int, silent: bool = false) -> bool:
 	var path := _slot_path(slot)
 	var data: Dictionary = GameStateStore.to_save_dict()
 	data["save_time"] = Time.get_datetime_string_from_system()
-	var json_str := JSON.stringify(data, "\t")
+	# Keep key order (systems iterate buildings in insertion order) and full float
+	# precision, so a load resumes the simulation tick-for-tick.
+	var json_str := JSON.stringify(data, "\t", false, true)
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		push_error("SaveService: cannot write to %s" % path)
