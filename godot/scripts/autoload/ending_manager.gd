@@ -22,7 +22,10 @@ var _layer: CanvasLayer
 var _root: Control
 var _title_label: Label
 var _body_label: RichTextLabel
+var _theses_label: RichTextLabel
 var _menu_btn: Button
+
+const PRESSURE_LABELS := { "food": "еда", "water": "вода", "happiness": "люди", "mandate": "мандат" }
 
 
 func _ready() -> void:
@@ -139,8 +142,8 @@ func _build_ui() -> void:
 
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(720, 460)
-	panel.position = Vector2(-360, -230)
+	panel.custom_minimum_size = Vector2(1000, 460)
+	panel.position = Vector2(-500, -230)
 	bg.add_child(panel)
 
 	var margin := MarginContainer.new()
@@ -163,13 +166,29 @@ func _build_ui() -> void:
 	var sep := HSeparator.new()
 	vbox.add_child(sep)
 
+	# Ending Card (UX_BIBLE §7.1): verdict on the left, consequence bullets on the right.
+	var columns := HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 24)
+	vbox.add_child(columns)
+
 	_body_label = RichTextLabel.new()
 	_body_label.bbcode_enabled = true
 	_body_label.fit_content = true
 	_body_label.scroll_active = false
 	_body_label.custom_minimum_size = Vector2(0, 240)
+	_body_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_body_label.add_theme_font_size_override("normal_font_size", 16)
-	vbox.add_child(_body_label)
+	columns.add_child(_body_label)
+
+	columns.add_child(VSeparator.new())
+
+	_theses_label = RichTextLabel.new()
+	_theses_label.bbcode_enabled = true
+	_theses_label.fit_content = true
+	_theses_label.scroll_active = false
+	_theses_label.custom_minimum_size = Vector2(320, 240)
+	_theses_label.add_theme_font_size_override("normal_font_size", 14)
+	columns.add_child(_theses_label)
 
 	_menu_btn = Button.new()
 	_menu_btn.text = "В главное меню"
@@ -186,7 +205,41 @@ func _show_finale(def: Dictionary) -> void:
 		Color(0.6, 0.9, 0.6) if kind == "win" else Color(0.9, 0.55, 0.5)
 	)
 	_body_label.text = (def.get("body", "") as String) + _style_epilogue()
+	_theses_label.text = _theses()
 	_layer.visible = true
+
+
+func _theses() -> String:
+	# The "why" a tester should be able to name after the finale (RELEASE_PLAN §2.4):
+	# both masters, the Cistern (GDD §8.3), the first thing that broke, and the people.
+	var lines: Array[String] = ["[b]ИТОГИ[/b]"]
+	var mandate: Dictionary = GameStateStore.mandate()
+	var trust: float = mandate.get("patron_trust", 50) as float
+	var support: float = mandate.get("support", 50) as float
+	var masters := "оба ещё держатся"
+	if trust <= 0.0:
+		masters = "покровитель лишил доверия"
+	elif support <= 0.0:
+		masters = "город отказал в поддержке"
+	lines.append("• [b]Два хозяина:[/b] доверие %d · поддержка %d — %s" % [int(trust), int(support), masters])
+
+	var reserve: int = int(GameStateStore.get_resource("res_water_stockpile"))
+	var days: float = WaterPanel.water_days()
+	var cistern := "пуста"
+	if reserve > 0 and (is_inf(days) or days >= 0.1):
+		cistern = "%d воды" % reserve if is_inf(days) else "%d воды — на %.1f дн." % [reserve, days]
+	lines.append("• [b]Цистерна:[/b] %s" % cistern)
+
+	var first: Dictionary = GameStateStore.pressure().get("first_crisis", {}) as Dictionary
+	if first.is_empty():
+		lines.append("• [b]Давление:[/b] ни одна беда не дошла до кризиса")
+	else:
+		lines.append("• [b]Первым сорвалось:[/b] %s, день %d" % [
+			PRESSURE_LABELS.get(first.get("category", ""), "?"), first.get("day", 0) as int])
+
+	var pop: int = GameStateStore.population().get("total", 0) as int
+	lines.append("• [b]Жители:[/b] было до %d, осталось %d" % [maxi(_peak_pop, pop), pop])
+	return "\n\n".join(lines)
 
 
 func _style_epilogue() -> String:

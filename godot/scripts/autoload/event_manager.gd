@@ -81,8 +81,12 @@ func _on_pressure_threshold(category: String) -> void:
 			continue
 		_raise(event_id, def)
 		# The crisis landed: drop the category back only partway — the cause keeps pushing (§15.3).
-		var cats: Dictionary = GameStateStore.pressure().get("categories", {}) as Dictionary
+		var pressure_state: Dictionary = GameStateStore.pressure()
+		var cats: Dictionary = pressure_state.get("categories", {}) as Dictionary
 		cats[category] = PressureSystem.RESET_TO
+		# The first thing that broke is what the finale names as the root (EndingManager theses).
+		if not pressure_state.has("first_crisis"):
+			pressure_state["first_crisis"] = { "category": category, "day": GameStateStore.climate().get("total_day", 1) as int }
 		return
 
 

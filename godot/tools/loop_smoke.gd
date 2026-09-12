@@ -87,5 +87,6 @@ func _auto_resolve() -> void:
 
 func _finish(result: String) -> void:
 	print("=== SMOKE: %s | вечеров %d, карт %d, день %d ===" % [result, _evenings, _cards, SimulationRunner.day_count])
+	print((EndingManager.get("_theses_label") as RichTextLabel).get_parsed_text())
 	set_physics_process(false)
 	get_tree().quit()
