@@ -172,6 +172,7 @@ func _show_event(index: int) -> void:
 			var event_id: String = evt.get("runtime_id", "") as String
 			var effects: Dictionary = opt.get("effects", {})
 			var cost: Dictionary = opt.get("cost", {})
+			btn.tooltip_text = _consequences_text(effects, cost)
 			if not cost.is_empty() and not GameStateStore.can_afford(cost):
 				btn.disabled = true
 				btn.text += " (не хватает ресурсов)"
@@ -193,6 +194,7 @@ func _create_legacy_buttons(evt: Dictionary) -> void:
 			accept_btn.disabled = true
 			accept_btn.text += " (не хватает ресурсов)"
 	var accept_cost_dict: Dictionary = accept_cost as Dictionary if accept_cost is Dictionary else {}
+	accept_btn.tooltip_text = _consequences_text(accept_effects, accept_cost_dict)
 	accept_btn.pressed.connect(func() -> void: _select_option(event_id, 0, accept_effects, accept_cost_dict))
 	_options_container.add_child(accept_btn)
 	
@@ -200,8 +202,62 @@ func _create_legacy_buttons(evt: Dictionary) -> void:
 	var decline_btn := Button.new()
 	decline_btn.text = evt.get("decline_label", "Отклонить") as String
 	var decline_effects: Dictionary = evt.get("decline_effects", {})
+	decline_btn.tooltip_text = _consequences_text(decline_effects, {})
 	decline_btn.pressed.connect(func() -> void: _select_option(event_id, 1, decline_effects, {}))
 	_options_container.add_child(decline_btn)
+
+
+const RES_LABELS := {
+	"res_water_stockpile": "вода", "res_food": "еда", "res_wood": "дерево",
+	"res_stone": "камень", "res_tools": "инструменты", "res_money": "деньги",
+}
+
+
+## Hover preview of an answer (UX_BIBLE §7.1): the player shouldn't guess what a stamp does.
+## Style and flags stay hidden — naming them would spoil the finale.
+func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
+	var parts: Array[String] = []
+	for key: String in effects:
+		var value: Variant = effects[key]
+		match key:
+			"stat_league_trust":
+				parts.append("доверие покровителя %s" % _signed(value as float))
+			"stat_city_trust":
+				parts.append("поддержка города %s" % _signed(value as float))
+			"stat_unrest_pressure":
+				parts.append("давление «люди» %s" % _signed(value as float))
+			"add_resources", "remove_resources":
+				var mult: float = 1.0 if key == "add_resources" else -1.0
+				for res_id: String in value as Dictionary:
+					parts.append("%s %s" % [RES_LABELS.get(res_id, res_id), _signed(mult * ((value as Dictionary)[res_id] as float))])
+			"demolish_building":
+				parts.append("снос: %s" % _building_name(value as String))
+			"replace_building":
+				parts.append("перестройка: %s" % _building_name((value as Dictionary).get("to", "") as String))
+			"force_issues":
+				parts.append("поломки: %d" % (value as int))
+			"damage_buildings":
+				parts.append("повреждённых зданий: %d" % (value as int))
+			_:
+				if key.begins_with("res_"):
+					parts.append("%s %s" % [RES_LABELS.get(key, key), _signed(value as float)])
+	var lines: Array[String] = []
+	if not parts.is_empty():
+		lines.append("Следствие: " + ", ".join(parts))
+	if not cost.is_empty():
+		var costs: Array[String] = []
+		for res_id: String in cost:
+			costs.append("%s %d" % [RES_LABELS.get(res_id, res_id), int(cost[res_id] as float)])
+		lines.append("Цена: " + ", ".join(costs))
+	return "\n".join(lines)
+
+
+func _signed(v: float) -> String:
+	return "%+d" % int(v)
+
+
+func _building_name(type_id: String) -> String:
+	return Localization.content_text(ContentDB.get_building_def(type_id), "name", type_id)
 
 
 func _select_option(event_id: String, option_index: int, effects: Dictionary, cost: Dictionary = {}) -> void:

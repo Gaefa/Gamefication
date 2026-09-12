@@ -82,6 +82,9 @@ func _auto_resolve() -> void:
 	var opt: Dictionary = options[pick] as Dictionary
 	_cards += 1
 	print("    день %d: %s → «%s»" % [SimulationRunner.day_count, evt.get("runtime_id", "?") as String, (opt.get("text", "?") as String).left(40)])
+	var preview: String = _desk.call("_consequences_text", opt.get("effects", {}), opt.get("cost", {})) as String
+	if preview != "":
+		print("      ⓘ " + preview.replace("\n", " | "))
 	_desk.call("_select_option", evt.get("runtime_id", "") as String, pick, opt.get("effects", {}), opt.get("cost", {}))
 
 
