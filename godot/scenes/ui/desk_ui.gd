@@ -267,12 +267,28 @@ func _select_option(event_id: String, option_index: int, effects: Dictionary, co
 			(child as Button).disabled = true
 	
 	EventBus.desk_option_selected.emit(event_id, option_index, effects, cost)
+	_log_answer(option_index, effects)
 	_resolved_count += 1
-	
+
 	if _current_index < _events.size() - 1:
 		_next_btn.visible = true
 	else:
 		_show_all_resolved()
+
+
+## Journal entry (UX_BIBLE §7.2) from the card's own text, so dynamic cards (the audit) read right too.
+func _log_answer(option_index: int, effects: Dictionary) -> void:
+	if _current_index >= _events.size():
+		return
+	var evt: Dictionary = _events[_current_index] as Dictionary
+	var options: Array = evt.get("options", []) as Array
+	var choice: String
+	if option_index < options.size():
+		choice = (options[option_index] as Dictionary).get("text", "") as String
+	else:
+		choice = evt.get("accept_label" if option_index == 0 else "decline_label", "") as String
+	var reply: String = Localization.content_text(effects, "message", effects.get("message", "") as String)
+	EventLogPanel.record(evt.get("title", evt.get("runtime_id", "")) as String, choice, reply)
 
 
 func _show_next_event() -> void:

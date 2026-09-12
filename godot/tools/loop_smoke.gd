@@ -91,5 +91,7 @@ func _auto_resolve() -> void:
 func _finish(result: String) -> void:
 	print("=== SMOKE: %s | вечеров %d, карт %d, день %d ===" % [result, _evenings, _cards, SimulationRunner.day_count])
 	print((EndingManager.get("_theses_label") as RichTextLabel).get_parsed_text())
+	var entries: Array = GameStateStore.events().get("log", []) as Array
+	print("журнал событий: %d записей; последняя: %s" % [entries.size(), str(entries.back()) if not entries.is_empty() else "—"])
 	set_physics_process(false)
 	get_tree().quit()
