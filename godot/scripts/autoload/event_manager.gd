@@ -222,6 +222,11 @@ func _apply_effects(effects: Dictionary) -> void:
 				_set_mandate_flag(effects[key] as String)
 			"style":
 				GameStateStore.add_style_flag(effects[key] as String)
+			"demolish_building":
+				_demolish_building(effects[key] as String)
+			"replace_building":
+				var swap: Dictionary = effects[key] as Dictionary
+				_replace_building(swap.get("from", "") as String, swap.get("to", "") as String)
 			_:
 				if key.begins_with("res_"):
 					GameStateStore.add_resource(key, effects[key] as float)
@@ -236,6 +241,50 @@ func _set_mandate_flag(flag_id: String) -> void:
 	if not mandate_state.has("flags"):
 		mandate_state["flags"] = {}
 	(mandate_state["flags"] as Dictionary)[flag_id] = true
+
+
+const NO_COORD := Vector2i(-9999, -9999)
+
+
+func _orchestrator() -> GameOrchestrator:
+	var scene: Node = get_tree().current_scene
+	if scene != null and scene.has_method("get_orchestrator"):
+		return scene.call("get_orchestrator") as GameOrchestrator
+	return null
+
+
+func _first_coord_of_type(type_id: String) -> Vector2i:
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		if (GameStateStore.get_building(coord).get("type", "") as String) == type_id:
+			return coord
+	return NO_COORD
+
+
+func _demolish_building(type_id: String) -> void:
+	# Decisions can change the map (e.g. the old tower's fate). Reuse the bulldoze path
+	# so the spatial index, caches and rendering stay consistent.
+	var coord: Vector2i = _first_coord_of_type(type_id)
+	var orch: GameOrchestrator = _orchestrator()
+	if coord == NO_COORD or orch == null:
+		push_warning("EventManager: cannot demolish %s" % type_id)
+		return
+	orch.command_bus.execute(BulldozeCommand.new(coord))
+
+
+func _replace_building(from_type: String, to_type: String) -> void:
+	var coord: Vector2i = _first_coord_of_type(from_type)
+	var orch: GameOrchestrator = _orchestrator()
+	if coord == NO_COORD or orch == null or ContentDB.get_building_def(to_type).is_empty():
+		push_warning("EventManager: cannot replace %s → %s" % [from_type, to_type])
+		return
+	GameStateStore.set_building(coord, {"type": to_type, "level": 0, "damaged": false, "has_issue": false})
+	orch.spatial.remove(coord, from_type)
+	orch.spatial.add(coord, to_type)
+	orch.interactions.invalidate_caches()
+	orch.coverage.invalidate()
+	orch.road_graph.invalidate()
+	EventBus.building_removed.emit(coord, from_type)
+	EventBus.building_placed.emit(coord, to_type)
 
 
 func _apply_resource_delta(raw: Variant, sign: float) -> void:

@@ -14,6 +14,21 @@
     ],
     "tags": ["landmark"]
   },
+  "bld_source_tower_restored": {
+    "name": "Башня Истока (восстановлена)",
+    "description": "Старую башню подлатали и снова подключили к сети. Держит покрытие и напор воды в центре района — теперь это не память, а рабочий узел.",
+    "size": [1, 1],
+    "player_buildable": false,
+    "sprites_by_level": ["res://assets/buildings/source_tower.svg"],
+    "cost_build": {},
+    "outputs": {},
+    "consumes": {},
+    "cycle_time": 0.0,
+    "levels": [
+      {"stage": "Рабочая водонапорная башня", "synergy": {"water_radius": 5}}
+    ],
+    "tags": ["landmark", "water_source"]
+  },
   "bld_company_office": {
     "name": "Опечатанный офис Компании",
     "description": "Три этажа, заколоченные окна, на двери — выцветший синий ромб с каплей. На третьем этаже, говорят, спит ИИ «Прогнозист», и он всё ещё считает Компанию своим хозяином. Точный прогноз Пыли — там, если его оживить.",

@@ -13,6 +13,12 @@ extends Node
 const TICKS_PER_DAY := 300   # matches SimulationRunner (day_duration 300s @ 1 tick/s)
 const DAYS := 31             # one full Окно(18) → Пыль(11) cycle + tail
 
+var active_orch: GameOrchestrator  # exposed like main.gd so map-changing effects can find it
+
+
+func get_orchestrator() -> GameOrchestrator:
+	return active_orch
+
 
 func _ready() -> void:
 	EventBus.audit_completed.connect(func(passed: bool, score: int) -> void:
@@ -63,6 +69,23 @@ func _ready() -> void:
 	GameStateStore.set_building(Vector2i(4, 0), {"type": "bld_well_pump", "level": 0, "damaged": false, "has_issue": false})
 	orch3.coverage.invalidate()
 	print("two pumps: far %.2f | near %.2f (far house moved to its own pump)" % [orch3.coverage.water_pressure(far), orch3.coverage.water_pressure(Vector2i(-2, 1))])
+
+	# Scenario F: the old tower's fate changes the map through the real desk path.
+	print("\n=== F) OLD TOWER branch test ===")
+	var opts: Array = ContentDB.get_event_def("branch.old_tower").get("options", []) as Array
+	active_orch = GameOrchestrator.new()
+	active_orch.new_game(12345, "appointed_administrator")
+	var stone_before: float = GameStateStore.get_resource("res_stone")
+	var demolish: Dictionary = opts[2] as Dictionary
+	EventBus.desk_option_selected.emit("branch.old_tower", 2, demolish.get("effects", {}), demolish.get("cost", {}))
+	print("demolish: (2,1) = '%s', stone %+.0f" % [GameStateStore.get_building(Vector2i(2, 1)).get("type", "<none>"), GameStateStore.get_resource("res_stone") - stone_before])
+	active_orch = GameOrchestrator.new()
+	active_orch.new_game(12345, "appointed_administrator")
+	var probe := Vector2i(2, 6)  # 5 hexes from the tower, 7 from the pump: outside pump coverage
+	var covered_before: bool = active_orch.coverage.is_water_covered(probe)
+	var restore: Dictionary = opts[1] as Dictionary
+	EventBus.desk_option_selected.emit("branch.old_tower", 1, restore.get("effects", {}), restore.get("cost", {}))
+	print("restore:  (2,1) = '%s', cell %s water-covered %s → %s" % [GameStateStore.get_building(Vector2i(2, 1)).get("type", "<none>"), str(probe), str(covered_before), str(active_orch.coverage.is_water_covered(probe))])
 
 	# Sanity-check the style-flag plumbing (events don't fire in this headless harness).
 	GameStateStore.style_flags().clear()
