@@ -114,6 +114,15 @@ func _pressure_stats() -> Dictionary:
 	return result
 
 
+## Days of autonomy at the current draw — also the HUD's headline water figure (GDD §5).
+## INF when nothing draws water.
+func water_days() -> float:
+	var gross_day: float = _gross_daily_consumption()
+	if gross_day <= 0.0:
+		return INF
+	return GameStateStore.get_resource("res_water_stockpile") / gross_day
+
+
 func _gross_daily_consumption() -> float:
 	var water_mult: float = (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("water_mult", 1.0) as float
 	var per_tick: float = 0.0

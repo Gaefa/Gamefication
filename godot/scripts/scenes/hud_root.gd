@@ -252,13 +252,23 @@ func _update_resource_bar() -> void:
 	var water_ok: int = utility_stats.get("residential_watered", 0) as int
 	var power_total: int = utility_stats.get("power_users", 0) as int
 	var power_ok: int = utility_stats.get("power_covered", 0) as int
-	_utility_label.text = "%s  %s  %s:%d%s" % [
+	# Water "in days" is the headline survival figure (GDD §5, UX §3.2): green > 5, yellow 2–5, red < 2.
+	var days: float = WaterPanel.water_days()
+	_utility_label.text = "%s  %s  %s:%d (%s %s)%s" % [
 		Localization.t("ui.utility.title", "Utility"),
 		_coverage_ratio_text(Localization.t("ui.flow.water", "Water"), water_ok, water_total),
 		Localization.t("ui.city.water_reserve_short", "Reserve"),
 		int(_resource_value("res_water_stockpile", "water_res")),
+		"∞" if is_inf(days) else "%.1f" % days,
+		Localization.t("ui.water.days_short", "дн."),
 		_power_readout(),
 	]
+	var days_color := Color(0.65, 0.85, 1.0)
+	if days < 2.0:
+		days_color = Color(0.95, 0.35, 0.3)
+	elif days < 5.0:
+		days_color = Color(0.95, 0.8, 0.3)
+	_utility_label.add_theme_color_override("font_color", days_color)
 
 	# --- The two masters (the vice: League ↕ City) + pressure ---
 	# This is what the player is actually fighting: keeping both high is impossible.

@@ -215,6 +215,9 @@ func _primary_diagnostic(coord: Vector2i, bld: Dictionary) -> Dictionary:
 		return {"icon": "!", "label": "issue", "color": Color(1.0, 0.75, 0.15, 1.0)}
 	if _building_needs_road(def) and not _has_road_neighbor(coord):
 		return {"icon": "R", "label": "road", "color": Color(1.0, 0.2, 0.1, 1.0)}
+	# Shed by the power director (GDD §8.4: "нет электричества").
+	if not (bld.get("powered", true) as bool):
+		return {"icon": "E", "label": "power", "color": Color(0.95, 0.72, 0.1, 1.0)}
 
 	var data: Dictionary = _merged_building_data(type_id, bld.get("level", 0) as int)
 	var consumes: Dictionary = data.get("consumes", {})
@@ -224,7 +227,18 @@ func _primary_diagnostic(coord: Vector2i, bld: Dictionary) -> Dictionary:
 		var water_stock: float = GameStateStore.get_resource("res_water_stockpile")
 		if water_stock <= 0.0:
 			return {"icon": "W", "label": "stock", "color": Color(0.05, 0.35, 0.95, 1.0)}
+		if _is_weak_pressure(coord):
+			return {"icon": "P", "label": "pressure", "color": Color(0.45, 0.75, 1.0, 1.0)}
 	return {}
+
+
+func _is_weak_pressure(coord: Vector2i) -> bool:
+	## Weak напор on a far or overloaded branch — partial supply (GDD §6.1).
+	var scene: Node = get_tree().current_scene
+	if scene == null or not scene.has_method("get_orchestrator"):
+		return false
+	var orch: GameOrchestrator = scene.call("get_orchestrator") as GameOrchestrator
+	return orch != null and orch.coverage.water_pressure(coord) < 0.8
 
 
 func _merged_building_data(type_id: String, level: int) -> Dictionary:
