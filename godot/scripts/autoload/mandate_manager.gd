@@ -47,6 +47,12 @@ func _run_audit() -> void:
 		2: trust_delta = 5
 		1: trust_delta = -6
 		_: trust_delta = -15
+	# The patron measures against the neighbour (RivalManager): a clear gap moves trust too.
+	var gap: float = RivalManager.player_score() - RivalManager.rival_score()
+	if gap <= -RivalManager.AUDIT_EDGE:
+		trust_delta -= 4
+	elif gap >= RivalManager.AUDIT_EDGE:
+		trust_delta += 3
 	mandate["patron_trust"] = clampf((mandate.get("patron_trust", 50) as float) + float(trust_delta), 0.0, 100.0)
 
 	var passed: bool = score >= 2
@@ -81,11 +87,13 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 	var authority: String = "Директората" if directorate else "Лиги"
 	var trust_line: String = ("Доверие %s %+d." % [authority, trust_delta])
 	var title: String = "Проверка Директората — Комиссар" if directorate else "Аудит Лиги — Инспектор Койл"
+	var comparison: String = "Для сравнения — район %s: %d, ваш: %d." % [
+		RivalManager.NAME, int(RivalManager.rival_score()), int(RivalManager.player_score())]
 
 	return {
 		"runtime_id": "audit.result",
 		"title": title,
-		"body": "Проверка проведена.\n\n%s\n\n%s\n\n%s" % [checklist, verdict, trust_line],
+		"body": "Проверка проведена.\n\n%s\n\n%s\n\n%s\n\n%s" % [checklist, comparison, verdict, trust_line],
 		"options": [
 			{ "text": "Принять к сведению", "effects": {} }
 		],

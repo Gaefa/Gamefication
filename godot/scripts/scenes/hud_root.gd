@@ -277,11 +277,12 @@ func _update_resource_bar() -> void:
 	var support: float = GameStateStore.mandate().get("support", 50) as float
 	# Pressure director (GDD §15): four accumulators, each filling toward a crisis at 100.
 	var cats: Dictionary = GameStateStore.pressure().get("categories", {}) as Dictionary
-	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s %s %s %s %s" % [
+	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s   ·   %s %s %s %s %s" % [
 		Localization.t("ui.risk.league", "Лига"),
 		_meter_bb(trust),
 		Localization.t("ui.risk.city", "Город"),
 		_meter_bb(support),
+		_rival_bb(),
 		Localization.t("ui.risk.pressure", "Давление:"),
 		_pressure_bb(Localization.t("ui.pressure.food", "еда"), cats.get("food", 0.0) as float),
 		_pressure_bb(Localization.t("ui.pressure.water", "вода"), cats.get("water", 0.0) as float),
@@ -299,6 +300,19 @@ func _meter_bb(value: float) -> String:
 	else:
 		color = "#7fbf7f"
 	return "[color=%s]%.0f[/color]" % [color, value]
+
+
+func _rival_bb() -> String:
+	# The neighbour the patron measures you against (RivalManager): orange when behind, green when ahead.
+	var theirs: float = RivalManager.rival_score()
+	var ours: float = RivalManager.player_score()
+	var color: String = "#8a8a99"
+	if ours <= theirs - RivalManager.AUDIT_EDGE:
+		color = "#e6902b"
+	elif ours >= theirs + RivalManager.AUDIT_EDGE:
+		color = "#7fbf7f"
+	return "%s %.0f · [color=%s]%s %.0f[/color]" % [
+		Localization.t("ui.rival.name", "Восс"), theirs, color, Localization.t("ui.rival.you", "вы"), ours]
 
 
 func _pressure_bb(label: String, value: float) -> String:
