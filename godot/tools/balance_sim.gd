@@ -22,13 +22,18 @@ func get_orchestrator() -> GameOrchestrator:
 
 func _ready() -> void:
 	EventBus.audit_completed.connect(func(passed: bool, score: int) -> void:
-		print("      >> АУДИТ: score=%d/3 passed=%s → доверие=%.0f" % [score, str(passed), GameStateStore.mandate().get("patron_trust", 0) as float]))
+		print("      >> АУДИТ: score=%d/3 passed=%s → доверие=%.0f | Восс %.0f · вы %.0f" % [score, str(passed), GameStateStore.mandate().get("patron_trust", 0) as float, RivalManager.rival_score(), RivalManager.player_score()]))
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
-		print("      >> ФИНАЛ [%s]: %s (день %d, нас %d, сч %.0f)" % [
+		print("      >> ФИНАЛ [%s]: %s (день %d, нас %d, сч %.0f) | Восс %.0f · вы %.0f" % [
 			kind, eid,
 			GameStateStore.climate().get("total_day", 0) as int,
 			GameStateStore.population().get("total", 0) as int,
-			GameStateStore.population().get("happiness", 0.0) as float]))
+			GameStateStore.population().get("happiness", 0.0) as float,
+			RivalManager.rival_score(), RivalManager.player_score()]))
+	EventBus.season_day_advanced.connect(func(_sid: String, _d: int, _l: int) -> void:
+		if (GameStateStore.climate().get("total_day", 0) as int) == RivalManager.GRANT_DAY:
+			print("      >> ГРАНТ (день %d): Восс %.0f · вы %.0f → %s" % [RivalManager.GRANT_DAY, RivalManager.rival_score(), RivalManager.player_score(),
+				"Ржавой Норе" if RivalManager.player_score() >= RivalManager.rival_score() else "Восс"]))
 	EventBus.season_changed.connect(func(sid: String, _d: int, _l: int) -> void:
 		print("      >> СЕЗОН → %s" % sid))
 	_run("A) BOOTSTRAP (всё L0, неподготовлен)", false)

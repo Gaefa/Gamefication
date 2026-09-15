@@ -48,6 +48,7 @@ func reset(start_profile_id: String = "appointed_administrator") -> void:
 		"onboarding": { "shown": [] },
 		"style_flags": {},       # style_id → count, accumulated from decisions
 		"power": _default_power(),
+		"rival": _default_rival(),
 		"pressure": {
 			"index": 0.0,
 			"phase": "calm",
@@ -136,6 +137,11 @@ func power() -> Dictionary:
 	if not _state.has("power"):
 		_state["power"] = _default_power()
 	return _state.power
+
+func rival() -> Dictionary:
+	if not _state.has("rival"):
+		_state["rival"] = _default_rival()
+	return _state.rival
 
 func add_style_flag(flag_id: String, amount: int = 1) -> void:
 	if flag_id == "":
@@ -386,6 +392,8 @@ func _ensure_runtime_defaults() -> void:
 		_state["style_flags"] = {}
 	if not _state.has("power"):
 		_state["power"] = _default_power()
+	if not _state.has("rival"):
+		_state["rival"] = _default_rival()
 
 
 func _default_governance() -> Dictionary:
@@ -402,6 +410,15 @@ func _default_power() -> Dictionary:
 		"generation": 0.0,
 		"demand": 0.0,
 		"tier_powered": { "priority": true, "secondary": true, "tertiary": true },
+	}
+
+
+func _default_rival() -> Dictionary:
+	return {
+		"id": "mara_voss",       # RivalManager: the neighbour the patron measures you against
+		"score": 55.0,           # district score 0–100, drifts with the season
+		"last_day": 0,           # last game day already applied (load re-emits the day signal)
+		"grant_decided": false,  # the Dust grant goes to one of the two districts, once
 	}
 
 

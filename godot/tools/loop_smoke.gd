@@ -93,5 +93,6 @@ func _finish(result: String) -> void:
 	print((EndingManager.get("_theses_label") as RichTextLabel).get_parsed_text())
 	var entries: Array = GameStateStore.events().get("log", []) as Array
 	print("журнал событий: %d записей; последняя: %s" % [entries.size(), str(entries.back()) if not entries.is_empty() else "—"])
+	print("соперник: Восс %.0f · вы %.0f; грант решён: %s" % [RivalManager.rival_score(), RivalManager.player_score(), str(GameStateStore.rival().get("grant_decided", false))])
 	set_physics_process(false)
 	get_tree().quit()

@@ -115,7 +115,7 @@ func _trigger(ending_id: String) -> void:
 	_ended = true
 	_active = false
 	SimulationRunner.paused = true
-	_show_finale(def)
+	_show_finale(def, ending_id)
 	EventBus.ending_triggered.emit(ending_id, def.get("kind", "") as String)
 	if (def.get("kind", "") as String) == "win":
 		EventBus.win_condition_met.emit()
@@ -197,14 +197,14 @@ func _build_ui() -> void:
 	vbox.add_child(_menu_btn)
 
 
-func _show_finale(def: Dictionary) -> void:
+func _show_finale(def: Dictionary, ending_id: String) -> void:
 	var kind: String = def.get("kind", "") as String
 	_title_label.text = def.get("title", "Финал") as String
 	_title_label.add_theme_color_override(
 		"font_color",
 		Color(0.6, 0.9, 0.6) if kind == "win" else Color(0.9, 0.55, 0.5)
 	)
-	_body_label.text = (def.get("body", "") as String) + _style_epilogue()
+	_body_label.text = (def.get("body", "") as String) + _replacement_epilogue(ending_id) + _style_epilogue()
 	_theses_label.text = _theses()
 	_layer.visible = true
 
@@ -240,6 +240,16 @@ func _theses() -> String:
 	var pop: int = GameStateStore.population().get("total", 0) as int
 	lines.append("• [b]Жители:[/b] было до %d, осталось %d" % [maxi(_peak_pop, pop), pop])
 	return "\n\n".join(lines)
+
+
+const RECALL_ENDINGS := ["ending.lose.isolation", "ending.lose.commissar", "ending.lose.convoy"]
+
+
+func _replacement_epilogue(ending_id: String) -> String:
+	# The recall has a face (LORE_BIBLE §12): the neighbour the patron measured you against.
+	if not RECALL_ENDINGS.has(ending_id):
+		return ""
+	return "\n\n[i]Через неделю в ваш кабинет въехала %s из соседнего района — со своим расписанием воды и своими печатями.[/i]" % RivalManager.NAME
 
 
 func _style_epilogue() -> String:
