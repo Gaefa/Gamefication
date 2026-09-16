@@ -23,6 +23,10 @@ func execute(ctx: Dictionary) -> void:
 	for res_id: String in build_cost:
 		var refund: float = (build_cost[res_id] as float) * 0.1
 		GameStateStore.add_resource(res_id, refund)
+	# Ruins of the old owner yield salvage instead (content: "salvage").
+	var salvage: Dictionary = def.get("salvage", {})
+	for res_id: String in salvage:
+		GameStateStore.add_resource(res_id, salvage[res_id] as float)
 
 	GameStateStore.remove_building(coord)
 	spatial.remove(coord, type_id)

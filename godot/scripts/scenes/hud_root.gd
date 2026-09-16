@@ -56,6 +56,7 @@ var _minimap_camera: Camera2D
 
 # --- Menu State ---
 var _start_menu_mode: String = "main" # "main", "campaign", "sandbox"
+var _start_dim: ColorRect
 
 
 func _ready() -> void:
@@ -1181,6 +1182,14 @@ func toggle_help() -> void:
 # ===========================================================
 
 func _build_start_panel() -> void:
+	# Dim the (already booted) map behind the menu so the menu reads as a menu, not a popup.
+	_start_dim = ColorRect.new()
+	_start_dim.color = Color(0.03, 0.04, 0.05, 0.86)
+	_start_dim.set_anchors_preset(PRESET_FULL_RECT)
+	_start_dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_start_dim)
+	OnboardingManager.suppressed = true
+
 	_start_panel = PanelContainer.new()
 	_start_panel.set_anchors_preset(PRESET_CENTER)
 	_start_panel.size = Vector2(620, 500)
@@ -1446,6 +1455,8 @@ func _start_new_run(profile_id: String) -> void:
 func _close_start_panel() -> void:
 	_start_visible = false
 	_start_panel.visible = false
+	_start_dim.visible = false
+	OnboardingManager.suppressed = false
 
 
 func _on_new_game_started() -> void:
