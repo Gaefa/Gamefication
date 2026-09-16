@@ -162,3 +162,29 @@ func _bootstrap_campaign_hub() -> void:
 			"damaged": false,
 			"has_issue": false,
 		})
+	_bootstrap_company_traces()
+
+
+## The district is not a clean building site (GDD §3.1): the Company's dead pipeline runs
+## out from the tower, and its ruined depots stand where the pipes used to feed. Fixed
+## layout — no RNG, so the balance sims and the RNG save state are untouched.
+func _bootstrap_company_traces() -> void:
+	var pipes: Array = [
+		[[2, 1], [3, 1], [4, 1], [5, 0], [6, 0], [7, -1], [8, -1]],
+		[[2, 1], [2, 2], [1, 3], [1, 4], [0, 5], [0, 6]],
+		[[2, 1], [3, 0], [4, -1], [4, -2], [5, -3], [5, -4], [6, -5]],
+	]
+	GameStateStore.world()["decor"] = { "pipes": pipes }
+	for cell: Array in [[8, -1], [0, 6], [6, -5], [-4, 2], [-3, -2]]:
+		var coord := Vector2i(cell[0] as int, cell[1] as int)
+		if GameStateStore.has_building(coord):
+			continue
+		var terrain_def: Dictionary = ContentDB.get_terrain_def(hex_grid.get_terrain_at(coord))
+		if not (terrain_def.get("buildable", true) as bool):
+			continue
+		GameStateStore.set_building(coord, {
+			"type": "bld_company_ruin",
+			"level": 0,
+			"damaged": false,
+			"has_issue": false,
+		})

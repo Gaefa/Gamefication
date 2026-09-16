@@ -440,28 +440,28 @@
     "ru": "Запас воды"
   },
   "terrain.grass.label": {
-    "en": "Grass",
-    "ru": "Трава"
+    "en": "Dusty ground",
+    "ru": "Пыльная земля"
   },
   "terrain.water.label": {
-    "en": "Water",
-    "ru": "Вода"
+    "en": "Dry riverbed",
+    "ru": "Сухое русло"
   },
   "terrain.sand.label": {
-    "en": "Sand",
-    "ru": "Песок"
+    "en": "Salt flat",
+    "ru": "Солончак"
   },
   "terrain.hill.label": {
-    "en": "Hill",
-    "ru": "Холмы"
+    "en": "Clay hill",
+    "ru": "Глинистый холм"
   },
   "terrain.forest.label": {
-    "en": "Forest",
-    "ru": "Лес"
+    "en": "Dry scrub",
+    "ru": "Сухой кустарник"
   },
   "terrain.rock.label": {
     "en": "Rock",
-    "ru": "Скалы"
+    "ru": "Скальник"
   },
   "city_level.1.name": {
     "en": "Settlement",

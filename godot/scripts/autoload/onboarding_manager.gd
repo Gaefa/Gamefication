@@ -17,6 +17,8 @@ const HINTS := {
 
 var _queue: Array[String] = []
 var _active: String = ""
+## Set by the HUD while the start menu is open, so the first hint waits for the game proper.
+var suppressed: bool = false
 
 var _layer: CanvasLayer
 var _label: Label
@@ -51,8 +53,8 @@ func _offer(hint_id: String) -> void:
 func _flush() -> void:
 	if _active != "" or _queue.is_empty():
 		return
-	if SimulationRunner.paused:
-		return  # don't pop a hint over the desk / crisis / finale
+	if SimulationRunner.paused or suppressed:
+		return  # don't pop a hint over the desk / crisis / finale / start menu
 	_active = _queue.pop_front()
 	_label.text = HINTS[_active] as String
 	_layer.visible = true
