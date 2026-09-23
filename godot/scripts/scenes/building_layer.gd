@@ -43,6 +43,9 @@ func _draw() -> void:
 		var road_bld: Dictionary = GameStateStore.get_building(coord)
 		_draw_road_tile(coord, road_bld)
 
+	# Painter's order: tall isometric sprites overlap the row behind them.
+	building_coords.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		return HexCoords.axial_to_pixel(a).y < HexCoords.axial_to_pixel(b).y)
 	for coord: Vector2i in building_coords:
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		var type_id: String = bld.get("type", "") as String
@@ -61,6 +64,16 @@ func _draw() -> void:
 		color = color.lerp(Color.WHITE, level * 0.04)
 
 		var center: Vector2 = HexCoords.axial_to_pixel(coord)
+
+		# Real sprite: no coloured hex under it — just a ground shadow, the sprite, and pins.
+		if _draw_building_sprite(center, type_id, level, damaged):
+			if damaged:
+				_draw_crack(center)
+			elif has_issue:
+				_draw_alert(center)
+			if level > 0:
+				_draw_level_dots(center, level)
+			continue
 
 		# Hex fill
 		var fill_pts := PackedVector2Array()
@@ -142,9 +155,6 @@ func _draw_road_tile(coord: Vector2i, bld: Dictionary) -> void:
 # ============================================================
 
 func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Color) -> void:
-	if _draw_building_sprite(c, type_id, level):
-		return
-
 	match type_id:
 		"bld_admin_post":
 			_draw_bank(c)
@@ -208,7 +218,12 @@ func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Co
 				type_id.left(1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 20, 14, Color.WHITE)
 
 
-func _draw_building_sprite(c: Vector2, type_id: String, level: int) -> bool:
+## Sprite width is the hex width; the isometric footprint diamond (2:1, at the sprite's
+## bottom) is centred on the hex, so tall buildings rise above the cell instead of over it.
+const SPRITE_WIDTH_FACTOR := 2.25
+
+
+func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: bool = false) -> bool:
 	var texture: Texture2D = _get_building_sprite(type_id, level)
 	if texture == null:
 		return false
@@ -216,12 +231,25 @@ func _draw_building_sprite(c: Vector2, type_id: String, level: int) -> bool:
 	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
 		return false
 
-	var max_width: float = HexCoords.HEX_SIZE * 1.85
-	var scale_x: float = max_width / tex_size.x
-	var scale_y: float = scale_x * HexCoords.ISO_Y
-	var draw_size := Vector2(tex_size.x * scale_x, tex_size.y * scale_y)
-	var rect := Rect2(c - draw_size * 0.5, draw_size)
-	draw_texture_rect(texture, rect, false)
+	var width: float = HexCoords.HEX_SIZE * SPRITE_WIDTH_FACTOR
+	var scale: float = width / tex_size.x
+	var draw_size := Vector2(width, tex_size.y * scale)
+	var anchor := Vector2(width * 0.5, draw_size.y - width * 0.25)  # footprint diamond centre
+	var rect := Rect2(c - anchor, draw_size)
+
+	# Ground shadow so the sprite sits on the cell.
+	var shadow := PackedVector2Array()
+	for p: Vector2 in _hex_polygon(HexCoords.HEX_SIZE * 0.9):
+		shadow.append(c + p + Vector2(0.0, 2.0))
+	draw_colored_polygon(shadow, Color(0.0, 0.0, 0.0, 0.18))
+
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	var tint := Color.WHITE
+	if def.has("sprite_tint"):
+		tint = Color(def.get("sprite_tint", "ffffff") as String)
+	if damaged:
+		tint = tint.lerp(Color(0.85, 0.3, 0.25), 0.45)
+	draw_texture_rect(texture, rect, false, tint)
 	return true
 
 
@@ -246,10 +274,51 @@ func _get_building_sprite(type_id: String, level: int) -> Texture2D:
 				texture = ImageTexture.create_from_image(image)
 	elif ResourceLoader.exists(sprite_path):
 		texture = ResourceLoader.load(sprite_path) as Texture2D
+		# The tier PNGs carry a lot of empty canvas above the building; trim it so the
+		# footprint anchor (bottom of the image) is the real footprint.
+		if texture != null:
+			var image: Image = texture.get_image()
+			if image != null:
+				var used: Rect2i = _main_silhouette_rect(image)
+				if used.size.x > 0 and used.size.y > 0:
+					texture = ImageTexture.create_from_image(image.get_region(used))
 	if texture == null:
 		return null
 	_sprite_cache[sprite_path] = texture
 	return texture
+
+
+## Bounding box of the building itself. Some tier PNGs carry a sliver of a second building
+## at the right edge; walking outward from the centre column stops at the first empty column,
+## which separates the two.
+func _main_silhouette_rect(image: Image) -> Rect2i:
+	var w: int = image.get_width()
+	var h: int = image.get_height()
+	var occupied: Array[bool] = []
+	occupied.resize(w)
+	for x: int in w:
+		occupied[x] = false
+		for y: int in h:
+			if image.get_pixel(x, y).a > 0.05:
+				occupied[x] = true
+				break
+	var left: int = w / 2
+	var right: int = w / 2
+	while left > 0 and occupied[left - 1]:
+		left -= 1
+	while right < w - 1 and occupied[right + 1]:
+		right += 1
+	var top: int = h
+	var bottom: int = -1
+	for y: int in h:
+		for x: int in range(left, right + 1):
+			if image.get_pixel(x, y).a > 0.05:
+				top = mini(top, y)
+				bottom = maxi(bottom, y)
+				break
+	if bottom < top:
+		return image.get_used_rect()
+	return Rect2i(left, top, right - left + 1, bottom - top + 1)
 
 
 ## House: triangle roof + square body

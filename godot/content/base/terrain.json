@@ -2,42 +2,42 @@
   "types": {
     "0": {
       "id": "grass",
-      "label": "Grass",
+      "label": "Dusty ground",
       "buildable": true,
       "cost_multiplier": 1,
-      "color": "6ab04c",
+      "color": "b3a06a",
       "label_key": "terrain.grass.label"
     },
     "1": {
       "id": "water",
-      "label": "Water",
+      "label": "Dry riverbed",
       "buildable": false,
       "cost_multiplier": 0,
-      "color": "4a90d9",
+      "color": "8c7a5c",
       "label_key": "terrain.water.label"
     },
     "2": {
       "id": "sand",
-      "label": "Sand",
+      "label": "Salt flat",
       "buildable": true,
       "cost_multiplier": 1.1,
-      "color": "d4b545",
+      "color": "d9c99a",
       "label_key": "terrain.sand.label"
     },
     "3": {
       "id": "hill",
-      "label": "Hill",
+      "label": "Clay hill",
       "buildable": true,
       "cost_multiplier": 1.5,
-      "color": "8b7355",
+      "color": "9c6b4e",
       "label_key": "terrain.hill.label"
     },
     "4": {
       "id": "forest",
-      "label": "Forest",
+      "label": "Dry scrub",
       "buildable": true,
       "cost_multiplier": 1.3,
-      "color": "2d8a4e",
+      "color": "737a44",
       "label_key": "terrain.forest.label"
     },
     "5": {
@@ -45,7 +45,7 @@
       "label": "Rock",
       "buildable": true,
       "cost_multiplier": 2,
-      "color": "7c7c7c",
+      "color": "6e6560",
       "label_key": "terrain.rock.label"
     }
   }

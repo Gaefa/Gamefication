@@ -3,16 +3,10 @@ extends Node2D
 ## Redraws when viewport resizes or camera moves.
 
 var _hex_grid: HexGrid
+var _colors: Dictionary = {}  # terrain_id → Color, from terrain.json (Rust Pit palette)
 
-# Terrain colors (matching terrain.json)
-const COLORS: Dictionary = {
-	0: Color("6ab04c"),  # grass
-	1: Color("4a90d9"),  # water
-	2: Color("d4b545"),  # sand
-	3: Color("8b7355"),  # hill
-	4: Color("2d8a4e"),  # forest
-	5: Color("7c7c7c"),  # rock
-}
+const PIPE_COLOR := Color("7a4a2e")
+const PIPE_JOINT := Color("4e2f1c")
 
 
 func _ready() -> void:
@@ -35,14 +29,40 @@ func _draw() -> void:
 	var hex_points := _hex_polygon()
 	for coord: Vector2i in _hex_grid.all_coords():
 		var terrain_id: int = _hex_grid.get_terrain_at(coord)
-		var color: Color = COLORS.get(terrain_id, Color.GRAY)
+		var color: Color = _terrain_color(terrain_id)
 		var center: Vector2 = HexCoords.axial_to_pixel(coord)
 		var translated_pts: PackedVector2Array = PackedVector2Array()
 		for p: Vector2 in hex_points:
 			translated_pts.append(center + p)
 		draw_colored_polygon(translated_pts, color)
-		# Outline
-		draw_polyline(translated_pts, Color(0.2, 0.2, 0.2, 0.3), 1.0)
+		# Outline — faint, warm, so the grid reads as cracked ground rather than a chessboard.
+		draw_polyline(translated_pts, Color(0.25, 0.18, 0.1, 0.22), 1.0)
+	_draw_old_pipes()
+
+
+func _terrain_color(terrain_id: int) -> Color:
+	if not _colors.has(terrain_id):
+		var def: Dictionary = ContentDB.get_terrain_def(terrain_id)
+		_colors[terrain_id] = Color(def.get("color", "7c7c7c") as String) if not def.is_empty() else Color.GRAY
+	return _colors[terrain_id] as Color
+
+
+## Traces of the old water operator (GDD §3.1 «ржавые трубы»): the Company's dead pipeline,
+## laid out once at bootstrap in world().decor.pipes and drawn as a rusty segmented line.
+func _draw_old_pipes() -> void:
+	var decor: Dictionary = GameStateStore.world().get("decor", {}) as Dictionary
+	var pipes: Array = decor.get("pipes", []) as Array
+	for run: Variant in pipes:
+		var pts: PackedVector2Array = PackedVector2Array()
+		for cell: Variant in run as Array:
+			var arr: Array = cell as Array
+			pts.append(HexCoords.axial_to_pixel(Vector2i(int(arr[0]), int(arr[1]))))
+		if pts.size() < 2:
+			continue
+		draw_polyline(pts, PIPE_JOINT, 6.0)
+		draw_polyline(pts, PIPE_COLOR, 3.5)
+		for p: Vector2 in pts:
+			draw_circle(p, 3.5, PIPE_JOINT)
 
 
 func _hex_polygon() -> PackedVector2Array:
