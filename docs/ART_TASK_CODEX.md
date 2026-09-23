@@ -52,7 +52,7 @@ neon, people, vehicles, second building, cropped object at edge, white backgroun
 
 Имя файла → `godot/assets/buildings/tiers/<имя>.png`. Промпт — строка после БАЗЫ.
 
-### P1 — здания без арта (13 файлов)
+### P1 — здания без арта (14 файлов)
 
 | Файл | Промпт |
 |---|---|
@@ -162,6 +162,14 @@ PNG RGBA **512×512**, ромб основания 2:1 в нижней част�
 ## 4. Проверка (обязательно после каждого этапа)
 
 Godot: `~/Downloads/Godot.app/Contents/MacOS/Godot` (macOS) или как в CI `.github/workflows/godot-export.yml`.
+
+**Шаг 0 — один раз в свежем клоне прогреть импорт**, иначе первый запуск сыплет `Parse Error: Identifier "SaveValidator" not declared` и `Failed to instantiate an autoload` — это не ошибка кода, а отсутствующий кэш классов (`godot/.godot/` в .gitignore):
+
+```bash
+Godot --headless --path godot --editor --quit
+```
+
+После этого проверки ниже должны быть чистыми. Для Pillow используй venv (`python3 -m venv .venv && .venv/bin/pip install pillow`), системный python без него.
 
 ```bash
 # ошибки скриптов (должно быть пусто)
