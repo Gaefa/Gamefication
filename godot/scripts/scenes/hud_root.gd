@@ -862,13 +862,9 @@ func _build_info_panel() -> void:
 
 
 func _get_welcome_text() -> String:
-	return Localization.t("ui.welcome.text", """Inspect: click a tile
-Camera: WASD
-Zoom: mouse wheel
-Build: LMB select
-Cancel: RMB / Esc
-Menus: G Gov, O Options
-Help/Ranges: H Help, V Ranges""")
+	return Localization.t("ui.welcome.text", "Осмотр: клик по клетке
+Камера: WASD · Зум: колесо
+Пауза: Пробел · H — справка")
 
 
 func _on_selection_changed(coord: Vector2i) -> void:
@@ -1147,29 +1143,7 @@ func _build_help_panel() -> void:
 
 
 func _get_help_text() -> String:
-	return Localization.t("ui.help.text", """Quick start
-1. Pick a category in the right build panel.
-2. Build Roads first, then Huts, Farms and Lumber Mills.
-3. Select a building to see its needs and next action.
-4. Use V to show service ranges for the selected building.
-
-Hotkeys
-WASD - camera
-Mouse wheel - zoom
-LMB - select/build
-RMB or Esc - cancel build mode
-G - governance
-O - options
-H - help
-V - ranges
-C - water panel (reserve / coverage)
-K - season & forecast
-J - diary of the previous administrator
-U/R/B - upgrade/repair/bulldoze selected building
-
-Rule of thumb
-Roads connect production. Water and power are local coverage.
-Pressure rises when the city grows or problems stay unresolved.""")
+	return Localization.t("ui.help.text", "H — справка. C вода · K сезон · J дневник · N журнал · Пробел пауза · 1/2/3 скорость.")
 
 
 func toggle_help() -> void:
@@ -1318,25 +1292,24 @@ func _rebuild_start_panel() -> void:
 
 
 func _build_main_menu_options(container: Control) -> void:
+	# What the game is, in the player's first ten seconds (UX_BIBLE §1).
 	var desc := Label.new()
-	desc.text = "Welcome to the Mandate. Choose your path to build and survive."
-	desc.add_theme_font_size_override("font_size", 12)
+	desc.text = Localization.t("ui.start.pitch", "Mandate Cities — градостроитель о власти взаймы.")
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.add_theme_font_size_override("font_size", 13)
+	desc.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78))
 	container.add_child(desc)
 
 	var btn_campaign := Button.new()
-	btn_campaign.text = Localization.t("ui.menu.campaign", "NEW CAMPAIGN")
+	btn_campaign.text = Localization.t("ui.menu.campaign", "НОВАЯ ИГРА")
 	btn_campaign.custom_minimum_size.y = 50
 	btn_campaign.pressed.connect(func(): _start_menu_mode = "campaign"; _rebuild_start_panel())
 	container.add_child(btn_campaign)
 
-	var btn_sandbox := Button.new()
-	btn_sandbox.text = Localization.t("ui.menu.sandbox", "SANDBOX MODE")
-	btn_sandbox.custom_minimum_size.y = 50
-	btn_sandbox.pressed.connect(func(): _start_menu_mode = "sandbox"; _rebuild_start_panel())
-	container.add_child(btn_sandbox)
+	# Sandbox is hidden: it only started the default profile and confused testers.
 
 	var btn_continue := Button.new()
-	btn_continue.text = Localization.t("ui.menu.continue", "CONTINUE CITY")
+	btn_continue.text = Localization.t("ui.menu.continue", "ПРОДОЛЖИТЬ")
 	btn_continue.custom_minimum_size.y = 50
 	btn_continue.disabled = not SaveService.has_save(0)
 	btn_continue.pressed.connect(_on_continue_pressed)
@@ -1352,8 +1325,9 @@ func _on_continue_pressed() -> void:
 
 func _build_campaign_list(container: Control) -> void:
 	var intro := Label.new()
-	intro.text = Localization.t("ui.start.campaign_intro", "Select a scenario to begin your mandate.")
-	intro.add_theme_font_size_override("font_size", 11)
+	intro.text = Localization.t("ui.start.campaign_intro", "Выберите, кто вас назначил. Для первой игры берите мандат Лиги.")
+	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	intro.add_theme_font_size_override("font_size", 12)
 	intro.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	container.add_child(intro)
 
@@ -1365,8 +1339,19 @@ func _build_campaign_list(container: Control) -> void:
 	list.add_theme_constant_override("separation", 8)
 	scroll.add_child(list)
 
-	for profile_id: String in ContentDB.get_start_profile_ids():
+	# Appointed (patron) starts first — that is the chapter; founder starts are experimental.
+	var ids: Array = ContentDB.get_start_profile_ids()
+	ids.sort_custom(func(a: String, b: String) -> bool:
+		return _profile_rank(a) < _profile_rank(b))
+	for profile_id: String in ids:
 		list.add_child(_build_start_profile_row(profile_id))
+
+
+func _profile_rank(profile_id: String) -> int:
+	if profile_id == "appointed_administrator":
+		return 0
+	var path: String = ContentDB.get_start_profile_def(profile_id).get("start_path", "appointed") as String
+	return 1 if path == "appointed" else 2
 
 
 func _build_sandbox_options(container: Control) -> void:
@@ -1414,6 +1399,18 @@ func _build_start_profile_row(profile_id: String) -> Control:
 	meta.add_theme_font_size_override("font_size", 10)
 	meta.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
 	text_box.add_child(meta)
+
+	var badge_text: String = ""
+	if profile_id == "appointed_administrator":
+		badge_text = Localization.t("ui.start.recommended", "Рекомендуется для первой игры")
+	elif (def.get("start_path", "appointed") as String) != "appointed":
+		badge_text = Localization.t("ui.start.experimental", "Экспериментальный старт")
+	if badge_text != "":
+		var badge := Label.new()
+		badge.text = badge_text
+		badge.add_theme_font_size_override("font_size", 10)
+		badge.add_theme_color_override("font_color", Color(0.6, 0.9, 0.6) if profile_id == "appointed_administrator" else Color(0.7, 0.7, 0.75))
+		text_box.add_child(badge)
 
 	var btn := Button.new()
 	btn.text = Localization.t("ui.start.begin", "Begin")

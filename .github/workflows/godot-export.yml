@@ -10,7 +10,7 @@ env:
   GODOT_VERSION: "4.6.1"
   GODOT_STATUS: "stable"
   PROJECT_DIR: "godot"
-  EXPORT_NAME: "PixelCityBuilder"
+  EXPORT_NAME: "MandateCities"
 
 jobs:
   windows-exe:
@@ -81,7 +81,7 @@ jobs:
           rm -rf "${PROJECT_DIR}/export/macos/app"
           mkdir -p "${PROJECT_DIR}/export/macos/app"
           unzip -q "${PROJECT_DIR}/export/macos/${EXPORT_NAME}.zip" -d "${PROJECT_DIR}/export/macos/app"
-          hdiutil create -volname "Pixel City Builder" -srcfolder "${PROJECT_DIR}/export/macos/app" -ov -format UDZO "${PROJECT_DIR}/export/macos/${EXPORT_NAME}-${SHORT_SHA}.dmg"
+          hdiutil create -volname "Mandate Cities" -srcfolder "${PROJECT_DIR}/export/macos/app" -ov -format UDZO "${PROJECT_DIR}/export/macos/${EXPORT_NAME}-${SHORT_SHA}.dmg"
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4

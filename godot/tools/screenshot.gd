@@ -26,12 +26,12 @@ func _ready() -> void:
 func _process(_dt: float) -> void:
 	_frames += 1
 	if _frames == 40:
-		_save("menu.png")
+		await _save("menu.png")
 		var hud: Node = get_tree().current_scene.get("_hud")
 		if hud != null and hud.has_method("_close_start_panel"):
 			hud.call("_close_start_panel")
 	elif _frames == 100:
-		_save("map.png")
+		await _save("map.png")
 		if _capture_dust:
 			# Visual fixture only: redraw via the same signal emitted by SeasonSystem.
 			GameStateStore.climate()["season_id"] = "season_dust"
@@ -39,11 +39,15 @@ func _process(_dt: float) -> void:
 		else:
 			get_tree().quit()
 	elif _frames == 160 and _capture_dust:
-		_save("dust.png")
+		await _save("dust.png")
 		get_tree().quit()
 
 
 func _save(name: String) -> void:
 	var path: String = _dir.path_join(name)
+	# An occluded window (the tool usually runs behind other apps) stops presenting frames,
+	# so the viewport texture would still hold the first frame. Force one real draw.
+	RenderingServer.force_draw(true)
+	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(path)
 	print("SHOT saved: ", path)
