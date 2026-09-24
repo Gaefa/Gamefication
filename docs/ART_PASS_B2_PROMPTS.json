@@ -1,0 +1,71 @@
+{
+  "generator": "Built-in GPT Image (model identifier not exposed)",
+  "references": [
+    "godot/assets/buildings/tiers/hut_t2.png",
+    "godot/assets/buildings/tiers/water_tower_t2.png",
+    "godot/assets/buildings/tiers/power_t1.png",
+    "godot/assets/buildings/tiers/farm_t1.png"
+  ],
+  "assets": [
+    {
+      "name": "tile_dust",
+      "parent": null,
+      "prompt": "Use case: stylized-concept. Asset: tile_dust.\nTop-down isometric game terrain tile: a flat-top hexagon filling the canvas width, corners outside the hexagon fully transparent.\nHand-painted texture matching the attached reference images' palette (ochre, dusty khaki, rust, grey).\nEven lighting, no objects, no buildings, no text, edges soft enough to tile with neighbours.\nInput images 1–4 are PALETTE AND PAINTERLY STYLE references ONLY. Do not draw their buildings, ground diamonds, barrels or props.\nA single flat SIX-SIDED hexagonal surface viewed from above. Horizontal top and bottom edges, left and right tips centered vertically. No raised slab, no thickness, no vertical side wall, no rim or outline, no surrounding ground or cast shadow. Texture fills the hex all the way to its boundary. Calm, fine-scale details for a 64px-wide in-game tile, not oversized cracks or rocks. Real transparent alpha outside the six sides, never a checkerboard, no background color, halo, text or border. Generate a high-quality square PNG with one centered hexagon for later exact grid sizing to 256x192.\nTerrain: Trampled ochre dirt, fine cracks, a few small pebbles.\nMuted sandy ochre with subtle surface detail, low contrast, no vegetation."
+    },
+    {
+      "name": "tile_dust_dust",
+      "parent": "tile_dust",
+      "prompt": "Use case: lighting-weather. Asset: tile_dust_dust. Images 1–4 are palette/style references ONLY. Image 5 is the exact terrain tile to EDIT.\nSame tile under a dust storm: warm rusty haze over everything, details softened, shadows shorter.\nKeep every crack and pebble, top-down viewpoint, six-sided flat-top hex outline, composition and scale from image 5. Change only weather/color treatment: warm rusty airborne dust dulls contrast and veils surface detail. No objects, no buildings, no text, no outline, no new cracks, no raised side walls. Retain actual PNG transparency outside the hex; haze belongs ONLY INSIDE the hex, no surrounding cloud or halo. One centered hexagon, square high-quality RGBA PNG."
+    },
+    {
+      "name": "tile_dry_bed",
+      "parent": null,
+      "prompt": "Use case: stylized-concept. Asset: tile_dry_bed.\nTop-down isometric game terrain tile: a flat-top hexagon filling the canvas width, corners outside the hexagon fully transparent.\nHand-painted texture matching the attached reference images' palette (ochre, dusty khaki, rust, grey).\nEven lighting, no objects, no buildings, no text, edges soft enough to tile with neighbours.\nInput images 1–4 are PALETTE AND PAINTERLY STYLE references ONLY. Do not draw their buildings, ground diamonds, barrels or props.\nA single flat SIX-SIDED hexagonal surface viewed from above. Horizontal top and bottom edges, left and right tips centered vertically. No raised slab, no thickness, no vertical side wall, no rim or outline, no surrounding ground or cast shadow. Texture fills the hex all the way to its boundary. Calm, fine-scale details for a 64px-wide in-game tile, not oversized cracks or rocks. Real transparent alpha outside the six sides, never a checkerboard, no background color, halo, text or border. Generate a high-quality square PNG with one centered hexagon for later exact grid sizing to 256x192.\nTerrain: Dry riverbed: cracked clay plates, lighter in the middle, darker rim.\nGrey beige dried clay, visibly broader polygonal cracking than trampled dirt, no water, no vegetation. Darker rim means slight color variation of the flat surface, NOT a border or vertical wall."
+    },
+    {
+      "name": "tile_dry_bed_dust",
+      "parent": "tile_dry_bed",
+      "prompt": "Use case: lighting-weather. Asset: tile_dry_bed_dust. Images 1–4 are palette/style references ONLY. Image 5 is the exact terrain tile to EDIT.\nSame tile under a dust storm: warm rusty haze over everything, details softened, shadows shorter.\nKeep exact cracked clay plates and all fissure positions, lighter center/darker rim, top-down camera, six-sided flat-top hex outline, composition and scale from image 5. Change only weather and colors: muted rusty orange dusty veil, lower contrast. No objects, buildings, water, plants, text, borders or thickness. Real transparent alpha outside the hex, haze ONLY INSIDE the hex, no surrounding halo or colored background. Single hexagon, square high-quality RGBA PNG."
+    },
+    {
+      "name": "tile_salt_flat",
+      "parent": null,
+      "prompt": "Use case: stylized-concept. Asset: tile_salt_flat.\nTop-down isometric game terrain tile: a flat-top hexagon filling the canvas width, corners outside the hexagon fully transparent.\nHand-painted texture matching the attached reference images' palette (ochre, dusty khaki, rust, grey).\nEven lighting, no objects, no buildings, no text, edges soft enough to tile with neighbours.\nInput images 1–4 are PALETTE AND PAINTERLY STYLE references ONLY. Do not draw their buildings, ground diamonds, barrels or props.\nA single flat SIX-SIDED hexagonal surface viewed from above. Horizontal top and bottom edges, left and right tips centered vertically. No raised slab, no thickness, no vertical side wall, no rim or outline, no surrounding ground or cast shadow. Texture fills the hex all the way to its boundary. Calm, fine-scale details for a 64px-wide in-game tile, not oversized cracks or rocks. Real transparent alpha outside the six sides, never a checkerboard, no background color, halo, text or border. Generate a high-quality square PNG with one centered hexagon for later exact grid sizing to 256x192.\nTerrain: Salt flat: almost white crust with grey streaks.\nPale warm off-white dry salt crust with grey mineral streaks and subtle fine crazing, no snow, no ice, no large crystals, no vegetation. Flat surface remains fully opaque inside the six-sided tile."
+    },
+    {
+      "name": "tile_salt_flat_dust",
+      "parent": "tile_salt_flat",
+      "prompt": "Use case: lighting-weather. Asset: tile_salt_flat_dust. Images 1–4 are palette/style references ONLY. Image 5 is the exact terrain tile to EDIT.\nSame tile under a dust storm: warm rusty haze over everything, details softened, shadows shorter.\nKeep the same salt crust and exact grey streaks and fine cracks, same top-down camera and hex shape. Warm pale rusty beige dusty veil with lower contrast; still the lightest terrain type. No snow, ice, crystals, buildings, objects, vegetation, borders or text. Real transparent alpha outside the hex; haze ONLY INSIDE the hex, no surrounding cloud, halo or background color. Single hex, square high-quality RGBA PNG."
+    },
+    {
+      "name": "tile_clay_hill",
+      "parent": null,
+      "prompt": "Use case: stylized-concept. Asset: tile_clay_hill.\nTop-down isometric game terrain tile: a flat-top hexagon filling the canvas width, corners outside the hexagon fully transparent.\nHand-painted texture matching the attached reference images' palette (ochre, dusty khaki, rust, grey).\nEven lighting, no objects, no buildings, no text, edges soft enough to tile with neighbours.\nInput images 1–4 are PALETTE AND PAINTERLY STYLE references ONLY. Do not draw their buildings, ground diamonds, barrels or props.\nA single flat SIX-SIDED hexagonal surface viewed from above. Horizontal top and bottom edges, left and right tips centered vertically. No raised slab, no thickness, no vertical side wall, no rim or outline, no surrounding ground or cast shadow. Texture fills the hex all the way to its boundary. Calm, fine-scale details for a 64px-wide in-game tile, not oversized cracks or rocks. Real transparent alpha outside the six sides, never a checkerboard, no background color, halo, text or border. Generate a high-quality square PNG with one centered hexagon for later exact grid sizing to 256x192.\nTerrain: Rust-red clay hill: stepped relief, shadow on the lower face.\nRust-red compacted clay with low natural terraced ridges and small erosional steps, gentle short shadows on their lower faces within the surface. The six-sided tile itself has no raised rim or sidewalls. No vegetation, buildings, quarry, tools or loose giant boulders."
+    },
+    {
+      "name": "tile_clay_hill_dust",
+      "parent": "tile_clay_hill",
+      "prompt": "Use case: lighting-weather. Asset: tile_clay_hill_dust. Images 1–4 are palette/style references ONLY. Image 5 is the exact terrain tile to EDIT.\nSame tile under a dust storm: warm rusty haze over everything, details softened, shadows shorter.\nKeep exact clay terraces, erosional ridges and tiny stones from image 5 in their positions. Same top-down viewpoint and flat-top six-sided shape. Change only weather treatment: dusty ochre-rust haze, muted contrast, soften and shorten shadows in terrace faces. No vegetation, objects, buildings, borders, sidewalls or text. Preserve actual transparent alpha outside hex, haze ONLY INSIDE tile, no background color or halo. One hexagon, square high-quality RGBA PNG."
+    },
+    {
+      "name": "tile_scrub",
+      "parent": null,
+      "prompt": "Use case: stylized-concept. Asset: tile_scrub.\nTop-down isometric game terrain tile: a flat-top hexagon filling the canvas width, corners outside the hexagon fully transparent.\nHand-painted texture matching the attached reference images' palette (ochre, dusty khaki, rust, grey).\nEven lighting, no objects, no buildings, no text, edges soft enough to tile with neighbours.\nInput images 1–4 are PALETTE AND PAINTERLY STYLE references ONLY. Do not draw their buildings, ground diamonds, barrels or props.\nA single flat SIX-SIDED hexagonal surface viewed from above. Horizontal top and bottom edges, left and right tips centered vertically. No raised slab, no thickness, no vertical side wall, no rim or outline, no surrounding ground or cast shadow. Texture fills the hex all the way to its boundary. Calm, fine-scale details for a 64px-wide in-game tile, not oversized cracks or rocks. Real transparent alpha outside the six sides, never a checkerboard, no background color, halo, text or border. Generate a high-quality square PNG with one centered hexagon for later exact grid sizing to 256x192.\nTerrain: Khaki dirt with tufts of stiff dry grass and one low thorny shrub.\nOne SMALL LOW thorny shrub (under 18% tile width) and sparse short straw-brown grass tufts on muted dusty olive-khaki soil. No lush greenery, trees, forest, flowers, buildings, objects, rocks larger than pebbles. Keep the vegetation within the hex and low enough to read as surface texture, not a freestanding prop."
+    },
+    {
+      "name": "tile_scrub_dust",
+      "parent": "tile_scrub",
+      "prompt": "Use case: lighting-weather. Asset: tile_scrub_dust. Images 1–4 are palette/style references ONLY. Image 5 is the exact terrain tile to EDIT.\nSame tile under a dust storm: warm rusty haze over everything, details softened, shadows shorter.\nKeep exact small thorny shrub, grass tuft locations, pebbles and ground features, top-down view, flat-top hex outline and scale. Only change weather: rusty dust coats dull khaki plants and soil, lower contrast, short soft shadows. No extra vegetation or new objects, no buildings, text, outlines or slab thickness. Real transparent alpha outside the six-sided hex. Haze ONLY INSIDE tile, no background or surrounding halo. One hex, square high-quality RGBA PNG."
+    },
+    {
+      "name": "tile_rock",
+      "parent": null,
+      "prompt": "Use case: stylized-concept. Asset: tile_rock.\nTop-down isometric game terrain tile: a flat-top hexagon filling the canvas width, corners outside the hexagon fully transparent.\nHand-painted texture matching the attached reference images' palette (ochre, dusty khaki, rust, grey).\nEven lighting, no objects, no buildings, no text, edges soft enough to tile with neighbours.\nInput images 1–4 are PALETTE AND PAINTERLY STYLE references ONLY. Do not draw their buildings, ground diamonds, barrels or props.\nA single flat SIX-SIDED hexagonal surface viewed from above. Horizontal top and bottom edges, left and right tips centered vertically. No raised slab, no thickness, no vertical side wall, no rim or outline, no surrounding ground or cast shadow. Texture fills the hex all the way to its boundary. Calm, fine-scale details for a 64px-wide in-game tile, not oversized cracks or rocks. Real transparent alpha outside the six sides, never a checkerboard, no background color, halo, text or border. Generate a high-quality square PNG with one centered hexagon for later exact grid sizing to 256x192.\nTerrain: Grey-brown bedrock with ridges, dust caught in the cracks.\nWeathered grey-brown continuous bedrock with low irregular natural ridges, ochre dust caught in shallow cracks. Recognizably darker and cooler than clay or salt. No quarry excavation, tools, giant loose boulders, vegetation or buildings. Low relief painted into surface, no vertical tile sidewalls."
+    },
+    {
+      "name": "tile_rock_dust",
+      "parent": "tile_rock",
+      "prompt": "Use case: lighting-weather. Asset: tile_rock_dust. Images 1–4 are palette/style references ONLY. Image 5 is the exact terrain tile to EDIT.\nSame tile under a dust storm: warm rusty haze over everything, details softened, shadows shorter.\nKeep exact bedrock ridges, pebbles and dust-filled fissures at same positions, same top-down view, scale and six-sided flat-top silhouette. Only change weather: rusty ochre dusty veil softens the grey-brown rock, lower contrast and shorter softer shadows. Rock remains darker than dusty salt flats. No plants, new objects, buildings, text, borders or sidewalls. Actual transparent alpha outside hex, haze ONLY INSIDE tile, no surrounding cloud, halo or background. One hex, square high-quality RGBA PNG."
+    }
+  ]
+}
