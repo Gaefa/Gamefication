@@ -1,10 +1,11 @@
 extends Node2D
 ## Renders seasonal terrain textures, with colored polygons for missing tiles.
-## Redraws when terrain, viewport size, or season changes.
+## Draws non-blocking props above terrain; redraws on season and building changes.
 
 var _hex_grid: HexGrid
 var _colors: Dictionary = {}  # terrain_id → Color, from terrain.json (Rust Pit palette)
 var _tile_cache: Dictionary = {}  # resource path → Texture2D (or null for a missing tile)
+var _prop_cache: Dictionary = {}  # prop id → silhouette-trimmed Texture2D (or null)
 
 const PIPE_COLOR := Color("7a4a2e")
 const PIPE_JOINT := Color("4e2f1c")
@@ -13,6 +14,8 @@ const PIPE_JOINT := Color("4e2f1c")
 func _ready() -> void:
 	get_viewport().size_changed.connect(_on_viewport_resized)
 	EventBus.season_changed.connect(_on_season_changed)
+	EventBus.building_placed.connect(_on_building_changed)
+	EventBus.building_removed.connect(_on_building_changed)
 
 
 func render_terrain(grid: HexGrid) -> void:
@@ -25,6 +28,10 @@ func _on_viewport_resized() -> void:
 
 
 func _on_season_changed(_season_id: String, _day: int, _length: int) -> void:
+	queue_redraw()
+
+
+func _on_building_changed(_coord: Vector2i, _type_id: String) -> void:
 	queue_redraw()
 
 
@@ -49,6 +56,41 @@ func _draw() -> void:
 		# Outline — faint, warm, so the grid reads as cracked ground rather than a chessboard.
 		draw_polyline(translated_pts, Color(0.25, 0.18, 0.1, 0.22), 1.0)
 	_draw_old_pipes()
+	_draw_props()
+
+
+func _draw_props() -> void:
+	var decor: Dictionary = GameStateStore.world().get("decor", {}) as Dictionary
+	var props: Array = (decor.get("props", []) as Array).duplicate()
+	props.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return _prop_center(a).y < _prop_center(b).y)
+	for prop: Dictionary in props:
+		var coord := Vector2i(int(prop["q"]), int(prop["r"]))
+		if not _hex_grid.is_valid(coord) or GameStateStore.has_building(coord):
+			continue
+		var texture: Texture2D = _prop_texture(prop["id"] as String)
+		if texture == null:
+			continue
+		var width: float = HexCoords.HEX_SIZE * 1.6
+		var draw_size := Vector2(width, texture.get_height() * width / texture.get_width())
+		var anchor := Vector2(width * 0.5, draw_size.y - width * 0.25)
+		draw_texture_rect(texture, Rect2(_prop_center(prop) - anchor, draw_size), false)
+
+
+func _prop_center(prop: Dictionary) -> Vector2:
+	return HexCoords.axial_to_pixel(Vector2i(int(prop["q"]), int(prop["r"])))
+
+
+func _prop_texture(id: String) -> Texture2D:
+	if not _prop_cache.has(id):
+		var path: String = "res://assets/props/%s.png" % id
+		var texture: Texture2D = ResourceLoader.load(path) as Texture2D if ResourceLoader.exists(path) else null
+		if texture != null:
+			var image: Image = texture.get_image()
+			var used: Rect2i = image.get_used_rect()
+			texture = ImageTexture.create_from_image(image.get_region(used)) if used.has_area() else null
+		_prop_cache[id] = texture
+	return _prop_cache[id] as Texture2D
 
 
 func _terrain_texture(terrain_id: int, dusty: bool) -> Texture2D:

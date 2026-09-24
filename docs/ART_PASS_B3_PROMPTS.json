@@ -1,0 +1,130 @@
+{
+  "tool": "Built-in GPT Image (image_gen); exact model ID not exposed",
+  "requests": [
+    {
+      "asset": "godot/assets/props/prop_pipe_straight.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_pipe_straight.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\nA section of rusted half-metre pipe on two concrete supports, running along the long axis of the diamond base.\nOnly one pipe segment, clearly rusted round iron half-metre diameter, supported by exactly two low cracked concrete saddles. Dry, unused; no valves, taps, buildings, water, lamps or vegetation. Pipe extends left-to-right parallel to the horizontal long diagonal of the 2:1 ground diamond.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_pipe_bend.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "generated prop_pipe_straight original"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_pipe_bend.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\nImage 5 is the exact pipe asset to edit. Preserve its paint style, materials, pipe diameter, concrete supports, lighting and compact ground skirt; change the pipe structure as follows.\nThe same rusted pipe on concrete supports, turning 60 degrees, a bolted flange at the bend.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": false,
+      "reason": "Output remained straight; replaced by the corrected elbow below."
+    },
+    {
+      "asset": "godot/assets/props/prop_pipe_broken.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "generated prop_pipe_straight original"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_pipe_broken.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\nImage 5 is the exact pipe asset to edit. Preserve its paint style, materials, pipe diameter, concrete supports, lighting and compact ground skirt; change the pipe structure as follows.\nRusted pipe with a torn open gap, edges bent outward, a dark rust stain on the ground.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_sign_company.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_sign_company.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\n\nLeaning wooden billboard on two posts with a faded water-drop company logo and unreadable worn lettering.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_debris.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_debris.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\n\nPile of rusted scrap: corrugated sheets, a tyre, a dented barrel.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_dry_well.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_dry_well.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\n\nAbandoned stone well with a broken windlass, dry inside.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_barrels.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_barrels.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\n\nThree or four barrels under a tarp held by rope, a bucket beside them.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_tarp_tent.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_tarp_tent.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\n\nA tarp awning on poles, a crate, a ring of stones for a fire, a bedroll.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_leaflets.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_leaflets.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\n\nA wooden post plastered with grey paper leaflets, some torn.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_fence.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: prop_fence.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\n\nA leaning fence of poles and wire mesh along one edge of the diamond base.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    },
+    {
+      "asset": "godot/assets/props/prop_pipe_bend.png",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "rejected prop_pipe_bend original"
+      ],
+      "prompt": "Use case: stylized-concept. Correct prop_pipe_bend geometry.\nIsometric game prop sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered retro-diesel industrial, no sci-fi, no neon, no people.\nSingle small prop centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are PAINTERLY STYLE and PALETTE references ONLY, do not reproduce their buildings or extra accessories.\nOne compact simple readable prop cluster on one connected ground skirt, readable at 51px wide in game. Actual transparent PNG RGBA background, never painted checkerboard. Entire silhouette visible with transparent margin on every edge. Diamond width about 78% canvas; bottom tip at 92% canvas height. Square high-quality image for delivery as 512x512 PNG.\nImage 5 is the pipe sprite to EDIT. The previous attempt failed because it stayed straight. REPLACE the straight cylinder with TWO distinct short pipe legs joined by a large bent elbow in the middle. The pipeline must change direction by SIXTY DEGREES in plan view, an open V / dog-leg shape, immediately obvious even at tiny scale. One leg runs from back-left to center; second leg runs from center to front-left. Both free ends are on the LEFT of the center elbow, one toward back-left, one toward front-left. Metal curved joint and bolted flange at the elbow. Concrete support under each short leg. Preserve rusty metal paint style, dry compact 2:1 diamond ground skirt, isolated transparent background. NO continuous straight axis, NO straight pipe with flange as substitute. The actual silhouette must BEND.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, buildings, extra unrelated objects, cropped object at edge, white background, checkerboard, watermark, readable text, blur, long cast shadow.",
+      "accepted": true
+    }
+  ]
+}

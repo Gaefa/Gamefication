@@ -174,7 +174,7 @@ func _bootstrap_company_traces() -> void:
 		[[2, 1], [2, 2], [1, 3], [1, 4], [0, 5], [0, 6]],
 		[[2, 1], [3, 0], [4, -1], [4, -2], [5, -3], [5, -4], [6, -5]],
 	]
-	GameStateStore.world()["decor"] = { "pipes": pipes }
+	GameStateStore.world()["decor"] = { "pipes": pipes, "props": [] }
 	for cell: Array in [[8, -1], [0, 6], [6, -5], [-4, 2], [-3, -2]]:
 		var coord := Vector2i(cell[0] as int, cell[1] as int)
 		if GameStateStore.has_building(coord):
@@ -188,3 +188,20 @@ func _bootstrap_company_traces() -> void:
 			"damaged": false,
 			"has_issue": false,
 		})
+	# Decorative only: these cells stay available to the placement rules. No RNG calls.
+	var props: Array = GameStateStore.world().decor.props
+	for entry: Array in [
+		[3, 1, "prop_pipe_straight"], [4, 1, "prop_pipe_bend"], [5, 0, "prop_pipe_broken"],
+		[1, 3, "prop_pipe_straight"], [1, 4, "prop_pipe_bend"], [0, 5, "prop_pipe_broken"],
+		[4, -1, "prop_pipe_bend"], [5, -3, "prop_pipe_straight"], [5, -4, "prop_pipe_broken"],
+		[-3, 3, "prop_sign_company"], [1, 1, "prop_barrels"], [-3, 1, "prop_leaflets"],
+		[0, 3, "prop_dry_well"], [-3, 0, "prop_tarp_tent"], [-2, -1, "prop_fence"],
+	]:
+		if not GameStateStore.has_building(Vector2i(entry[0], entry[1])):
+			props.append({"q": entry[0], "r": entry[1], "id": entry[2]})
+	# Scatter scrap beside depots only where a ruin was actually placed.
+	for cell: Array in [[8, -1], [0, 6], [6, -5], [-4, 2], [-3, -2]]:
+		var ruin := Vector2i(cell[0], cell[1])
+		var beside := ruin + Vector2i(0, 1)
+		if GameStateStore.get_building(ruin).get("type", "") == "bld_company_ruin" and not GameStateStore.has_building(beside):
+			props.append({"q": beside.x, "r": beside.y, "id": "prop_debris"})

@@ -32,6 +32,12 @@ func execute(ctx: Dictionary) -> void:
 		"has_issue": false,
 	}
 	GameStateStore.set_building(coord, bld)
+	# Clear decoration only after validation and placement succeed; old saves may have none.
+	var props: Array = GameStateStore.world().get("decor", {}).get("props", []) as Array
+	for i: int in range(props.size() - 1, -1, -1):
+		var prop: Dictionary = props[i] as Dictionary
+		if Vector2i(int(prop["q"]), int(prop["r"])) == coord:
+			props.remove_at(i)
 	spatial.add(coord, type_id)
 
 	# Invalidate caches
