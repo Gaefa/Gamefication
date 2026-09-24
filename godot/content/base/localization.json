@@ -68,12 +68,12 @@
     "ru": "ЧС"
   },
   "ui.welcome.text": {
-    "en": "Inspect: click a tile\nCamera: WASD\nZoom: mouse wheel\nBuild: LMB select\nCancel: RMB / Esc\nMenus: G Gov, O Options\nHelp/Ranges: H Help, V Ranges",
-    "ru": "Осмотр: клик по клетке\nКамера: WASD\nЗум: колесо мыши\nСтройка: ЛКМ выбор\nОтмена: ПКМ / Esc\nМеню: G управление, O настройки\nПомощь/радиусы: H помощь, V радиусы"
+    "en": "Inspect: click a tile\nCamera: WASD · Zoom: wheel\nBuild: LMB · Cancel: RMB / Esc\nPause: Space · Speed: 1 / 2 / 3\nPanels: C water, K season, J diary, N log\nG governance, O options, H help, V ranges",
+    "ru": "Осмотр: клик по клетке\nКамера: WASD · Зум: колесо\nСтройка: ЛКМ · Отмена: ПКМ / Esc\nПауза: Пробел · Скорость: 1 / 2 / 3\nПанели: C вода, K сезон, J дневник, N журнал\nG управление, O настройки, H справка, V радиусы"
   },
   "ui.help.text": {
-    "en": "Quick start\n1. The campaign begins with an admin post, cistern, warehouse, pump, and a short road spine.\n2. Expand with Shelters, Fields, and raw production around that hub.\n3. The Well Pump gives local water coverage; the cistern is only a reserve buffer.\n4. Use V to show service ranges for the selected building.\n\nHotkeys\nWASD - camera\nMouse wheel - zoom\nLMB - select/build\nRMB or Esc - cancel build mode\nG - governance\nO - options\nH - help\nV - ranges\nU/R/B - upgrade/repair/bulldoze selected building\n\nRule of thumb\nRoads connect production. Water and power are local coverage. Pressure rises when the city grows or problems stay unresolved.",
-    "ru": "Быстрый старт\n1. Кампания начинается с поста администрации, цистерны, склада, насоса и короткой дорожной оси.\n2. Расширяй этот узел жильем, грядками и добычей.\n3. Колодец-насос дает локальное покрытие водой; цистерна это только буфер запаса.\n4. Нажми V, чтобы показать радиусы выбранного здания.\n\nКлавиши\nWASD - камера\nКолесо мыши - зум\nЛКМ - выбрать/строить\nПКМ или Esc - отмена стройки\nG - управление\nO - настройки\nH - помощь\nV - радиусы\nU/R/B - улучшить/починить/снести выбранное здание\n\nПравило\nДороги связывают производство. Вода и энергия работают через локальное покрытие. Давление растёт от масштаба города и нерешённых проблем."
+    "en": "WHAT THIS IS\nYou are the appointed administrator of the Rust Pit, a dry district after the Break. The Restoration League gave you the mandate and money; the residents gave you an advance of trust. Two masters, and you can't please both — the «League ↕ City» meters at the top.\n\nGOAL\nSurvive the Dust season (starts on day 19) and pass the League audit on day 20. You win by reaching day 30 with a city that hasn't emptied. You lose when League trust hits 0 (recall), city support hits 0 (riot), or the people leave.\n\nA DAY\nBuild by day. In the evening — the Administrator's Desk: patron letters and petitions. Hover an answer to see its consequences. In the morning they take effect.\n\nWATER — THREE VALUES\nReserve (the cistern, «water for N days» at the top), coverage (pump radius, V) and pressure (weakens near the edge of the radius and when one pump feeds many houses). Panel C explains what is missing.\n\nPRESSURE\nFour gauges at the top: food, water, people, mandate. At 100 a crisis lands on the Desk. The cause builds up over days, so you can see it coming.\n\nPANELS\nC — water · K — season & forecast · J — previous administrator's diary · N — log of your answers · G — governance · O — options · H — this help · V — ranges · L — logistics\n\nCONTROLS\nWASD — camera · wheel — zoom · LMB — select / build · RMB or Esc — cancel · Space — pause · 1 / 2 / 3 — speed · U — upgrade · R — repair · B — bulldoze\n\nTIPS\nBuild next to a road. Shelters only inside a pump's radius. Before the Dust: a second pump and 10 days of water. An icon over a building — click it, the game names the cause.",
+    "ru": "ЧТО ЭТО ЗА ИГРА\nВы — назначенный администратор Ржавой Норы, сухого района после Разлома. Лига Восстановления дала вам мандат и деньги, жители — аванс доверия. Хозяев двое, и угодить обоим нельзя: вверху это шкалы «Лига ↕ Город».\n\nЦЕЛЬ\nПережить сезон Пыли (начинается на 19-й день) и пройти аудит Лиги на 20-й. Победа — дожить до 30-го дня с городом, который не разбежался. Поражение — доверие Лиги 0 (отзыв), поддержка города 0 (бунт) или массовый исход.\n\nДЕНЬ\nДнём строите. Вечером — Стол администратора: письма покровителя и обращения жителей. Наведите на ответ — увидите последствия. Утром решения вступают в силу.\n\nВОДА — ТРИ ВЕЛИЧИНЫ\nЗапас (цистерна, «воды на N дней» вверху), покрытие (радиус насоса, V) и напор (слабеет у края радиуса и когда на насосе много домов). Панель C объясняет, чего не хватает.\n\nДАВЛЕНИЕ\nЧетыре шкалы вверху: еда, вода, люди, мандат. Доходит до 100 — на Столе кризис. Причина копится днями, значит её видно заранее.\n\nПАНЕЛИ\nC — вода · K — сезон и прогноз · J — дневник прежнего администратора · N — журнал ваших ответов · G — управление · O — настройки · H — эта справка · V — радиусы · L — логистика\n\nУПРАВЛЕНИЕ\nWASD — камера · колесо — зум · ЛКМ — выбрать / строить · ПКМ или Esc — отмена · Пробел — пауза · 1 / 2 / 3 — скорость · U — улучшить · R — починить · B — снести\n\nСОВЕТЫ\nСтройте у дороги. Барак — только в радиусе насоса. До Пыли — второй насос и запас воды на 10 дней. Значок над зданием — кликните, игра назовёт причину."
   },
   "ui.tile.cannot_build": {
     "en": "Cannot build here",
@@ -1810,5 +1810,33 @@
   "ui.lens.logistics_off": {
     "en": "Logistics: off",
     "ru": "Логистика: выключена"
+  },
+  "ui.menu.campaign": {
+    "en": "NEW GAME",
+    "ru": "НОВАЯ ИГРА"
+  },
+  "ui.menu.continue": {
+    "en": "CONTINUE",
+    "ru": "ПРОДОЛЖИТЬ"
+  },
+  "ui.start.pitch": {
+    "en": "Mandate Cities is a city builder about power on loan. You run the Rust Pit, a dry district, for the Restoration League: keep the water flowing, keep the people, and survive the Dust season and the day-20 audit. Two masters — the League and the city — and you can't please both.\n\nA run takes 20–40 minutes. Press H in game for help.",
+    "ru": "Mandate Cities — градостроитель о власти взаймы. Вы управляете Ржавой Норой, сухим районом, по мандату Лиги Восстановления: удержать воду, удержать людей, пережить сезон Пыли и аудит на 20-й день. Хозяев двое — Лига и город, и угодить обоим нельзя.\n\nОдна партия — 20–40 минут. В игре нажмите H — справка."
+  },
+  "ui.start.campaign_intro": {
+    "en": "Pick who appointed you. For a first game take the League mandate.",
+    "ru": "Выберите, кто вас назначил. Для первой игры берите мандат Лиги."
+  },
+  "ui.start.recommended": {
+    "en": "Recommended for a first game",
+    "ru": "Рекомендуется для первой игры"
+  },
+  "ui.start.experimental": {
+    "en": "Experimental start (outside the current chapter)",
+    "ru": "Экспериментальный старт (вне текущей главы)"
+  },
+  "start_profile.directorate_administrator.label": {
+    "en": "Commissar's Mandate (Civic Directorate)",
+    "ru": "Комиссарский мандат (Гражданский Директорат)"
   }
 }

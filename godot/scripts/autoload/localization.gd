@@ -6,7 +6,7 @@ signal locale_changed(locale: String)
 
 const CONTENT_PATH := "res://content/base/localization.json"
 const SETTINGS_PATH := "user://settings.cfg"
-const DEFAULT_LOCALE := "en"
+const DEFAULT_LOCALE := "ru"  # content (buildings, letters, endings) exists only in Russian
 const SUPPORTED_LOCALES: Array[String] = ["en", "ru"]
 
 var current_locale: String = DEFAULT_LOCALE
@@ -15,10 +15,10 @@ var _strings: Dictionary = {}
 
 func _ready() -> void:
 	_load_strings()
-	var engine_locale := TranslationServer.get_locale().substr(0, 2).to_lower()
+	# The OS locale is deliberately ignored: the game content is Russian-only, so an
+	# English UI over Russian letters reads worse than a Russian UI. Settings (O) can switch.
 	var saved_locale := _load_saved_locale()
-	var initial_locale := saved_locale if saved_locale != "" else engine_locale
-	set_locale(initial_locale if SUPPORTED_LOCALES.has(initial_locale) else DEFAULT_LOCALE, false, false)
+	set_locale(saved_locale if SUPPORTED_LOCALES.has(saved_locale) else DEFAULT_LOCALE, false, false)
 
 
 func set_locale(locale: String, emit_signal: bool = true, persist: bool = true) -> void:
