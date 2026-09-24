@@ -191,3 +191,7 @@ Godot --headless --path godot res://tools/save_roundtrip.tscn     # "ROUND-TRIP:
 4. P4 → PR «Visual pass B4: replace shared sprites».
 
 В каждом PR: список сгенерированных файлов, какие промпты не сработали с первого раза и что помогло, скриншот до/после. Коммиты GDScript — только табы; JSON — не переформатировать целиком, менять только нужные строки.
+
+## 6. Следующие этапы
+
+- **P5 — пины над зданиями:** `docs/ART_TASK_CODEX_P5_PINS.md` (после P1–P4).
