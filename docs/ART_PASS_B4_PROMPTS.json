@@ -1,0 +1,184 @@
+{
+  "tool": "Built-in GPT Image (image_gen); exact model ID not exposed",
+  "requests": [
+    {
+      "id": "well_pump_t1",
+      "prompt": "Use case: stylized-concept. Asset: well_pump_t1.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nSubject: Stone well with a wooden windlass and a bucket, a trough, small footprint. This is a working simple low stone well, no water tower, no engine yet.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "parent": null,
+      "asset": "godot/assets/buildings/tiers/well_pump_t1.png",
+      "accepted": true
+    },
+    {
+      "id": "well_pump_t2",
+      "prompt": "Use case: precise-object-edit. Asset: well_pump_t2.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the exact building to upgrade. Same building, same angle, palette and footprint, upgraded: a cast-iron hand pump column beside the well, a longer trough, a barrel.\nPreserve its original architecture and recognizable identity, including the low shape of a cistern or the blue flag of an administration post if present. This is the middle tier: add only the specified improvements, no additional storeys unless explicitly requested. Keep everything on one connected diamond ground skirt, keep all margins transparent.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "well_pump_t1 generated original"
+      ],
+      "parent": "well_pump_t1",
+      "asset": "godot/assets/buildings/tiers/well_pump_t2.png",
+      "accepted": true
+    },
+    {
+      "id": "well_pump_t3",
+      "prompt": "Use case: precise-object-edit. Asset: well_pump_t3.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the exact previous tier to upgrade. Same building, same angle, palette and footprint, upgraded: a small engine-driven pump under a tin roof, a small elevated tank, a pipe leading away.\nThe small mechanical engine and pipe must be visible as the new clue. Keep the stone well and trough recognizable.\nPreserve the original building as the recognizable core. Entire connected silhouette and all roof details must fit inside transparent margins. All additions remain on one compact diamond ground skirt.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "well_pump_t2 generated original"
+      ],
+      "parent": "well_pump_t2",
+      "asset": "godot/assets/buildings/tiers/well_pump_t3.png",
+      "accepted": true
+    },
+    {
+      "id": "main_cistern_t1",
+      "prompt": "Use case: stylized-concept. Asset: main_cistern_t1.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nSubject: Low wide concrete cistern with a hatch on top, a ladder, a painted level mark on the wall, a tap with a barrel beneath. Squat, not tall. One broad low concrete reservoir resting on the ground, no lattice tower, no house.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "parent": null,
+      "asset": "godot/assets/buildings/tiers/main_cistern_t1.png",
+      "accepted": true
+    },
+    {
+      "id": "main_cistern_t2",
+      "prompt": "Use case: precise-object-edit. Asset: main_cistern_t2.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the exact building to upgrade. Same building, same angle, palette and footprint, upgraded: a second tank joined by a pipe, a filling tap with a queue of barrels, a visible water level stripe.\nPreserve its original architecture and recognizable identity, including the low shape of a cistern or the blue flag of an administration post if present. This is the middle tier: add only the specified improvements, no additional storeys unless explicitly requested. Keep everything on one connected diamond ground skirt, keep all margins transparent.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "main_cistern_t1 generated original"
+      ],
+      "parent": "main_cistern_t1",
+      "asset": "godot/assets/buildings/tiers/main_cistern_t2.png",
+      "accepted": true
+    },
+    {
+      "id": "main_cistern_t3",
+      "prompt": "Use case: precise-object-edit. Asset: main_cistern_t3.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the exact previous tier to upgrade. Same building, same angle, palette and footprint, upgraded: a battery of three tanks on a low trestle, walkway with rails, gauge dials, a painted water-drop logo. Keep all tanks broad and squat, not towers.\nExactly three visibly distinct broad low tank bodies, with three hatches and joining pipes, grouped on a low shared trestle. Keep the concrete reservoir identity; do not turn them into tall water towers.\nPreserve the original building as the recognizable core. Entire connected silhouette and all roof details must fit inside transparent margins. All additions remain on one compact diamond ground skirt.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "main_cistern_t2 generated original"
+      ],
+      "parent": "main_cistern_t2",
+      "asset": "godot/assets/buildings/tiers/main_cistern_t3.png",
+      "accepted": false,
+      "rejection_reason": "Three small tanks were stacked on a tall concrete block instead of standing on a low trestle."
+    },
+    {
+      "id": "shelter_t1",
+      "prompt": "Use case: stylized-concept. Asset: shelter_t1.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nSubject: One-room barrack of planks and corrugated iron, a curtain door, a barrel, laundry line. Poor simple single-storey shelter, narrow low silhouette, not an ornate house.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "parent": null,
+      "asset": "godot/assets/buildings/tiers/shelter_t1.png",
+      "accepted": true
+    },
+    {
+      "id": "shelter_t2",
+      "prompt": "Use case: precise-object-edit. Asset: shelter_t2.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the exact building to upgrade. Same building, same angle, palette and footprint, upgraded: an added room, a water tank on the roof, a porch.\nPreserve its original architecture and recognizable identity, including the low shape of a cistern or the blue flag of an administration post if present. This is the middle tier: add only the specified improvements, no additional storeys unless explicitly requested. Keep everything on one connected diamond ground skirt, keep all margins transparent.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "shelter_t1 generated original"
+      ],
+      "parent": "shelter_t1",
+      "asset": "godot/assets/buildings/tiers/shelter_t2.png",
+      "accepted": true
+    },
+    {
+      "id": "shelter_t3",
+      "prompt": "Use case: precise-object-edit. Asset: shelter_t3.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the exact previous tier to upgrade. Same building, same angle, palette and footprint, upgraded: a second storey with an outside gallery and stairs, two chimneys.\nRetain the same poor plank barrack, roof water tank and patched iron material. Exactly two chimneys; new second storey has an outside wooden gallery and staircase.\nPreserve the original building as the recognizable core. Entire connected silhouette and all roof details must fit inside transparent margins. All additions remain on one compact diamond ground skirt.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "shelter_t2 generated original"
+      ],
+      "parent": "shelter_t2",
+      "asset": "godot/assets/buildings/tiers/shelter_t3.png",
+      "accepted": true
+    },
+    {
+      "id": "admin_post_t1",
+      "prompt": "Use case: stylized-concept. Asset: admin_post_t1.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nSubject: Small concrete administration block with a flagpole flying a plain deep-blue flag, a noticeboard, a doorstep. Plain compact single-storey concrete cube; no symbols or lettering on the flag, no luxury house roof.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png"
+      ],
+      "parent": null,
+      "asset": "godot/assets/buildings/tiers/admin_post_t1.png",
+      "accepted": true
+    },
+    {
+      "id": "admin_post_t2",
+      "prompt": "Use case: precise-object-edit. Asset: admin_post_t2.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the exact building to upgrade. Same building, same angle, palette and footprint, upgraded: a second storey, a radio antenna, a covered entrance.\nPreserve its original architecture and recognizable identity, including the low shape of a cistern or the blue flag of an administration post if present. This is the middle tier: add only the specified improvements, no additional storeys unless explicitly requested. Keep everything on one connected diamond ground skirt, keep all margins transparent.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "admin_post_t1 generated original"
+      ],
+      "parent": "admin_post_t1",
+      "asset": "godot/assets/buildings/tiers/admin_post_t2.png",
+      "accepted": true
+    },
+    {
+      "id": "admin_post_t3",
+      "prompt": "Use case: precise-object-edit. Asset: admin_post_t3.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the exact previous tier to upgrade. Same building, same angle, palette and footprint, upgraded: an archive wing with narrow windows, a porch with columns, a bigger noticeboard.\nKeep the blue plain flag, two-storey core and radio aerial. Archive wing extends sideways with narrow windows; do not add a third storey.\nPreserve the original building as the recognizable core. Entire connected silhouette and all roof details must fit inside transparent margins. All additions remain on one compact diamond ground skirt.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "admin_post_t2 generated original"
+      ],
+      "parent": "admin_post_t2",
+      "asset": "godot/assets/buildings/tiers/admin_post_t3.png",
+      "accepted": true
+    },
+    {
+      "id": "main_cistern_t3",
+      "prompt": "Use case: precise-object-edit. Correct main_cistern_t3.\nIsometric game building sprite, hand-painted illustration style matching the attached reference images.\n2:1 diamond footprint, view from upper-left at ~30°, soft daylight from top-left, short warm shadow.\nPost-collapse dry district: rusted corrugated iron, sun-bleached wood, cracked grey concrete, rope, tarp, barrels.\nPalette: ochre, dusty khaki, rust orange, grey-blue metal; deep blue only as a small water accent.\nWeathered but inhabited and maintained, retro-diesel industrial, no sci-fi, no neon, no people.\nSingle building centered on a transparent background, thin skirt of dusty ground around the base,\nnothing else in frame, no cropped second object at the edges, no ground outside the diamond base, no text.\nImages 1–4 are style/palette references; reproduce their hand-painted materials, not their building designs.\nIsolated single connected silhouette, clearly readable at 64px wide. Actual transparent PNG RGBA background, never painted checkerboard.\nSquare 1024x1024 delivery. Base diamond is about 78% of canvas width, lower tip at 92% canvas height, transparent margin at all four canvas edges.\nImage 5 is the tier-3 cistern to correct. Its current tall concrete cube with small tanks stacked on the roof is WRONG for the requested low silhouette. Replace that arrangement with EXACTLY THREE BROAD SQUAT CONCRETE TANKS standing side-by-side on one VERY LOW trestle / plinth just above the ground. No tall central building, no cube beneath the tanks, no stacking tanks on a roof. Each tank is a wide short concrete reservoir with a large metal hatch, much wider than it is tall. Join all three with short rusted pipes. A low walkway with safety rails runs along the tanks; add small gauge dials, taps and one faded painted water-drop logo. Keep existing painterly style, pale cracked concrete, rusted metal fittings, ochre dust, original viewing angle and connected 2:1 diamond footprint. Overall silhouette should be as low and broad as the tier-1 reservoir, simply spread into a compact battery of three separate reservoirs. Preserve transparency, full visible margins, no readable lettering.\nAvoid: photo, 3D render, pixel art, cartoon outline, lush green grass, forest, snow, night, glowing lights, neon, people, vehicles, second separate building, cropped object at edge, white background, painted checkerboard, watermark, readable text, blur, long cast shadow.",
+      "references": [
+        "godot/assets/buildings/tiers/hut_t2.png",
+        "godot/assets/buildings/tiers/water_tower_t2.png",
+        "godot/assets/buildings/tiers/power_t1.png",
+        "godot/assets/buildings/tiers/farm_t1.png",
+        "rejected main_cistern_t3 generated original"
+      ],
+      "parent": "main_cistern_t3 rejected",
+      "asset": "godot/assets/buildings/tiers/main_cistern_t3.png",
+      "accepted": true
+    }
+  ]
+}
