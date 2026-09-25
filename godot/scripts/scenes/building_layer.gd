@@ -69,8 +69,6 @@ func _draw() -> void:
 		if _draw_building_sprite(center, type_id, level, damaged):
 			if damaged:
 				_draw_crack(center)
-			elif has_issue:
-				_draw_alert(center)
 			if level > 0:
 				_draw_level_dots(center, level)
 			continue
