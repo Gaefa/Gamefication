@@ -8,6 +8,8 @@ var _build_preview: String = ""
 var _show_ranges: bool = false
 var _show_logistics: bool = false
 var _hex_grid: HexGrid
+var _pin_cache: Dictionary = {}  # diagnostic label → Texture2D (or null when missing)
+var _has_blinking_pin: bool = false
 
 
 func set_hex_grid(grid: HexGrid) -> void:
@@ -173,6 +175,7 @@ func _draw_pipe_segment(start: Vector2, end_point: Vector2, dash_color: Color) -
 
 
 func _draw_diagnostic_pins() -> void:
+	_has_blinking_pin = false
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		var diag: Dictionary = _primary_diagnostic(coord, bld)
@@ -192,9 +195,20 @@ func _draw_hex_fill(coord: Vector2i, fill_color: Color, border_color: Color) -> 
 
 func _draw_diagnostic_pin(coord: Vector2i, diag: Dictionary) -> void:
 	var center: Vector2 = HexCoords.axial_to_pixel(coord) + Vector2(14, -28)
+	var label: String = diag.get("label", "") as String
+	var tint := Color.WHITE
+	if label in ["repair", "road", "water"]:
+		_has_blinking_pin = true
+		tint.a = 0.55 + 0.45 * absf(sin(float(Time.get_ticks_msec()) / 400.0))
+	var texture: Texture2D = _pin_texture(label)
+	if texture != null:
+		draw_texture_rect(texture, Rect2(center - Vector2(11, 11), Vector2(22, 22)), false, tint)
+		return
+	# Preserve the original letter badge when an icon resource is unavailable.
 	var color: Color = diag.get("color", Color(1.0, 0.18, 0.12, 1.0)) as Color
+	color.a *= tint.a
 	draw_circle(center, 9.0, color)
-	draw_arc(center, 9.5, 0.0, TAU, 24, Color.WHITE, 1.2)
+	draw_arc(center, 9.5, 0.0, TAU, 24, tint, 1.2)
 	draw_string(
 		ThemeDB.fallback_font,
 		center + Vector2(-4, 5),
@@ -202,8 +216,15 @@ func _draw_diagnostic_pin(coord: Vector2i, diag: Dictionary) -> void:
 		HORIZONTAL_ALIGNMENT_LEFT,
 		12,
 		12,
-		Color.WHITE
+		tint
 	)
+
+
+func _pin_texture(label: String) -> Texture2D:
+	if not _pin_cache.has(label):
+		var path: String = "res://assets/ui/pins/pin_%s.png" % label
+		_pin_cache[label] = ResourceLoader.load(path) as Texture2D if ResourceLoader.exists(path) else null
+	return _pin_cache[label] as Texture2D
 
 
 func _primary_diagnostic(coord: Vector2i, bld: Dictionary) -> Dictionary:
@@ -362,5 +383,5 @@ func _draw_preview_hex(center: Vector2, color: Color) -> void:
 
 
 func _process(_delta: float) -> void:
-	if _build_preview != "" or _show_ranges or _show_logistics:
+	if _has_blinking_pin or _build_preview != "" or _show_ranges or _show_logistics:
 		queue_redraw()

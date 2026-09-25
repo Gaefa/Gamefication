@@ -1,0 +1,92 @@
+{
+  "tool": "built-in image_gen; exact model ID not exposed",
+  "reference_policy": "First accepted repair pin attached to every remaining generation.",
+  "technical_export": "OpenCV contour tracing (1.4 source pixel tolerance), common repair alpha silhouette, 2px outline, exact flat semantic fills, glyph longest side82px. Godot SVG rasterization at4x then Lanczos128px. No embedded raster data in SVG.",
+  "jobs": [
+    {
+      "id": "repair",
+      "color": "#e63535",
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-64124295-2150-488b-9c9f-b935408612ce.png",
+      "prompt": "Use case: logo-brand. Asset: pin_repair, a flat game UI diagnostic map badge.\nA clean ROUND circular badge, with a thin dark #2b2622 outline and a SHORT small triangular pointer tail attached at its bottom center. Solid uniform red #e63535 fill. White flat pictogram: a bold simple GEAR WITH A BROKEN TOOTH AND A CLEAR ZIGZAG CRACK through it. The broken gear must be recognizable at 20x20 pixels. Use only simple thick connected shapes, no fine mechanical detail. Pictogram occupies about 65% of badge diameter; strokes no thinner than 10 pixels at 128px delivery.\nFront-facing orthographic 2D UI, no perspective. Keep the circular badge dominant and tail short, not a long teardrop silhouette. Symmetric outer silhouette centered, one icon only, transparent background. Final delivery 128x128 PNG and traced SVG, generate a crisp large square source. Border thickness equivalent to 2px at 128px. Badge fills canvas width with tiny clear padding, tail reaches bottom. Flat color regions suitable for vector tracing.\nAvoid: text, letters, numbers, gradients, glossy, 3D, bevel, drop shadow, painterly, isometric building, background, multiple icons, watermark, thin lines, ornate detail.",
+      "output_png": "godot/assets/ui/pins/pin_repair.png",
+      "output_svg": "godot/assets/ui/pins/src/pin_repair.svg"
+    },
+    {
+      "id": "issue",
+      "color": "#e6a02b",
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-7f3804ee-a588-47d5-a40a-c209e8116f72.png",
+      "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-64124295-2150-488b-9c9f-b935408612ce.png",
+      "prompt": "Use case: logo-brand. Asset: pin_issue, flat game UI diagnostic map badge.\nInput image: accepted repair pin, reference ONLY for round badge silhouette, thin outline, SHORT pointer tail and unified simple icon style. Replace the gear completely.\nFlat game UI map pin icon. A round badge with thin dark #2b2622 outline and SHORT pointer tail at bottom, solid #e6a02b fill, a single white pictogram taking about two thirds of badge diameter.\nPictogram: a bold exclamation mark.\nBold simple shapes, thick strokes at least 10px at 128px delivery. Circle dominant, short tail, symmetric outer silhouette, centered on fully transparent background, nothing else in frame. Readable at 20 pixels. Front-facing orthographic 2D, crisp flat color regions suitable for vector tracing. Final canvas128x128, generate crisp large square source. Badge fills width, tail touchesbottom. Outline2px at128.\nAvoid text, letters, numbers, gradient, glossy,3D,bevel,drop shadow,painterly,isometric building,background,multiple icons,watermark,ornate detail.",
+      "output_png": "godot/assets/ui/pins/pin_issue.png",
+      "output_svg": "godot/assets/ui/pins/src/pin_issue.svg"
+    },
+    {
+      "id": "road",
+      "color": "#e63535",
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-d3505d9c-8bbc-483b-bce5-25b9662af85a.png",
+      "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-64124295-2150-488b-9c9f-b935408612ce.png",
+      "prompt": "Use case: logo-brand. Asset: pin_road, flat game UI diagnostic map badge.\nInput image: accepted repair pin, reference ONLY for round badge silhouette, thin outline, SHORT pointer tail and unified simple icon style. Replace the gear completely.\nFlat game UI map pin icon. A round badge with thin dark #2b2622 outline and SHORT pointer tail at bottom, solid #e63535 fill, a single white pictogram taking about two thirds of badge diameter.\nPictogram: a simple square crate outline with a large X across it, front view, not isometric.\nBold simple shapes, thick strokes at least 10px at 128px delivery. Circle dominant, short tail, symmetric outer silhouette, centered on fully transparent background, nothing else in frame. Readable at 20 pixels. Front-facing orthographic 2D, crisp flat color regions suitable for vector tracing. Final canvas128x128, generate crisp large square source. Badge fills width, tail touchesbottom. Outline2px at128.\nAvoid text, letters, numbers, gradient, glossy,3D,bevel,drop shadow,painterly,isometric building,background,multiple icons,watermark,ornate detail.",
+      "output_png": "godot/assets/ui/pins/pin_road.png",
+      "output_svg": "godot/assets/ui/pins/src/pin_road.svg"
+    },
+    {
+      "id": "power",
+      "color": "#e6a02b",
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-05baeac4-77b9-4480-bd61-0cf4aba0481c.png",
+      "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-64124295-2150-488b-9c9f-b935408612ce.png",
+      "prompt": "Use case: logo-brand. Asset: pin_power, flat game UI diagnostic map badge.\nInput image: accepted repair pin, reference ONLY for round badge silhouette, thin outline, SHORT pointer tail and unified simple icon style. Replace the gear completely.\nFlat game UI map pin icon. A round badge with thin dark #2b2622 outline and SHORT pointer tail at bottom, solid #e6a02b fill, a single white pictogram taking about two thirds of badge diameter.\nPictogram: a lightning bolt crossed out by ONE diagonal bar, with a narrow badge-colored separation along the bar so the crossing remains clear.\nBold simple shapes, thick strokes at least 10px at 128px delivery. Circle dominant, short tail, symmetric outer silhouette, centered on fully transparent background, nothing else in frame. Readable at 20 pixels. Front-facing orthographic 2D, crisp flat color regions suitable for vector tracing. Final canvas128x128, generate crisp large square source. Badge fills width, tail touchesbottom. Outline2px at128.\nAvoid text, letters, numbers, gradient, glossy,3D,bevel,drop shadow,painterly,isometric building,background,multiple icons,watermark,ornate detail.",
+      "output_png": "godot/assets/ui/pins/pin_power.png",
+      "output_svg": "godot/assets/ui/pins/src/pin_power.svg"
+    },
+    {
+      "id": "water",
+      "color": "#e63535",
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-d31d1be1-2561-46a7-8d5f-d28c95fb6550.png",
+      "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-64124295-2150-488b-9c9f-b935408612ce.png",
+      "prompt": "Use case: logo-brand. Asset: pin_water, flat game UI diagnostic map badge.\nInput image: accepted repair pin, reference ONLY for round badge silhouette, thin outline, SHORT pointer tail and unified simple icon style. Replace the gear completely.\nFlat game UI map pin icon. A round badge with thin dark #2b2622 outline and SHORT pointer tail at bottom, solid #e63535 fill, a single white pictogram taking about two thirds of badge diameter.\nPictogram: a water drop crossed out by ONE diagonal bar.\nBold simple shapes, thick strokes at least 10px at 128px delivery. Circle dominant, short tail, symmetric outer silhouette, centered on fully transparent background, nothing else in frame. Readable at 20 pixels. Front-facing orthographic 2D, crisp flat color regions suitable for vector tracing. Final canvas128x128, generate crisp large square source. Badge fills width, tail touchesbottom. Outline2px at128.\nAvoid text, letters, numbers, gradient, glossy,3D,bevel,drop shadow,painterly,isometric building,background,multiple icons,watermark,ornate detail.",
+      "output_png": "godot/assets/ui/pins/pin_water.png",
+      "output_svg": "godot/assets/ui/pins/src/pin_water.svg"
+    },
+    {
+      "id": "stock",
+      "color": "#2f7fe6",
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-11252b11-16de-48fe-bc30-6ccba188fe03.png",
+      "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-ec29f320-3138-4f9b-9bda-7985b9987289.png",
+      "prompt": "Use case: precise-object-edit. Edit this stock badge. Preserve the blue round badge, dark outline, short tail, transparent background, overall drop outer shape and size. ONLY thicken the white hollow drop outline substantially inward, from current roughly80 source pixels to120 source pixels uniformly (about15%of its height). Keep a clear large blue hollow inside. No other changes. Flat uniform colors no gradients.",
+      "previous_attempt": {
+        "id": "stock",
+        "color": "#2f7fe6",
+        "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-ec29f320-3138-4f9b-9bda-7985b9987289.png",
+        "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-64124295-2150-488b-9c9f-b935408612ce.png",
+        "prompt": "Use case: logo-brand. Asset: pin_stock, flat game UI diagnostic map badge.\nInput image: accepted repair pin, reference ONLY for round badge silhouette, thin outline, SHORT pointer tail and unified simple icon style. Replace the gear completely.\nFlat game UI map pin icon. A round badge with thin dark #2b2622 outline and SHORT pointer tail at bottom, solid #2f7fe6 fill, a single white pictogram taking about two thirds of badge diameter.\nPictogram: a water drop drawn as a THICK outline only, hollow inside.\nBold simple shapes, thick strokes at least 10px at 128px delivery. Circle dominant, short tail, symmetric outer silhouette, centered on fully transparent background, nothing else in frame. Readable at 20 pixels. Front-facing orthographic 2D, crisp flat color regions suitable for vector tracing. Final canvas128x128, generate crisp large square source. Badge fills width, tail touchesbottom. Outline2px at128.\nAvoid text, letters, numbers, gradient, glossy,3D,bevel,drop shadow,painterly,isometric building,background,multiple icons,watermark,ornate detail."
+      },
+      "output_png": "godot/assets/ui/pins/pin_stock.png",
+      "output_svg": "godot/assets/ui/pins/src/pin_stock.svg"
+    },
+    {
+      "id": "pressure",
+      "color": "#7fb8ff",
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-6b720673-e081-4124-b6ef-6a7fe66e997a.png",
+      "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-674cad23-330c-45ca-b4fa-bf2aff1ff5e0.png",
+      "prompt": "Use case: precise-object-edit. Edit this pressure badge for tiny20pixel readability. Keep same lightblue roundbadge, darkoutline, shorttail, transparent background. ONLY adjust the white drop+downarrow pictogram: thicken the drop outline substantially to120sourcepixels (15%of dropheight) instead of current~65pixels. Make the inner downwardarrow a little smaller to keep at least80sourcepixels ofblueclearance onallsides betweenarrow anddrop. Arrowhas veryboldshaft andlarge trianglehead. Preserve overallglyphsize andcenter. Flatuniformcolors,no gradients,notext.",
+      "previous_attempt": {
+        "id": "pressure",
+        "color": "#7fb8ff",
+        "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-674cad23-330c-45ca-b4fa-bf2aff1ff5e0.png",
+        "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-64124295-2150-488b-9c9f-b935408612ce.png",
+        "prompt": "Use case: logo-brand. Asset: pin_pressure, flat game UI diagnostic map badge.\nInput image: accepted repair pin, reference ONLY for round badge silhouette, thin outline, SHORT pointer tail and unified simple icon style. Replace the gear completely.\nFlat game UI map pin icon. A round badge with thin dark #2b2622 outline and SHORT pointer tail at bottom, solid #7fb8ff fill, a single white pictogram taking about two thirds of badge diameter.\nPictogram: a water drop outline with a bold downward arrow inside it, clearly separate arrow and drop contour.\nBold simple shapes, thick strokes at least 10px at 128px delivery. Circle dominant, short tail, symmetric outer silhouette, centered on fully transparent background, nothing else in frame. Readable at 20 pixels. Front-facing orthographic 2D, crisp flat color regions suitable for vector tracing. Final canvas128x128, generate crisp large square source. Badge fills width, tail touchesbottom. Outline2px at128.\nAvoid text, letters, numbers, gradient, glossy,3D,bevel,drop shadow,painterly,isometric building,background,multiple icons,watermark,ornate detail."
+      },
+      "output_png": "godot/assets/ui/pins/pin_pressure.png",
+      "output_svg": "godot/assets/ui/pins/src/pin_pressure.svg"
+    },
+    {
+      "id": "event",
+      "color": "#f4f1ea",
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-950f3027-1cab-4c7c-b864-249e0d38c795.png",
+      "reference": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-64124295-2150-488b-9c9f-b935408612ce.png",
+      "prompt": "Use case: logo-brand. Asset: pin_event, flat game UI diagnostic map badge.\nInput image: accepted repair pin, reference ONLY for round badge silhouette, thin outline, SHORT pointer tail and unified simple icon style. Replace the gear completely.\nFlat game UI map pin icon. A round badge with thin dark #2b2622 outline and SHORT pointer tail at bottom, solid #f4f1ea fill, a single dark #2b2622 pictogram taking about two thirds of badge diameter.\nPictogram: a DARK #2b2622 speech bubble silhouette with a single badge-colored dot inside.\nBold simple shapes, thick strokes at least 10px at 128px delivery. Circle dominant, short tail, symmetric outer silhouette, centered on fully transparent background, nothing else in frame. Readable at 20 pixels. Front-facing orthographic 2D, crisp flat color regions suitable for vector tracing. Final canvas128x128, generate crisp large square source. Badge fills width, tail touchesbottom. Outline2px at128.\nAvoid text, letters, numbers, gradient, glossy,3D,bevel,drop shadow,painterly,isometric building,background,multiple icons,watermark,ornate detail.",
+      "output_png": "godot/assets/ui/pins/pin_event.png",
+      "output_svg": "godot/assets/ui/pins/src/pin_event.svg"
+    }
+  ]
+}
