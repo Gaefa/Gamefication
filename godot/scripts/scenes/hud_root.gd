@@ -555,6 +555,7 @@ func _build_build_panel() -> void:
 	# Scrollable building list
 	_build_scroll = ScrollContainer.new()
 	_build_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
+	_build_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_build_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(_build_scroll)
 
@@ -673,6 +674,7 @@ func _rebuild_building_list() -> void:
 		var btn := Button.new()
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		if is_locked:
 			btn.text = "%s [Lv%d]" % [label_name, unlock_lv]
 			btn.disabled = true
@@ -687,11 +689,13 @@ func _rebuild_building_list() -> void:
 		btn.pressed.connect(_on_build_button.bind(type_id))
 		_build_vbox.add_child(btn)
 
-		# 1-line key effect
+		# Key effect wraps within the menu instead of widening the scroll content.
 		var effect_text: String = _format_key_effect(ldata)
 		if effect_text != "":
 			var eff_lbl := Label.new()
 			eff_lbl.text = "  " + effect_text
+			eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			eff_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			eff_lbl.add_theme_font_size_override("font_size", 10)
 			eff_lbl.add_theme_color_override("font_color", Color(0.7, 0.9, 0.7))
 			eff_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -707,6 +711,8 @@ func _rebuild_building_list() -> void:
 				cost_parts.append("%s:%d" % [Localization.content_text(rdef, "label", res_id), int(build_cost[res_id] as float)])
 			cost_lbl = Label.new()
 			cost_lbl.text = "  " + ", ".join(cost_parts)
+			cost_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			cost_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			cost_lbl.add_theme_font_size_override("font_size", 10)
 			cost_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			_build_vbox.add_child(cost_lbl)

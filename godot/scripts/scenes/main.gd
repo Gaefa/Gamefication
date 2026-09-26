@@ -139,11 +139,8 @@ func _matches_key(ke: InputEventKey, key: Key) -> bool:
 
 
 func _is_click_on_ui(screen_pos: Vector2) -> bool:
-	## Real hit-test: walk all Control children in HUDCanvas and check rect overlap.
-	var canvas_node: Node = get_node_or_null("HUDCanvas")
-	if canvas_node == null:
-		return false
-	return _check_control_hit(canvas_node, screen_pos)
+	## Autoload panels and onboarding live outside HUDCanvas, but block world input too.
+	return _check_control_hit(get_tree().root, screen_pos)
 
 
 func _check_control_hit(node: Node, pos: Vector2) -> bool:
@@ -236,7 +233,7 @@ func _process(_delta: float) -> void:
 
 func _cursor_for_pointer(screen_pos: Vector2, world_pos: Vector2, dragging: bool) -> String:
 	# Autoload panels (water, season, journal) live outside HUDCanvas too.
-	if _check_control_hit(get_tree().root, screen_pos):
+	if _is_click_on_ui(screen_pos):
 		return ""
 	if dragging:
 		return "pan"

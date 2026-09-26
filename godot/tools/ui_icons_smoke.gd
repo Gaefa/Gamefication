@@ -53,6 +53,8 @@ func _run() -> void:
 			_check(button.icon != null and not button.text.is_empty(), category + " icon keeps localized label")
 			button.pressed.emit()
 			_check(_hud.get("_active_category") == category, category + " selection still works")
+			await _settle()
+			_check_build_list(locale + " / " + category)
 	_hud.call("_set_active_category", "Infrastructure")
 	Localization.set_locale("ru", true, false)
 	var core: RichTextLabel = _hud.get("_core_label")
@@ -89,7 +91,36 @@ func _run() -> void:
 	Input.warp_mouse(Vector2(640, 360))
 	await _settle()
 	_check(_main.get("_cursor_kind") == "", "autoload modal uses normal OS cursor")
+	var selection_before: Vector2i = _main.get("_selected_coord")
+	await _click_at(Vector2(640, 360))
+	_check(_main.get("_selected_coord") == selection_before, "modal click does not select the map behind it")
+	var coord: Vector2i = HexCoords.pixel_to_axial((_main as Node2D).get_global_mouse_position())
+	var original_building: Dictionary = GameStateStore.get_building(coord).duplicate(true)
+	var original_terrain: int = GameStateStore.get_terrain(coord)
+	var original_stone: float = GameStateStore.get_resource("res_stone")
+	GameStateStore.remove_building(coord)
+	GameStateStore.set_terrain(coord, 0)
+	GameStateStore.set_resource("res_stone", 100.0)
+	EventBus.build_mode_changed.emit("bld_road")
+	await _click_at(Vector2(640, 360))
+	_check(not GameStateStore.has_building(coord) and GameStateStore.get_resource("res_stone") == 100.0, "modal click does not build or spend resources behind it")
+	EventBus.build_mode_changed.emit("")
 	WaterPanel.call("_toggle")
+	await _click_at(Vector2(640, 360))
+	_check(_main.get("_selected_coord") == coord, "closing modal restores map selection")
+	EventBus.build_mode_changed.emit("bld_road")
+	await _click_at(Vector2(640, 360))
+	_check(GameStateStore.get_building(coord).get("type") == "bld_road" and GameStateStore.get_resource("res_stone") < 100.0, "closing modal restores construction")
+	GameStateStore.remove_building(coord)
+	if not original_building.is_empty():
+		GameStateStore.set_building(coord, original_building)
+	GameStateStore.set_terrain(coord, original_terrain)
+	GameStateStore.set_resource("res_stone", original_stone)
+	EventBus.build_mode_changed.emit("")
+	_main.call("_refresh_buildings")
+	_main.set("_selected_coord", selection_before)
+	EventBus.selection_changed.emit(selection_before)
+	(_hud.get("_toast_label") as Label).text = ""
 	(_hud.get("_city_label") as Label).gui_input.emit(click)
 	_check(SeasonPanel.get("_visible"), "season panel click target preserved")
 	SeasonPanel.call("_toggle")
@@ -105,6 +136,7 @@ func _run() -> void:
 		Localization.set_locale(locale, true, false)
 		await _settle()
 		_check_layout(locale + " / 960px / large values")
+		_check_build_list(locale + " / 960px")
 		await _save("ui_" + locale + "_960.png")
 	print("UI ICONS SMOKE: %d failures" % _failures)
 	get_tree().quit(0 if _failures == 0 else 1)
@@ -127,11 +159,37 @@ func _check_layout(context: String) -> void:
 	_check(core.text.count("[img=") == 6 and risk.text.count("[img=") == 4, context + ": six resource / four pressure icons")
 
 
+func _check_build_list(context: String) -> void:
+	var scroll: ScrollContainer = _hud.get("_build_scroll")
+	var list: VBoxContainer = _hud.get("_build_vbox")
+	_check(not scroll.get_h_scroll_bar().visible, context + ": no horizontal scroll")
+	_check(list.size.x <= scroll.size.x + 1, context + ": building cards fit menu width")
+	for child: Control in list.get_children():
+		_check(child.size.x <= scroll.size.x + 1, context + ": card text fits width")
+		if child is Label:
+			_check(child.get_visible_line_count() == child.get_line_count(), context + ": all description/cost lines visible")
+
+
 func _settle() -> void:
 	for frame: int in 12:
 		await get_tree().process_frame
 	RenderingServer.force_draw(true)
 	await RenderingServer.frame_post_draw
+
+
+func _click_at(at: Vector2) -> void:
+	var motion := InputEventMouseMotion.new()
+	motion.position = at
+	motion.global_position = at
+	Input.parse_input_event(motion)
+	for pressed: bool in [true, false]:
+		var click := InputEventMouseButton.new()
+		click.position = at
+		click.global_position = at
+		click.button_index = MOUSE_BUTTON_LEFT
+		click.pressed = pressed
+		Input.parse_input_event(click)
+		await get_tree().process_frame
 
 
 func _save(filename: String) -> void:
