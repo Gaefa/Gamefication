@@ -195,3 +195,4 @@ Godot --headless --path godot res://tools/save_roundtrip.tscn     # "ROUND-TRIP:
 ## 6. Следующие этапы
 
 - **P5 — пины над зданиями:** `docs/ART_TASK_CODEX_P5_PINS.md` (после P1–P4).
+- **Сезон Жары (логика, Vertical Slice):** `docs/TASK_CODEX_HEAT_SEASON.md`.
