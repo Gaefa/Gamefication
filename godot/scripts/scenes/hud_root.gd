@@ -1,11 +1,13 @@
 extends Control
-## HUD: compact resource bar (3 blocks), right-anchored build menu with category tabs,
+## HUD: wrapping resource bar (two rows), right-anchored build menu with category tabs,
 ## actionable info panel, event popup, toast, and help.
 
+const UiIcons := preload("res://scripts/scenes/ui_icons.gd")
 const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules.gd")
 
 # --- References ---
-var _core_label: Label
+var _resource_bar: PanelContainer
+var _core_label: RichTextLabel
 var _city_label: Label
 var _utility_label: Label
 var _risk_label: RichTextLabel
@@ -74,6 +76,7 @@ func _ready() -> void:
 	_build_settings_panel()
 	_connect_signals()
 	_set_active_category("Infrastructure")
+	_position_below_resource_bar.call_deferred()
 
 
 func _process(delta: float) -> void:
@@ -114,65 +117,79 @@ func _connect_signals() -> void:
 # ===========================================================
 
 func _build_resource_bar() -> void:
-	var bar := PanelContainer.new()
-	bar.set_anchors_preset(PRESET_TOP_WIDE)
-	bar.custom_minimum_size.y = 48
-	bar.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(bar)
+	_resource_bar = PanelContainer.new()
+	_resource_bar.set_anchors_preset(PRESET_TOP_WIDE)
+	_resource_bar.mouse_filter = Control.MOUSE_FILTER_STOP
+	_resource_bar.resized.connect(_position_below_resource_bar)
+	add_child(_resource_bar)
 
-	var hbox := HBoxContainer.new()
-	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_theme_constant_override("separation", 16)
-	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	bar.add_child(hbox)
+	var margin := MarginContainer.new()
+	for edge: String in ["left", "right"]:
+		margin.add_theme_constant_override("margin_" + edge, 10)
+	for edge: String in ["top", "bottom"]:
+		margin.add_theme_constant_override("margin_" + edge, 5)
+	_resource_bar.add_child(margin)
+	var rows := VBoxContainer.new()
+	rows.add_theme_constant_override("separation", 4)
+	margin.add_child(rows)
+	var resources := HBoxContainer.new()
+	resources.add_theme_constant_override("separation", 16)
+	rows.add_child(resources)
+	var city := HBoxContainer.new()
+	city.add_theme_constant_override("separation", 16)
+	rows.add_child(city)
 
-	# Core block
-	_core_label = Label.new()
-	_core_label.add_theme_font_size_override("font_size", 12)
-	_core_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_child(_core_label)
+	_core_label = _bar_rich_label()
+	_core_label.size_flags_stretch_ratio = 1.2
+	resources.add_child(_core_label)
 
-	var sep1 := VSeparator.new()
-	sep1.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_child(sep1)
+	# Utilities retain their water-panel click target and day-based warning colors.
+	_utility_label = _bar_label()
+	_utility_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	_utility_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_utility_label.gui_input.connect(_on_utility_gui_input)
+	resources.add_child(_utility_label)
 
-	# City block — click to open season & forecast (UX_BIBLE §3.3, §7).
-	_city_label = Label.new()
-	_city_label.add_theme_font_size_override("font_size", 12)
+	# City retains its season/forecast click target.
+	_city_label = _bar_label()
 	_city_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
 	_city_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_city_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_city_label.tooltip_text = Localization.t("ui.season.panel_hint", "Клик — сезон и прогноз (K)")
 	_city_label.gui_input.connect(_on_city_gui_input)
-	hbox.add_child(_city_label)
+	city.add_child(_city_label)
 
-	var sep2 := VSeparator.new()
-	sep2.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_child(sep2)
+	_risk_label = _bar_rich_label()
+	_risk_label.size_flags_stretch_ratio = 1.2
+	city.add_child(_risk_label)
 
-	# Utilities block — click to open the water panel (UX_BIBLE §6).
-	_utility_label = Label.new()
-	_utility_label.add_theme_font_size_override("font_size", 12)
-	_utility_label.add_theme_color_override("font_color", Color(0.65, 0.85, 1.0))
-	_utility_label.mouse_filter = Control.MOUSE_FILTER_STOP
-	_utility_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_utility_label.tooltip_text = Localization.t("ui.water.panel_hint", "Клик — панель воды (C)")
-	_utility_label.gui_input.connect(_on_utility_gui_input)
-	hbox.add_child(_utility_label)
 
-	var sep3 := VSeparator.new()
-	sep3.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_child(sep3)
+func _bar_label() -> Label:
+	var label := Label.new()
+	label.add_theme_font_size_override("font_size", 12)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return label
 
-	# Risk block — the two masters (League vs City) with per-meter colour, plus pressure.
-	_risk_label = RichTextLabel.new()
-	_risk_label.bbcode_enabled = true
-	_risk_label.fit_content = true
-	_risk_label.scroll_active = false
-	_risk_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-	_risk_label.add_theme_font_size_override("normal_font_size", 12)
-	_risk_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hbox.add_child(_risk_label)
+
+func _bar_rich_label() -> RichTextLabel:
+	var label := RichTextLabel.new()
+	label.bbcode_enabled = true
+	label.fit_content = true
+	label.scroll_active = false
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.add_theme_font_size_override("normal_font_size", 12)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return label
+
+
+func _position_below_resource_bar() -> void:
+	var bottom: float = _resource_bar.position.y + _resource_bar.size.y
+	if _build_panel:
+		_build_panel.offset_top = bottom + 4.0
+	if _minimap_panel:
+		_minimap_panel.position.y = bottom + 8.0
 
 
 func _top_resource_ids() -> Array[String]:
@@ -209,8 +226,10 @@ func _update_resource_bar() -> void:
 		var val: float = GameStateStore.get_resource(res_id)
 		var def: Dictionary = ContentDB.get_resource_def(res_id)
 		var lbl: String = Localization.content_text(def, "label", res_id)
-		core_parts.append("%s:%d" % [lbl, int(val)])
-	_core_label.text = " ".join(core_parts)
+		core_parts.append("%s%s:%d" % [UiIcons.bb(UiIcons.RESOURCES.get(res_id, "")), lbl, int(val)])
+	_core_label.text = "  ".join(core_parts)
+	_city_label.tooltip_text = Localization.t("ui.season.panel_hint", "Клик — сезон и прогноз (K)")
+	_utility_label.tooltip_text = Localization.t("ui.water.panel_hint", "Клик — панель воды (C)")
 
 	# --- City ---
 	var pop: int = GameStateStore.population().total as int
@@ -278,17 +297,17 @@ func _update_resource_bar() -> void:
 	var support: float = GameStateStore.mandate().get("support", 50) as float
 	# Pressure director (GDD §15): four accumulators, each filling toward a crisis at 100.
 	var cats: Dictionary = GameStateStore.pressure().get("categories", {}) as Dictionary
-	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s   ·   %s %s %s %s %s" % [
+	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s\n%s %s %s %s %s" % [
 		Localization.t("ui.risk.league", "Лига"),
 		_meter_bb(trust),
 		Localization.t("ui.risk.city", "Город"),
 		_meter_bb(support),
 		_rival_bb(),
 		Localization.t("ui.risk.pressure", "Давление:"),
-		_pressure_bb(Localization.t("ui.pressure.food", "еда"), cats.get("food", 0.0) as float),
-		_pressure_bb(Localization.t("ui.pressure.water", "вода"), cats.get("water", 0.0) as float),
-		_pressure_bb(Localization.t("ui.pressure.people", "люди"), cats.get("happiness", 0.0) as float),
-		_pressure_bb(Localization.t("ui.pressure.mandate", "мандат"), cats.get("mandate", 0.0) as float),
+		_pressure_bb("food", Localization.t("ui.pressure.food", "еда"), cats.get("food", 0.0) as float),
+		_pressure_bb("water", Localization.t("ui.pressure.water", "вода"), cats.get("water", 0.0) as float),
+		_pressure_bb("people", Localization.t("ui.pressure.people", "люди"), cats.get("happiness", 0.0) as float),
+		_pressure_bb("mandate", Localization.t("ui.pressure.mandate", "мандат"), cats.get("mandate", 0.0) as float),
 	]
 
 
@@ -316,14 +335,14 @@ func _rival_bb() -> String:
 		Localization.t("ui.rival.name", "Восс"), theirs, color, Localization.t("ui.rival.you", "вы"), ours]
 
 
-func _pressure_bb(label: String, value: float) -> String:
+func _pressure_bb(icon: String, label: String, value: float) -> String:
 	# Quiet while low, loud as the category nears its crisis threshold (100).
 	var color: String = "#8a8a99"
 	if value >= 70.0:
 		color = "#e63535"
 	elif value >= 40.0:
 		color = "#e6902b"
-	return "[color=%s]%s %.0f[/color]" % [color, label, value]
+	return "%s[color=%s]%s %.0f[/color]" % [UiIcons.bb(icon), color, label, value]
 
 
 func _on_utility_gui_input(event: InputEvent) -> void:
@@ -500,6 +519,9 @@ func _build_build_panel() -> void:
 	for cat: String in CATEGORY_ORDER:
 		var cat_btn := Button.new()
 		cat_btn.text = _category_label(cat)
+		cat_btn.icon = UiIcons.texture(UiIcons.CATEGORIES[cat])
+		cat_btn.expand_icon = true
+		cat_btn.add_theme_constant_override("icon_max_width", 18)
 		cat_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		cat_btn.add_theme_font_size_override("font_size", 9)
 		cat_btn.pressed.connect(_set_active_category.bind(cat))
@@ -533,6 +555,7 @@ func _build_build_panel() -> void:
 	# Scrollable building list
 	_build_scroll = ScrollContainer.new()
 	_build_scroll.mouse_filter = Control.MOUSE_FILTER_STOP
+	_build_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_build_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(_build_scroll)
 
@@ -651,6 +674,7 @@ func _rebuild_building_list() -> void:
 		var btn := Button.new()
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		if is_locked:
 			btn.text = "%s [Lv%d]" % [label_name, unlock_lv]
 			btn.disabled = true
@@ -665,11 +689,13 @@ func _rebuild_building_list() -> void:
 		btn.pressed.connect(_on_build_button.bind(type_id))
 		_build_vbox.add_child(btn)
 
-		# 1-line key effect
+		# Key effect wraps within the menu instead of widening the scroll content.
 		var effect_text: String = _format_key_effect(ldata)
 		if effect_text != "":
 			var eff_lbl := Label.new()
 			eff_lbl.text = "  " + effect_text
+			eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			eff_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			eff_lbl.add_theme_font_size_override("font_size", 10)
 			eff_lbl.add_theme_color_override("font_color", Color(0.7, 0.9, 0.7))
 			eff_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -685,6 +711,8 @@ func _rebuild_building_list() -> void:
 				cost_parts.append("%s:%d" % [Localization.content_text(rdef, "label", res_id), int(build_cost[res_id] as float)])
 			cost_lbl = Label.new()
 			cost_lbl.text = "  " + ", ".join(cost_parts)
+			cost_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			cost_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			cost_lbl.add_theme_font_size_override("font_size", 10)
 			cost_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			_build_vbox.add_child(cost_lbl)

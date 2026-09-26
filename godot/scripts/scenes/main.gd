@@ -1,12 +1,16 @@
 extends Node2D
 ## Root scene. Bootstraps the game, handles global input, and routes UI events.
 
+const UiIcons := preload("res://scripts/scenes/ui_icons.gd")
+const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules.gd")
+
 var _orchestrator: GameOrchestrator
 var _build_mode: String = ""  # "" = none, otherwise building type_id
 var _hud: Control
 var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 var _show_ranges: bool = false
 var _show_logistics: bool = false
+var _cursor_kind: String = ""
 
 
 func _ready() -> void:
@@ -135,18 +139,17 @@ func _matches_key(ke: InputEventKey, key: Key) -> bool:
 
 
 func _is_click_on_ui(screen_pos: Vector2) -> bool:
-	## Real hit-test: walk all Control children in HUDCanvas and check rect overlap.
-	var canvas_node: Node = get_node_or_null("HUDCanvas")
-	if canvas_node == null:
-		return false
-	return _check_control_hit(canvas_node, screen_pos)
+	## Autoload panels and onboarding live outside HUDCanvas, but block world input too.
+	return _check_control_hit(get_tree().root, screen_pos)
 
 
 func _check_control_hit(node: Node, pos: Vector2) -> bool:
 	## Recursively checks if pos hits any visible MOUSE_FILTER_STOP Control.
+	if node is CanvasLayer and not (node as CanvasLayer).visible:
+		return false
 	if node is Control:
 		var ctrl := node as Control
-		if not ctrl.visible:
+		if not ctrl.is_visible_in_tree():
 			return false
 		if ctrl.mouse_filter == Control.MOUSE_FILTER_STOP:
 			if ctrl.get_global_rect().has_point(pos):
@@ -211,6 +214,38 @@ func _handle_key(ke: InputEventKey) -> void:
 
 func _on_build_mode_changed(type_id: String) -> void:
 	_build_mode = type_id
+
+
+func _process(_delta: float) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var camera: Node = get_node_or_null("Camera")
+	var dragging: bool = camera != null and camera.get("_dragging") == true
+	var kind: String = _cursor_for_pointer(get_viewport().get_mouse_position(), get_global_mouse_position(), dragging)
+	if kind == _cursor_kind:
+		return
+	_cursor_kind = kind
+	var texture: Texture2D = UiIcons.texture(kind, "cursors") if kind != "" else null
+	var hotspot := Vector2(16, 16) if kind == "pan" else Vector2(3, 3)
+	# Reset to the OS cursor over UI; buttons/links keep their own cursor shapes.
+	Input.set_custom_mouse_cursor(texture, Input.CURSOR_ARROW, hotspot if texture != null else Vector2.ZERO)
+
+
+func _cursor_for_pointer(screen_pos: Vector2, world_pos: Vector2, dragging: bool) -> String:
+	# Autoload panels (water, season, journal) live outside HUDCanvas too.
+	if _is_click_on_ui(screen_pos):
+		return ""
+	if dragging:
+		return "pan"
+	if _build_mode == "":
+		return "inspect"
+	var coord: Vector2i = HexCoords.pixel_to_axial(world_pos)
+	var validation: Dictionary = PlacementRulesRef.validate(coord, _build_mode, _orchestrator.hex_grid)
+	return "build" if validation.get("ok", false) else "blocked"
+
+
+func _exit_tree() -> void:
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
 
 
 func _on_building_changed(_coord: Vector2i, _type_id: String) -> void:
