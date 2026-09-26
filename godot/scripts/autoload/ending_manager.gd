@@ -26,6 +26,7 @@ var _theses_label: RichTextLabel
 var _menu_btn: Button
 
 const PRESSURE_LABELS := { "food": "еда", "water": "вода", "happiness": "люди", "mandate": "мандат" }
+const PRESSURE_LABELS_EN := { "food": "food", "water": "water", "happiness": "people", "mandate": "mandate" }
 
 
 func _ready() -> void:
@@ -202,7 +203,7 @@ func _build_ui() -> void:
 	columns.add_child(_theses_label)
 
 	_menu_btn = Button.new()
-	_menu_btn.text = "В главное меню"
+	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
 	_menu_btn.custom_minimum_size.y = 44
 	_menu_btn.pressed.connect(_on_menu_pressed)
 	vbox.add_child(_menu_btn)
@@ -210,12 +211,13 @@ func _build_ui() -> void:
 
 func _show_finale(def: Dictionary, ending_id: String) -> void:
 	var kind: String = def.get("kind", "") as String
-	_title_label.text = def.get("title", "Финал") as String
+	_title_label.text = Localization.content_text(def, "title", Localization.ru_en("Финал", "Finale"))
+	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
 	_title_label.add_theme_color_override(
 		"font_color",
 		Color(0.6, 0.9, 0.6) if kind == "win" else Color(0.9, 0.55, 0.5)
 	)
-	_body_label.text = (def.get("body", "") as String) + _replacement_epilogue(ending_id) + _style_epilogue()
+	_body_label.text = Localization.content_text(def, "body", "") + _replacement_epilogue(ending_id) + _style_epilogue()
 	_theses_label.text = _theses()
 	_layer.visible = true
 
@@ -223,33 +225,35 @@ func _show_finale(def: Dictionary, ending_id: String) -> void:
 func _theses() -> String:
 	# The "why" a tester should be able to name after the finale (RELEASE_PLAN §2.4):
 	# both masters, the Cistern (GDD §8.3), the first thing that broke, and the people.
-	var lines: Array[String] = ["[b]ИТОГИ[/b]"]
+	var lines: Array[String] = [Localization.ru_en("[b]ИТОГИ[/b]", "[b]SUMMARY[/b]")]
 	var mandate: Dictionary = GameStateStore.mandate()
 	var trust: float = mandate.get("patron_trust", 50) as float
 	var support: float = mandate.get("support", 50) as float
-	var masters := "оба ещё держатся"
+	var masters := Localization.ru_en("оба ещё держатся", "both still holding")
 	if trust <= 0.0:
-		masters = "покровитель лишил доверия"
+		masters = Localization.ru_en("покровитель лишил доверия", "the patron withdrew trust")
 	elif support <= 0.0:
-		masters = "город отказал в поддержке"
-	lines.append("• [b]Два хозяина:[/b] доверие %d · поддержка %d — %s" % [int(trust), int(support), masters])
+		masters = Localization.ru_en("город отказал в поддержке", "the city withdrew support")
+	lines.append(Localization.ru_en("• [b]Два хозяина:[/b] доверие %d · поддержка %d — %s", "• [b]Two masters:[/b] trust %d · support %d — %s") % [int(trust), int(support), masters])
 
 	var reserve: int = int(GameStateStore.get_resource("res_water_stockpile"))
 	var days: float = WaterPanel.water_days()
-	var cistern := "пуста"
+	var cistern := Localization.ru_en("пуста", "empty")
 	if reserve > 0 and (is_inf(days) or days >= 0.1):
-		cistern = "%d воды" % reserve if is_inf(days) else "%d воды — на %.1f дн." % [reserve, days]
-	lines.append("• [b]Цистерна:[/b] %s" % cistern)
+		cistern = Localization.ru_en("%d воды", "%d water") % reserve if is_inf(days) else Localization.ru_en("%d воды — на %.1f дн.", "%d water — %.1f days' worth") % [reserve, days]
+	lines.append(Localization.ru_en("• [b]Цистерна:[/b] %s", "• [b]Cistern:[/b] %s") % cistern)
 
 	var first: Dictionary = GameStateStore.pressure().get("first_crisis", {}) as Dictionary
 	if first.is_empty():
-		lines.append("• [b]Давление:[/b] ни одна беда не дошла до кризиса")
+		lines.append(Localization.ru_en("• [b]Давление:[/b] ни одна беда не дошла до кризиса", "• [b]Pressure:[/b] no trouble reached a crisis"))
 	else:
-		lines.append("• [b]Первым сорвалось:[/b] %s, день %d" % [
-			PRESSURE_LABELS.get(first.get("category", ""), "?"), first.get("day", 0) as int])
+		var category: String = first.get("category", "") as String
+		lines.append(Localization.ru_en("• [b]Первым сорвалось:[/b] %s, день %d", "• [b]First to break:[/b] %s, day %d") % [
+			Localization.ru_en(PRESSURE_LABELS.get(category, "?") as String, PRESSURE_LABELS_EN.get(category, "?") as String),
+			first.get("day", 0) as int])
 
 	var pop: int = GameStateStore.population().get("total", 0) as int
-	lines.append("• [b]Жители:[/b] было до %d, осталось %d" % [maxi(_peak_pop, pop), pop])
+	lines.append(Localization.ru_en("• [b]Жители:[/b] было до %d, осталось %d", "• [b]Residents:[/b] peak %d, remaining %d") % [maxi(_peak_pop, pop), pop])
 	return "\n\n".join(lines)
 
 
@@ -260,21 +264,23 @@ func _replacement_epilogue(ending_id: String) -> String:
 	# The recall has a face (LORE_BIBLE §12): the neighbour the patron measured you against.
 	if not RECALL_ENDINGS.has(ending_id):
 		return ""
-	return "\n\n[i]Через неделю в ваш кабинет въехала %s из соседнего района — со своим расписанием воды и своими печатями.[/i]" % RivalManager.NAME
+	return Localization.ru_en(
+		"\n\n[i]Через неделю в ваш кабинет въехала %s из соседнего района — со своим расписанием воды и своими печатями.[/i]" % RivalManager.NAME,
+		"\n\n[i]A week later, %s from the neighboring district moved into your office, with her own water schedule and her own stamps.[/i]" % RivalManager.NAME_EN)
 
 
 func _style_epilogue() -> String:
 	# A closing line naming the political shade the player's decisions added up to.
 	var labels := {
-		"loyal": "лояльный администратор Лиги",
-		"protector": "защитник города",
-		"pragmatist": "жёсткий прагматик",
-		"autonomist": "будущий автономист",
+		"loyal": Localization.ru_en("лояльный администратор Лиги", "a loyal League administrator"),
+		"protector": Localization.ru_en("защитник города", "the city's protector"),
+		"pragmatist": Localization.ru_en("жёсткий прагматик", "a hard pragmatist"),
+		"autonomist": Localization.ru_en("будущий автономист", "a future autonomist"),
 	}
 	var style: String = GameStateStore.dominant_style("")
 	if style == "" or not labels.has(style):
 		return ""
-	return "\n\n[i]Оттенок: %s.[/i]" % labels[style]
+	return Localization.ru_en("\n\n[i]Оттенок: %s.[/i]", "\n\n[i]Shade: %s.[/i]") % labels[style]
 
 
 func _on_menu_pressed() -> void:

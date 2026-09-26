@@ -57,7 +57,7 @@ func _build_ui() -> void:
 	
 	# Заголовок: "Стол Администратора"
 	_title_label = Label.new()
-	_title_label.text = "СТОЛ АДМИНИСТРАТОРА"
+	_title_label.text = Localization.ru_en("СТОЛ АДМИНИСТРАТОРА", "THE ADMINISTRATOR'S DESK")
 	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_title_label.add_theme_font_size_override("font_size", 22)
 	vbox.add_child(_title_label)
@@ -99,14 +99,14 @@ func _build_ui() -> void:
 	
 	# Кнопка "Следующее письмо"
 	_next_btn = Button.new()
-	_next_btn.text = "Следующее письмо →"
+	_next_btn.text = Localization.ru_en("Следующее письмо →", "Next letter →")
 	_next_btn.visible = false
 	_next_btn.pressed.connect(_show_next_event)
 	vbox.add_child(_next_btn)
 	
 	# Кнопка "Завершить вечер"
 	_finish_btn = Button.new()
-	_finish_btn.text = "Завершить вечер — начать новый день"
+	_finish_btn.text = Localization.ru_en("Завершить вечер — начать новый день", "End the evening — start a new day")
 	_finish_btn.visible = false
 	_finish_btn.pressed.connect(_finish_evening)
 	vbox.add_child(_finish_btn)
@@ -119,7 +119,7 @@ func _on_critical_event_started(event_data: Dictionary) -> void:
 	_events = [event_data]
 	_current_index = 0
 	_resolved_count = 0
-	_title_label.text = "СРОЧНО"
+	_title_label.text = Localization.ru_en("СРОЧНО", "URGENT")
 	_show_event(0)
 	visible = true
 	EventBus.desk_opened.emit(_events)
@@ -127,7 +127,7 @@ func _on_critical_event_started(event_data: Dictionary) -> void:
 
 func _on_evening_started(events: Array) -> void:
 	_critical_mode = false
-	_title_label.text = "СТОЛ АДМИНИСТРАТОРА"
+	_title_label.text = Localization.ru_en("СТОЛ АДМИНИСТРАТОРА", "THE ADMINISTRATOR'S DESK")
 	_events = events
 	_current_index = 0
 	_resolved_count = 0
@@ -148,9 +148,10 @@ func _show_event(index: int) -> void:
 		return
 	
 	var evt: Dictionary = _events[index]
-	_counter_label.text = "Письмо %d из %d" % [index + 1, _events.size()]
-	_header_label.text = evt.get("title", evt.get("runtime_id", "Событие")) as String
-	_body_label.text = evt.get("body", evt.get("text", "")) as String
+	_counter_label.text = Localization.ru_en("Письмо %d из %d", "Letter %d of %d") % [index + 1, _events.size()]
+	_header_label.text = Localization.content_text(evt, "title", evt.get("runtime_id", Localization.ru_en("Событие", "Event")) as String)
+	_body_label.text = Localization.content_text(evt, "body", Localization.content_text(evt, "text", ""))
+	_next_btn.text = Localization.ru_en("Следующее письмо →", "Next letter →")
 	
 	# Очищаем старые кнопки
 	for child: Node in _options_container.get_children():
@@ -169,14 +170,14 @@ func _show_event(index: int) -> void:
 		for i: int in options.size():
 			var opt: Dictionary = options[i] as Dictionary
 			var btn := Button.new()
-			btn.text = opt.get("text", "Вариант %d" % (i + 1)) as String
+			btn.text = Localization.content_text(opt, "text", Localization.ru_en("Вариант %d", "Option %d") % (i + 1))
 			var event_id: String = evt.get("runtime_id", "") as String
 			var effects: Dictionary = opt.get("effects", {})
 			var cost: Dictionary = opt.get("cost", {})
 			btn.tooltip_text = _consequences_text(effects, cost)
 			if not cost.is_empty() and not GameStateStore.can_afford(cost):
 				btn.disabled = true
-				btn.text += " (не хватает ресурсов)"
+				btn.text += Localization.ru_en(" (не хватает ресурсов)", " (not enough resources)")
 			var opt_idx: int = i
 			btn.pressed.connect(func() -> void: _select_option(event_id, opt_idx, effects, cost))
 			_options_container.add_child(btn)
@@ -187,13 +188,13 @@ func _create_legacy_buttons(evt: Dictionary) -> void:
 	
 	# Accept
 	var accept_btn := Button.new()
-	accept_btn.text = evt.get("accept_label", "Принять") as String
+	accept_btn.text = Localization.content_text(evt, "accept_label", Localization.ru_en("Принять", "Accept"))
 	var accept_effects: Dictionary = evt.get("accept_effects", {})
 	var accept_cost: Variant = evt.get("accept_cost", null)
 	if accept_cost is Dictionary and not (accept_cost as Dictionary).is_empty():
 		if not GameStateStore.can_afford(accept_cost as Dictionary):
 			accept_btn.disabled = true
-			accept_btn.text += " (не хватает ресурсов)"
+			accept_btn.text += Localization.ru_en(" (не хватает ресурсов)", " (not enough resources)")
 	var accept_cost_dict: Dictionary = accept_cost as Dictionary if accept_cost is Dictionary else {}
 	accept_btn.tooltip_text = _consequences_text(accept_effects, accept_cost_dict)
 	accept_btn.pressed.connect(func() -> void: _select_option(event_id, 0, accept_effects, accept_cost_dict))
@@ -201,7 +202,7 @@ func _create_legacy_buttons(evt: Dictionary) -> void:
 	
 	# Decline
 	var decline_btn := Button.new()
-	decline_btn.text = evt.get("decline_label", "Отклонить") as String
+	decline_btn.text = Localization.content_text(evt, "decline_label", Localization.ru_en("Отклонить", "Decline"))
 	var decline_effects: Dictionary = evt.get("decline_effects", {})
 	decline_btn.tooltip_text = _consequences_text(decline_effects, {})
 	decline_btn.pressed.connect(func() -> void: _select_option(event_id, 1, decline_effects, {}))
@@ -212,6 +213,14 @@ const RES_LABELS := {
 	"res_water_stockpile": "вода", "res_food": "еда", "res_wood": "дерево",
 	"res_stone": "камень", "res_tools": "инструменты", "res_money": "деньги",
 }
+const RES_LABELS_EN := {
+	"res_water_stockpile": "water", "res_food": "food", "res_wood": "wood",
+	"res_stone": "stone", "res_tools": "tools", "res_money": "money",
+}
+
+
+func _res_label(res_id: String) -> String:
+	return Localization.ru_en(RES_LABELS.get(res_id, res_id) as String, RES_LABELS_EN.get(res_id, res_id) as String)
 
 
 ## Hover preview of an answer (UX_BIBLE §7.1): the player shouldn't guess what a stamp does.
@@ -222,34 +231,34 @@ func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
 		var value: Variant = effects[key]
 		match key:
 			"stat_league_trust":
-				parts.append("доверие покровителя %s" % _signed(value as float))
+				parts.append(Localization.ru_en("доверие покровителя %s", "patron trust %s") % _signed(value as float))
 			"stat_city_trust":
-				parts.append("поддержка города %s" % _signed(value as float))
+				parts.append(Localization.ru_en("поддержка города %s", "city support %s") % _signed(value as float))
 			"stat_unrest_pressure":
-				parts.append("давление «люди» %s" % _signed(value as float))
+				parts.append(Localization.ru_en("давление «люди» %s", "\"people\" pressure %s") % _signed(value as float))
 			"add_resources", "remove_resources":
 				var mult: float = 1.0 if key == "add_resources" else -1.0
 				for res_id: String in value as Dictionary:
-					parts.append("%s %s" % [RES_LABELS.get(res_id, res_id), _signed(mult * ((value as Dictionary)[res_id] as float))])
+					parts.append("%s %s" % [_res_label(res_id), _signed(mult * ((value as Dictionary)[res_id] as float))])
 			"demolish_building":
-				parts.append("снос: %s" % _building_name(value as String))
+				parts.append(Localization.ru_en("снос: %s", "demolition: %s") % _building_name(value as String))
 			"replace_building":
-				parts.append("перестройка: %s" % _building_name((value as Dictionary).get("to", "") as String))
+				parts.append(Localization.ru_en("перестройка: %s", "rebuild: %s") % _building_name((value as Dictionary).get("to", "") as String))
 			"force_issues":
-				parts.append("поломки: %d" % (value as int))
+				parts.append(Localization.ru_en("поломки: %d", "breakdowns: %d") % (value as int))
 			"damage_buildings":
-				parts.append("повреждённых зданий: %d" % (value as int))
+				parts.append(Localization.ru_en("повреждённых зданий: %d", "buildings damaged: %d") % (value as int))
 			_:
 				if key.begins_with("res_"):
-					parts.append("%s %s" % [RES_LABELS.get(key, key), _signed(value as float)])
+					parts.append("%s %s" % [_res_label(key), _signed(value as float)])
 	var lines: Array[String] = []
 	if not parts.is_empty():
-		lines.append("Следствие: " + ", ".join(parts))
+		lines.append(Localization.ru_en("Следствие: ", "Effect: ") + ", ".join(parts))
 	if not cost.is_empty():
 		var costs: Array[String] = []
 		for res_id: String in cost:
-			costs.append("%s %d" % [RES_LABELS.get(res_id, res_id), int(cost[res_id] as float)])
-		lines.append("Цена: " + ", ".join(costs))
+			costs.append("%s %d" % [_res_label(res_id), int(cost[res_id] as float)])
+		lines.append(Localization.ru_en("Цена: ", "Cost: ") + ", ".join(costs))
 	return "\n".join(lines)
 
 
@@ -283,13 +292,24 @@ func _log_answer(option_index: int, effects: Dictionary) -> void:
 		return
 	var evt: Dictionary = _events[_current_index] as Dictionary
 	var options: Array = evt.get("options", []) as Array
-	var choice: String
+	# Keep both languages (and any localization keys) so the journal follows a later language switch.
+	var entry: Dictionary = {}
+	_copy_text(entry, "title", evt, "title")
+	if (entry.get("title", "") as String) == "":
+		entry["title"] = evt.get("runtime_id", "") as String
 	if option_index < options.size():
-		choice = (options[option_index] as Dictionary).get("text", "") as String
+		_copy_text(entry, "choice", options[option_index] as Dictionary, "text")
 	else:
-		choice = evt.get("accept_label" if option_index == 0 else "decline_label", "") as String
-	var reply: String = Localization.content_text(effects, "message", effects.get("message", "") as String)
-	EventLogPanel.record(evt.get("title", evt.get("runtime_id", "")) as String, choice, reply)
+		_copy_text(entry, "choice", evt, "accept_label" if option_index == 0 else "decline_label")
+	_copy_text(entry, "reply", effects, "message")
+	EventLogPanel.record(entry)
+
+
+func _copy_text(dst: Dictionary, dst_field: String, src: Dictionary, field: String) -> void:
+	dst[dst_field] = src.get(field, "") as String
+	for suffix: String in ["_en", "_key"]:
+		if src.has(field + suffix):
+			dst[dst_field + suffix] = src[field + suffix] as String
 
 
 func _show_next_event() -> void:
@@ -303,19 +323,20 @@ func _show_all_resolved() -> void:
 		child.queue_free()
 	_next_btn.visible = false
 	if _critical_mode:
-		_header_label.text = "Решение принято"
-		_body_label.text = "Последствия уже в силе. Возвращаемся к делам района."
-		_finish_btn.text = "Вернуться к городу"
+		_header_label.text = Localization.ru_en("Решение принято", "Decision made")
+		_body_label.text = Localization.ru_en("Последствия уже в силе. Возвращаемся к делам района.", "The consequences are already in effect. Back to district business.")
+		_finish_btn.text = Localization.ru_en("Вернуться к городу", "Return to the city")
 	else:
-		_header_label.text = "Вся почта разобрана"
-		_body_label.text = "Вы обработали %d писем. Готовы начать новый день?" % _resolved_count
-		_finish_btn.text = "Завершить вечер — начать новый день"
+		_header_label.text = Localization.ru_en("Вся почта разобрана", "All mail handled")
+		_body_label.text = Localization.ru_en("Вы обработали %d писем. Готовы начать новый день?", "You handled %d letters. Ready to start a new day?") % _resolved_count
+		_finish_btn.text = Localization.ru_en("Завершить вечер — начать новый день", "End the evening — start a new day")
 	_finish_btn.visible = true
 
 
 func _show_empty_desk() -> void:
-	_header_label.text = "Тихий вечер"
-	_body_label.text = "Сегодня почты нет. Секретарь говорит, что жители довольны... пока что."
+	_header_label.text = Localization.ru_en("Тихий вечер", "A quiet evening")
+	_body_label.text = Localization.ru_en("Сегодня почты нет. Секретарь говорит, что жители довольны... пока что.", "No mail today. The secretary says the residents are content... for now.")
+	_finish_btn.text = Localization.ru_en("Завершить вечер — начать новый день", "End the evening — start a new day")
 	_counter_label.text = ""
 	for child: Node in _options_container.get_children():
 		child.queue_free()
