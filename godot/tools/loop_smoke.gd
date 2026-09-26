@@ -37,6 +37,8 @@ func _ready() -> void:
 func _attach() -> void:
 	get_tree().current_scene = _main  # effects and HUD look the orchestrator up here
 	_desk = _main.get_node("HUDCanvas/DeskUI") as Control
+	# Behind the start menu nothing runs; start the run the way the menu button does.
+	_main.get_node("HUDCanvas/HUD").call("_start_new_run", "appointed_administrator")
 	SimulationRunner.speed_scale = SPEED
 
 

@@ -31,6 +31,7 @@ const PRESSURE_LABELS := { "food": "еда", "water": "вода", "happiness": "
 func _ready() -> void:
 	_build_ui()
 	EventBus.new_game_started.connect(_on_new_game_started)
+	EventBus.game_loaded.connect(_on_game_loaded)
 	EventBus.tick_finished.connect(_on_tick_finished)
 
 
@@ -38,6 +39,14 @@ func _on_new_game_started() -> void:
 	_active = true
 	_ended = false
 	_peak_pop = 0
+	if _layer:
+		_layer.visible = false
+
+
+func _on_game_loaded(_slot: int) -> void:
+	_active = true
+	_ended = false
+	_peak_pop = GameStateStore.population().get("peak", 0) as int
 	if _layer:
 		_layer.visible = false
 
@@ -53,6 +62,7 @@ func _evaluate() -> void:
 	var day: int = climate.get("total_day", 1) as int
 	var pop: int = GameStateStore.population().get("total", 0) as int
 	_peak_pop = maxi(_peak_pop, pop)
+	GameStateStore.population()["peak"] = _peak_pop  # exodus detection survives a load
 
 	var mandate: Dictionary = GameStateStore.mandate()
 	var trust: float = mandate.get("patron_trust", 50) as float
@@ -115,6 +125,7 @@ func _trigger(ending_id: String) -> void:
 	_ended = true
 	_active = false
 	SimulationRunner.paused = true
+	SimulationRunner.run_active = false
 	_show_finale(def, ending_id)
 	EventBus.ending_triggered.emit(ending_id, def.get("kind", "") as String)
 	if (def.get("kind", "") as String) == "win":

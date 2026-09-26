@@ -19,7 +19,7 @@ func process_tick() -> void:
 		if bld.get("damaged", false) as bool:
 			continue
 		var type_id: String = bld.get("type", "") as String
-		if type_id == "road":
+		if type_id == "road" or type_id == "bld_road":
 			continue
 		if _rng.chance(ISSUE_CHANCE_PER_BUILDING):
 			bld["has_issue"] = true

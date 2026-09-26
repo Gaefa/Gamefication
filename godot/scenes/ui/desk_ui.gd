@@ -115,6 +115,7 @@ func _build_ui() -> void:
 func _on_critical_event_started(event_data: Dictionary) -> void:
 	# Срочная карточка посреди дня. Игра уже на паузе (EventManager).
 	_critical_mode = true
+	SimulationRunner.card_open = true
 	_events = [event_data]
 	_current_index = 0
 	_resolved_count = 0
@@ -328,6 +329,7 @@ func _finish_evening() -> void:
 	if _critical_mode:
 		# Срочная карточка: просто снимаем паузу и продолжаем тот же день.
 		_critical_mode = false
+		SimulationRunner.card_open = false
 		SimulationRunner.paused = false
 	else:
 		SimulationRunner.transition_to_morning()

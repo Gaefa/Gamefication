@@ -11,6 +11,9 @@ var _drag_start := Vector2.ZERO
 
 
 func _process(delta: float) -> void:
+	# A release over a UI panel or outside the window never reaches _unhandled_input.
+	if _dragging and not Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+		_dragging = false
 	var move := Vector2.ZERO
 	if Input.is_action_pressed("camera_up"):
 		move.y -= 1.0

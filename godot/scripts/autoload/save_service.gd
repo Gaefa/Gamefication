@@ -14,6 +14,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	# Only a run in progress autosaves: never the throwaway map behind the start menu
+	# (it would overwrite the save "Continue" loads) and never a finished game.
+	if not SimulationRunner.run_active:
+		return
 	_autosave_timer += delta
 	if _autosave_timer >= AUTOSAVE_INTERVAL:
 		_autosave_timer = 0.0
@@ -22,6 +26,8 @@ func _process(delta: float) -> void:
 
 func save_game(slot: int, silent: bool = false) -> bool:
 	var path := _slot_path(slot)
+	# The time left in the current day rides the save, so a load doesn't refill the day.
+	GameStateStore.climate()["day_timer"] = SimulationRunner.day_timer
 	var data: Dictionary = GameStateStore.to_save_dict()
 	data["save_time"] = Time.get_datetime_string_from_system()
 	# Keep key order (systems iterate buildings in insertion order) and full float
