@@ -10,15 +10,23 @@ extends Node
 
 const HINTS := {
 	# --- First-session chain: one step at a time, the next unlocks when the previous is done ---
-	"welcome": "Вы — администратор Ржавой Норы. Цель: пережить Пыль (с 19-го дня) и аудит Лиги на 20-й. Первый шаг — вода: дорога → колодец-насос → барак. Пробел — пауза, H — справка.",
-	"build_road": "Справа «Инфраструктура» → «Дорога». Кликайте по клеткам от поста администрации. Здания работают только рядом с дорогой.",
-	"build_pump": "Теперь «Колодец-насос» у дороги — он даёт воду в радиусе 4 клеток (V покажет радиус). Второй насос — второй запас на Пыль.",
-	"build_shelter": "«Жильё» → «Барак» в зоне воды — приедут жители. Барак без воды пустует. Кликните по зданию — увидите, чего ему не хватает.",
-	"first_desk": "Так будет каждый вечер: письма и обращения на Столе, последствия — при наведении на ответ. Всё, что вы ответили, хранится в журнале (N).",
+	"welcome": ["Вы — администратор Ржавой Норы. Цель: пережить Пыль (с 19-го дня) и аудит Лиги на 20-й. Первый шаг — вода: дорога → колодец-насос → барак. Пробел — пауза, H — справка.",
+		"You are the administrator of the Rust Pit. Goal: survive the Dust (from day 19) and the League audit on day 20. First step is water: road → well pump → shelter. Space pauses, H opens help."],
+	"build_road": ["Справа «Инфраструктура» → «Дорога». Кликайте по клеткам от поста администрации. Здания работают только рядом с дорогой.",
+		"On the right, \"Infrastructure\" → \"Road\". Click tiles outward from the administration post. Buildings only work next to a road."],
+	"build_pump": ["Теперь «Колодец-насос» у дороги — он даёт воду в радиусе 4 клеток (V покажет радиус). Второй насос — второй запас на Пыль.",
+		"Now a \"Well Pump\" by the road: it gives water within 4 tiles (V shows the range). A second pump is a second reserve for the Dust."],
+	"build_shelter": ["«Жильё» → «Барак» в зоне воды — приедут жители. Барак без воды пустует. Кликните по зданию — увидите, чего ему не хватает.",
+		"\"Residential\" → \"Shelter\" inside the water zone, and residents will arrive. A shelter without water stays empty. Click a building to see what it lacks."],
+	"first_desk": ["Так будет каждый вечер: письма и обращения на Столе, последствия — при наведении на ответ. Всё, что вы ответили, хранится в журнале (N).",
+		"This happens every evening: letters and petitions on the Desk; hover an answer to see its consequences. Everything you answered is kept in the log (N)."],
 	# --- Contextual: fire on the first occurrence of the situation ---
-	"water_days": "Вверху — «Воды на N дней»: сколько город протянет при текущем расходе. Не дайте упасть к нулю, особенно перед Пылью.",
-	"building_problem": "Над зданием значок проблемы. Кликните по зданию — игра покажет причину, но чинить решаете вы.",
-	"season_dust": "Сезон Пыли: воды уходит больше, урожай падает. Нажмите K — там прогноз и чек-лист готовности. J — дневник прежнего администратора.",
+	"water_days": ["Вверху — «Воды на N дней»: сколько город протянет при текущем расходе. Не дайте упасть к нулю, особенно перед Пылью.",
+		"At the top, \"Water for N days\": how long the city lasts at current use. Don't let it hit zero, especially before the Dust."],
+	"building_problem": ["Над зданием значок проблемы. Кликните по зданию — игра покажет причину, но чинить решаете вы.",
+		"A problem icon over a building. Click it and the game shows the cause; the fix is up to you."],
+	"season_dust": ["Сезон Пыли: воды уходит больше, урожай падает. Нажмите K — там прогноз и чек-лист готовности. J — дневник прежнего администратора.",
+		"Dust season: water goes faster, harvests drop. Press K for the forecast and readiness checklist. J opens the previous administrator's diary."],
 }
 
 ## The first-session chain in order, with the building count that completes each step
@@ -38,6 +46,8 @@ var suppressed: bool = false
 var _layer: CanvasLayer
 var _label: Label
 var _panel: PanelContainer
+var _head: Label
+var _btn: Button
 
 
 func _ready() -> void:
@@ -48,6 +58,7 @@ func _ready() -> void:
 		if season_id == "season_dust":
 			_offer("season_dust"))
 	EventBus.tick_finished.connect(_on_tick_finished)
+	Localization.locale_changed.connect(func(_locale: String) -> void: _apply_text())
 	EventBus.desk_closed.connect(func() -> void:
 		if _is_shown("welcome"):
 			_offer("first_desk"))
@@ -99,8 +110,17 @@ func _flush() -> void:
 	if SimulationRunner.paused or suppressed:
 		return  # don't pop a hint over the desk / crisis / finale / start menu
 	_active = _queue.pop_front()
-	_label.text = HINTS[_active] as String
+	_apply_text()
 	_layer.visible = true
+
+
+## Hint entries are [ru, en]; re-applied on a language switch while the banner is up.
+func _apply_text() -> void:
+	_head.text = Localization.ru_en("ПОДСКАЗКА", "HINT")
+	_btn.text = Localization.ru_en("Понятно", "Got it")
+	if _active != "":
+		var pair: Array = HINTS[_active] as Array
+		_label.text = Localization.ru_en(pair[0] as String, pair[1] as String)
 
 
 func _dismiss() -> void:
@@ -151,8 +171,8 @@ func _build_ui() -> void:
 	vbox.add_theme_constant_override("separation", 10)
 	_panel.add_child(vbox)
 
-	var head := Label.new()
-	head.text = "ПОДСКАЗКА"
+	_head = Label.new()
+	var head := _head
 	head.add_theme_font_size_override("font_size", 11)
 	head.add_theme_color_override("font_color", Color(0.7, 0.66, 0.5))
 	vbox.add_child(head)
@@ -163,8 +183,9 @@ func _build_ui() -> void:
 	_label.add_theme_font_size_override("font_size", 13)
 	vbox.add_child(_label)
 
-	var btn := Button.new()
-	btn.text = "Понятно"
+	_btn = Button.new()
+	var btn := _btn
 	btn.size_flags_horizontal = Control.SIZE_SHRINK_END
 	btn.pressed.connect(_dismiss)
 	vbox.add_child(btn)
+	_apply_text()

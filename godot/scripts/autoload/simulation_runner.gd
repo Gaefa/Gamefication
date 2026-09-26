@@ -8,6 +8,10 @@ extends Node
 const TICK_INTERVAL := 1.0  # seconds per game tick
 
 var paused: bool = false
+## False behind the start menu and after a finale: nothing ticks and nothing autosaves.
+var run_active: bool = false
+## A critical card (DeskUI "СРОЧНО") is open; Space must not resume the day under it.
+var card_open: bool = false
 var speed_scale: float = 1.0  # 1x, 2x, 3x
 var _accumulator: float = 0.0
 
@@ -25,7 +29,7 @@ var day_timer: float = 300.0
 var day_count: int = 1
 
 func _physics_process(delta: float) -> void:
-	if paused or tick_callback.is_null():
+	if not is_running() or tick_callback.is_null():
 		return
 	
 	# Фазовый таймер (только в фазе ДНЯ)
@@ -69,13 +73,19 @@ func _start_new_day() -> void:
 	EventBus.phase_changed.emit("day")
 
 
-func resume_after_load() -> void:
-	## A loaded game resumes in the DAY phase, not stuck in a paused/evening state.
-	## SeasonSystem.initialize() already re-synced day_count from climate.total_day.
+func is_running() -> bool:
+	return run_active and not paused
+
+
+func start_run(saved_day_timer: float = -1.0) -> void:
+	## A new or loaded run starts in the DAY phase, unpaused. A load keeps the time left
+	## in the saved day. SeasonSystem.initialize() already re-synced day_count.
 	current_phase = Phase.DAY
-	day_timer = day_duration
+	day_timer = saved_day_timer if saved_day_timer > 0.0 else day_duration
 	_accumulator = 0.0
 	paused = false
+	card_open = false
+	run_active = true
 
 
 func set_speed(multiplier: float) -> void:
@@ -83,6 +93,6 @@ func set_speed(multiplier: float) -> void:
 
 func toggle_pause() -> void:
 	# Не даём снять паузу вечером — только через DeskUI
-	if current_phase == Phase.EVENING:
+	if current_phase == Phase.EVENING or card_open:
 		return
 	paused = not paused

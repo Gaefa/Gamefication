@@ -21,7 +21,6 @@ func _ready() -> void:
 		orch.tick_scheduler.run_tick()
 
 	var snapshot: String = JSON.stringify(GameStateStore.to_save_dict(), "\t", false, true)  # same args as SaveService
-	EventManager.clear_pending()  # the desk queue is not part of the save
 
 	for _i: int in range(COMPARE_TICKS):
 		orch.tick_scheduler.run_tick()
@@ -30,7 +29,6 @@ func _ready() -> void:
 	var migrated: Dictionary = SaveMigrator.migrate(JSON.parse_string(snapshot) as Dictionary)
 	var errors: Array[String] = SaveValidator.validate(migrated)
 	print("=== validation errors: %s ===" % str(errors))
-	EventManager.clear_pending()
 	GameStateStore.load_from_dict(migrated)
 	orch.load_game()
 	for _i: int in range(COMPARE_TICKS):

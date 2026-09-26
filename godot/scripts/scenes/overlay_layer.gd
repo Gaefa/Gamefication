@@ -10,16 +10,26 @@ var _show_logistics: bool = false
 var _hex_grid: HexGrid
 var _pin_cache: Dictionary = {}  # diagnostic label → Texture2D (or null when missing)
 var _has_blinking_pin: bool = false
+## coord → diagnostic. Diagnostics scan the whole city, so they are rebuilt only when the
+## city changes (a tick, a building change), not on every blinking redraw.
+var _diag_cache: Dictionary = {}
+var _diag_dirty: bool = true
 
 
 func set_hex_grid(grid: HexGrid) -> void:
 	_hex_grid = grid
-	queue_redraw()
+	_invalidate_diagnostics()
 
 
 func _ready() -> void:
 	EventBus.selection_changed.connect(_on_selection_changed)
 	EventBus.build_mode_changed.connect(_on_build_mode_changed)
+	EventBus.tick_finished.connect(func(_tick: int) -> void: _invalidate_diagnostics())
+
+
+func _invalidate_diagnostics() -> void:
+	_diag_dirty = true
+	queue_redraw()
 
 
 func _on_selection_changed(coord: Vector2i) -> void:
@@ -33,14 +43,15 @@ func _on_build_mode_changed(type_id: String) -> void:
 
 
 func set_show_ranges(show: bool, coord: Vector2i) -> void:
+	# main.gd calls this after every building change too.
 	_show_ranges = show
 	_selected = coord
-	queue_redraw()
+	_invalidate_diagnostics()
 
 
 func set_show_logistics(show: bool) -> void:
 	_show_logistics = show
-	queue_redraw()
+	_invalidate_diagnostics()
 
 
 func _draw() -> void:
@@ -176,12 +187,15 @@ func _draw_pipe_segment(start: Vector2, end_point: Vector2, dash_color: Color) -
 
 func _draw_diagnostic_pins() -> void:
 	_has_blinking_pin = false
-	for coord: Vector2i in GameStateStore.get_all_building_coords():
-		var bld: Dictionary = GameStateStore.get_building(coord)
-		var diag: Dictionary = _primary_diagnostic(coord, bld)
-		if diag.is_empty():
-			continue
-		_draw_diagnostic_pin(coord, diag)
+	if _diag_dirty:
+		_diag_dirty = false
+		_diag_cache.clear()
+		for coord: Vector2i in GameStateStore.get_all_building_coords():
+			var diag: Dictionary = _primary_diagnostic(coord, GameStateStore.get_building(coord))
+			if not diag.is_empty():
+				_diag_cache[coord] = diag
+	for coord: Vector2i in _diag_cache:
+		_draw_diagnostic_pin(coord, _diag_cache[coord] as Dictionary)
 
 
 func _draw_hex_fill(coord: Vector2i, fill_color: Color, border_color: Color) -> void:

@@ -106,7 +106,7 @@ func _run() -> void:
 	_check((_overlay.call("_primary_diagnostic", Vector2i.ZERO, healthy) as Dictionary).is_empty(), "healthy building has no diagnostic")
 
 	_fixture("repair")
-	_overlay.queue_redraw()
+	_overlay.call("_invalidate_diagnostics")  # the game invalidates via building signals and ticks
 	var red_a: Image = await _capture()
 	var before: int = _draws
 	await get_tree().create_timer(0.25).timeout
@@ -114,18 +114,18 @@ func _run() -> void:
 	_check(_draws > before and _overlay.get("_has_blinking_pin"), "red pin schedules redraws")
 	_check(red_a.get_data() != red_b.get_data(), "blink changes rendered pixels")
 	_fixture("issue")
-	_overlay.queue_redraw()
+	_overlay.call("_invalidate_diagnostics")  # the game invalidates via building signals and ticks
 	var textured: Image = await _capture()
 	before = _draws
 	await _capture()
 	_check(not _overlay.get("_has_blinking_pin") and _draws == before, "warning stops continuous redraws")
 	(_overlay.get("_pin_cache") as Dictionary)["issue"] = null
-	_overlay.queue_redraw()
+	_overlay.call("_invalidate_diagnostics")  # the game invalidates via building signals and ticks
 	var fallback: Image = await _capture()
 	_check(fallback.get_used_rect().has_area() and fallback.get_data() != textured.get_data(), "missing texture renders old letter badge")
 	(_overlay.get("_pin_cache") as Dictionary).erase("issue")
 	GameStateStore.get_buildings().clear()
-	_overlay.queue_redraw()
+	_overlay.call("_invalidate_diagnostics")  # the game invalidates via building signals and ticks
 	var empty: Image = await _capture()
 	before = _draws
 	await _capture()

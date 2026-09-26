@@ -1,5 +1,7 @@
 # Mandate Cities — гид для игрока и тестера
 
+> English edition: [PLAYER_GUIDE_EN.md](PLAYER_GUIDE_EN.md).
+
 Версия: тестовая сборка «Ржавая Нора» (MVP, сентябрь 2026). Одна партия — 20–40 минут.
 
 ## Что это за игра

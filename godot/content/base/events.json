@@ -9,11 +9,14 @@
     "cooldown_sec": 999999,
     "tags": ["patron", "letter"],
     "title": "Письмо Лиги — Инспектор Койл",
+    "title_en": "League Letter — Inspector Coyle",
     "body": "Администратор.\n\nЯ Инспектор Койл, Лига Восстановления. С этого дня Ржавая Нора — ваша ответственность, а вы — наша.\n\nЯ прошу немного и почти невозможное: чтобы к началу Пыли у людей была вода и еда, и чтобы никто не ушёл искать лучшей доли. Люди важнее цифр, но цифры — то, по чему вас будут судить.\n\nБашня ваша. Печать ваша. Не подведите тех, кто уже здесь живёт.",
+    "body_en": "Administrator.\n\nI am Inspector Coyle, the Restoration League. From today the Rust Pit is your responsibility, and you are ours.\n\nI ask for little, and for the nearly impossible: that by the start of the Dust people have water and food, and that no one leaves to seek a better life. People matter more than numbers, but numbers are what you will be judged by.\n\nThe Tower is yours. The seal is yours. Do not fail those who already live here.",
     "options": [
       {
         "text": "Принять мандат",
-        "effects": { "message": "Мандат принят. До Сезона Пыли меньше двух недель — копите воду и еду." }
+        "text_en": "Accept the mandate",
+        "effects": { "message": "Мандат принят. До Сезона Пыли меньше двух недель — копите воду и еду.", "message_en": "Mandate accepted. Under two weeks to the Dust season — stockpile water and food." }
       }
     ]
   },
@@ -27,11 +30,14 @@
     "cooldown_sec": 999999,
     "tags": ["patron", "letter", "directorate"],
     "title": "Директорат — предписание о назначении",
+    "title_en": "Directorate — Order of Appointment",
     "body": "Администратор.\n\nГражданский Директорат передаёт вам зону восстановления «Ржавая Нора». Не ищите в этом доверия — это процедура. От вас требуется порядок: вода, еда, учёт, отсутствие беспорядков к началу Сезона Пыли.\n\nОтчётность регулярная. Отклонения фиксируются. Комиссар приедет с проверкой. Не заставляйте его приезжать дважды.",
+    "body_en": "Administrator.\n\nThe Civic Directorate transfers to you the Rust Pit restoration zone. Do not mistake this for trust — it is procedure. You are required to keep order: water, food, records, and no unrest by the start of the Dust season.\n\nReporting is regular. Deviations are recorded. A Commissar will come to inspect. Do not make him come twice.",
     "options": [
       {
         "text": "Принять предписание",
-        "effects": { "message": "Печать Директората у вас. И его комиссар — где-то рядом." }
+        "text_en": "Accept the order",
+        "effects": { "message": "Печать Директората у вас. И его комиссар — где-то рядом.", "message_en": "The Directorate's seal is yours. So is its Commissar — somewhere nearby." }
       }
     ]
   },
@@ -45,11 +51,14 @@
     "cooldown_sec": 999999,
     "tags": ["patron", "letter", "audit"],
     "title": "Письмо Лиги — перед аудитом",
+    "title_en": "League Letter — Before the Audit",
     "body": "Администратор.\n\nЧерез несколько дней я приеду с проверкой. Это не каприз — это процедура. Я посмотрю на воду, на запасы, на то, сколько людей ещё с вами.\n\nЕсли вода идёт по часам, а склады пусты перед Пылью, я не смогу защищать ваш мандат перед теми, кто наверху. Подготовьтесь. Я предпочитаю уезжать с хорошими новостями.",
+    "body_en": "Administrator.\n\nIn a few days I will come to inspect. This is not a whim — it is procedure. I will look at the water, the stores, and how many people are still with you.\n\nIf water runs on a schedule and the warehouses are empty before the Dust, I will not be able to defend your mandate to those above. Prepare. I prefer to leave with good news.",
     "options": [
       {
         "text": "Готовиться к аудиту",
-        "effects": { "message": "Аудит близко. Лига смотрит на воду и запасы." }
+        "text_en": "Prepare for the audit",
+        "effects": { "message": "Аудит близко. Лига смотрит на воду и запасы.", "message_en": "The audit is close. The League is watching water and stores." }
       }
     ]
   },
@@ -63,25 +72,31 @@
     "cooldown_sec": 999999,
     "tags": ["patron", "letter", "branch"],
     "title": "Письмо Лиги — тяжёлая просьба",
+    "title_en": "League Letter — A Hard Request",
     "body": "Администратор.\n\nВ дальнем лагере за границей вашего района — люди без воды. Завтра у них кончится последнее. Ближе вас — никого.\n\nЯ знаю, что ваш собственный запас на пределе. Я не прошу вас быть хорошим человеком. Я прошу выбрать, кого город сможет ненавидеть живым. Решайте. Но решайте сегодня.",
+    "body_en": "Administrator.\n\nIn a far camp beyond your district's border, people are out of water. Tomorrow their last runs dry. No one is closer than you.\n\nI know your own reserve is at its limit. I am not asking you to be a good person. I am asking you to choose who gets to live and hate you for it. Decide. But decide today.",
     "options": [
       {
         "text": "Поделиться водой с лагерем",
+        "text_en": "Share water with the camp",
         "cost": { "res_water_stockpile": 60 },
         "effects": {
           "stat_league_trust": 10,
           "stat_city_trust": -8,
           "style": "loyal",
-          "message": "Цистерны ушли на рассвете. Койл прислала короткое «спасибо». Ваш квартал сел на половину нормы."
+          "message": "Цистерны ушли на рассвете. Койл прислала короткое «спасибо». Ваш квартал сел на половину нормы.",
+          "message_en": "The tankers left at dawn. Coyle sent a short “thank you.” Your quarter is down to half rations."
         }
       },
       {
         "text": "Отказать ради своих",
+        "text_en": "Refuse, for your own people",
         "effects": {
           "stat_league_trust": -12,
           "stat_city_trust": 8,
           "style": "protector",
-          "message": "Вы оставили воду себе. Вечером пришло письмо в три строки: «Принято к сведению. Лига помнит, кому помогает, и кому — нет.»"
+          "message": "Вы оставили воду себе. Вечером пришло письмо в три строки: «Принято к сведению. Лига помнит, кому помогает, и кому — нет.»",
+          "message_en": "You kept the water. That evening a three-line letter arrived: “Noted. The League remembers whom it helps, and whom it does not.”"
         }
       }
     ]
@@ -95,19 +110,24 @@
     "cooldown_sec": 200.0,
     "tags": ["petition", "families"],
     "title": "Обращение — вода по часам",
+    "title_en": "Petition — Water by the Hour",
     "body": "Администратор, у нас вода идёт по часам, и не всегда тогда, когда дети не спят. Мать носит вёдра через полрайона. Это пока — или это теперь навсегда?",
+    "body_en": "Administrator, our water runs on a schedule, and not always while the children are awake. A mother carries buckets across half the district. Is this for now — or is this forever?",
     "options": [
       {
         "text": "Признать и пообещать срок: «Чиню, дайте мне три дня»",
-        "effects": { "stat_city_trust": 5, "message": "Вы пообещали починить за три дня. Теперь придётся." }
+        "text_en": "Acknowledge and set a deadline: “I'm fixing it, give me three days”",
+        "effects": { "stat_city_trust": 5, "message": "Вы пообещали починить за три дня. Теперь придётся.", "message_en": "You promised a fix in three days. Now you have to deliver." }
       },
       {
         "text": "Ввести нормирование честно: «Воды на всех не хватает, делим поровну»",
-        "effects": { "stat_city_trust": -3, "stat_unrest_pressure": 5, "message": "Нормирование введено. Недовольны все, но без чувства несправедливости." }
+        "text_en": "Ration honestly: “There isn't enough water for everyone, we split it evenly”",
+        "effects": { "stat_city_trust": -3, "stat_unrest_pressure": 5, "message": "Нормирование введено. Недовольны все, но без чувства несправедливости.", "message_en": "Rationing is in place. Everyone is unhappy, but no one feels cheated." }
       },
       {
         "text": "Отмолчаться",
-        "effects": { "stat_unrest_pressure": 10, "message": "Вы промолчали. По кварталу пошёл слух: новый хозяин такой же, как старый." }
+        "text_en": "Stay silent",
+        "effects": { "stat_unrest_pressure": 10, "message": "Вы промолчали. По кварталу пошёл слух: новый хозяин такой же, как старый.", "message_en": "You said nothing. Word spread through the quarter: the new boss is just like the old one." }
       }
     ]
   },
@@ -119,20 +139,25 @@
     "cooldown_sec": 220.0,
     "tags": ["petition", "workers"],
     "title": "Обращение — дальний квартал",
+    "title_en": "Petition — The Far Quarter",
     "body": "Слушайте. Мы на стройке с рассвета, а в наш квартал вода доходит последней и еле-еле. Мы не просим больше других. Поставьте нам башню поближе или скажите прямо, что мы тут лишние.",
+    "body_en": "Listen. We're on the building site from dawn, and water reaches our quarter last, and barely. We don't ask for more than anyone else. Put a tower closer to us, or tell us straight that we don't belong here.",
     "options": [
       {
         "text": "Построить башню ближе",
+        "text_en": "Build a tower closer",
         "cost": { "res_stone": 20, "res_wood": 10 },
-        "effects": { "stat_city_trust": 6, "message": "Вы пообещали башню ближе к их кварталу. Это чинит причину." }
+        "effects": { "stat_city_trust": 6, "message": "Вы пообещали башню ближе к их кварталу. Это чинит причину.", "message_en": "You promised a tower closer to their quarter. That fixes the cause." }
       },
       {
         "text": "Поднять им приоритет",
-        "effects": { "stat_city_trust": 2, "stat_unrest_pressure": 3, "message": "Дальний квартал получил приоритет. Другой теперь просядет." }
+        "text_en": "Raise their priority",
+        "effects": { "stat_city_trust": 2, "stat_unrest_pressure": 3, "message": "Дальний квартал получил приоритет. Другой теперь просядет.", "message_en": "The far quarter got priority. Another one will fall short now." }
       },
       {
         "text": "Попросить потерпеть до Окна",
-        "effects": { "stat_unrest_pressure": 8, "message": "Вы попросили потерпеть. Риск забастовки растёт." }
+        "text_en": "Ask them to hold out until the Window",
+        "effects": { "stat_unrest_pressure": 8, "message": "Вы попросили потерпеть. Риск забастовки растёт.", "message_en": "You asked them to hold out. The risk of a strike is growing." }
       }
     ]
   },
@@ -144,27 +169,34 @@
     "cooldown_sec": 260.0,
     "tags": ["petition", "shadow", "branch"],
     "title": "Обращение — предложение водовоза",
+    "title_en": "Petition — A Water Hauler's Offer",
     "body": "Администратор, давай без долгих разговоров. У меня есть вода, у тебя её нет. Лига пришлёт бумагу и сочувствие, а я пришлю цистерны сегодня к ночи. Цена честная — для тебя. Потом сочтёмся. Я ж не зверь, я бизнес. — Рубен Каст",
+    "body_en": "Administrator, let's skip the long talk. I have water, you don't. The League will send paper and sympathy; I'll send tankers by tonight. Fair price — for you. We'll settle up later. I'm no animal, I'm a business. — Ruben Kast",
     "options": [
       {
         "text": "Принять воду Рубена",
+        "text_en": "Take Ruben's water",
         "effects": {
           "add_resources": { "res_water_stockpile": 120 },
           "stat_league_trust": -8,
           "style": "pragmatist",
-          "message": "Вода пришла к ночи. Люди пили и не спрашивали откуда. Вы знали — и знали, что теперь должны."
+          "message": "Вода пришла к ночи. Люди пили и не спрашивали откуда. Вы знали — и знали, что теперь должны.",
+          "message_en": "The water came by night. People drank and didn't ask where from. You knew — and knew you now owe."
         }
       },
       {
         "text": "Отказать, держать нормирование по правилам Лиги",
-        "effects": { "stat_league_trust": 3, "style": "loyal", "message": "Вы отказали. Дефицит остался, но репутация перед Лигой чище." }
+        "text_en": "Refuse, keep rationing by League rules",
+        "effects": { "stat_league_trust": 3, "style": "loyal", "message": "Вы отказали. Дефицит остался, но репутация перед Лигой чище.", "message_en": "You refused. The shortage remains, but your record with the League is cleaner." }
       },
       {
         "text": "Позвать Грача посредником",
+        "text_en": "Bring in Rook as a go-between",
         "effects": {
           "add_resources": { "res_water_stockpile": 80 },
           "stat_league_trust": -4,
-          "message": "Грач свёл вас мягче. Условия чуть лучше — но вы глубже в тени."
+          "message": "Грач свёл вас мягче. Условия чуть лучше — но вы глубже в тени.",
+          "message_en": "Rook smoothed the deal. Slightly better terms — but you're deeper in the shadows."
         }
       }
     ]
@@ -178,19 +210,24 @@
     "cooldown_sec": 999999,
     "tags": ["petition", "families", "moral"],
     "title": "Обращение — долговые списки Компании",
+    "title_en": "Petition — The Company's Debt Lists",
     "body": "Администратор, в офисе нашли старые списки — кто сколько задолжал Компании за воду. Моя семья там есть. Компании нет двадцать лет, а долг, выходит, есть? Вы уж определитесь: мы людям должны или призраку?",
+    "body_en": "Administrator, someone found old lists in the office — who owed the Company how much for water. My family is on them. The Company's been gone twenty years, and the debt is still here? Make up your mind: do we owe people, or a ghost?",
     "options": [
       {
         "text": "Списать старые долги",
-        "effects": { "stat_city_trust": 8, "stat_league_trust": -3, "message": "Долги списаны. Люди благодарны. Лига видит в этом прецедент прощения." }
+        "text_en": "Write off the old debts",
+        "effects": { "stat_city_trust": 8, "stat_league_trust": -3, "message": "Долги списаны. Люди благодарны. Лига видит в этом прецедент прощения.", "message_en": "The debts are written off. People are grateful. The League sees a precedent of forgiveness." }
       },
       {
         "text": "Признать долг перед городом",
-        "effects": { "add_resources": { "res_money": 60 }, "stat_unrest_pressure": 6, "message": "Долг признан перед казной. В кассе прибыло, в сердцах — чувство несправедливости." }
+        "text_en": "Recognize it as a debt to the city",
+        "effects": { "add_resources": { "res_money": 60 }, "stat_unrest_pressure": 6, "message": "Долг признан перед казной. В кассе прибыло, в сердцах — чувство несправедливости.", "message_en": "The debt is now owed to the treasury. Money in the till; resentment in the hearts." }
       },
       {
         "text": "Отложить решение",
-        "effects": { "stat_unrest_pressure": 5, "message": "Вы отложили решение. Пошёл слух: новый хозяин такой же, как старый." }
+        "text_en": "Postpone the decision",
+        "effects": { "stat_unrest_pressure": 5, "message": "Вы отложили решение. Пошёл слух: новый хозяин такой же, как старый.", "message_en": "You put off the decision. A rumor spread: the new boss is just like the old one." }
       }
     ]
   },
@@ -203,19 +240,24 @@
     "cooldown_sec": 999999,
     "tags": ["petition", "shadow"],
     "title": "Обращение — Грач просится в дело",
+    "title_en": "Petition — Rook Wants In",
     "body": "Слышь, начальник. Меня Грач звать. Я тут по-разному кручусь. Я не бандит, ты не думай. Я могу полезным быть — кого надо найти, чё надо достать. Только не как с собакой со мной, лады? По-человечески если — я нормальный.",
+    "body_en": "Hey, boss. Name's Rook. I get by all sorts of ways around here. I'm no gangster, don't think that. I can be useful — find who needs finding, get what needs getting. Just don't treat me like a dog, deal? Treat me like a person and I'm alright.",
     "options": [
       {
         "text": "По-человечески, с уважением",
-        "effects": { "message": "Грач повеселел. Похоже, на него можно будет опереться." }
+        "text_en": "Like a person, with respect",
+        "effects": { "message": "Грач повеселел. Похоже, на него можно будет опереться.", "message_en": "Rook perked up. Looks like you'll be able to lean on him." }
       },
       {
         "text": "Сухо и по делу",
-        "effects": { "message": "Грач полезен, но обиделся. Может подвести в кризис." }
+        "text_en": "Dry and to the point",
+        "effects": { "message": "Грач полезен, но обиделся. Может подвести в кризис.", "message_en": "Rook is useful, but offended. He may let you down in a crisis." }
       },
       {
         "text": "Прогнать",
-        "effects": { "message": "Вы прогнали Грача. Линия тени закрыта — дефициты теперь только через Лигу." }
+        "text_en": "Send him away",
+        "effects": { "message": "Вы прогнали Грача. Линия тени закрыта — дефициты теперь только через Лигу.", "message_en": "You sent Rook away. The shadow line is closed — shortages now go only through the League." }
       }
     ]
   },
@@ -228,11 +270,14 @@
     "cooldown_sec": 400.0,
     "tags": ["petition", "positive"],
     "title": "Обращение — благодарность",
+    "title_en": "Petition — Thanks",
     "body": "Администратор, мы вечером сидели и поняли — давно никто не уезжал. Воду дали, склад полный, дети не кашляют. Не знаем, надолго ли, но спасибо. Прежний бы порадовался за район.",
+    "body_en": "Administrator, we were sitting together last night and realized — no one has left in a long while. There's water, the warehouse is full, the kids aren't coughing. Don't know for how long, but thank you. Your predecessor would've been glad for the district.",
     "options": [
       {
         "text": "Поблагодарить в ответ",
-        "effects": { "stat_city_trust": 4, "message": "Тёплая передышка перед сезоном. Люди вам верят." }
+        "text_en": "Thank them back",
+        "effects": { "stat_city_trust": 4, "message": "Тёплая передышка перед сезоном. Люди вам верят.", "message_en": "A warm breather before the season. People believe in you." }
       }
     ]
   },
@@ -244,20 +289,25 @@
     "cooldown_sec": 240.0,
     "tags": ["petition", "workers"],
     "title": "Обращение — предупреждение о забастовке",
+    "title_en": "Petition — Strike Warning",
     "body": "Администратор, мы по-хорошему предупреждаем. Ещё немного такого — инструмент на землю и сядем у Башни. Нам стройка не враг, но и мы не камни. Реши что-нибудь, пока мы ещё разговариваем, а не кричим.",
+    "body_en": "Administrator, we're warning you nicely. A bit more of this and it's tools down, and we sit by the Tower. The site's not our enemy, but we're not stones either. Sort something out while we're still talking, not shouting.",
     "options": [
       {
         "text": "Уступить (нормы, паёк)",
+        "text_en": "Give in (quotas, rations)",
         "cost": { "res_food": 30 },
-        "effects": { "stat_city_trust": 5, "stat_unrest_pressure": -8, "style": "protector", "message": "Вы уступили по нормам. Причина погашена — ценой запаса." }
+        "effects": { "stat_city_trust": 5, "stat_unrest_pressure": -8, "style": "protector", "message": "Вы уступили по нормам. Причина погашена — ценой запаса.", "message_en": "You gave in on quotas. The cause is settled — at the cost of your stores." }
       },
       {
         "text": "Объясниться честно",
-        "effects": { "stat_city_trust": 2, "message": "Вы вышли и объяснились. При высоком доверии это сработает." }
+        "text_en": "Explain honestly",
+        "effects": { "stat_city_trust": 2, "message": "Вы вышли и объяснились. При высоком доверии это сработает.", "message_en": "You came out and explained. With high trust, this will work." }
       },
       {
         "text": "Подавить",
-        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -6, "style": "pragmatist", "message": "Вы подавили ропот. Толпа разошлась, но запомнит. Прямой путь к бунту." }
+        "text_en": "Suppress",
+        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -6, "style": "pragmatist", "message": "Вы подавили ропот. Толпа разошлась, но запомнит. Прямой путь к бунту.", "message_en": "You crushed the grumbling. The crowd dispersed, but it will remember. A straight road to riot." }
       }
     ]
   },
@@ -270,20 +320,25 @@
     "cooldown_sec": 300.0,
     "tags": ["crisis", "food"],
     "title": "Кризис — продовольственный бунт",
+    "title_en": "Crisis — Food Riot",
     "body": "На площади у рынка собралась толпа. Не митинг — голодные люди. Кто-то уже бьёт пустые лотки. Это не бунт против вас лично. Это бунт против пустого склада. Пока — против склада.",
+    "body_en": "A crowd has gathered in the market square. Not a rally — hungry people. Someone is already smashing empty stalls. This is not a riot against you personally. It is a riot against an empty warehouse. For now — against the warehouse.",
     "options": [
       {
         "text": "Раздать экстренный паёк",
+        "text_en": "Hand out emergency rations",
         "cost": { "res_money": 100 },
-        "effects": { "add_resources": { "res_food": 30 }, "stat_unrest_pressure": -10, "style": "protector", "message": "Паёк роздан. Толпа разошлась, но город оголён перед сезоном." }
+        "effects": { "add_resources": { "res_food": 30 }, "stat_unrest_pressure": -10, "style": "protector", "message": "Паёк роздан. Толпа разошлась, но город оголён перед сезоном.", "message_en": "Rations handed out. The crowd dispersed, but the city is stripped bare before the season." }
       },
       {
         "text": "Подавить силой",
-        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -8, "style": "pragmatist", "message": "Толпа разошлась. И запомнила." }
+        "text_en": "Suppress by force",
+        "effects": { "stat_unrest_pressure": 12, "stat_city_trust": -8, "style": "pragmatist", "message": "Толпа разошлась. И запомнила.", "message_en": "The crowd dispersed. And remembered." }
       },
       {
         "text": "Просить Лигу о пайках",
-        "effects": { "add_resources": { "res_food": 60 }, "stat_league_trust": -6, "message": "Койл помогла пайками. Это долг и условие: контроль усилится." }
+        "text_en": "Ask the League for rations",
+        "effects": { "add_resources": { "res_food": 60 }, "stat_league_trust": -6, "message": "Койл помогла пайками. Это долг и условие: контроль усилится.", "message_en": "Coyle helped with rations. It's a debt and a condition: oversight will tighten." }
       }
     ]
   },
@@ -295,20 +350,25 @@
     "cooldown_sec": 280.0,
     "tags": ["crisis", "water"],
     "title": "Кризис — драка у цистерны",
+    "title_en": "Crisis — Fight at the Cistern",
     "body": "У Главной Цистерны давка. В пик жары напора не хватает, и очередь превратилась в драку. Воды в городе мало, и до сюда она не доходит. Люди знают только, что у них пустые канистры.",
+    "body_en": "There's a crush at the Main Cistern. At peak heat the pressure isn't enough, and the queue has turned into a fight. The city is short on water, and it doesn't reach this far. People only know their jerrycans are empty.",
     "options": [
       {
         "text": "Ввести нормирование",
-        "effects": { "stat_unrest_pressure": -5, "stat_city_trust": -3, "message": "Порядок восстановлен ценой недовольства. Причина не решена." }
+        "text_en": "Introduce rationing",
+        "effects": { "stat_unrest_pressure": -5, "stat_city_trust": -3, "message": "Порядок восстановлен ценой недовольства. Причина не решена.", "message_en": "Order restored at the cost of discontent. The cause remains." }
       },
       {
         "text": "Строить башню ближе",
+        "text_en": "Build a tower closer",
         "cost": { "res_stone": 25, "res_wood": 12 },
-        "effects": { "message": "Вы заложили башню ближе. Чинит причину, но сейчас не поможет." }
+        "effects": { "message": "Вы заложили башню ближе. Чинит причину, но сейчас не поможет.", "message_en": "You laid down a tower closer. It fixes the cause, but won't help right now." }
       },
       {
         "text": "Позвать водовоза",
-        "effects": { "add_resources": { "res_water_stockpile": 90 }, "stat_league_trust": -6, "message": "Водовоз привёз воду быстро. И долг, и тень." }
+        "text_en": "Call the water hauler",
+        "effects": { "add_resources": { "res_water_stockpile": 90 }, "stat_league_trust": -6, "message": "Водовоз привёз воду быстро. И долг, и тень.", "message_en": "The hauler brought water fast. Along with a debt, and a shadow." }
       }
     ]
   },
@@ -321,21 +381,26 @@
     "cooldown_sec": 999999,
     "tags": ["crisis", "water"],
     "title": "Кризис — вспышка болезни из-за воды",
+    "title_en": "Crisis — Waterborne Outbreak",
     "body": "В дальнем квартале слегли несколько семей. Фельдшер говорит — вода. Где-то старая труба Компании дала течь, и в неё попало что-то нехорошее. Болезнь пока в одном квартале. Пока.",
+    "body_en": "Several families in the far quarter have fallen sick. The medic says it's the water. Somewhere an old Company pipe sprang a leak, and something bad got in. The sickness is in one quarter for now. For now.",
     "options": [
       {
         "text": "Карантин квартала",
+        "text_en": "Quarantine the quarter",
         "cost": { "res_money": 40 },
-        "effects": { "stat_unrest_pressure": 4, "message": "Квартал на карантине. Зараза остановлена ценой экономики и нервов." }
+        "effects": { "stat_unrest_pressure": 4, "message": "Квартал на карантине. Зараза остановлена ценой экономики и нервов.", "message_en": "The quarter is under quarantine. The infection is stopped at the cost of the economy and nerves." }
       },
       {
         "text": "Чинить источник",
+        "text_en": "Fix the source",
         "cost": { "res_tools": 3, "res_stone": 10 },
-        "effects": { "message": "Вы взялись чинить трубу. Решает корень, но не мгновенно." }
+        "effects": { "message": "Вы взялись чинить трубу. Решает корень, но не мгновенно.", "message_en": "You set about fixing the pipe. It solves the root cause, but not instantly." }
       },
       {
         "text": "Просить помощь Лиги",
-        "effects": { "stat_league_trust": -5, "message": "Медики Лиги приедут. Койл занесёт это в «не справляется сам»." }
+        "text_en": "Ask the League for help",
+        "effects": { "stat_league_trust": -5, "message": "Медики Лиги приедут. Койл занесёт это в «не справляется сам».", "message_en": "League medics will come. Coyle will file it under “can't cope alone.”" }
       }
     ]
   },
@@ -347,20 +412,25 @@
     "cooldown_sec": 300.0,
     "tags": ["crisis", "happiness"],
     "title": "Кризис — коллективное письмо",
+    "title_en": "Crisis — Collective Letter",
     "body": "Вам принесли лист, исписанный десятками рук. Это не угроза и не ультиматум — это хуже. Это спокойное перечисление всего, что вы не сделали и обещали. Люди не злятся. Люди перестают верить.",
+    "body_en": "You've been handed a sheet filled in by dozens of hands. It's not a threat or an ultimatum — it's worse. It's a calm list of everything you promised and didn't do. People aren't angry. People are ceasing to believe.",
     "options": [
       {
         "text": "Уступить по главному пункту",
+        "text_en": "Concede the main point",
         "cost": { "res_food": 20 },
-        "effects": { "stat_unrest_pressure": -12, "message": "Вы уступили по главному. Вера возвращается — ценой запаса." }
+        "effects": { "stat_unrest_pressure": -12, "message": "Вы уступили по главному. Вера возвращается — ценой запаса.", "message_en": "You conceded the main point. Faith returns — at the cost of your stores." }
       },
       {
         "text": "Выйти и объясниться",
-        "effects": { "stat_unrest_pressure": -4, "message": "Вы вышли к людям. Сработает при доверии, иначе — нет." }
+        "text_en": "Go out and explain",
+        "effects": { "stat_unrest_pressure": -4, "message": "Вы вышли к людям. Сработает при доверии, иначе — нет.", "message_en": "You went out to the people. It works with trust; otherwise, it won't." }
       },
       {
         "text": "Отмолчаться",
-        "effects": { "stat_unrest_pressure": 8, "message": "Вы промолчали. Прямой шаг к бунту." }
+        "text_en": "Stay silent",
+        "effects": { "stat_unrest_pressure": 8, "message": "Вы промолчали. Прямой шаг к бунту.", "message_en": "You said nothing. A direct step toward riot." }
       }
     ]
   },
@@ -372,19 +442,24 @@
     "cooldown_sec": 320.0,
     "tags": ["crisis", "mandate"],
     "title": "Кризис — заморозка гранта",
+    "title_en": "Crisis — Grant Freeze",
     "body": "Письмо от Лиги короче обычного. Очередной транш «временно приостановлен до прояснения ситуации с показателями». Перевод с языка Койл: денег не будет, пока вы не докажете, что город под контролем.",
+    "body_en": "The League's letter is shorter than usual. The next tranche is “temporarily suspended pending clarification of the metrics.” Translated from Coyle: no money until you prove the city is under control.",
     "options": [
       {
         "text": "Подчиниться и выправить показатели",
-        "effects": { "stat_league_trust": 6, "message": "Вы подчинились. Свободы меньше, доверие со временем вернётся." }
+        "text_en": "Comply and fix the metrics",
+        "effects": { "stat_league_trust": 6, "message": "Вы подчинились. Свободы меньше, доверие со временем вернётся.", "message_en": "You complied. Less freedom; trust will return in time." }
       },
       {
         "text": "Торговаться",
-        "effects": { "add_resources": { "res_money": 40 }, "stat_league_trust": 2, "message": "Вы выторговали часть транша. Зависит от доверия." }
+        "text_en": "Bargain",
+        "effects": { "add_resources": { "res_money": 40 }, "stat_league_trust": 2, "message": "Вы выторговали часть транша. Зависит от доверия.", "message_en": "You bargained out part of the tranche. Depends on trust." }
       },
       {
         "text": "Искать деньги внутри",
-        "effects": { "add_resources": { "res_money": 80 }, "stat_unrest_pressure": 6, "message": "Вы нашли деньги внутри — рынок, налоги, долги. Это давит на счастье." }
+        "text_en": "Find money internally",
+        "effects": { "add_resources": { "res_money": 80 }, "stat_unrest_pressure": 6, "message": "Вы нашли деньги внутри — рынок, налоги, долги. Это давит на счастье.", "message_en": "You found money internally — market, taxes, debts. It weighs on happiness." }
       }
     ]
   },
@@ -397,20 +472,25 @@
     "cooldown_sec": 600.0,
     "tags": ["crisis", "mandate", "recall"],
     "title": "Кризис — ультиматум перед отзывом",
+    "title_en": "Crisis — Ultimatum Before Recall",
     "body": "Койл приехала сама. Без свиты, без бумаг на стол. Села напротив и сказала тихо: «Я держала вашу сторону, сколько могла. Дальше — либо вы даёте мне результат, который я покажу наверху, либо я больше не смогу вас защищать. И тогда приедут не ко мне.»",
+    "body_en": "Coyle came in person. No entourage, no papers on the table. She sat across from you and said quietly: “I've taken your side as long as I could. From here, either you give me a result I can show upstairs, or I can't protect you anymore. And then it won't be me they send.”",
     "options": [
       {
         "text": "Выполнить требование",
+        "text_en": "Meet the demand",
         "cost": { "res_water_stockpile": 80, "res_food": 40 },
-        "effects": { "stat_league_trust": 12, "style": "loyal", "message": "Вы дали Койл результат. Последний шанс удержать мандат — дорогой ценой." }
+        "effects": { "stat_league_trust": 12, "style": "loyal", "message": "Вы дали Койл результат. Последний шанс удержать мандат — дорогой ценой.", "message_en": "You gave Coyle her result. A last chance to keep the mandate — at a steep price." }
       },
       {
         "text": "Спорить, опираясь на город",
-        "effects": { "stat_league_trust": -5, "stat_city_trust": 4, "style": "protector", "message": "Вы спорили с опорой на город. Работает только при высокой поддержке жителей." }
+        "text_en": "Argue, backed by the city",
+        "effects": { "stat_league_trust": -5, "stat_city_trust": 4, "style": "protector", "message": "Вы спорили с опорой на город. Работает только при высокой поддержке жителей.", "message_en": "You argued with the city behind you. It only works with high resident support." }
       },
       {
         "text": "Готовить разрыв",
-        "effects": { "stat_league_trust": -15, "stat_unrest_pressure": 10, "set_flag": "disclosure", "style": "autonomist", "message": "Вы готовите разрыв и разоблачение. В MVP это плохо кончается — путь к Конвою без номеров." }
+        "text_en": "Prepare a break",
+        "effects": { "stat_league_trust": -15, "stat_unrest_pressure": 10, "set_flag": "disclosure", "style": "autonomist", "message": "Вы готовите разрыв и разоблачение. В MVP это плохо кончается — путь к Конвою без номеров.", "message_en": "You're preparing a break and an exposé. In the MVP this ends badly — a road to the Convoy with no plates." }
       }
     ]
   },
@@ -423,20 +503,26 @@
     "cooldown_sec": 999999,
     "tags": ["quest", "forecaster"],
     "title": "Опечатанный офис — «Прогнозист»",
+    "title_en": "Sealed Office — the Forecaster",
     "body": "На третьем этаже офиса Компании спит ИИ «Прогнозист». Инженеры говорят: восстановить питание, охлаждение и батареи — и он снова начнёт считать Пыль точно, до дня. Но он всё ещё считает Компанию своим хозяином и просыпается с оговорками.\n\n«…пит-ание вос-становлено. Запрос не авторизован. Я обслуживаю Компанию Чистого Истока. …Ожидание.»",
+    "body_en": "On the third floor of the Company office, the AI “Forecaster” sleeps. Engineers say: restore power, cooling and batteries, and it will again predict the Dust precisely, to the day. But it still considers the Company its master and wakes with caveats.\n\n“…pow-er res-tored. Request not authorized. I serve the Clear Source Company. …Standing by.”",
     "options": [
       {
         "text": "Оживить Прогнозиста (восстановить питание и охлаждение)",
+        "text_en": "Revive the Forecaster (restore power and cooling)",
         "cost": { "res_tools": 3, "res_money": 80 },
         "effects": {
           "set_flag": "forecaster_active",
-          "message": "Прогнозист ожил. Теперь прогноз Пыли точный — смотрите панель сезона (K). Он всё ещё зовёт вас оператором Компании."
+          "message": "Прогнозист ожил. Теперь прогноз Пыли точный — смотрите панель сезона (K). Он всё ещё зовёт вас оператором Компании.",
+          "message_en": "The Forecaster is awake. The Dust forecast is now exact — see the season panel (K). It still calls you a Company operator."
         }
       },
       {
         "text": "Оставить офис опечатанным",
+        "text_en": "Leave the office sealed",
         "effects": {
-          "message": "Вы не тронули офис. Прогноз Пыли остаётся приблизительным — придётся готовиться с запасом."
+          "message": "Вы не тронули офис. Прогноз Пыли остаётся приблизительным — придётся готовиться с запасом.",
+          "message_en": "You left the office alone. The Dust forecast stays approximate — you'll have to prepare with a margin."
         }
       }
     ]
@@ -450,20 +536,25 @@
     "cooldown_sec": 999999,
     "tags": ["branch", "landmark"],
     "title": "Развилка — судьба Башни Истока",
+    "title_en": "Crossroads — Fate of the Source Tower",
     "body": "Старая Башня Истока ржавеет над Прибашенным кварталом. Логотип-капля когда-то горел по ночам, и под ним играли дети.\n\nИнженеры говорят: её можно восстановить как рабочий водный узел — выйдет дорого. Бригадир говорит: камня в ней на полрайона дорог. Старики не говорят ничего — просто смотрят на неё по вечерам.",
+    "body_en": "The old Source Tower rusts above the Towerside quarter. Its drop logo once glowed at night, and children played beneath it.\n\nThe engineers say it can be restored as a working water node — at a high cost. The foreman says there's enough stone in it to pave half the district. The old folks say nothing — they just look at it in the evenings.",
     "options": [
       {
         "text": "Сохранить как память района",
-        "effects": { "stat_city_trust": 6, "style": "protector", "message": "Башню оставили стоять. Материально — ничего. Но у Цистерны вечером сказали: «Новый хозяин хоть прошлое не стирает»." }
+        "text_en": "Keep it as the district's memory",
+        "effects": { "stat_city_trust": 6, "style": "protector", "message": "Башню оставили стоять. Материально — ничего. Но у Цистерны вечером сказали: «Новый хозяин хоть прошлое не стирает».", "message_en": "The Tower was left standing. Materially — nothing. But at the Cistern that evening someone said: “At least the new boss doesn't erase the past.”" }
       },
       {
         "text": "Восстановить как водный узел (камень, инструменты, деньги)",
+        "text_en": "Restore as a water node (stone, tools, money)",
         "cost": { "res_stone": 40, "res_tools": 3, "res_money": 120 },
-        "effects": { "replace_building": { "from": "bld_source_tower", "to": "bld_source_tower_restored" }, "message": "Башню подлатали и подключили к сети. Она снова держит напор в центре района — теперь не память, а работа." }
+        "effects": { "replace_building": { "from": "bld_source_tower", "to": "bld_source_tower_restored" }, "message": "Башню подлатали и подключили к сети. Она снова держит напор в центре района — теперь не память, а работа.", "message_en": "The Tower was patched up and connected to the grid. It holds pressure in the district center again — no longer a memory, but a job." }
       },
       {
         "text": "Разобрать на камень",
-        "effects": { "demolish_building": "bld_source_tower", "add_resources": { "res_stone": 90 }, "stat_city_trust": -8, "style": "pragmatist", "message": "Башню разобрали за два дня. Камень пошёл на дороги, это правда было нужно. Но логотип с каплей теперь лежит в пыли лицом вниз. Старики молчат громче, чем кричат." }
+        "text_en": "Tear it down for stone",
+        "effects": { "demolish_building": "bld_source_tower", "add_resources": { "res_stone": 90 }, "stat_city_trust": -8, "style": "pragmatist", "message": "Башню разобрали за два дня. Камень пошёл на дороги, это правда было нужно. Но логотип с каплей теперь лежит в пыли лицом вниз. Старики молчат громче, чем кричат.", "message_en": "The Tower came down in two days. The stone went to the roads, and it truly was needed. But the drop logo now lies face down in the dust. The old folks' silence is louder than shouting." }
       }
     ]
   },
@@ -476,19 +567,24 @@
     "cooldown_sec": 999999,
     "tags": ["petition", "shadow", "assembly"],
     "title": "Листовка без подписи",
+    "title_en": "Unsigned Leaflet",
     "body": "Секретарь кладёт на стол серый листок, сорванный со стены у Цистерны. Такие висят уже на трёх улицах.\n\n«Вода не мандат.\nВода — город.\nЕсли норму пишут без очереди, очередь напишет свою норму.\nЕсли нас считают только в отчётах, мы соберёмся там, где отчёты не слышат.\nСегодня в сухом канале за третьим насосом после второй смены.»\n\nПодписи нет. Но все знают, чей это почерк: так пишут люди Ассамблеи Общин.",
+    "body_en": "The secretary lays a gray sheet on the desk, torn off the wall by the Cistern. They're up on three streets already.\n\n“Water is not a mandate.\nWater is the city.\nIf the ration is written without the queue, the queue will write its own ration.\nIf we're only counted in reports, we'll gather where reports can't hear.\nTonight in the dry canal past the third pump, after second shift.”\n\nNo signature. But everyone knows the hand: this is how the Assembly of Commons people write.",
     "options": [
       {
         "text": "Снять листовки и наказать распространителей",
-        "effects": { "stat_league_trust": 6, "stat_unrest_pressure": 8, "style": "loyal", "message": "Листовки сорвали к утру, двоих расклейщиков оштрафовали. Лига довольна порядком. А в очереди у Цистерны теперь молчат — и это молчание тяжелее крика." }
+        "text_en": "Tear down the leaflets and punish the distributors",
+        "effects": { "stat_league_trust": 6, "stat_unrest_pressure": 8, "style": "loyal", "message": "Листовки сорвали к утру, двоих расклейщиков оштрафовали. Лига довольна порядком. А в очереди у Цистерны теперь молчат — и это молчание тяжелее крика.", "message_en": "The leaflets were down by morning; two posters were fined. The League is pleased with the order. And the Cistern queue is silent now — a silence heavier than shouting." }
       },
       {
         "text": "Закрыть глаза на листовки",
-        "effects": { "stat_city_trust": 5, "stat_league_trust": -5, "style": "protector", "message": "Листовки провисели неделю и выцвели на солнце. Люди поняли, что вы не стали их срывать. Лига тоже поняла." }
+        "text_en": "Turn a blind eye to the leaflets",
+        "effects": { "stat_city_trust": 5, "stat_league_trust": -5, "style": "protector", "message": "Листовки провисели неделю и выцвели на солнце. Люди поняли, что вы не стали их срывать. Лига тоже поняла.", "message_en": "The leaflets hung for a week and faded in the sun. People saw you didn't tear them down. So did the League." }
       },
       {
         "text": "Созвать открытое собрание в сухом канале",
-        "effects": { "stat_unrest_pressure": -10, "stat_league_trust": -6, "style": "autonomist", "message": "Вы пришли в канал сами. Спорили до темноты, но разошлись без драки. Кто-то впервые назвал вас не «администратор», а «наш». В отчёт Лиге это собрание лучше не вносить." }
+        "text_en": "Call an open meeting in the dry canal",
+        "effects": { "stat_unrest_pressure": -10, "stat_league_trust": -6, "style": "autonomist", "message": "Вы пришли в канал сами. Спорили до темноты, но разошлись без драки. Кто-то впервые назвал вас не «администратор», а «наш». В отчёт Лиге это собрание лучше не вносить.", "message_en": "You came to the canal yourself. You argued until dark but parted without a fight. For the first time someone called you not “administrator” but “one of ours.” Better leave this meeting out of the report to the League." }
       }
     ]
   },
@@ -502,11 +598,14 @@
     "patron": "restoration_league",
     "tags": ["patron", "rival"],
     "title": "Письмо Койл — соседний район",
+    "title_en": "Coyle's Letter — The Neighboring District",
     "body": "Администратор, коротко о соседях. Сухой Лог за хребтом держит Мара Восс, Гражданский Директорат. У неё тихо, чисто и вода по расписанию. Наверху уже сравнивают.\n\nНа четырнадцатый день Лига распределяет грант на Пыль — один на два района. Получит тот, у кого показатель лучше: люди остаются, город за администратором, воды хватает на сезон. Счёт виден в сводке: «Восс · вы».\n\nЯ за вас. Но цифры Восс лежат на том же столе.\n\n— Инспектор Койл",
+    "body_en": "Administrator, briefly about the neighbors. Dry Gully, over the ridge, is run by Mara Voss of the Civic Directorate. Her district is quiet, clean, and water runs on schedule. Upstairs they are already comparing.\n\nOn day fourteen the League awards the Dust grant — one for two districts. It goes to whoever scores better: people stay, the city backs its administrator, water lasts the season. The score is in the summary: “Voss · you.”\n\nI'm on your side. But Voss's numbers lie on the same desk.\n\n— Inspector Coyle",
     "options": [
       {
         "text": "Принять к сведению",
-        "effects": { "message": "Вы положили письмо под стекло на столе. Имя Восс теперь видно каждый вечер." }
+        "text_en": "Noted",
+        "effects": { "message": "Вы положили письмо под стекло на столе. Имя Восс теперь видно каждый вечер.", "message_en": "You slipped the letter under the glass on your desk. Voss's name is now in view every evening." }
       }
     ]
   },
@@ -520,11 +619,14 @@
     "patron": "civic_directorate",
     "tags": ["patron", "rival"],
     "title": "Циркуляр Директората — сравнение районов",
+    "title_en": "Directorate Circular — District Comparison",
     "body": "Администратору Ржавой Норы.\n\nДля сведения: соседний район Сухой Лог ведёт администратор М. Восс. Показатели района стабильны и приняты за эталон.\n\nНа 14-й день Директорат распределяет грант на Пыль между двумя районами по сводному показателю: удержание населения, поддержка администрации, водная автономия. Текущее сравнение отражено в сводке.\n\nОтклонения от эталона будут учтены при проверке.\n\n— Канцелярия Директората",
+    "body_en": "To the Administrator of the Rust Pit.\n\nFor your information: the neighboring district of Dry Gully is run by Administrator M. Voss. The district's metrics are stable and have been adopted as the benchmark.\n\nOn day 14 the Directorate awards the Dust grant between the two districts by composite score: population retention, support for the administration, water self-sufficiency. The current comparison is shown in the summary.\n\nDeviations from the benchmark will be taken into account during inspection.\n\n— Directorate Chancellery",
     "options": [
       {
         "text": "Принять к сведению",
-        "effects": { "message": "Циркуляр подшит. Эталон назван по фамилии." }
+        "text_en": "Noted",
+        "effects": { "message": "Циркуляр подшит. Эталон назван по фамилии.", "message_en": "Circular filed. The benchmark has been named by surname." }
       }
     ]
   }

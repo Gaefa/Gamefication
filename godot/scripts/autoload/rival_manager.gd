@@ -13,6 +13,8 @@ extends Node
 
 const NAME := "Мара Восс"
 const DISTRICT := "Сухой Лог"
+const NAME_EN := "Mara Voss"
+const DISTRICT_EN := "Dry Gully"
 ## Tuned so preparation wins the grant (prepared ≈58 vs 56 on day 14) and neglect loses it.
 const TARGETS := { "season_window": 56.0, "season_dust": 50.0 }
 const DRIFT_PER_DAY := 1.5
@@ -56,6 +58,7 @@ func player_score() -> float:
 func _raise_grant_card() -> void:
 	var directorate: bool = (GameStateStore.mandate().get("patron_id", "") as String) == "civic_directorate"
 	var patron: String = "Директорат" if directorate else "Лига"
+	var patron_en: String = "The Directorate" if directorate else "The League"
 	var ours: int = int(player_score())
 	var theirs: int = int(rival_score())
 	var card: Dictionary
@@ -63,18 +66,22 @@ func _raise_grant_card() -> void:
 		card = {
 			"runtime_id": "rival.grant_result",
 			"title": "Грант на Пыль — Ржавой Норе",
+			"title_en": "The Dust grant goes to the Rust Pit",
 			"body": "%s распределил грант на Пыль: %d в казну Ржавой Норы. Ваш показатель — %d, у района %s (%s) — %d.\n\nВосс прислала записку в одну строку: «Поздравляю. Посмотрим, на что вы его потратите.»" % [patron, int(GRANT_MONEY), ours, NAME, DISTRICT, theirs],
+			"body_en": "%s has awarded the Dust grant: %d to the Rust Pit treasury. Your score: %d; %s's district (%s): %d.\n\nVoss sent a one-line note: \"Congratulations. Let's see what you spend it on.\"" % [patron_en, int(GRANT_MONEY), ours, NAME_EN, DISTRICT_EN, theirs],
 			"options": [
-				{ "text": "Принять грант", "effects": { "add_resources": { "res_money": GRANT_MONEY }, "stat_league_trust": 3, "message": "Деньги пришли с короткой припиской сверху: «Оправдайте.»" } },
+				{ "text": "Принять грант", "text_en": "Accept the grant", "effects": { "add_resources": { "res_money": GRANT_MONEY }, "stat_league_trust": 3, "message": "Деньги пришли с короткой припиской сверху: «Оправдайте.»", "message_en": "The money arrived with a short note from above: \"Justify it.\"" } },
 			],
 		}
 	else:
 		card = {
 			"runtime_id": "rival.grant_result",
 			"title": "Грант на Пыль ушёл району Восс",
+			"title_en": "The Dust grant went to Voss's district",
 			"body": "%s распределил грант на Пыль: он уходит району %s (%s). Её показатель — %d, ваш — %d.\n\nВосс прислала записку: «Порядок — это не жестокость. Это расписание, которое выдерживает Пыль.»\n\nНаверху запомнили, чей район оказался готов." % [patron, NAME, DISTRICT, theirs, ours],
+			"body_en": "%s has awarded the Dust grant to %s's district (%s). Her score: %d; yours: %d.\n\nVoss sent a note: \"Order isn't cruelty. It's a schedule that survives the Dust.\"\n\nUpstairs, they noted whose district was ready." % [patron_en, NAME_EN, DISTRICT_EN, theirs, ours],
 			"options": [
-				{ "text": "Принять к сведению", "effects": { "stat_league_trust": -4, "message": "Письмо легло в папку. Папка стала толще." } },
+				{ "text": "Принять к сведению", "text_en": "Noted", "effects": { "stat_league_trust": -4, "message": "Письмо легло в папку. Папка стала толще.", "message_en": "The letter went into a folder. The folder got thicker." } },
 			],
 		}
 	EventManager.pending_events.append(card)
