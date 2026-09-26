@@ -216,12 +216,25 @@ func _on_build_mode_changed(type_id: String) -> void:
 	_build_mode = type_id
 
 
+## The cursor hit-tests the whole UI tree; do it only when something that can change the
+## answer changed (pointer, build mode, drag), plus a slow fallback for panels opened by key.
+const CURSOR_FALLBACK_FRAMES := 15
+var _cursor_probe: Array = []  # [mouse_pos, build_mode, dragging]
+var _cursor_frame: int = 0
+
+
 func _process(_delta: float) -> void:
 	if DisplayServer.get_name() == "headless":
 		return
 	var camera: Node = get_node_or_null("Camera")
 	var dragging: bool = camera != null and camera.get("_dragging") == true
-	var kind: String = _cursor_for_pointer(get_viewport().get_mouse_position(), get_global_mouse_position(), dragging)
+	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
+	var probe: Array = [mouse_pos, _build_mode, dragging]
+	_cursor_frame += 1
+	if probe == _cursor_probe and _cursor_frame % CURSOR_FALLBACK_FRAMES != 0:
+		return
+	_cursor_probe = probe
+	var kind: String = _cursor_for_pointer(mouse_pos, get_global_mouse_position(), dragging)
 	if kind == _cursor_kind:
 		return
 	_cursor_kind = kind
