@@ -228,8 +228,8 @@ func _update_resource_bar() -> void:
 		var lbl: String = Localization.content_text(def, "label", res_id)
 		core_parts.append("%s%s:%d" % [UiIcons.bb(UiIcons.RESOURCES.get(res_id, "")), lbl, int(val)])
 	_core_label.text = "  ".join(core_parts)
-	_city_label.tooltip_text = Localization.t("ui.season.panel_hint", "Клик — сезон и прогноз (K)")
-	_utility_label.tooltip_text = Localization.t("ui.water.panel_hint", "Клик — панель воды (C)")
+	_city_label.tooltip_text = Localization.ru_en("Клик — сезон и прогноз (K)", "Click: season and forecast (K)")
+	_utility_label.tooltip_text = Localization.ru_en("Клик — панель воды (C)", "Click: water panel (C)")
 
 	# --- City ---
 	var pop: int = GameStateStore.population().total as int
@@ -280,7 +280,7 @@ func _update_resource_bar() -> void:
 		Localization.t("ui.city.water_reserve_short", "Reserve"),
 		int(_resource_value("res_water_stockpile", "water_res")),
 		"∞" if is_inf(days) else "%.1f" % days,
-		Localization.t("ui.water.days_short", "дн."),
+		Localization.ru_en("дн.", "days"),
 		_power_readout(),
 	]
 	var days_color := Color(0.65, 0.85, 1.0)
@@ -298,16 +298,16 @@ func _update_resource_bar() -> void:
 	# Pressure director (GDD §15): four accumulators, each filling toward a crisis at 100.
 	var cats: Dictionary = GameStateStore.pressure().get("categories", {}) as Dictionary
 	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s\n%s %s %s %s %s" % [
-		Localization.t("ui.risk.league", "Лига"),
+		Localization.ru_en("Лига", "League"),
 		_meter_bb(trust),
-		Localization.t("ui.risk.city", "Город"),
+		Localization.ru_en("Город", "City"),
 		_meter_bb(support),
 		_rival_bb(),
 		Localization.t("ui.risk.pressure", "Давление:"),
-		_pressure_bb("food", Localization.t("ui.pressure.food", "еда"), cats.get("food", 0.0) as float),
-		_pressure_bb("water", Localization.t("ui.pressure.water", "вода"), cats.get("water", 0.0) as float),
-		_pressure_bb("people", Localization.t("ui.pressure.people", "люди"), cats.get("happiness", 0.0) as float),
-		_pressure_bb("mandate", Localization.t("ui.pressure.mandate", "мандат"), cats.get("mandate", 0.0) as float),
+		_pressure_bb("food", Localization.ru_en("еда", "food"), cats.get("food", 0.0) as float),
+		_pressure_bb("water", Localization.ru_en("вода", "water"), cats.get("water", 0.0) as float),
+		_pressure_bb("people", Localization.ru_en("люди", "people"), cats.get("happiness", 0.0) as float),
+		_pressure_bb("mandate", Localization.ru_en("мандат", "mandate"), cats.get("mandate", 0.0) as float),
 	]
 
 
@@ -332,7 +332,7 @@ func _rival_bb() -> String:
 	elif ours >= theirs + RivalManager.AUDIT_EDGE:
 		color = "#7fbf7f"
 	return "%s %.0f · [color=%s]%s %.0f[/color]" % [
-		Localization.t("ui.rival.name", "Восс"), theirs, color, Localization.t("ui.rival.you", "вы"), ours]
+		Localization.ru_en("Восс", "Voss"), theirs, color, Localization.ru_en("вы", "you"), ours]
 
 
 func _pressure_bb(icon: String, label: String, value: float) -> String:
@@ -373,11 +373,11 @@ func _power_readout() -> String:
 	if not (tp.get("priority", true) as bool):
 		shed.append(Localization.t("ui.flow.water", "Water"))
 	if not (tp.get("secondary", true) as bool):
-		shed.append(Localization.t("ui.power.shed_production", "цеха"))
+		shed.append(Localization.ru_en("цеха", "workshops"))
 	if not (tp.get("tertiary", true) as bool):
-		shed.append(Localization.t("ui.power.shed_housing", "жильё"))
+		shed.append(Localization.ru_en("жильё", "housing"))
 	if not shed.is_empty():
-		text += " %s %s" % [Localization.t("ui.power.dark", "⚠ без света:"), ", ".join(shed)]
+		text += " %s %s" % [Localization.ru_en("⚠ без света:", "⚠ no power:"), ", ".join(shed)]
 	return text
 
 
@@ -396,7 +396,7 @@ func _season_bar_text() -> String:
 	var sname: String = Localization.content_text(sdef, "label", sid)
 	var din: int = climate.get("day_in_season", 1) as int
 	var slen: int = sdef.get("length_days", 0) as int
-	var text: String = "%s:%s %d/%d" % [Localization.t("ui.season.title", "Сезон"), sname, din, slen]
+	var text: String = "%s:%s %d/%d" % [Localization.ru_en("Сезон", "Season"), sname, din, slen]
 	# Inexact forecast of the next season (GDD: точный прогноз даёт только Прогнозист).
 	var order: Array = ContentDB.get_season_order()
 	if order.size() > 1 and slen > 0:
@@ -405,10 +405,10 @@ func _season_bar_text() -> String:
 		var next_name: String = Localization.content_text(ContentDB.get_season_def(next_id), "label", next_id)
 		var days_left: int = maxi(slen - din, 0)
 		text += " %s %s ~%d%s" % [
-			Localization.t("ui.season.next_arrow", "→"),
+			"→",
 			next_name,
 			days_left,
-			Localization.t("ui.season.days_short", "д"),
+			Localization.ru_en("д", "d"),
 		]
 	return text
 
@@ -1229,7 +1229,7 @@ func _build_minimap() -> void:
 	_minimap_panel.add_child(v_box)
 
 	var label := Label.new()
-	label.text = Localization.t("ui.minimap.title", "MINIMAP")
+	label.text = Localization.ru_en("КАРТА", "MINIMAP")
 	label.add_theme_font_size_override("font_size", 10)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v_box.add_child(label)
@@ -1304,7 +1304,7 @@ func _rebuild_start_panel() -> void:
 
 	if _start_menu_mode != "main":
 		var back_btn := Button.new()
-		back_btn.text = "< " + Localization.t("ui.common.back", "Back")
+		back_btn.text = "< " + Localization.ru_en("Назад", "Back")
 		back_btn.pressed.connect(func(): _start_menu_mode = "main"; _rebuild_start_panel())
 		header.add_child(back_btn)
 
@@ -1342,6 +1342,20 @@ func _build_main_menu_options(container: Control) -> void:
 	btn_continue.disabled = not SaveService.has_save(0)
 	btn_continue.pressed.connect(_on_continue_pressed)
 	container.add_child(btn_continue)
+
+	# Language right on the menu: testers pick it before the first letter arrives.
+	var lang_row := HBoxContainer.new()
+	lang_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	lang_row.add_theme_constant_override("separation", 8)
+	container.add_child(lang_row)
+	for locale: String in ["en", "ru"]:
+		var btn_lang := Button.new()
+		btn_lang.text = "English" if locale == "en" else "Русский"
+		btn_lang.toggle_mode = true
+		btn_lang.button_pressed = Localization.current_locale == locale
+		btn_lang.custom_minimum_size = Vector2(120, 36)
+		btn_lang.pressed.connect(Localization.set_locale.bind(locale))
+		lang_row.add_child(btn_lang)
 
 
 func _on_continue_pressed() -> void:
@@ -1450,7 +1464,7 @@ func _build_start_profile_row(profile_id: String) -> Control:
 
 func _format_start_profile_meta(def: Dictionary) -> String:
 	var mandate_data: Dictionary = def.get("mandate", {})
-	var path_label := Localization.t("ui.start.path.%s" % (def.get("start_path", "appointed") as String), def.get("start_path", "appointed") as String)
+	var path_label := Localization.ru_en("Назначение", "Appointed") if (def.get("start_path", "appointed") as String) == "appointed" else Localization.ru_en("Основатель", "Founder")
 	return "%s | %s:%d | %s:%d | %s:%d" % [
 		path_label,
 		Localization.t("ui.start.trust", "Trust"),

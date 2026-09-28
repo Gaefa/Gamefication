@@ -6,7 +6,7 @@ signal locale_changed(locale: String)
 
 const CONTENT_PATH := "res://content/base/localization.json"
 const SETTINGS_PATH := "user://settings.cfg"
-const DEFAULT_LOCALE := "ru"  # content (buildings, letters, endings) exists only in Russian
+const DEFAULT_LOCALE := "ru"  # source language of the content; the fallback for any missing text
 const SUPPORTED_LOCALES: Array[String] = ["en", "ru"]
 
 var current_locale: String = DEFAULT_LOCALE
@@ -15,10 +15,11 @@ var _strings: Dictionary = {}
 
 func _ready() -> void:
 	_load_strings()
-	# The OS locale is deliberately ignored: the game content is Russian-only, so an
-	# English UI over Russian letters reads worse than a Russian UI. Settings (O) can switch.
+	# First launch follows the OS: Russian for a Russian system, English otherwise.
+	# Settings (O) can switch and the choice is remembered.
 	var saved_locale := _load_saved_locale()
-	set_locale(saved_locale if SUPPORTED_LOCALES.has(saved_locale) else DEFAULT_LOCALE, false, false)
+	var os_locale: String = "ru" if OS.get_locale_language() == "ru" else "en"
+	set_locale(saved_locale if SUPPORTED_LOCALES.has(saved_locale) else os_locale, false, false)
 
 
 func set_locale(locale: String, emit_signal: bool = true, persist: bool = true) -> void:
@@ -45,12 +46,23 @@ func t(key: String, fallback: String = "") -> String:
 	return fallback if fallback != "" else key
 
 
+## Russian or English text written inline in code (cards and panels built in scripts).
+func ru_en(ru: String, en: String) -> String:
+	return en if current_locale == "en" and en != "" else ru
+
+
+## Content fields are Russian; an English translation sits next to them as `<field>_en`
+## (or behind a `<field>_key` in localization.json).
 func content_text(def: Dictionary, field: String, fallback: String = "") -> String:
 	var key_field := "%s_key" % field
 	var key: String = def.get(key_field, "") as String
 	var raw: String = def.get(field, fallback) as String
 	if key != "":
 		return t(key, raw)
+	if current_locale == "en":
+		var en: String = def.get("%s_en" % field, "") as String
+		if en != "":
+			return en
 	return raw if raw != "" else fallback
 
 

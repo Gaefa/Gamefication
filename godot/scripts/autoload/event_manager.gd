@@ -8,7 +8,14 @@ extends Node
 signal pin_spawned(coord: Vector2i, pin_type: String)
 signal critical_event_fired(event_data: Dictionary)
 
-var pending_events: Array = []
+## Cards waiting for the evening desk. They live in the run state, so they ride the save
+## and a new run (or a load) never inherits the previous run's letters.
+var pending_events: Array:
+	get:
+		var ev_state: Dictionary = GameStateStore.events()
+		if not ev_state.has("pending"):
+			ev_state["pending"] = []
+		return ev_state["pending"] as Array
 var _check_interval: float = 5.0
 var _timer: float = 0.0
 const DEFAULT_COOLDOWN_SEC := 300.0
@@ -22,7 +29,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	# Только днём проверяем триггеры
-	if SimulationRunner.paused:
+	if not SimulationRunner.is_running():
 		return
 	_tick_cooldowns(delta)
 	_timer -= delta
@@ -401,6 +408,8 @@ func _mark_fired(event_id: String) -> void:
 func _set_cooldown(event_id: String) -> void:
 	var def: Dictionary = ContentDB.get_event_def(event_id)
 	_event_cooldowns()[event_id] = def.get("cooldown_sec", DEFAULT_COOLDOWN_SEC) as float
+
+
 
 
 func clear_pending() -> void:

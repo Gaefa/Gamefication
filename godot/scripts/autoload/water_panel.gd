@@ -15,10 +15,24 @@ var _visible: bool = false
 var _layer: CanvasLayer
 var _root: Control
 var _body: RichTextLabel
+var _title: Label
+var _close_btn: Button
 
 
 func _ready() -> void:
 	_build_ui()
+	Localization.locale_changed.connect(_on_locale_changed)
+
+
+func _on_locale_changed(_locale: String) -> void:
+	_apply_static_text()
+	if _visible:
+		_body.text = _compose()
+
+
+func _apply_static_text() -> void:
+	_title.text = Localization.ru_en("ВОДА — ЗАПАС · ПОКРЫТИЕ · ДАВЛЕНИЕ", "WATER: RESERVE · COVERAGE · PRESSURE")
+	_close_btn.text = Localization.ru_en("Закрыть (C)", "Close (C)")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -52,43 +66,43 @@ func _compose() -> String:
 	var net: float = production.get("res_water_stockpile", 0.0) as float
 
 	# --- Запас (сколько есть) ---
-	lines.append("[b]Запас — сколько есть[/b]")
-	lines.append("— В цистернах: %d" % int(reserve))
+	lines.append(Localization.ru_en("[b]Запас — сколько есть[/b]", "[b]Reserve: how much there is[/b]"))
+	lines.append(Localization.ru_en("— В цистернах: %d", "— In cisterns: %d") % int(reserve))
 	var gross_day: float = _gross_daily_consumption()
 	if gross_day > 0.0:
 		var days: float = reserve / gross_day
 		var color: String = "#d98c66" if days < 3.0 else "#7fbf7f"
-		lines.append("— Хватит примерно на [color=%s]%.1f дн.[/color] при текущем расходе (%.0f/день)" % [color, days, gross_day])
-	lines.append("— Баланс: %s" % _net_text(net))
+		lines.append(Localization.ru_en("— Хватит примерно на [color=%s]%.1f дн.[/color] при текущем расходе (%.0f/день)", "— Lasts about [color=%s]%.1f days[/color] at current use (%.0f/day)") % [color, days, gross_day])
+	lines.append(Localization.ru_en("— Баланс: %s", "— Balance: %s") % _net_text(net))
 	lines.append("")
 
 	# --- Покрытие (доходит ли) ---
-	lines.append("[b]Покрытие — доходит ли[/b]")
+	lines.append(Localization.ru_en("[b]Покрытие — доходит ли[/b]", "[b]Coverage: does it reach[/b]"))
 	var cov: Dictionary = _coverage()
 	if (cov.get("total", 0) as int) <= 0:
-		lines.append("— Жилья с потребностью в воде пока нет.")
+		lines.append(Localization.ru_en("— Жилья с потребностью в воде пока нет.", "— No housing needs water yet."))
 	else:
 		var covered: int = cov.get("covered", 0) as int
 		var total: int = cov.get("total", 0) as int
 		var pct: int = int(round(100.0 * float(covered) / float(total)))
 		var color: String = "#7fbf7f" if pct >= 90 else "#d98c66"
-		lines.append("— Подключено жилья: [color=%s]%d из %d (%d%%)[/color]" % [color, covered, total, pct])
+		lines.append(Localization.ru_en("— Подключено жилья: [color=%s]%d из %d (%d%%)[/color]", "— Housing connected: [color=%s]%d of %d (%d%%)[/color]") % [color, covered, total, pct])
 		if covered < total:
-			lines.append("— Часть домов вне радиуса насоса/башни. Запас может быть большим, а до дальних не доходит.")
+			lines.append(Localization.ru_en("— Часть домов вне радиуса насоса/башни. Запас может быть большим, а до дальних не доходит.", "— Some homes are outside pump/tower range. The reserve can be large and still not reach the far ones."))
 	lines.append("")
 
 	# --- Давление (хватает ли напора) ---
-	lines.append("[b]Давление — хватает ли напора[/b]")
+	lines.append(Localization.ru_en("[b]Давление — хватает ли напора[/b]", "[b]Pressure: is the flow strong enough[/b]"))
 	var pr: Dictionary = _pressure_stats()
 	if (pr.get("count", 0) as int) <= 0:
-		lines.append("— Потребителей воды в зоне покрытия пока нет.")
+		lines.append(Localization.ru_en("— Потребителей воды в зоне покрытия пока нет.", "— No water consumers in the coverage area yet."))
 	else:
 		var weak: int = pr.get("weak", 0) as int
 		var worst: int = int(round(100.0 * (pr.get("worst", 1.0) as float)))
 		var pcolor: String = "#7fbf7f" if weak == 0 else "#d98c66"
-		lines.append("— Слабый напор: [color=%s]%d из %d потребителей[/color], худший — %d%%" % [pcolor, weak, pr.get("count", 0) as int, worst])
+		lines.append(Localization.ru_en("— Слабый напор: [color=%s]%d из %d потребителей[/color], худший — %d%%", "— Weak pressure: [color=%s]%d of %d consumers[/color], worst: %d%%") % [pcolor, weak, pr.get("count", 0) as int, worst])
 		if weak > 0:
-			lines.append("— Напор падает к краю радиуса насоса и когда на один источник висит слишком много домов. Помогает насос ближе к дальним домам или второй источник — запас и радиус тут не спасут.")
+			lines.append(Localization.ru_en("— Напор падает к краю радиуса насоса и когда на один источник висит слишком много домов. Помогает насос ближе к дальним домам или второй источник — запас и радиус тут не спасут.", "— Pressure drops toward the edge of pump range and when too many homes hang on one source. A pump closer to the far homes or a second source helps; reserve and range won't."))
 
 	return "\n".join(lines)
 
@@ -164,10 +178,10 @@ func _orchestrator() -> Object:
 
 func _net_text(net: float) -> String:
 	if net > 0.05:
-		return "[color=#7fbf7f]пополняется (+%.1f/день)[/color]" % net
+		return Localization.ru_en("[color=#7fbf7f]пополняется (+%.1f/день)[/color]", "[color=#7fbf7f]filling (+%.1f/day)[/color]") % net
 	if net < -0.05:
-		return "[color=#d98c66]тает (%.1f/день)[/color]" % net
-	return "ровно"
+		return Localization.ru_en("[color=#d98c66]тает (%.1f/день)[/color]", "[color=#d98c66]draining (%.1f/day)[/color]") % net
+	return Localization.ru_en("ровно", "steady")
 
 
 func _build_ui() -> void:
@@ -204,8 +218,8 @@ func _build_ui() -> void:
 	vbox.add_theme_constant_override("separation", 12)
 	margin.add_child(vbox)
 
-	var title := Label.new()
-	title.text = "ВОДА — ЗАПАС · ПОКРЫТИЕ · ДАВЛЕНИЕ"
+	_title = Label.new()
+	var title := _title
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 18)
 	vbox.add_child(title)
@@ -221,7 +235,7 @@ func _build_ui() -> void:
 	_body.add_theme_font_size_override("normal_font_size", 14)
 	vbox.add_child(_body)
 
-	var close_btn := Button.new()
-	close_btn.text = "Закрыть (C)"
-	close_btn.pressed.connect(_toggle)
-	vbox.add_child(close_btn)
+	_close_btn = Button.new()
+	_close_btn.pressed.connect(_toggle)
+	vbox.add_child(_close_btn)
+	_apply_static_text()

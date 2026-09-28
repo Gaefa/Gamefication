@@ -1,7 +1,9 @@
 {
   "bld_source_tower": {
     "name": "Башня Истока",
+    "name_en": "Source Tower",
     "description": "Памятник старой Компании Чистого Истока. Логотип-капля когда-то горел по ночам, и под ним играли дети. Теперь ржавеет. Снести, сохранить как память или восстановить — решать вам.",
+    "description_en": "A monument to the old Clear Source Company. The droplet logo used to glow at night, and kids played under it. Now it rusts. Tear it down, keep it as a memorial, or restore it — your call.",
     "size": [1, 1],
     "player_buildable": false,
     "sprites_by_level": ["res://assets/buildings/tiers/source_tower_old_t1.png"],
@@ -10,13 +12,15 @@
     "consumes": {},
     "cycle_time": 0.0,
     "levels": [
-      {"stage": "Памятник Компании"}
+      {"stage": "Памятник Компании", "stage_en": "Company monument"}
     ],
     "tags": ["landmark"]
   },
   "bld_source_tower_restored": {
     "name": "Башня Истока (восстановлена)",
+    "name_en": "Source Tower (restored)",
     "description": "Старую башню подлатали и снова подключили к сети. Держит покрытие и напор воды в центре района — теперь это не память, а рабочий узел.",
+    "description_en": "The old tower has been patched up and put back on the network. It holds water coverage and pressure in the district center — no longer a memorial, a working node.",
     "size": [1, 1],
     "player_buildable": false,
     "sprites_by_level": ["res://assets/buildings/tiers/source_tower_restored_t1.png"],
@@ -25,13 +29,15 @@
     "consumes": {},
     "cycle_time": 0.0,
     "levels": [
-      {"stage": "Рабочая водонапорная башня", "synergy": {"water_radius": 5}}
+      {"stage": "Рабочая водонапорная башня", "stage_en": "Working water tower", "synergy": {"water_radius": 5}}
     ],
     "tags": ["landmark", "water_source"]
   },
   "bld_company_office": {
     "name": "Опечатанный офис Компании",
+    "name_en": "Sealed Company Office",
     "description": "Три этажа, заколоченные окна, на двери — выцветший синий ромб с каплей. На третьем этаже, говорят, спит ИИ «Прогнозист», и он всё ещё считает Компанию своим хозяином. Точный прогноз Пыли — там, если его оживить.",
+    "description_en": "Three floors, boarded-up windows, a faded blue diamond with a droplet on the door. They say the Forecaster AI sleeps on the third floor and still thinks the Company owns it. An accurate Dust forecast is in there, if you can wake it.",
     "size": [1, 1],
     "player_buildable": false,
     "sprites_by_level": ["res://assets/buildings/tiers/company_office_t1.png"],
@@ -40,13 +46,15 @@
     "consumes": {},
     "cycle_time": 0.0,
     "levels": [
-      {"stage": "Заколоченные окна"}
+      {"stage": "Заколоченные окна", "stage_en": "Boarded-up windows"}
     ],
     "tags": ["landmark"]
   },
   "bld_solar_panel": {
     "name": "Солнечная панель",
+    "name_en": "Solar Panel",
     "description": "В Окно кормит город током. В Пыль зарастает пылью и слабеет вдвое — тогда света на всех не хватает.",
+    "description_en": "Feeds the city power during the Window. In the Dust it clogs with grit and drops to half — then there isn't enough light for everyone.",
     "size": [1, 1],
     "player_buildable": true,
     "sprites_by_level": ["res://assets/buildings/tiers/solar_panel_t1.png"],
@@ -56,13 +64,15 @@
     "power_output": 6,
     "cycle_time": 0.0,
     "levels": [
-      {"stage": "Панель"}
+      {"stage": "Панель", "stage_en": "Panel"}
     ],
     "tags": ["power_source", "solar", "needs_road"]
   },
   "bld_generator": {
     "name": "Генератор",
+    "name_en": "Generator",
     "description": "Жрёт топливо и деньги, зато ровно гудит даже в бурю — свет не зависит от солнца.",
+    "description_en": "Eats fuel and money, but hums steadily even in a storm — power that doesn't depend on the sun.",
     "size": [1, 1],
     "player_buildable": true,
     "sprites_by_level": ["res://assets/buildings/tiers/power_t1.png"],
@@ -72,13 +82,15 @@
     "power_output": 8,
     "cycle_time": 0.0,
     "levels": [
-      {"stage": "Генератор", "consumes": {"res_money": 0.05}}
+      {"stage": "Генератор", "stage_en": "Generator", "consumes": {"res_money": 0.05}}
     ],
     "tags": ["power_source", "needs_road"]
   },
   "bld_admin_post": {
     "name": "Пост администрации",
+    "name_en": "Administration Post",
     "description": "Здание администрации, где принимаются решения. Обязательно.",
+    "description_en": "The administration building, where decisions are made. Required.",
     "size": [1, 1],
     "player_buildable": false,
     "sprites_by_level": ["res://assets/buildings/tiers/admin_post_t1.png", "res://assets/buildings/tiers/admin_post_t2.png", "res://assets/buildings/tiers/admin_post_t3.png"],
@@ -89,15 +101,18 @@
     "levels": [
       {
         "stage": "Временная канцелярия",
+        "stage_en": "Temporary office",
         "happiness": 1
       },
       {
         "stage": "Полевой штаб",
+        "stage_en": "Field headquarters",
         "cost": {"res_wood": 25, "res_stone": 15, "res_money": 60},
         "happiness": 2
       },
       {
         "stage": "Узел мандата",
+        "stage_en": "Mandate hub",
         "cost": {"res_wood": 35, "res_stone": 25, "res_tools": 2, "res_money": 120},
         "happiness": 4
       }
@@ -106,7 +121,9 @@
   },
   "bld_main_cistern": {
     "name": "Главная Цистерна",
+    "name_en": "Main Cistern",
     "description": "Хранилище основного запаса воды города. Само по себе не дает покрытие водой домам.",
+    "description_en": "Holds the city's main water reserve. Does not give houses water coverage on its own.",
     "size": [1, 1],
     "player_buildable": false,
     "sprites_by_level": ["res://assets/buildings/tiers/main_cistern_t1.png", "res://assets/buildings/tiers/main_cistern_t2.png", "res://assets/buildings/tiers/main_cistern_t3.png"],
@@ -118,15 +135,18 @@
     "levels": [
       {
         "stage": "Ржавая цистерна",
+        "stage_en": "Rusty cistern",
         "storage": {"res_water_stockpile": 750}
       },
       {
         "stage": "Усиленная цистерна",
+        "stage_en": "Reinforced cistern",
         "cost": {"res_stone": 30, "res_tools": 2},
         "storage": {"res_water_stockpile": 1050}
       },
       {
         "stage": "Городской водосборник",
+        "stage_en": "City water reservoir",
         "cost": {"res_stone": 60, "res_tools": 5, "res_money": 100},
         "storage": {"res_water_stockpile": 1450}
       }
@@ -135,7 +155,9 @@
   },
   "bld_road": {
     "name": "Дорога",
+    "name_en": "Road",
     "description": "Логистическая артерия города. Базовый вариант — грунтовая колея, гравий появляется только после улучшения.",
+    "description_en": "The city's logistics artery. The base version is a dirt track; gravel comes only with an upgrade.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/road.svg"],
     "cost_build": {"res_stone": 2},
@@ -145,15 +167,18 @@
     "levels": [
       {
         "stage": "Грунтовая колея",
+        "stage_en": "Dirt track",
         "bonus": {"road_boost": 0.01}
       },
       {
         "stage": "Гравийная дорога",
+        "stage_en": "Gravel road",
         "cost": {"res_stone": 6},
         "bonus": {"road_boost": 0.04}
       },
       {
         "stage": "Укрепленная дорога",
+        "stage_en": "Paved road",
         "cost": {"res_stone": 10, "res_tools": 1},
         "bonus": {"road_boost": 0.07}
       }
@@ -162,7 +187,9 @@
   },
   "bld_warehouse": {
     "name": "Склад",
+    "name_en": "Warehouse",
     "description": "Центр хранения всех базовых ресурсов.",
+    "description_en": "Storage hub for all basic resources.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/tiers/warehouse_t1.png", "res://assets/buildings/tiers/warehouse_t2.png", "res://assets/buildings/tiers/warehouse_t3.png"],
     "cost_build": {"res_wood": 20, "res_stone": 10},
@@ -173,15 +200,18 @@
     "levels": [
       {
         "stage": "Навесной склад",
+        "stage_en": "Lean-to store",
         "storage": {"res_wood": 200, "res_stone": 200, "res_food": 200, "res_tools": 100}
       },
       {
         "stage": "Учетный склад",
+        "stage_en": "Ledgered warehouse",
         "cost": {"res_wood": 30, "res_stone": 20, "res_tools": 1},
         "storage": {"res_wood": 320, "res_stone": 320, "res_food": 320, "res_tools": 160}
       },
       {
         "stage": "Распределительный двор",
+        "stage_en": "Distribution yard",
         "cost": {"res_wood": 45, "res_stone": 35, "res_tools": 3},
         "storage": {"res_wood": 500, "res_stone": 500, "res_food": 500, "res_tools": 250}
       }
@@ -190,7 +220,9 @@
   },
   "bld_shelter": {
     "name": "Жилой барак",
+    "name_en": "Shelter",
     "description": "Укрытие для жителей. Потребляет еду и воду.",
+    "description_en": "Shelter for residents. Consumes food and water.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/tiers/shelter_t1.png", "res://assets/buildings/tiers/shelter_t2.png", "res://assets/buildings/tiers/shelter_t3.png"],
     "cost_build": {"res_wood": 10},
@@ -202,6 +234,7 @@
     "levels": [
       {
         "stage": "Брезентовый барак",
+        "stage_en": "Canvas shelter",
         "produces": {"res_money": 1},
         "consumes": {"res_food": 1, "res_water_stockpile": 1},
         "population": 4,
@@ -209,6 +242,7 @@
       },
       {
         "stage": "Утепленный барак",
+        "stage_en": "Insulated shelter",
         "cost": {"res_wood": 18, "res_stone": 6},
         "produces": {"res_money": 1.5},
         "consumes": {"res_food": 1.4, "res_water_stockpile": 1.4},
@@ -217,6 +251,7 @@
       },
       {
         "stage": "Жилой блок",
+        "stage_en": "Housing block",
         "cost": {"res_wood": 25, "res_stone": 12, "res_tools": 1},
         "produces": {"res_money": 2.2},
         "consumes": {"res_food": 2, "res_water_stockpile": 2},
@@ -228,7 +263,9 @@
   },
   "bld_well_pump": {
     "name": "Колодец-насос",
+    "name_en": "Well Pump",
     "description": "Добывает воду из глубинных слоев, пополняет запас воды и дает покрытие водой ближайшему жилью.",
+    "description_en": "Draws water from deep layers, tops up the water reserve and gives water coverage to nearby housing.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/tiers/well_pump_t1.png", "res://assets/buildings/tiers/well_pump_t2.png", "res://assets/buildings/tiers/well_pump_t3.png"],
     "cost_build": {"res_wood": 15, "res_stone": 5},
@@ -240,17 +277,20 @@
     "levels": [
       {
         "stage": "Ручной насос",
+        "stage_en": "Hand pump",
         "produces": {"res_water_stockpile": 5},
         "synergy": {"water_radius": 4}
       },
       {
         "stage": "Углубленный насос",
+        "stage_en": "Deepened pump",
         "cost": {"res_wood": 18, "res_stone": 14, "res_tools": 1},
         "produces": {"res_water_stockpile": 8},
         "synergy": {"water_radius": 5}
       },
       {
         "stage": "Стабильная скважина",
+        "stage_en": "Steady borehole",
         "cost": {"res_stone": 28, "res_tools": 3, "res_money": 80},
         "produces": {"res_water_stockpile": 12},
         "synergy": {"water_radius": 6}
@@ -260,7 +300,9 @@
   },
   "bld_field_strip": {
     "name": "Пылевая грядка",
+    "name_en": "Dust Plot",
     "description": "Выращивает базовую еду для города.",
+    "description_en": "Grows basic food for the city.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/tiers/farm_t1.png", "res://assets/buildings/tiers/farm_t2.png", "res://assets/buildings/tiers/farm_t3.png"],
     "cost_build": {"res_wood": 10},
@@ -270,17 +312,20 @@
     "levels": [
       {
         "stage": "Ручная грядка",
+        "stage_en": "Hand-tilled plot",
         "produces": {"res_food": 3},
         "consumes": {"res_water_stockpile": 1}
       },
       {
         "stage": "Орошенная грядка",
+        "stage_en": "Irrigated plot",
         "cost": {"res_wood": 15, "res_stone": 8},
         "produces": {"res_food": 5},
         "consumes": {"res_water_stockpile": 1.5}
       },
       {
         "stage": "Пылевая ферма",
+        "stage_en": "Dust farm",
         "cost": {"res_wood": 25, "res_stone": 15, "res_tools": 1},
         "produces": {"res_food": 8},
         "consumes": {"res_water_stockpile": 2.5}
@@ -290,7 +335,9 @@
   },
   "bld_lumber_yard": {
     "name": "Лесной двор",
+    "name_en": "Lumber Yard",
     "description": "Добыча древесины.",
+    "description_en": "Produces wood.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/tiers/lumber_yard_t1.png", "res://assets/buildings/tiers/lumber_yard_t2.png", "res://assets/buildings/tiers/lumber_yard_t3.png"],
     "cost_build": {"res_money": 10},
@@ -300,17 +347,20 @@
     "levels": [
       {
         "stage": "Разборный лесной двор",
+        "stage_en": "Salvage lumber yard",
         "produces": {"res_wood": 5},
         "consumes": {"res_food": 1}
       },
       {
         "stage": "Пильная площадка",
+        "stage_en": "Sawing platform",
         "cost": {"res_money": 25, "res_stone": 8, "res_tools": 1},
         "produces": {"res_wood": 8},
         "consumes": {"res_food": 1.5}
       },
       {
         "stage": "Укрепленный лесной двор",
+        "stage_en": "Reinforced lumber yard",
         "cost": {"res_money": 60, "res_stone": 16, "res_tools": 2},
         "produces": {"res_wood": 12},
         "consumes": {"res_food": 2}
@@ -320,7 +370,9 @@
   },
   "bld_quarry_pit": {
     "name": "Каменный карьер",
+    "name_en": "Stone Quarry",
     "description": "Добыча камня.",
+    "description_en": "Produces stone.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/tiers/quarry_pit_t1.png", "res://assets/buildings/tiers/quarry_pit_t2.png", "res://assets/buildings/tiers/quarry_pit_t3.png"],
     "cost_build": {"res_wood": 10},
@@ -330,17 +382,20 @@
     "levels": [
       {
         "stage": "Открытая выработка",
+        "stage_en": "Open pit",
         "produces": {"res_stone": 5},
         "consumes": {"res_food": 1}
       },
       {
         "stage": "Укрепленный карьер",
+        "stage_en": "Shored quarry",
         "cost": {"res_wood": 18, "res_tools": 1},
         "produces": {"res_stone": 8},
         "consumes": {"res_food": 1.5}
       },
       {
         "stage": "Глубокая выработка",
+        "stage_en": "Deep pit",
         "cost": {"res_wood": 30, "res_tools": 3, "res_money": 60},
         "produces": {"res_stone": 12},
         "consumes": {"res_food": 2}
@@ -350,7 +405,9 @@
   },
   "bld_tool_workshop": {
     "name": "Мастерская инструментов",
+    "name_en": "Tool Workshop",
     "description": "Производство инструментов из дерева и камня.",
+    "description_en": "Makes tools from wood and stone.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/tiers/tool_workshop_t1.png", "res://assets/buildings/tiers/tool_workshop_t2.png", "res://assets/buildings/tiers/tool_workshop_t3.png"],
     "cost_build": {"res_wood": 20, "res_stone": 20},
@@ -361,12 +418,14 @@
     "levels": [
       {
         "stage": "Ручная мастерская",
+        "stage_en": "Hand workshop",
         "produces": {"res_tools": 2},
         "consumes": {"res_wood": 2, "res_stone": 1},
         "happiness": -1
       },
       {
         "stage": "Инструментальный ряд",
+        "stage_en": "Tool bench row",
         "cost": {"res_wood": 25, "res_stone": 25, "res_tools": 2},
         "produces": {"res_tools": 3.5},
         "consumes": {"res_wood": 3, "res_stone": 2},
@@ -375,6 +434,7 @@
       },
       {
         "stage": "Цех ремонта",
+        "stage_en": "Repair shop",
         "cost": {"res_wood": 40, "res_stone": 35, "res_tools": 5, "res_money": 90},
         "produces": {"res_tools": 5.5},
         "consumes": {"res_wood": 4, "res_stone": 3},
@@ -386,7 +446,9 @@
   },
   "bld_company_ruin": {
     "name": "Руины Компании",
+    "name_en": "Company Ruins",
     "description": "Остов склада Компании Чистого Истока: сорванная крыша, ржавые ящики, выцветший логотип-капля. Разобрать — даст камень; оставить — память района.",
+    "description_en": "The shell of a Clear Source Company warehouse: roof torn off, rusted crates, a faded droplet logo. Salvage it for stone, or leave it as the district's memory.",
     "size": [1, 1],
     "player_buildable": false,
     "sprites_by_level": ["res://assets/buildings/tiers/company_ruin_t1.png"],
@@ -395,7 +457,7 @@
     "consumes": {},
     "cycle_time": 0.0,
     "levels": [
-      {"stage": "Остов"}
+      {"stage": "Остов", "stage_en": "Shell"}
     ],
     "tags": ["landmark", "ruin"],
     "salvage": {"res_stone": 25}

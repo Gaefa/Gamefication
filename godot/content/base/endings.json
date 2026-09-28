@@ -4,55 +4,73 @@
       "id": "ending.win.loyal",
       "kind": "win",
       "title": "Удержанный мандат — лоялен Лиге",
-      "body": "Аудит пройден. Койл уехала с хорошими новостями, как любит. Ржавая Нора пережила Пыль без массового исхода, вода дошла до дальних кварталов, склады выдержали. В сводке Дисптеча ваш город отмечен как «стабильный мандат».\n\nВы не стали героем. Вы стали тем, кому доверят следующий район. В этом мире это и есть победа."
+      "title_en": "Mandate Held — Loyal to the League",
+      "body": "Аудит пройден. Койл уехала с хорошими новостями, как любит. Ржавая Нора пережила Пыль без массового исхода, вода дошла до дальних кварталов, склады выдержали. В сводке Дисптеча ваш город отмечен как «стабильный мандат».\n\nВы не стали героем. Вы стали тем, кому доверят следующий район. В этом мире это и есть победа.",
+      "body_en": "Audit passed. Coyle left with good news, the way she likes it. The Rust Pit came through the Dust without an exodus, water reached the outer blocks, the warehouses held. In the Dispatch summary your city is marked \"stable mandate.\"\n\nYou didn't become a hero. You became someone they'll trust with the next district. In this world, that is winning."
     },
     {
       "id": "ending.win.protector",
       "kind": "win",
       "title": "Удержан ценой споров с Лигой",
-      "body": "Вы удержали город — но не так, как хотела Лига. Вы спорили, отказывали, ставили своих людей выше квот из дальних лагерей. Койл подписала продление мандата и приписала от руки одну строчку: «Вы хороший администратор. Это не всегда удобно.»\n\nЖители Ржавой Норы знают, на чьей вы стороне. Лига — тоже знает. Это палка о двух концах, и вы это понимаете."
+      "title_en": "Held at the Cost of Fights with the League",
+      "body": "Вы удержали город — но не так, как хотела Лига. Вы спорили, отказывали, ставили своих людей выше квот из дальних лагерей. Койл подписала продление мандата и приписала от руки одну строчку: «Вы хороший администратор. Это не всегда удобно.»\n\nЖители Ржавой Норы знают, на чьей вы стороне. Лига — тоже знает. Это палка о двух концах, и вы это понимаете.",
+      "body_en": "You held the city — but not the way the League wanted. You argued, refused, put your own people ahead of quotas from distant camps. Coyle signed the mandate extension and added one line by hand: \"You are a good administrator. That is not always convenient.\"\n\nThe residents of the Rust Pit know whose side you're on. So does the League. It cuts both ways, and you know it."
     },
     {
       "id": "ending.win.directorate_order",
       "kind": "win",
       "title": "Удержанный мандат — порядок Директората",
-      "body": "Проверка закрыта без замечаний. Комиссар подписал продление мандата и не сказал ни слова лишнего — у Директората это высшая похвала. Ржавая Нора внесена в реестр как «управляемая зона».\n\nВы не понравились никому лично. Вы стали цифрой, которая сходится. В Директорате это и есть карьера."
+      "title_en": "Mandate Held — Directorate Order",
+      "body": "Проверка закрыта без замечаний. Комиссар подписал продление мандата и не сказал ни слова лишнего — у Директората это высшая похвала. Ржавая Нора внесена в реестр как «управляемая зона».\n\nВы не понравились никому лично. Вы стали цифрой, которая сходится. В Директорате это и есть карьера.",
+      "body_en": "Inspection closed, no findings. The commissar signed the mandate extension without a word more than needed — in the Directorate, that is the highest praise. The Rust Pit is entered in the registry as a \"managed zone.\"\n\nNobody liked you personally. You became a number that adds up. In the Directorate, that is a career."
     },
     {
       "id": "ending.win.directorate_defiant",
       "kind": "win",
       "title": "Удержан по-своему, не по инструкции",
-      "body": "Вы удержали город — но по-своему. Вы прикрывали жителей, тянули с отчётами, спорили с комиссаром на его же языке. Мандат продлили, но в деле появилась пометка: «склонен к самоуправству».\n\nЖители Ржавой Норы знают, на чьей вы стороне. Директорат — тоже знает, и он не забывает пометок."
+      "title_en": "Held Your Way, Not by the Book",
+      "body": "Вы удержали город — но по-своему. Вы прикрывали жителей, тянули с отчётами, спорили с комиссаром на его же языке. Мандат продлили, но в деле появилась пометка: «склонен к самоуправству».\n\nЖители Ржавой Норы знают, на чьей вы стороне. Директорат — тоже знает, и он не забывает пометок.",
+      "body_en": "You held the city — but your way. You covered for residents, stalled on reports, argued with the commissar in his own language. The mandate was extended, but your file got a note: \"prone to acting on own authority.\"\n\nThe residents of the Rust Pit know whose side you're on. So does the Directorate, and it doesn't forget notes."
     },
     {
       "id": "ending.lose.exodus",
       "kind": "lose",
       "title": "Массовый исход",
-      "body": "Вы не проиграли в бою. Город просто утёк сквозь пальцы. Сначала уходили семьями, потом кварталами. К концу Пыли в Ржавой Норе осталась треть.\n\nКойл не приехала с карой — незачем. В протоколе Лиги написано сухо: «Мандат прекращён ввиду утраты населения.» Башня стоит пустая. Кто-то снял с неё печать ещё до вашего отъезда."
+      "title_en": "Mass Exodus",
+      "body": "Вы не проиграли в бою. Город просто утёк сквозь пальцы. Сначала уходили семьями, потом кварталами. К концу Пыли в Ржавой Норе осталась треть.\n\nКойл не приехала с карой — незачем. В протоколе Лиги написано сухо: «Мандат прекращён ввиду утраты населения.» Башня стоит пустая. Кто-то снял с неё печать ещё до вашего отъезда.",
+      "body_en": "You didn't lose a fight. The city just slipped through your fingers. First families left, then whole blocks. By the end of the Dust, a third of the Rust Pit remained.\n\nCoyle didn't come to punish anyone — no need. The League record says it dryly: \"Mandate terminated due to loss of population.\" The Tower stands empty. Someone took the seal off it before you even left."
     },
     {
       "id": "ending.lose.isolation",
       "kind": "lose",
       "title": "Социальная изоляция",
-      "body": "Белые машины приехали днём, при свидетелях, как всегда у Лиги. Вежливый человек с синей повязкой показал акт о «переводе на восстановление здоровья» — мол, переутомление, никто не виноват.\n\nСоседи кивали и не отворачивались: так проще жить дальше. В протоколе Лиги ваше имя заменили номером дела. В городе его ещё долго произносили вслух — но всё тише."
+      "title_en": "Social Isolation",
+      "body": "Белые машины приехали днём, при свидетелях, как всегда у Лиги. Вежливый человек с синей повязкой показал акт о «переводе на восстановление здоровья» — мол, переутомление, никто не виноват.\n\nСоседи кивали и не отворачивались: так проще жить дальше. В протоколе Лиги ваше имя заменили номером дела. В городе его ещё долго произносили вслух — но всё тише.",
+      "body_en": "The white vans came in daylight, in front of witnesses, as the League always does it. A polite man with a blue armband showed an order for \"transfer for health recovery\" — exhaustion, nobody's fault.\n\nThe neighbors nodded and didn't look away: easier to go on living that way. In the League record your name was replaced with a case number. In the city people said it aloud for a long time — but ever more quietly."
     },
     {
       "id": "ending.lose.commissar",
       "kind": "lose",
       "title": "Чрезвычайный комиссар",
-      "body": "Приказ пришёл на бланке с гербом Директората. К полудню у Башни стояла силовая группа в серой форме. Комиссар не повышал голос: «Ваши полномочия временно приостановлены до выяснения. Пройдёмте.»\n\nВсё по протоколу, с подписями и печатью — Директорат так и работает. Вас увезли в столицу «для дачи объяснений». В реестре напротив района — новая фамилия. Порядок восстановлен. Ваше имя к порядку больше не относится."
+      "title_en": "Emergency Commissar",
+      "body": "Приказ пришёл на бланке с гербом Директората. К полудню у Башни стояла силовая группа в серой форме. Комиссар не повышал голос: «Ваши полномочия временно приостановлены до выяснения. Пройдёмте.»\n\nВсё по протоколу, с подписями и печатью — Директорат так и работает. Вас увезли в столицу «для дачи объяснений». В реестре напротив района — новая фамилия. Порядок восстановлен. Ваше имя к порядку больше не относится.",
+      "body_en": "The order came on Directorate letterhead. By noon a security team in gray stood at the Tower. The commissar didn't raise his voice: \"Your authority is suspended pending review. Come with us.\"\n\nAll by protocol, signed and stamped — that is how the Directorate works. You were taken to the capital \"to give an account.\" The registry lists a new name next to the district. Order is restored. Your name no longer has anything to do with it."
     },
     {
       "id": "ending.lose.convoy",
       "kind": "lose",
       "title": "Конвой без номеров",
-      "body": "Вы подошли слишком близко к тому, о чём Лига не говорит вслух. Вы готовили слова, документы, людей, которые подтвердят. Слов вы сказать не успели.\n\nКонвой приехал ночью, на машинах без номеров — не Лига, формально вообще никто. К утру в Башне был новый человек, а про вас осталась только пустая строка в реестре. Покровитель назвал это отзывом. Жители соседних городов называли это предупреждением."
+      "title_en": "The Unmarked Convoy",
+      "body": "Вы подошли слишком близко к тому, о чём Лига не говорит вслух. Вы готовили слова, документы, людей, которые подтвердят. Слов вы сказать не успели.\n\nКонвой приехал ночью, на машинах без номеров — не Лига, формально вообще никто. К утру в Башне был новый человек, а про вас осталась только пустая строка в реестре. Покровитель назвал это отзывом. Жители соседних городов называли это предупреждением.",
+      "body_en": "You got too close to what the League doesn't say out loud. You were preparing the words, the documents, the people who would confirm it. You never got to say the words.\n\nThe Convoy came at night, in unmarked vehicles — not the League, officially nobody at all. By morning there was a new person in the Tower, and all that was left of you was a blank line in the registry. The patron called it a recall. People in neighboring towns called it a warning."
     },
     {
       "id": "ending.lose.riot",
       "kind": "lose",
       "title": "Гражданский бунт",
-      "body": "Город не стал ждать ни Лигу, ни Пыль. Он пришёл за вами сам. Слишком долго вода шла по часам, слишком много обращений вы оставили без ответа, слишком часто давили вместо того, чтобы чинить.\n\nТолпа у Башни уже не выкрикивала требований — требовать было поздно. Печать на бумаге, как тут говорят, воду не качает. И не защищает."
+      "title_en": "Civil Riot",
+      "body": "Город не стал ждать ни Лигу, ни Пыль. Он пришёл за вами сам. Слишком долго вода шла по часам, слишком много обращений вы оставили без ответа, слишком часто давили вместо того, чтобы чинить.\n\nТолпа у Башни уже не выкрикивала требований — требовать было поздно. Печать на бумаге, как тут говорят, воду не качает. И не защищает.",
+      "body_en": "The city didn't wait for the League or the Dust. It came for you itself. Too long the water ran on a schedule, too many petitions went unanswered, too often you cracked down instead of fixing things.\n\nThe crowd at the Tower no longer shouted demands — it was too late for demands. A stamp on paper, as they say here, doesn't pump water. And it doesn't protect you."
     }
   ]
 }

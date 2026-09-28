@@ -219,7 +219,7 @@ func _on_build_mode_changed(type_id: String) -> void:
 ## The cursor hit-tests the whole UI tree; do it only when something that can change the
 ## answer changed (pointer, build mode, drag), plus a slow fallback for panels opened by key.
 const CURSOR_FALLBACK_FRAMES := 15
-var _cursor_probe: Array = []  # [mouse_pos, build_mode, dragging]
+var _cursor_probe: Array = []  # [mouse_pos, world_pos, build_mode, dragging]
 var _cursor_frame: int = 0
 
 
@@ -229,7 +229,8 @@ func _process(_delta: float) -> void:
 	var camera: Node = get_node_or_null("Camera")
 	var dragging: bool = camera != null and camera.get("_dragging") == true
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
-	var probe: Array = [mouse_pos, _build_mode, dragging]
+	# The world position changes under a still pointer when the camera pans or zooms.
+	var probe: Array = [mouse_pos, get_global_mouse_position(), _build_mode, dragging]
 	_cursor_frame += 1
 	if probe == _cursor_probe and _cursor_frame % CURSOR_FALLBACK_FRAMES != 0:
 		return
@@ -262,6 +263,7 @@ func _exit_tree() -> void:
 
 
 func _on_building_changed(_coord: Vector2i, _type_id: String) -> void:
+	_cursor_probe = []  # the tile under the pointer may have just become occupied
 	_refresh_buildings()
 
 
@@ -293,6 +295,7 @@ func start_new_run(profile_id: String) -> void:
 	EventBus.ranges_changed.emit(_show_ranges)
 	EventBus.logistics_lens_changed.emit(_show_logistics)
 	_refresh_overlay_state()
+	SimulationRunner.start_run()
 
 
 func _on_game_loaded(_slot: int) -> void:
@@ -313,7 +316,7 @@ func _on_game_loaded(_slot: int) -> void:
 	var overlay_layer: Node = get_node_or_null("World/OverlayLayer")
 	if overlay_layer and overlay_layer.has_method("set_hex_grid"):
 		overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
-	SimulationRunner.resume_after_load()
+	SimulationRunner.start_run(GameStateStore.climate().get("day_timer", -1.0) as float)
 	EventBus.build_mode_changed.emit("")
 	EventBus.selection_changed.emit(_selected_coord)
 	EventBus.ranges_changed.emit(_show_ranges)

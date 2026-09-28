@@ -72,7 +72,7 @@
     "ru": "Осмотр: клик по клетке\nКамера: WASD · Зум: колесо\nСтройка: ЛКМ · Отмена: ПКМ / Esc\nПауза: Пробел · Скорость: 1 / 2 / 3\nПанели: C вода, K сезон, J дневник, N журнал\nG управление, O настройки, H справка, V радиусы"
   },
   "ui.help.text": {
-    "en": "WHAT THIS IS\nYou are the appointed administrator of the Rust Pit, a dry district after the Break. The Restoration League gave you the mandate and money; the residents gave you an advance of trust. Two masters, and you can't please both — the «League ↕ City» meters at the top.\n\nGOAL\nSurvive the Dust season (starts on day 19) and pass the League audit on day 20. You win by reaching day 30 with a city that hasn't emptied. You lose when League trust hits 0 (recall), city support hits 0 (riot), or the people leave.\n\nA DAY\nBuild by day. In the evening — the Administrator's Desk: patron letters and petitions. Hover an answer to see its consequences. In the morning they take effect.\n\nWATER — THREE VALUES\nReserve (the cistern, «water for N days» at the top), coverage (pump radius, V) and pressure (weakens near the edge of the radius and when one pump feeds many houses). Panel C explains what is missing.\n\nPRESSURE\nFour gauges at the top: food, water, people, mandate. At 100 a crisis lands on the Desk. The cause builds up over days, so you can see it coming.\n\nPANELS\nC — water · K — season & forecast · J — previous administrator's diary · N — log of your answers · G — governance · O — options · H — this help · V — ranges · L — logistics\n\nCONTROLS\nWASD — camera · wheel — zoom · LMB — select / build · RMB or Esc — cancel · Space — pause · 1 / 2 / 3 — speed · U — upgrade · R — repair · B — bulldoze\n\nTIPS\nBuild next to a road. Shelters only inside a pump's radius. Before the Dust: a second pump and 10 days of water. An icon over a building — click it, the game names the cause.",
+    "en": "WHAT THIS IS\nYou are the appointed administrator of the Rust Pit, a dry district after the Rift. The Restoration League gave you the mandate and money; the residents gave you an advance of trust. Two masters, and you can't please both — the \"League ↕ City\" meters at the top.\n\nGOAL\nSurvive the Dust season (starts on day 19) and pass the League audit on day 20. You win by reaching day 30 with a city that hasn't emptied. You lose when League trust hits 0 (recall), city support hits 0 (riot), or an exodus empties the city.\n\nA DAY\nBuild by day. In the evening — the Administrator's Desk: patron letters and petitions. Hover an answer to see its consequences. In the morning they take effect.\n\nWATER — THREE VALUES\nReserve (the Cistern, \"water for N days\" at the top), coverage (pump radius, V) and pressure (weakens near the edge of the radius and when one pump feeds many houses). Panel C explains what is missing.\n\nPRESSURE\nFour gauges at the top: food, water, people, mandate. At 100 a crisis lands on the Desk. The cause builds up over days, so you can see it coming.\n\nPANELS\nC — water · K — season & forecast · J — previous administrator's diary · N — log of your answers · G — governance · O — options · H — this help · V — ranges · L — logistics\n\nCONTROLS\nWASD — camera · wheel — zoom · LMB — select / build · RMB or Esc — cancel · Space — pause · 1 / 2 / 3 — speed · U — upgrade · R — repair · B — bulldoze\n\nTIPS\nBuild next to a road. Shelters only inside a pump's radius. Before the Dust: a second pump and 10 days of water. An icon over a building — click it, the game names the cause.",
     "ru": "ЧТО ЭТО ЗА ИГРА\nВы — назначенный администратор Ржавой Норы, сухого района после Разлома. Лига Восстановления дала вам мандат и деньги, жители — аванс доверия. Хозяев двое, и угодить обоим нельзя: вверху это шкалы «Лига ↕ Город».\n\nЦЕЛЬ\nПережить сезон Пыли (начинается на 19-й день) и пройти аудит Лиги на 20-й. Победа — дожить до 30-го дня с городом, который не разбежался. Поражение — доверие Лиги 0 (отзыв), поддержка города 0 (бунт) или массовый исход.\n\nДЕНЬ\nДнём строите. Вечером — Стол администратора: письма покровителя и обращения жителей. Наведите на ответ — увидите последствия. Утром решения вступают в силу.\n\nВОДА — ТРИ ВЕЛИЧИНЫ\nЗапас (цистерна, «воды на N дней» вверху), покрытие (радиус насоса, V) и напор (слабеет у края радиуса и когда на насосе много домов). Панель C объясняет, чего не хватает.\n\nДАВЛЕНИЕ\nЧетыре шкалы вверху: еда, вода, люди, мандат. Доходит до 100 — на Столе кризис. Причина копится днями, значит её видно заранее.\n\nПАНЕЛИ\nC — вода · K — сезон и прогноз · J — дневник прежнего администратора · N — журнал ваших ответов · G — управление · O — настройки · H — эта справка · V — радиусы · L — логистика\n\nУПРАВЛЕНИЕ\nWASD — камера · колесо — зум · ЛКМ — выбрать / строить · ПКМ или Esc — отмена · Пробел — пауза · 1 / 2 / 3 — скорость · U — улучшить · R — починить · B — снести\n\nСОВЕТЫ\nСтройте у дороги. Барак — только в радиусе насоса. До Пыли — второй насос и запас воды на 10 дней. Значок над зданием — кликните, игра назовёт причину."
   },
   "ui.tile.cannot_build": {
@@ -1838,5 +1838,21 @@
   "start_profile.directorate_administrator.label": {
     "en": "Commissar's Mandate (Civic Directorate)",
     "ru": "Комиссарский мандат (Гражданский Директорат)"
+  },
+  "start_profile.directorate_administrator.description": {
+    "en": "The Directorate values order over sympathy: more money and authority, but cold oversight, lower resident support and a harsh recall — an Emergency Commissar instead of the League's \"care.\"",
+    "ru": "Директорат ценит порядок выше симпатий: больше денег и полномочий, но холодный контроль, ниже поддержка жителей и жёсткий отзыв — Чрезвычайный комиссар вместо «заботы» Лиги."
+  },
+  "season.window.label": {
+    "en": "Window",
+    "ru": "Окно"
+  },
+  "season.dust.label": {
+    "en": "Dust",
+    "ru": "Пыль"
+  },
+  "season.heat.label": {
+    "en": "Heat",
+    "ru": "Жара"
   }
 }

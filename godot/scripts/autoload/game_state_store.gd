@@ -390,10 +390,15 @@ func _ensure_runtime_defaults() -> void:
 		_state.onboarding["shown"] = []
 	if not _state.has("style_flags"):
 		_state["style_flags"] = {}
-	if not _state.has("power"):
-		_state["power"] = _default_power()
-	if not _state.has("rival"):
-		_state["rival"] = _default_rival()
+	for section: String in ["power", "rival"]:
+		var section_defaults: Dictionary = _default_power() if section == "power" else _default_rival()
+		if not _state.has(section):
+			_state[section] = section_defaults
+			continue
+		var section_state: Dictionary = _state[section]
+		for key: String in section_defaults:
+			if not section_state.has(key):
+				section_state[key] = section_defaults[key]
 
 
 func _default_governance() -> Dictionary:

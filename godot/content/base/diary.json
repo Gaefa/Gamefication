@@ -4,28 +4,36 @@
       "id": "diary.01.arrival",
       "order": 1,
       "title": "Дневник прежнего администратора — I",
+      "title_en": "Previous Administrator's Diary — I",
       "body": "Первая запись. Мне дали район, печать и список того, чего здесь нет. Воды нет, денег почти нет, доверия нет вовсе. Зато есть Башня и вид на трубы Компании, которые ржавеют красиво, как закат. Завтра начну с воды. Здесь всё начинается с воды.",
+      "body_en": "First entry. They gave me a district, a stamp and a list of what isn't here. No water, almost no money, no trust at all. But there is the Tower and a view of the Company's pipes, rusting as nicely as a sunset. Tomorrow I start with water. Everything here starts with water.",
       "unlock": { "day": 1 }
     },
     {
       "id": "diary.02.pressure",
       "order": 2,
       "title": "Дневник прежнего администратора — II",
+      "title_en": "Previous Administrator's Diary — II",
       "body": "Понял сегодня важное и поздно. Воды в цистерне было полно, а дальний квартал всё равно сидел сухой. Дело не в запасе — труба до них длинная, напора не хватает. Запас — это не то же самое, что вода в кране. Запомни это, кто бы ты ни был после меня.",
+      "body_en": "Learned something important today, and late. The cistern was full, and the far block still sat dry. It isn't the reserve — the pipe to them is long, and the pressure falls short. A reserve is not the same as water in the tap. Remember that, whoever you are after me.",
       "unlock": { "metric": "res_water_stockpile", "op": "<=", "value": 40 }
     },
     {
       "id": "diary.03.dust",
       "order": 3,
       "title": "Дневник прежнего администратора — III",
+      "title_en": "Previous Administrator's Diary — III",
       "body": "Пыль пришла на три дня раньше прогноза. Я не успел поднять экраны. Грядки выгорели за неделю, вода ушла вдвое быстрее обычного, люди начали кашлять. Готовиться надо было в Окно, а не в Пыль. В Окно всегда кажется, что время есть. Времени нет.",
+      "body_en": "The Dust came three days ahead of the forecast. I didn't get the screens up in time. The plots burned out in a week, water went twice as fast as usual, people started coughing. The time to prepare was the Window, not the Dust. In the Window it always feels like there's time. There isn't.",
       "unlock": { "season": "season_dust" }
     },
     {
       "id": "diary.04.end",
       "order": 4,
       "title": "Дневник прежнего администратора — IV",
+      "title_en": "Previous Administrator's Diary — IV",
       "body": "Если ты это читаешь, значит, со мной что-то случилось, а район достался тебе. Может, белые машины. Они приезжают днём, вежливо, с бумагой о «переводе на восстановление». Никто не кричит. Соседи кивают. Так это и работает у Лиги — тихо и по-доброму. Береги воду. И не верь, что забота не бывает оружием.",
+      "body_en": "If you're reading this, something happened to me and the district is yours now. Maybe the white vans. They come in daylight, politely, with a paper about a \"transfer for recovery.\" Nobody shouts. The neighbors nod. That's how it works with the League — quietly and kindly. Save water. And don't believe that care can't be a weapon.",
       "unlock": { "metric": "stat_league_trust", "op": "<=", "value": 30 }
     }
   ]

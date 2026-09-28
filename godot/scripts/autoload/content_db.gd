@@ -89,6 +89,8 @@ func _normalize_building_defs() -> void:
 		var def: Dictionary = buildings[type_id] as Dictionary
 		if def.has("name") and not def.has("label"):
 			def["label"] = def["name"]
+			if def.has("name_en"):
+				def["label_en"] = def["name_en"]
 		if def.has("cost_build") and not def.has("build_cost"):
 			def["build_cost"] = _with_resource_aliases(def.get("cost_build", {}) as Dictionary)
 		elif def.has("build_cost"):

@@ -14,6 +14,8 @@ var _layer: CanvasLayer
 var _root: Control
 var _list: VBoxContainer
 var _empty_label: Label
+var _title: Label
+var _close_btn: Button
 
 
 func _ready() -> void:
@@ -88,7 +90,7 @@ func _discover(frag: Dictionary) -> void:
 		return
 	discovered.append(fid)
 	EventBus.diary_fragment_found.emit(fid)
-	EventBus.toast_requested.emit("Найден фрагмент дневника прежнего администратора (J)", 5.0)
+	EventBus.toast_requested.emit(Localization.ru_en("Найден фрагмент дневника прежнего администратора (J)", "Found a fragment of the previous administrator's diary (J)"), 5.0)
 	if _panel_visible:
 		_rebuild_list()
 
@@ -129,11 +131,10 @@ func _build_ui() -> void:
 	vbox.add_theme_constant_override("separation", 14)
 	margin.add_child(vbox)
 
-	var title := Label.new()
-	title.text = "ДНЕВНИК ПРЕЖНЕГО АДМИНИСТРАТОРА"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 20)
-	vbox.add_child(title)
+	_title = Label.new()
+	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_title.add_theme_font_size_override("font_size", 20)
+	vbox.add_child(_title)
 
 	vbox.add_child(HSeparator.new())
 
@@ -148,15 +149,14 @@ func _build_ui() -> void:
 	scroll.add_child(_list)
 
 	_empty_label = Label.new()
-	_empty_label.text = "Пока ничего не найдено. Следы прежнего администратора всплывают по ходу дел района."
+	_empty_label.text = _empty_text()
 	_empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_empty_label.add_theme_color_override("font_color", Color(0.7, 0.68, 0.6))
 	_list.add_child(_empty_label)
 
-	var close_btn := Button.new()
-	close_btn.text = "Закрыть (J)"
-	close_btn.pressed.connect(_toggle)
-	vbox.add_child(close_btn)
+	_close_btn = Button.new()
+	_close_btn.pressed.connect(_toggle)
+	vbox.add_child(_close_btn)
 
 
 func _toggle() -> void:
@@ -169,10 +169,12 @@ func _toggle() -> void:
 func _rebuild_list() -> void:
 	for child: Node in _list.get_children():
 		child.queue_free()
+	_title.text = Localization.ru_en("ДНЕВНИК ПРЕЖНЕГО АДМИНИСТРАТОРА", "THE PREVIOUS ADMINISTRATOR'S DIARY")
+	_close_btn.text = Localization.ru_en("Закрыть (J)", "Close (J)")
 	var discovered: Array = GameStateStore.diary().get("discovered", []) as Array
 	if discovered.is_empty():
 		var empty := Label.new()
-		empty.text = "Пока ничего не найдено. Следы прежнего администратора всплывают по ходу дел района."
+		empty.text = _empty_text()
 		empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		empty.add_theme_color_override("font_color", Color(0.7, 0.68, 0.6))
 		_list.add_child(empty)
@@ -184,13 +186,17 @@ func _rebuild_list() -> void:
 		var entry := VBoxContainer.new()
 		entry.add_theme_constant_override("separation", 4)
 		var head := Label.new()
-		head.text = def.get("title", "Фрагмент") as String
+		head.text = Localization.content_text(def, "title", Localization.ru_en("Фрагмент", "Fragment"))
 		head.add_theme_font_size_override("font_size", 15)
 		head.add_theme_color_override("font_color", Color(0.92, 0.86, 0.62))
 		entry.add_child(head)
 		var body := Label.new()
-		body.text = def.get("body", "") as String
+		body.text = Localization.content_text(def, "body", "")
 		body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		body.add_theme_font_size_override("font_size", 13)
 		entry.add_child(body)
 		_list.add_child(entry)
+
+
+func _empty_text() -> String:
+	return Localization.ru_en("Пока ничего не найдено. Следы прежнего администратора всплывают по ходу дел района.", "Nothing found yet. Traces of the previous administrator surface as you run the district.")
