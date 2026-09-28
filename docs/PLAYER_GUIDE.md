@@ -5,7 +5,7 @@
 ## Как запустить
 
 - **Windows:** запустите `MandateCities.exe`. Установка не нужна, файл можно положить куда угодно. Если SmartScreen пишет «Windows защитила ваш компьютер» — «Подробнее» → «Выполнить в любом случае»: сборка пока не подписана.
-- **macOS:** распакуйте `MandateCities-mac.zip`, перенесите «Mandate Cities.app» в Программы. Первый запуск — правый клик → «Открыть» → «Открыть». Если macOS говорит «приложение повреждено», в Терминале: `xattr -dr com.apple.quarantine "/Applications/Mandate Cities.app"`.
+- **macOS:** откройте `.dmg` (или распакуйте `.zip`), перенесите «Mandate Cities.app» в Программы. Первый запуск — правый клик → «Открыть» → «Открыть». Если macOS говорит «приложение повреждено», в Терминале: `xattr -dr com.apple.quarantine "/Applications/Mandate Cities.app"`.
 - **Язык:** кнопки English / Русский в главном меню (и в настройках, O).
 - **Сохранение:** одно, автоматическое — «Продолжить» в меню. Начать заново — «Новая игра». Файлы лежат в `%APPDATA%\Godot\app_userdata\Mandate Cities\saves` (Windows) или `~/Library/Application Support/Godot/app_userdata/Mandate Cities/saves` (macOS).
 - **Если игра упала:** пришлите свежий файл из папки `logs` рядом с `saves` и напишите, что делали перед этим.

@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "**"
+    tags:
+      - "v*"
   workflow_dispatch:
 
 env:
@@ -89,3 +91,50 @@ jobs:
           name: "${{ env.EXPORT_NAME }}-macos-${{ github.sha }}"
           path: "${{ env.PROJECT_DIR }}/export/macos/*.dmg"
           if-no-files-found: error
+
+  # A pushed tag v* (e.g. v0.1.1) publishes both builds plus the tester guides as a
+  # GitHub Release, so testers get one link instead of a 240 MB file share.
+  release:
+    name: GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows-exe, macos-dmg]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Collect release files
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          mkdir -p release
+          cp dist/*/*.exe "release/${EXPORT_NAME}-${TAG}.exe"
+          cp dist/*/*.dmg "release/${EXPORT_NAME}-${TAG}.dmg"
+          for f in docs/PLAYER_GUIDE.md docs/PLAYER_GUIDE_EN.md docs/README_TESTERS.txt; do
+            [ -f "$f" ] && cp "$f" release/
+          done
+          ls -la release
+
+      - name: Publish release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          NOTES="docs/README_TESTERS.txt"
+          [ -f "$NOTES" ] || NOTES=""
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" release/* --clobber
+          else
+            gh release create "$TAG" --title "Mandate Cities ${TAG#v} — playtest build" ${NOTES:+--notes-file "$NOTES"} release/*
+          fi
+
