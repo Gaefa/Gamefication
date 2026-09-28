@@ -10,7 +10,9 @@
 
 ## Скачать сборку
 
-Каждый push в `main` собирает Windows EXE и macOS DMG в GitHub Actions («Godot Export» → Artifacts). macOS: при первом запуске — правый клик → «Открыть», сборка не подписана.
+Тестовая сборка **0.1.1** (Windows EXE, macOS .app, гиды): https://github.com/Gaefa/Gamefication/releases/tag/v0.1.1 — как запустить, написано в `PLAYER_GUIDE.md` там же.
+
+Свежие сборки с каждого push в `main` — в GitHub Actions («Godot Export» → Artifacts); они для разработки, не для тестеров.
 
 ## Запуск из исходников
 

@@ -2,7 +2,16 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version: "Rust Pit" test build (MVP, September 2026). A run takes 20–40 minutes.
+Version 0.1.1 — "Rust Pit" test build (September 2026). A run takes 20–40 minutes.
+
+## How to run
+
+- **Windows:** run `MandateCities.exe`. No install; the file can live anywhere. If SmartScreen says "Windows protected your PC" — More info → Run anyway: the build is not code-signed yet.
+- **macOS:** open the `.dmg` (or unzip the `.zip`), move "Mandate Cities.app" to Applications. First launch: right-click → Open → Open. If macOS says the app is damaged, in Terminal: `xattr -dr com.apple.quarantine "/Applications/Mandate Cities.app"`.
+- **Language:** English / Русский buttons on the main menu (also in Options, O).
+- **Save:** one slot, automatic — "Continue" in the menu. Start over with "New game". Files live in `%APPDATA%\Godot\app_userdata\Mandate Cities\saves` (Windows) or `~/Library/Application Support/Godot/app_userdata/Mandate Cities/saves` (macOS).
+- **If the game crashes:** send the newest file from the `logs` folder next to `saves` and tell us what you were doing.
+- Window 1280×720 or larger; full screen is optional.
 
 ## What this game is
 
@@ -98,7 +107,7 @@ Play without outside hints. After the run, answer (short is fine, voice or text)
 6. What annoyed you in the controls or interface?
 7. Did you want to play again differently? How?
 
-Also: a screenshot of the ending screen and, if the game broke, what you were doing just before.
+Also: a screenshot of the ending screen ("SUMMARY"). If the game broke — what you were doing just before and the newest file from the `logs` folder (see "How to run"). Send answers to whoever gave you the build, any way you like.
 
 ## Known limitations of the test build
 
