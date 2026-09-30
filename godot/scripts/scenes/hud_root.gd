@@ -7,10 +7,19 @@ const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules
 
 # --- References ---
 var _resource_bar: PanelContainer
-var _core_label: RichTextLabel
-var _city_label: Label
-var _utility_label: Label
-var _risk_label: RichTextLabel
+var _city_label: Label          # season chip (click → season panel)
+var _utility_label: Label       # water chip (click → water panel)
+var _res_chips: Dictionary = {}  # res_id → {"value": Label, "delta": Label, "panel": Control}
+var _pop_label: Label
+var _happy_label: Label
+var _level_label: Label
+var _power_label: Label
+var _trust_bar: ProgressBar
+var _support_bar: ProgressBar
+var _trust_value: Label
+var _support_value: Label
+var _rival_label: RichTextLabel
+var _pressure_bars: Dictionary = {}  # category → {"bar": ProgressBar, "value": Label}
 
 var _build_panel: PanelContainer
 var _build_title_label: Label
@@ -121,71 +130,157 @@ func _connect_signals() -> void:
 # ===========================================================
 
 func _build_resource_bar() -> void:
+	## Readable at a glance: every figure is its own chip (icon, number, trend), the two
+	## masters and the four pressures are bars, not digits in a sentence.
 	_resource_bar = PanelContainer.new()
 	_resource_bar.set_anchors_preset(PRESET_TOP_WIDE)
 	_resource_bar.mouse_filter = Control.MOUSE_FILTER_STOP
 	_resource_bar.resized.connect(_position_below_resource_bar)
+	var bar_style := StyleBoxFlat.new()
+	bar_style.bg_color = Color(0.08, 0.07, 0.06, 0.93)
+	bar_style.content_margin_left = 8
+	bar_style.content_margin_right = 8
+	bar_style.content_margin_top = 6
+	bar_style.content_margin_bottom = 6
+	_resource_bar.add_theme_stylebox_override("panel", bar_style)
 	add_child(_resource_bar)
 
-	var margin := MarginContainer.new()
-	for edge: String in ["left", "right"]:
-		margin.add_theme_constant_override("margin_" + edge, 10)
-	for edge: String in ["top", "bottom"]:
-		margin.add_theme_constant_override("margin_" + edge, 5)
-	_resource_bar.add_child(margin)
 	var rows := VBoxContainer.new()
-	rows.add_theme_constant_override("separation", 4)
-	margin.add_child(rows)
-	var resources := HBoxContainer.new()
-	resources.add_theme_constant_override("separation", 16)
-	rows.add_child(resources)
-	var city := HBoxContainer.new()
-	city.add_theme_constant_override("separation", 16)
-	rows.add_child(city)
+	rows.add_theme_constant_override("separation", 6)
+	_resource_bar.add_child(rows)
+	var top := HFlowContainer.new()
+	top.add_theme_constant_override("h_separation", 6)
+	top.add_theme_constant_override("v_separation", 4)
+	rows.add_child(top)
+	var bottom := HFlowContainer.new()
+	bottom.add_theme_constant_override("h_separation", 6)
+	bottom.add_theme_constant_override("v_separation", 4)
+	rows.add_child(bottom)
 
-	_core_label = _bar_rich_label()
-	_core_label.size_flags_stretch_ratio = 1.2
-	resources.add_child(_core_label)
+	# --- Row 1: what you have ---
+	_res_chips.clear()
+	for res_id: String in _top_resource_ids():
+		var box: HBoxContainer = _chip(top)
+		_chip_icon(box, UiIcons.RESOURCES.get(res_id, "") as String)
+		var value: Label = _chip_text(box, 15, Color(0.97, 0.95, 0.88))
+		var delta: Label = _chip_text(box, 11, Color(0.6, 0.6, 0.6))
+		_res_chips[res_id] = { "value": value, "delta": delta, "panel": box.get_parent() }
+	var pop_box: HBoxContainer = _chip(top)
+	_chip_icon(pop_box, "people")
+	_pop_label = _chip_text(pop_box, 14, Color(0.97, 0.95, 0.88))
+	_happy_label = _chip_text(_chip(top), 14, Color(0.97, 0.95, 0.88))
+	_level_label = _chip_text(_chip(top), 12, Color(0.9, 0.85, 0.6))
 
-	# Utilities retain their water-panel click target and day-based warning colors.
-	_utility_label = _bar_label()
+	# --- Row 2: what threatens you ---
+	var water_box: HBoxContainer = _chip(bottom)
+	_chip_icon(water_box, "water")
+	_utility_label = _chip_text(water_box, 14, Color(0.65, 0.85, 1.0))
 	_utility_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_utility_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_utility_label.gui_input.connect(_on_utility_gui_input)
-	resources.add_child(_utility_label)
+	_power_label = _chip_text(_chip(bottom), 12, Color(0.95, 0.85, 0.5))
 
-	# City retains its season/forecast click target.
-	_city_label = _bar_label()
-	_city_label.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
+	_city_label = _chip_text(_chip(bottom), 13, Color(0.9, 0.85, 0.6))
 	_city_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_city_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_city_label.gui_input.connect(_on_city_gui_input)
-	city.add_child(_city_label)
 
-	_risk_label = _bar_rich_label()
-	_risk_label.size_flags_stretch_ratio = 1.2
-	city.add_child(_risk_label)
+	# The two masters: a bar each, so "who is about to end me" reads without digits.
+	var masters: HBoxContainer = _chip(bottom)
+	_chip_text(masters, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Лига", "League")
+	_trust_bar = _chip_bar(masters, 64)
+	_trust_value = _chip_text(masters, 13, Color.WHITE)
+	_chip_text(masters, 12, Color(0.6, 0.6, 0.6)).text = "↕"
+	_chip_text(masters, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Город", "City")
+	_support_bar = _chip_bar(masters, 64)
+	_support_value = _chip_text(masters, 13, Color.WHITE)
+	_rival_label = RichTextLabel.new()
+	_rival_label.bbcode_enabled = true
+	_rival_label.fit_content = true
+	_rival_label.scroll_active = false
+	_rival_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_rival_label.add_theme_font_size_override("normal_font_size", 12)
+	_rival_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_rival_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_chip(bottom).add_child(_rival_label)
+
+	# Pressure director: four gauges filling toward a crisis at 100.
+	var pressure: HBoxContainer = _chip(bottom)
+	_chip_text(pressure, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Давление", "Pressure")
+	_pressure_bars.clear()
+	for pair: Array in [["food", "food"], ["water", "water"], ["happiness", "people"], ["mandate", "mandate"]]:
+		_chip_icon(pressure, pair[1] as String)
+		var bar: ProgressBar = _chip_bar(pressure, 34)
+		var num: Label = _chip_text(pressure, 11, Color(0.7, 0.7, 0.75))
+		_pressure_bars[pair[0]] = { "bar": bar, "value": num }
 
 
-func _bar_label() -> Label:
+func _chip(parent: Control) -> HBoxContainer:
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.17, 0.15, 0.13, 0.95)
+	style.border_color = Color(0.32, 0.29, 0.24)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(4)
+	style.content_margin_left = 7
+	style.content_margin_right = 7
+	style.content_margin_top = 3
+	style.content_margin_bottom = 3
+	panel.add_theme_stylebox_override("panel", style)
+	panel.mouse_filter = Control.MOUSE_FILTER_PASS
+	parent.add_child(panel)
+	var box := HBoxContainer.new()
+	box.add_theme_constant_override("separation", 5)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(box)
+	return box
+
+
+func _chip_icon(box: HBoxContainer, icon: String) -> void:
+	var texture: Texture2D = UiIcons.texture(icon) if icon != "" else null
+	if texture == null:
+		return
+	var rect := TextureRect.new()
+	rect.texture = texture
+	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	rect.custom_minimum_size = Vector2(18, 18)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(rect)
+
+
+func _chip_text(box: HBoxContainer, font_size: int, color: Color) -> Label:
 	var label := Label.new()
-	label.add_theme_font_size_override("font_size", 12)
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", color)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(label)
 	return label
 
 
-func _bar_rich_label() -> RichTextLabel:
-	var label := RichTextLabel.new()
-	label.bbcode_enabled = true
-	label.fit_content = true
-	label.scroll_active = false
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.add_theme_font_size_override("normal_font_size", 12)
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	return label
+func _chip_bar(box: HBoxContainer, width: float) -> ProgressBar:
+	var bar := ProgressBar.new()
+	bar.min_value = 0.0
+	bar.max_value = 100.0
+	bar.show_percentage = false
+	bar.custom_minimum_size = Vector2(width, 9)
+	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(0.05, 0.05, 0.05, 0.9)
+	track.set_corner_radius_all(3)
+	bar.add_theme_stylebox_override("background", track)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.5, 0.75, 0.5)
+	fill.set_corner_radius_all(3)
+	bar.add_theme_stylebox_override("fill", fill)
+	box.add_child(bar)
+	return bar
+
+
+func _set_bar(bar: ProgressBar, value: float, color: Color) -> void:
+	bar.value = clampf(value, 0.0, 100.0)
+	(bar.get_theme_stylebox("fill") as StyleBoxFlat).bg_color = color
 
 
 # ===========================================================
@@ -307,106 +402,113 @@ func _on_resources_changed(_resources: Dictionary) -> void:
 
 
 func _update_resource_bar() -> void:
-	# --- Core ---
-	var core_parts: Array[String] = []
-	for res_id: String in _top_resource_ids():
+	# --- Resources: number + trend per day ---
+	var production: Dictionary = GameStateStore.economy().get("production", {}) as Dictionary
+	for res_id: String in _res_chips:
+		var chip: Dictionary = _res_chips[res_id] as Dictionary
 		var val: float = GameStateStore.get_resource(res_id)
-		var def: Dictionary = ContentDB.get_resource_def(res_id)
-		var lbl: String = Localization.content_text(def, "label", res_id)
-		core_parts.append("%s%s:%d" % [UiIcons.bb(UiIcons.RESOURCES.get(res_id, "")), lbl, int(val)])
-	_core_label.text = "  ".join(core_parts)
-	_city_label.tooltip_text = Localization.ru_en("Клик — сезон и прогноз (K)", "Click: season and forecast (K)")
-	_utility_label.tooltip_text = Localization.ru_en("Клик — панель воды (C)", "Click: water panel (C)")
+		var per_day: float = (production.get(res_id, 0.0) as float) * float(WaterPanel.TICKS_PER_DAY)
+		var value_label: Label = chip["value"] as Label
+		value_label.text = str(int(val))
+		value_label.add_theme_color_override("font_color", Color(0.95, 0.4, 0.35) if val <= 0.0 else Color(0.97, 0.95, 0.88))
+		var delta_label: Label = chip["delta"] as Label
+		if per_day > 0.0 and val >= GameStateStore.get_cap(res_id) - 0.5:
+			# Full store: the surplus is lost, so a big "+N" would be a lie.
+			delta_label.text = Localization.ru_en("макс", "max")
+			delta_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+		elif absf(per_day) < 0.5:
+			delta_label.text = ""
+		else:
+			delta_label.text = "%+d" % int(round(per_day))
+			delta_label.add_theme_color_override("font_color", Color(0.55, 0.85, 0.55) if per_day > 0.0 else Color(0.95, 0.5, 0.4))
+		var res_name: String = Localization.content_text(ContentDB.get_resource_def(res_id), "label", res_id)
+		(chip["panel"] as Control).tooltip_text = "%s: %d · %s %+d" % [
+			res_name, int(val), Localization.ru_en("в день", "per day"), int(round(per_day))]
 
-	# --- City ---
+	# --- People and level ---
 	var pop: int = GameStateStore.population().total as int
 	var happiness: float = GameStateStore.population().happiness as float
+	_pop_label.text = "%s %d" % [Localization.t("ui.resource.population", "Pop"), pop]
+	_happy_label.text = "%s %d%%" % [Localization.t("ui.resource.happiness", "Happy"), int(happiness)]
+	_happy_label.add_theme_color_override("font_color", _level_color(happiness, 40.0, 55.0))
 	var city_lv: int = GameStateStore.progression().city_level as int
-	var lv_def: Dictionary = ContentDB.get_level_def(city_lv)
-	var lv_name: String = Localization.content_text(lv_def, "name", "?")
-
-	var city_text: String = "%s:%d  %s:%d%%  %s%d %s" % [
-		Localization.t("ui.resource.population", "Pop"),
-		pop,
-		Localization.t("ui.resource.happiness", "Happy"),
-		int(happiness),
-		Localization.t("ui.resource.level", "Lv"),
-		city_lv,
-		lv_name,
-	]
-	# Next level hint
+	var lv_name: String = Localization.content_text(ContentDB.get_level_def(city_lv), "name", "?")
+	var level_text: String = "%s%d %s" % [Localization.t("ui.resource.level", "Lv"), city_lv, lv_name]
 	var next_def: Dictionary = ContentDB.get_level_def(city_lv + 1)
-	if not next_def.is_empty():
-		var reqs_raw: Variant = next_def.get("requirements", null)
-		if reqs_raw is Dictionary:
-			var reqs: Dictionary = reqs_raw as Dictionary
-			var met: int = 0
-			for res_id: String in reqs:
-				if GameStateStore.get_resource(res_id) >= (reqs[res_id] as float):
-					met += 1
-			city_text += "  %s:%d/%d" % [Localization.t("ui.resource.next", "Next"), met, reqs.size()]
-			if met < reqs.size():
-				city_text += " %s" % Localization.t("ui.city.open_hint", "(City)")
-	# Season segment: current season + day X/N + inexact forecast of the next one.
-	var season_text: String = _season_bar_text()
-	if season_text != "":
-		city_text += "  " + season_text
-	_city_label.text = city_text
+	if not next_def.is_empty() and next_def.get("requirements", null) is Dictionary:
+		var reqs: Dictionary = next_def.get("requirements", {}) as Dictionary
+		var met: int = 0
+		for res_id: String in reqs:
+			if GameStateStore.get_resource(res_id) >= (reqs[res_id] as float):
+				met += 1
+		level_text += " · %s %d/%d" % [Localization.t("ui.resource.next", "Next"), met, reqs.size()]
+	_level_label.text = level_text
 
-	# --- Utilities ---
+	# --- Water in days: the headline survival figure (GDD §5): green > 5, yellow 2–5, red < 2 ---
 	var utility_stats: Dictionary = _collect_utility_stats()
 	var water_total: int = utility_stats.get("residential", 0) as int
 	var water_ok: int = utility_stats.get("residential_watered", 0) as int
-	var power_total: int = utility_stats.get("power_users", 0) as int
-	var power_ok: int = utility_stats.get("power_covered", 0) as int
-	# Water "in days" is the headline survival figure (GDD §5, UX §3.2): green > 5, yellow 2–5, red < 2.
-	var days: float = WaterPanel.water_days()
-	_utility_label.text = "%s  %s  %s:%d (%s %s)%s" % [
-		Localization.t("ui.utility.title", "Utility"),
-		_coverage_ratio_text(Localization.t("ui.flow.water", "Water"), water_ok, water_total),
-		Localization.t("ui.city.water_reserve_short", "Reserve"),
-		int(_resource_value("res_water_stockpile", "water_res")),
-		"∞" if is_inf(days) else "%.1f" % days,
-		Localization.ru_en("дн.", "days"),
-		_power_readout(),
-	]
+	# The chip answers "when does the water run out at today's balance": while the reserve
+	# grows it says so; once it drains it counts the days left.
+	var reserve: float = _resource_value("res_water_stockpile", "water_res")
+	var water_per_day: float = (production.get("res_water_stockpile", 0.0) as float) * float(WaterPanel.TICKS_PER_DAY)
 	var days_color := Color(0.65, 0.85, 1.0)
-	if days < 2.0:
-		days_color = Color(0.95, 0.35, 0.3)
-	elif days < 5.0:
-		days_color = Color(0.95, 0.8, 0.3)
+	if water_per_day >= -0.5:
+		_utility_label.text = Localization.ru_en("Вода: запас держится", "Water: reserve holds")
+		if reserve <= 0.0:
+			_utility_label.text = Localization.ru_en("Воды нет", "No water")
+			days_color = Color(0.95, 0.35, 0.3)
+	else:
+		var days: float = reserve / absf(water_per_day)
+		_utility_label.text = "%s %.1f %s" % [
+			Localization.ru_en("Воды на", "Water for"), days, Localization.ru_en("дн.", "days")]
+		if days < 2.0:
+			days_color = Color(0.95, 0.35, 0.3)
+		elif days < 5.0:
+			days_color = Color(0.95, 0.8, 0.3)
 	_utility_label.add_theme_color_override("font_color", days_color)
+	_utility_label.tooltip_text = "%s · %s · %s" % [
+		_coverage_ratio_text(Localization.t("ui.flow.water", "Water"), water_ok, water_total),
+		"%s %d" % [Localization.t("ui.city.water_reserve_short", "Reserve"), int(_resource_value("res_water_stockpile", "water_res"))],
+		Localization.ru_en("клик — панель воды (C)", "click: water panel (C)"),
+	]
+	_power_label.text = _power_readout().strip_edges()
+	(_power_label.get_parent().get_parent() as Control).visible = _power_label.text != ""
 
-	# --- The two masters (the vice: League ↕ City) + pressure ---
-	# This is what the player is actually fighting: keeping both high is impossible.
-	# Trust at zero → recall; support at zero → riot. Each meter is coloured on its own.
+	# --- Season ---
+	_city_label.text = _season_bar_text()
+	_city_label.tooltip_text = Localization.ru_en("Клик — сезон и прогноз (K)", "Click: season and forecast (K)")
+
+	# --- The two masters (League ↕ City): trust at zero → recall, support at zero → riot ---
 	var trust: float = GameStateStore.mandate().get("patron_trust", 50) as float
 	var support: float = GameStateStore.mandate().get("support", 50) as float
-	# Pressure director (GDD §15): four accumulators, each filling toward a crisis at 100.
+	_set_bar(_trust_bar, trust, _level_color(trust, 25.0, 45.0))
+	_set_bar(_support_bar, support, _level_color(support, 25.0, 45.0))
+	_trust_value.text = str(int(trust))
+	_support_value.text = str(int(support))
+	_rival_label.text = _rival_bb()
+
+	# --- Pressure director (GDD §15): each gauge fills toward a crisis at 100 ---
 	var cats: Dictionary = GameStateStore.pressure().get("categories", {}) as Dictionary
-	_risk_label.text = "%s: %s  ↕  %s: %s   ·   %s\n%s %s %s %s %s" % [
-		Localization.ru_en("Лига", "League"),
-		_meter_bb(trust),
-		Localization.ru_en("Город", "City"),
-		_meter_bb(support),
-		_rival_bb(),
-		Localization.t("ui.risk.pressure", "Давление:"),
-		_pressure_bb("food", Localization.ru_en("еда", "food"), cats.get("food", 0.0) as float),
-		_pressure_bb("water", Localization.ru_en("вода", "water"), cats.get("water", 0.0) as float),
-		_pressure_bb("people", Localization.ru_en("люди", "people"), cats.get("happiness", 0.0) as float),
-		_pressure_bb("mandate", Localization.ru_en("мандат", "mandate"), cats.get("mandate", 0.0) as float),
-	]
+	for cat: String in _pressure_bars:
+		var gauge: Dictionary = _pressure_bars[cat] as Dictionary
+		var value: float = cats.get(cat, 0.0) as float
+		var color := Color(0.45, 0.45, 0.5)
+		if value >= 70.0:
+			color = Color(0.9, 0.21, 0.21)
+		elif value >= 40.0:
+			color = Color(0.9, 0.56, 0.17)
+		_set_bar(gauge["bar"] as ProgressBar, value, color)
+		(gauge["value"] as Label).text = str(int(value))
+		(gauge["value"] as Label).add_theme_color_override("font_color", color.lightened(0.25))
 
 
-func _meter_bb(value: float) -> String:
-	var color: String
-	if value < 25.0:
-		color = "#e63535"   # danger — this master is about to end you
-	elif value < 45.0:
-		color = "#e6902b"
-	else:
-		color = "#7fbf7f"
-	return "[color=%s]%.0f[/color]" % [color, value]
+func _level_color(value: float, danger: float, warn: float) -> Color:
+	if value < danger:
+		return Color(0.9, 0.21, 0.21)
+	if value < warn:
+		return Color(0.9, 0.56, 0.17)
+	return Color(0.5, 0.75, 0.5)
 
 
 func _rival_bb() -> String:
@@ -420,16 +522,6 @@ func _rival_bb() -> String:
 		color = "#7fbf7f"
 	return "%s %.0f · [color=%s]%s %.0f[/color]" % [
 		Localization.ru_en("Восс", "Voss"), theirs, color, Localization.ru_en("вы", "you"), ours]
-
-
-func _pressure_bb(icon: String, label: String, value: float) -> String:
-	# Quiet while low, loud as the category nears its crisis threshold (100).
-	var color: String = "#8a8a99"
-	if value >= 70.0:
-		color = "#e63535"
-	elif value >= 40.0:
-		color = "#e6902b"
-	return "%s[color=%s]%s %.0f[/color]" % [UiIcons.bb(icon), color, label, value]
 
 
 func _on_utility_gui_input(event: InputEvent) -> void:
