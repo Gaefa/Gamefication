@@ -1,0 +1,141 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+OpenGL API 4.1 Metal - 91.7 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+PASS: bld_source_tower L0 projection
+PASS: bld_source_tower L0 texture
+PASS: bld_source_tower_restored L0 projection
+PASS: bld_source_tower_restored L0 texture
+PASS: bld_company_office L0 projection
+PASS: bld_company_office L0 texture
+PASS: bld_solar_panel L0 projection
+PASS: bld_solar_panel L0 texture
+PASS: bld_generator L0 projection
+PASS: bld_generator L0 texture
+PASS: bld_admin_post L0 projection
+PASS: bld_admin_post L0 texture
+PASS: bld_admin_post L1 projection
+PASS: bld_admin_post L1 texture
+PASS: bld_admin_post L2 projection
+PASS: bld_admin_post L2 texture
+PASS: bld_main_cistern L0 projection
+PASS: bld_main_cistern L0 texture
+PASS: bld_main_cistern L1 projection
+PASS: bld_main_cistern L1 texture
+PASS: bld_main_cistern L2 projection
+PASS: bld_main_cistern L2 texture
+PASS: bld_warehouse L0 projection
+PASS: bld_warehouse L0 texture
+PASS: bld_warehouse L1 projection
+PASS: bld_warehouse L1 texture
+PASS: bld_warehouse L2 projection
+PASS: bld_warehouse L2 texture
+PASS: bld_shelter L0 projection
+PASS: bld_shelter L0 texture
+PASS: bld_shelter L1 projection
+PASS: bld_shelter L1 texture
+PASS: bld_shelter L2 projection
+PASS: bld_shelter L2 texture
+PASS: bld_well_pump L0 projection
+PASS: bld_well_pump L0 texture
+PASS: bld_well_pump L1 projection
+PASS: bld_well_pump L1 texture
+PASS: bld_well_pump L2 projection
+PASS: bld_well_pump L2 texture
+PASS: bld_field_strip L0 projection
+PASS: bld_field_strip L0 texture
+PASS: bld_field_strip L1 projection
+PASS: bld_field_strip L1 texture
+PASS: bld_field_strip L2 projection
+PASS: bld_field_strip L2 texture
+PASS: bld_lumber_yard L0 projection
+PASS: bld_lumber_yard L0 texture
+PASS: bld_lumber_yard L1 projection
+PASS: bld_lumber_yard L1 texture
+PASS: bld_lumber_yard L2 projection
+PASS: bld_lumber_yard L2 texture
+PASS: bld_quarry_pit L0 projection
+PASS: bld_quarry_pit L0 texture
+PASS: bld_quarry_pit L1 projection
+PASS: bld_quarry_pit L1 texture
+PASS: bld_quarry_pit L2 projection
+PASS: bld_quarry_pit L2 texture
+PASS: bld_tool_workshop L0 projection
+PASS: bld_tool_workshop L0 texture
+PASS: bld_tool_workshop L1 projection
+PASS: bld_tool_workshop L1 texture
+PASS: bld_tool_workshop L2 projection
+PASS: bld_tool_workshop L2 texture
+PASS: bld_company_ruin L0 projection
+PASS: bld_company_ruin L0 texture
+PASS: 33 building sprites connected
+PASS: mixed projection fallback
+PASS: missing flag fallback
+PASS: missing building fallback
+PASS: prop_pipe_straight selects hex
+PASS: prop_pipe_straight texture loads
+PASS: prop_pipe_bend selects hex
+PASS: prop_pipe_bend texture loads
+PASS: prop_pipe_broken selects hex
+PASS: prop_pipe_broken texture loads
+PASS: prop_sign_company selects hex
+PASS: prop_sign_company texture loads
+PASS: prop_debris selects hex
+PASS: prop_debris texture loads
+PASS: prop_dry_well selects hex
+PASS: prop_dry_well texture loads
+PASS: prop_barrels selects hex
+PASS: prop_barrels texture loads
+PASS: prop_tarp_tent selects hex
+PASS: prop_tarp_tent texture loads
+PASS: prop_leaflets selects hex
+PASS: prop_leaflets texture loads
+PASS: prop_fence selects hex
+PASS: prop_fence texture loads
+PASS: missing prop skips drawing
+PASS: missing hex chooses legacy path
+PASS: legacy prop texture loads
+PASS: admin_post_t1_hex rendered
+PASS: admin_post_t2_hex rendered
+PASS: admin_post_t3_hex rendered
+PASS: company_office_t1_hex rendered
+PASS: company_ruin_t1_hex rendered
+PASS: field_strip_t1_hex rendered
+PASS: field_strip_t2_hex rendered
+PASS: field_strip_t3_hex rendered
+PASS: generator_t1_hex rendered
+PASS: lumber_yard_t1_hex rendered
+PASS: lumber_yard_t2_hex rendered
+PASS: lumber_yard_t3_hex rendered
+PASS: main_cistern_t1_hex rendered
+PASS: main_cistern_t2_hex rendered
+PASS: main_cistern_t3_hex rendered
+PASS: prop_barrels_hex rendered
+PASS: prop_debris_hex rendered
+PASS: prop_dry_well_hex rendered
+PASS: prop_fence_hex rendered
+PASS: prop_leaflets_hex rendered
+PASS: prop_pipe_bend_hex rendered
+PASS: prop_pipe_broken_hex rendered
+PASS: prop_pipe_straight_hex rendered
+PASS: prop_sign_company_hex rendered
+PASS: prop_tarp_tent_hex rendered
+PASS: quarry_pit_t1_hex rendered
+PASS: quarry_pit_t2_hex rendered
+PASS: quarry_pit_t3_hex rendered
+PASS: shelter_t1_hex rendered
+PASS: shelter_t2_hex rendered
+PASS: shelter_t3_hex rendered
+PASS: solar_panel_t1_hex rendered
+PASS: source_tower_old_t1_hex rendered
+PASS: source_tower_restored_t1_hex rendered
+PASS: tool_workshop_t1_hex rendered
+PASS: tool_workshop_t2_hex rendered
+PASS: tool_workshop_t3_hex rendered
+PASS: warehouse_t1_hex rendered
+PASS: warehouse_t2_hex rendered
+PASS: warehouse_t3_hex rendered
+PASS: well_pump_t1_hex rendered
+PASS: well_pump_t2_hex rendered
+PASS: well_pump_t3_hex rendered
+PASS: catalog saved
+HEX CATALOG: 0 failures
