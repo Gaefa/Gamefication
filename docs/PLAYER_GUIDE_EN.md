@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.1.1 — "Rust Pit" test build (September 2026). A run takes 20–40 minutes.
+Version 0.1.2 — "Rust Pit" test build (September 2026). A run takes 20–40 minutes.
 
 ## How to run
 
@@ -12,6 +12,10 @@ Version 0.1.1 — "Rust Pit" test build (September 2026). A run takes 20–40 mi
 - **Save:** one slot, automatic — "Continue" in the menu. Start over with "New game". Files live in `%APPDATA%\Godot\app_userdata\Mandate Cities\saves` (Windows) or `~/Library/Application Support/Godot/app_userdata/Mandate Cities/saves` (macOS).
 - **If the game crashes:** send the newest file from the `logs` folder next to `saves` and tell us what you were doing.
 - Window 1280×720 or larger; full screen is optional.
+
+## Tutorial
+
+The first "New game" starts a tutorial: time is paused and the game walks you through the first five minutes step by step — camera, the building card, a road, a pump, water range, a shelter, the top bar, the day clock, the first evening at the Desk. The button or cell to click is highlighted. You can skip it at any step; tick "Tutorial" on the main menu to run it again.
 
 ## What this game is
 

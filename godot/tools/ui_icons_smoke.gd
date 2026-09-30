@@ -57,11 +57,10 @@ func _run() -> void:
 			_check_build_list(locale + " / " + category)
 	_hud.call("_set_active_category", "Infrastructure")
 	Localization.set_locale("ru", true, false)
-	var core: RichTextLabel = _hud.get("_core_label")
-	UiIcons._cache["res://assets/ui/icons/money.svg"] = null
+	# Chips keep the number and the resource name (tooltip) whatever happens to the icon.
 	_hud.call("_update_resource_bar")
-	_check(not core.text.contains("money.svg") and core.get_parsed_text().contains("Деньги:"), "missing resource image preserves name and value")
-	UiIcons._cache.erase("res://assets/ui/icons/money.svg")
+	var money: Dictionary = (_hud.get("_res_chips") as Dictionary)["res_money"] as Dictionary
+	_check((money["value"] as Label).text.is_valid_int() and (money["panel"] as Control).tooltip_text.contains("Деньги"), "resource chip shows a number and names itself in the tooltip")
 
 	# The production cursor uses the same placement rules as the click command.
 	var world_screen := Vector2(600, 400)
@@ -146,7 +145,7 @@ func _check_layout(context: String) -> void:
 	var viewport: Rect2 = get_viewport().get_visible_rect()
 	var bar: Control = _hud.get("_resource_bar")
 	_check(viewport.encloses(bar.get_global_rect()), context + ": bar inside viewport")
-	for field: String in ["_core_label", "_utility_label", "_city_label", "_risk_label"]:
+	for field: String in ["_utility_label", "_city_label", "_trust_bar", "_support_bar", "_rival_label"]:
 		var control: Control = _hud.get(field)
 		_check(bar.get_global_rect().encloses(control.get_global_rect()), context + ": " + field + " inside bar")
 		if control is RichTextLabel:
@@ -154,9 +153,7 @@ func _check_layout(context: String) -> void:
 	var build: Control = _hud.get("_build_panel")
 	var minimap: Control = _hud.get("_minimap_panel")
 	_check(build.position.y >= bar.get_global_rect().end.y and minimap.position.y >= bar.get_global_rect().end.y, context + ": panels below bar")
-	var core: RichTextLabel = _hud.get("_core_label")
-	var risk: RichTextLabel = _hud.get("_risk_label")
-	_check(core.text.count("[img=") == 6 and risk.text.count("[img=") == 4, context + ": six resource / four pressure icons")
+	_check((_hud.get("_res_chips") as Dictionary).size() == 6 and (_hud.get("_pressure_bars") as Dictionary).size() == 4, context + ": six resource chips / four pressure gauges")
 
 
 func _check_build_list(context: String) -> void:
