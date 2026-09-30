@@ -43,7 +43,7 @@ func _draw() -> void:
 		var road_bld: Dictionary = GameStateStore.get_building(coord)
 		_draw_road_tile(coord, road_bld)
 
-	# Painter's order: tall isometric sprites overlap the row behind them.
+	# Painter's order: tall sprites overlap the row behind them.
 	building_coords.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 		return HexCoords.axial_to_pixel(a).y < HexCoords.axial_to_pixel(b).y)
 	for coord: Vector2i in building_coords:
@@ -216,8 +216,7 @@ func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Co
 				type_id.left(1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, 20, 14, Color.WHITE)
 
 
-## Sprite width is the hex width; the isometric footprint diamond (2:1, at the sprite's
-## bottom) is centred on the hex, so tall buildings rise above the cell instead of over it.
+## Legacy diamond width. Hex assets use their own width and footprint anchor below.
 const SPRITE_WIDTH_FACTOR := 2.25
 
 
@@ -229,19 +228,21 @@ func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: boo
 	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
 		return false
 
-	var width: float = HexCoords.HEX_SIZE * SPRITE_WIDTH_FACTOR
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	var hex_footprint: bool = _uses_hex_footprint(def, level)
+	var width: float = HexCoords.HEX_SIZE * (2.0 * 1.04 if hex_footprint else SPRITE_WIDTH_FACTOR)
 	var scale: float = width / tex_size.x
 	var draw_size := Vector2(width, tex_size.y * scale)
-	var anchor := Vector2(width * 0.5, draw_size.y - width * 0.25)  # footprint diamond centre
+	var anchor := Vector2(width * 0.5, draw_size.y - width * (0.325 if hex_footprint else 0.25))
 	var rect := Rect2(c - anchor, draw_size)
 
-	# Ground shadow so the sprite sits on the cell.
-	var shadow := PackedVector2Array()
-	for p: Vector2 in _hex_polygon(HexCoords.HEX_SIZE * 0.9):
-		shadow.append(c + p + Vector2(0.0, 2.0))
-	draw_colored_polygon(shadow, Color(0.0, 0.0, 0.0, 0.18))
+	# Hex art already includes its ground and shadow. Keep the legacy underlay for diamonds.
+	if not hex_footprint:
+		var shadow := PackedVector2Array()
+		for p: Vector2 in _hex_polygon(HexCoords.HEX_SIZE * 0.9):
+			shadow.append(c + p + Vector2(0.0, 2.0))
+		draw_colored_polygon(shadow, Color(0.0, 0.0, 0.0, 0.18))
 
-	var def: Dictionary = ContentDB.get_building_def(type_id)
 	var tint := Color.WHITE
 	if def.has("sprite_tint"):
 		tint = Color(def.get("sprite_tint", "ffffff") as String)
@@ -249,6 +250,14 @@ func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: boo
 		tint = tint.lerp(Color(0.85, 0.3, 0.25), 0.45)
 	draw_texture_rect(texture, rect, false, tint)
 	return true
+
+
+func _uses_hex_footprint(def: Dictionary, level: int) -> bool:
+	# The projection trial replaces t1 only; t2/t3 must retain their diamond anchors.
+	var sprites: Array = def.get("sprites_by_level", []) as Array
+	if def.get("footprint", "") != "hex" or sprites.is_empty():
+		return false
+	return (sprites[clampi(level, 0, sprites.size() - 1)] as String).ends_with("_hex.png")
 
 
 func _get_building_sprite(type_id: String, level: int) -> Texture2D:
