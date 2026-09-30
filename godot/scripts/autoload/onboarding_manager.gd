@@ -60,7 +60,7 @@ func _ready() -> void:
 	EventBus.tick_finished.connect(_on_tick_finished)
 	Localization.locale_changed.connect(func(_locale: String) -> void: _apply_text())
 	EventBus.desk_closed.connect(func() -> void:
-		if _is_shown("welcome"):
+		if _is_shown("welcome") and not TutorialManager.ran_this_run:
 			_offer("first_desk"))
 
 
@@ -75,6 +75,8 @@ func _on_tick_finished(_tick: int) -> void:
 ## Offers the next chain step whose predecessor is done. A step with a building goal
 ## waits until the player has actually built it, so the hints follow the player's hands.
 func _advance_chain() -> void:
+	if TutorialManager.ran_this_run:
+		return  # the guided tutorial teaches the same steps hands-on
 	for i: int in CHAIN.size():
 		var step: Dictionary = CHAIN[i] as Dictionary
 		var hint_id: String = step.get("id", "") as String
@@ -107,7 +109,7 @@ func _offer(hint_id: String) -> void:
 func _flush() -> void:
 	if _active != "" or _queue.is_empty():
 		return
-	if SimulationRunner.paused or suppressed:
+	if SimulationRunner.paused or suppressed or TutorialManager.active:
 		return  # don't pop a hint over the desk / crisis / finale / start menu
 	_active = _queue.pop_front()
 	_apply_text()
