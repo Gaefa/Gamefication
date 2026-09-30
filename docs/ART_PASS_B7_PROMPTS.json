@@ -1,6 +1,6 @@
 {
   "mode": "built-in image_gen",
-  "phase": "three projection trials; remaining assets await approval",
+  "phase": "Full P7: 33 buildings and 10 props; trials approved by user before continuation",
   "layout_guide": "docs/art/p7_hex_layout.png",
   "prompts": [
     {
@@ -60,6 +60,608 @@
       ],
       "revision_output_hint": "Generated images are saved to /Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0 as /Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-3fe5a1c8-d2f3-4fcf-ae74-460fee952d64.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
       "selected_attempt": 3
+    }
+  ],
+  "continuation": [
+    {
+      "id": "admin_post_t1_hex",
+      "description": "Small concrete administration block, a plain deep-blue flag on a flagpole, a noticeboard and front doorstep.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Small concrete administration block, a plain deep-blue flag on a flagpole, a noticeboard and front doorstep.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-41bd49e8-e83b-49e5-8826-db7123d274ae.png"
+    },
+    {
+      "id": "admin_post_t2_hex",
+      "description": "add a second storey, a radio antenna and a covered entrance.",
+      "parent": "admin_post_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to UPGRADE, other images are material and flat-top hex layout references. Same building, same FRONT-FACING camera, same muted palette and same HEXAGONAL ground shape and size. Preserve identity, existing architecture and defining details. Upgrade: add a second storey, a radio antenna and a covered entrance.\nCamera49degrees above horizon, zero rotation: front edges horizontal, uprights vertical, depth straight upward. No diagonal facades, no diamond. Keep additions inside plot, no expanding ground. Ground width:height1.54:1, pointed left/right and flat top/bottom. Single object, square1024 RGBA, transparent background, full silhouette with margins, no people, lettering or long shadow.",
+      "references": [
+        "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-41bd49e8-e83b-49e5-8826-db7123d274ae.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-359554a6-4d72-460a-b976-7524de8d687d.png"
+    },
+    {
+      "id": "admin_post_t3_hex",
+      "description": "add an archive wing with narrow windows, a porch with columns and a bigger noticeboard.",
+      "parent": "admin_post_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to upgrade. Images2-4 are materials references, image5 is hex geometry. Same building, same FRONT-FACING camera, same palette and same HEXAGONAL ground plot. Preserve identity and existing architecture. Upgrade: add an archive wing with narrow windows, a porch with columns and a bigger noticeboard.\nCamera49degrees above horizon, ZERO azimuth rotation; all front walls parallel to screen, front edges horizontal, uprights vertical. Depth runs straight upward. No 45-degree side walls or diamond. Keep all additions inside the base. Base is flat-top hexagon width:height1.54:1, pointed left/right, flat top/bottom, no ground or shadow outside. One object on transparent square1024 RGBA, complete silhouette and margins, no people, text or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/admin_post_t2_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-0875267c-96f8-425d-8478-0c77475f95ef.png"
+    },
+    {
+      "id": "company_office_t1_hex",
+      "description": "Two-storey concrete office with boarded windows, a faded water-drop SYMBOL sign, an empty flagpole, cracked front steps, dust drifts against its wall.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Two-storey concrete office with boarded windows, a faded water-drop SYMBOL sign, an empty flagpole, cracked front steps, dust drifts against its wall.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-0d5215cb-af3d-43d0-9f68-f5da927c992b.png"
+    },
+    {
+      "id": "company_ruin_t1_hex",
+      "description": "Roofless ruined warehouse with exposed rafters, one collapsed wall, rusty crates stamped with a water-drop SYMBOL, faded torn banner, single dry shrub inside.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Roofless ruined warehouse with exposed rafters, one collapsed wall, rusty crates stamped with a water-drop SYMBOL, faded torn banner, single dry shrub inside.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-78cc66d5-75c8-4666-a37c-21b7f715b0be.png"
+    },
+    {
+      "id": "field_strip_t1_hex",
+      "description": "Low dusty agricultural plot with three short parallel vegetable crop rows, sparse hardy ochre-green plants, a watering barrel and two sacks. Crop rows recede straight upward, front edges horizontal.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Low dusty agricultural plot with three short parallel vegetable crop rows, sparse hardy ochre-green plants, a watering barrel and two sacks. Crop rows recede straight upward, front edges horizontal.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-4d5eeeb9-0d01-4f5c-8d02-b96f0c902698.png"
+    },
+    {
+      "id": "field_strip_t2_hex",
+      "description": "add denser healthier crop rows, wooden irrigation channels and a second barrel.",
+      "parent": "field_strip_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to upgrade. Images2-4 are materials references, image5 is hex geometry. Same building, same FRONT-FACING camera, same palette and same HEXAGONAL ground plot. Preserve identity and existing architecture. Upgrade: add denser healthier crop rows, wooden irrigation channels and a second barrel.\nCamera49degrees above horizon, ZERO azimuth rotation; all front walls parallel to screen, front edges horizontal, uprights vertical. Depth runs straight upward. No 45-degree side walls or diamond. Keep all additions inside the base. Base is flat-top hexagon width:height1.54:1, pointed left/right, flat top/bottom, no ground or shadow outside. One object on transparent square1024 RGBA, complete silhouette and margins, no people, text or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/field_strip_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-fa584c7a-e25a-42e4-a947-39239d14a59c.png"
+    },
+    {
+      "id": "field_strip_t3_hex",
+      "description": "add a low simple shade-cloth frame over part of the crop rows, more crops and harvested sacks, same agricultural plot.",
+      "parent": "field_strip_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. UPGRADE image1, preserve the same identity, front-facing camera, muted weathered palette and flat-top hexagonal plot. Other images are material and hex-layout references. Upgrade: add a low simple shade-cloth frame over part of the crop rows, more crops and harvested sacks, same agricultural plot.\n49degree elevated orthographic camera, zero azimuth rotation; facade edges horizontal, posts vertical, depth straight up screen. New shed/roof also faces straight toward viewer with no diagonal side walls. Ground plot width:height1.54:1, pointed left/right, flat top/bottom, exact same plot size and position as input, all additions/shadows inside. Single object on transparent square1024 RGBA canvas, entire object with margins, no people, lettering, backdrop or diamond.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/field_strip_t2_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-1b842658-c050-4d74-8e42-01a219a587f5.png"
+    },
+    {
+      "id": "generator_t1_hex",
+      "description": "Small weathered corrugated shed housing a diesel generator and flywheel, exhaust pipe, rusty fuel barrel, front-facing open access hatch.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Small weathered corrugated shed housing a diesel generator and flywheel, exhaust pipe, rusty fuel barrel, front-facing open access hatch.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-14918bd5-776c-487b-8147-1ba8a205a9f8.png"
+    },
+    {
+      "id": "lumber_yard_t1_hex",
+      "description": "Sawhorses, a two-man saw, a small stack of dry grey logs, wood chips and a coil of rope. Horizontal logs and beams.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Sawhorses, a two-man saw, a small stack of dry grey logs, wood chips and a coil of rope. Horizontal logs and beams.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-32cee310-7eb5-4a78-8c74-f2e33d8e1ede.png"
+    },
+    {
+      "id": "lumber_yard_t2_hex",
+      "description": "add a pole shed over the log stack, a wheelbarrow and a second higher log pile.",
+      "parent": "lumber_yard_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to upgrade. Images2-4 are materials references, image5 is hex geometry. Same building, same FRONT-FACING camera, same palette and same HEXAGONAL ground plot. Preserve identity and existing architecture. Upgrade: add a pole shed over the log stack, a wheelbarrow and a second higher log pile.\nCamera49degrees above horizon, ZERO azimuth rotation; all front walls parallel to screen, front edges horizontal, uprights vertical. Depth runs straight upward. No 45-degree side walls or diamond. Keep all additions inside the base. Base is flat-top hexagon width:height1.54:1, pointed left/right, flat top/bottom, no ground or shadow outside. One object on transparent square1024 RGBA, complete silhouette and margins, no people, text or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/lumber_yard_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-a8ccdf54-5827-4886-a020-90a2dd2fe7c1.png"
+    },
+    {
+      "id": "lumber_yard_t3_hex",
+      "description": "add a belt-driven sawmill under the shed, tall stacked planks and a hand-cranked hoist.",
+      "parent": "lumber_yard_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. UPGRADE image1, preserve the same identity, front-facing camera, muted weathered palette and flat-top hexagonal plot. Other images are material and hex-layout references. Upgrade: add a belt-driven sawmill under the shed, tall stacked planks and a hand-cranked hoist.\n49degree elevated orthographic camera, zero azimuth rotation; facade edges horizontal, posts vertical, depth straight up screen. New shed/roof also faces straight toward viewer with no diagonal side walls. Ground plot width:height1.54:1, pointed left/right, flat top/bottom, exact same plot size and position as input, all additions/shadows inside. Single object on transparent square1024 RGBA canvas, entire object with margins, no people, lettering, backdrop or diamond.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/lumber_yard_t2_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-0a2f9999-77ea-4d39-9383-63197538bf37.png"
+    },
+    {
+      "id": "main_cistern_t1_hex",
+      "description": "Low wide concrete cistern with a hatch on top, a ladder, a painted level stripe on its wall, a tap with a barrel beneath. Very squat, NOT a tall tower.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Low wide concrete cistern with a hatch on top, a ladder, a painted level stripe on its wall, a tap with a barrel beneath. Very squat, NOT a tall tower.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-f9155ab7-32e3-4bac-a6d8-ceef5928ae29.png"
+    },
+    {
+      "id": "main_cistern_t2_hex",
+      "description": "add a second low tank joined by a pipe, a filling tap and a queue of barrels.",
+      "parent": "main_cistern_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to UPGRADE, other images are material and flat-top hex layout references. Same building, same FRONT-FACING camera, same muted palette and same HEXAGONAL ground shape and size. Preserve identity, existing architecture and defining details. Upgrade: add a second low tank joined by a pipe, a filling tap and a queue of barrels.\nCamera49degrees above horizon, zero rotation: front edges horizontal, uprights vertical, depth straight upward. No diagonal facades, no diamond. Keep additions inside plot, no expanding ground. Ground width:height1.54:1, pointed left/right and flat top/bottom. Single object, square1024 RGBA, transparent background, full silhouette with margins, no people, lettering or long shadow.",
+      "references": [
+        "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-f9155ab7-32e3-4bac-a6d8-ceef5928ae29.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-6d0366ad-6492-4819-b694-c7b2af1dcf3b.png"
+    },
+    {
+      "id": "main_cistern_t3_hex",
+      "description": "expand to a battery of three low tanks on a low trestle, walkway rails and gauge dials, small painted water-drop symbol.",
+      "parent": "main_cistern_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT sprite to upgrade, images2-4 palette references, image5 footprint reference. Same building, FRONT-FACING camera, palette and HEXAGONAL ground plot. Preserve existing identity. Upgrade: expand to a battery of three low tanks on a low trestle, walkway rails and gauge dials, small painted water-drop symbol.\n49degree orthographic top-down camera with ZERO azimuth: front walls parallel to screen, horizontal front edges and vertical uprights, depth straight upward. Keep all added parts on the hex plot. Ground flat-top hex1.54:1, pointed left/right, horizontal top/bottom. Do not introduce diamond or diagonal side walls. Transparent square1024 RGBA, complete object with margins, no people, lettering, long shadows or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/main_cistern_t2_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-e5ca87ca-5e7c-40bc-a7ff-c056078544c6.png"
+    },
+    {
+      "id": "prop_barrels_hex",
+      "description": "Three or four rusty water barrels under a low tarp held by rope, with a bucket beside them.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: Three or four rusty water barrels under a low tarp held by rope, with a bucket beside them.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-33cd8e2e-7a3e-4858-8aca-d0066d2535b0.png"
+    },
+    {
+      "id": "prop_debris_hex",
+      "description": "One compact pile of rusty scrap: corrugated sheets, a tyre, a dented barrel.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: One compact pile of rusty scrap: corrugated sheets, a tyre, a dented barrel.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-bab8b551-93b7-42b9-93c4-446ad96949f2.png"
+    },
+    {
+      "id": "prop_dry_well_hex",
+      "description": "Small abandoned stone well with a broken wooden windlass, completely dry dark interior.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: Small abandoned stone well with a broken wooden windlass, completely dry dark interior.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-1b97b87f-4347-4d13-85ff-ec9e69b46719.png"
+    },
+    {
+      "id": "prop_fence_hex",
+      "description": "A leaning fence of upright wooden poles and rusty wire mesh along the REAR HORIZONTAL edge of the hexagon. No diagonal diamond alignment.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: A leaning fence of upright wooden poles and rusty wire mesh along the REAR HORIZONTAL edge of the hexagon. No diagonal diamond alignment.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-6f1b59dc-9e55-4aef-bce8-f04bf45b6c0c.png"
+    },
+    {
+      "id": "prop_leaflets_hex",
+      "description": "Single upright wooden post plastered with grey paper leaflets, some torn, no readable letters.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: Single upright wooden post plastered with grey paper leaflets, some torn, no readable letters.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-9f591bc5-c85b-48f1-9a65-b5438d3101b3.png"
+    },
+    {
+      "id": "prop_pipe_bend_hex",
+      "description": "One rusted pipe on concrete supports: begins from the left hex tip horizontally to the center, then bends 60 degrees in ground space toward the LOWER-RIGHT hex edge. Bolted flange at the bend. The projected diagonal slopes down-right, not an L shape.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: One rusted pipe on concrete supports: begins from the left hex tip horizontally to the center, then bends 60 degrees in ground space toward the LOWER-RIGHT hex edge. Bolted flange at the bend. The projected diagonal slopes down-right, not an L shape.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-eff6fd76-6118-4659-accf-67f828cd0712.png"
+    },
+    {
+      "id": "prop_pipe_broken_hex",
+      "description": "Horizontal rusted pipe with a torn-open gap in the middle, edges bent outward, a dark rust stain beneath, on low concrete supports.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: Horizontal rusted pipe with a torn-open gap in the middle, edges bent outward, a dark rust stain beneath, on low concrete supports.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-05537ce4-1dab-42c0-86b4-00d7f8711e5e.png"
+    },
+    {
+      "id": "prop_pipe_straight_hex",
+      "description": "One section of rusted half-metre pipe on two concrete supports, running exactly HORIZONTALLY from left pointed hex vertex toward right vertex, with ends within the plot.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: One section of rusted half-metre pipe on two concrete supports, running exactly HORIZONTALLY from left pointed hex vertex toward right vertex, with ends within the plot.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-3f37f402-9f87-4cfa-813f-df6e290ee3c3.png"
+    },
+    {
+      "id": "prop_sign_company_hex",
+      "description": "Leaning wooden billboard on two upright posts, its face parallel to screen, with a faded water-drop company symbol and indistinct worn marks, no legible lettering.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: Leaning wooden billboard on two upright posts, its face parallel to screen, with a faded water-drop company symbol and indistinct worn marks, no legible lettering.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-ac79eb65-8a18-47f2-99ce-0ad45ddb1ac4.png"
+    },
+    {
+      "id": "prop_tarp_tent_hex",
+      "description": "Low tarp awning on poles, a crate, a ring of stones for an unlit fire, and a bedroll.",
+      "parent": null,
+      "kind": "prop",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nThis is a SINGLE SMALL PROP, NOT a building. Final asset512x512, use same composition in half-size: base width400 height260, bottom edgey482, center(256,352). Object is compact and readable at57px wide.\nSUBJECT: Low tarp awning on poles, a crate, a ring of stones for an unlit fire, and a bedroll.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-4aa407d7-41eb-48e2-a1a7-c4fc923ff11b.png"
+    },
+    {
+      "id": "quarry_pit_t1_hex",
+      "description": "Shallow open stone pit with stepped ledges cut into pale rock, two pickaxes, a wooden wheelbarrow loaded with grey stone, dusty ground. Ledges front edges horizontal.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Shallow open stone pit with stepped ledges cut into pale rock, two pickaxes, a wooden wheelbarrow loaded with grey stone, dusty ground. Ledges front edges horizontal.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-0e990444-9d3f-4283-96e1-db7aa7ce4cd4.png"
+    },
+    {
+      "id": "quarry_pit_t2_hex",
+      "description": "add a wooden chute from the pit edge, a hand hoist on a horizontal beam and a pile of cut stone blocks.",
+      "parent": "quarry_pit_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to upgrade. Images2-4 are materials references, image5 is hex geometry. Same building, same FRONT-FACING camera, same palette and same HEXAGONAL ground plot. Preserve identity and existing architecture. Upgrade: add a wooden chute from the pit edge, a hand hoist on a horizontal beam and a pile of cut stone blocks.\nCamera49degrees above horizon, ZERO azimuth rotation; all front walls parallel to screen, front edges horizontal, uprights vertical. Depth runs straight upward. No 45-degree side walls or diamond. Keep all additions inside the base. Base is flat-top hexagon width:height1.54:1, pointed left/right, flat top/bottom, no ground or shadow outside. One object on transparent square1024 RGBA, complete silhouette and margins, no people, text or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/quarry_pit_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-d805548c-3df1-458e-a740-60dfd8505157.png"
+    },
+    {
+      "id": "quarry_pit_t3_hex",
+      "description": "add a tripod winch over the pit, a small ore cart on short rails and a tool shed at the rim.",
+      "parent": "quarry_pit_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. UPGRADE image1, preserve the same identity, front-facing camera, muted weathered palette and flat-top hexagonal plot. Other images are material and hex-layout references. Upgrade: add a tripod winch over the pit, a small ore cart on short rails and a tool shed at the rim.\n49degree elevated orthographic camera, zero azimuth rotation; facade edges horizontal, posts vertical, depth straight up screen. New shed/roof also faces straight toward viewer with no diagonal side walls. Ground plot width:height1.54:1, pointed left/right, flat top/bottom, exact same plot size and position as input, all additions/shadows inside. Single object on transparent square1024 RGBA canvas, entire object with margins, no people, lettering, backdrop or diamond.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/quarry_pit_t2_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-854b042c-2fa9-467e-adac-b7cb2d45b654.png"
+    },
+    {
+      "id": "shelter_t2_hex",
+      "description": "add an extra room, a small water tank on the roof and a porch.",
+      "parent": "shelter_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to UPGRADE. Other images are approved palette and hex-plot layout references. Same building, same FRONT-FACING camera, same muted palette and EXACT SAME HEXAGONAL ground shape, position, width and depth as image1. Preserve identity and existing defining details. Upgrade only: add an extra room, a small water tank on the roof and a porch.\nOrthographic camera49degrees above horizon, no azimuth rotation, front edges horizontal and uprights vertical. No diamond perspective. Keep all additions INSIDE the hex plot; do not expand its skirt. Ground is flat-top hex, width:height1.54:1, pointed left/right, flat top/bottom. Transparent RGBA square1024, margins all sides, full object, no text, people, background or long shadow.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-53d9d541-007d-4322-b6da-830b65231aab.png"
+    },
+    {
+      "id": "shelter_t3_hex",
+      "description": "add a second storey with an outside gallery and stairs, two chimneys.",
+      "parent": "shelter_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to UPGRADE, other images are material and flat-top hex layout references. Same building, same FRONT-FACING camera, same muted palette and same HEXAGONAL ground shape and size. Preserve identity, existing architecture and defining details. Upgrade: add a second storey with an outside gallery and stairs, two chimneys.\nCamera49degrees above horizon, zero rotation: front edges horizontal, uprights vertical, depth straight upward. No diagonal facades, no diamond. Keep additions inside plot, no expanding ground. Ground width:height1.54:1, pointed left/right and flat top/bottom. Single object, square1024 RGBA, transparent background, full silhouette with margins, no people, lettering or long shadow.",
+      "references": [
+        "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-53d9d541-007d-4322-b6da-830b65231aab.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-8271d6fb-a055-495e-86d8-337d463f12ef.png"
+    },
+    {
+      "id": "solar_panel_t1_hex",
+      "description": "Low rusted pipe frame holding six dusty matte solar panels in a front-facing rectangular array, tilted upward; a battery crate and a rag for wiping dust.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Low rusted pipe frame holding six dusty matte solar panels in a front-facing rectangular array, tilted upward; a battery crate and a rag for wiping dust.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-cbc42ee8-0974-4484-b3fe-c979d0271b2d.png"
+    },
+    {
+      "id": "source_tower_restored_t1_hex",
+      "description": "restore the same tower with patches of new grey metal on its tank, a repaired ladder, a connected pipe running to ground, a wet dark patch under a tap, repaint the water-drop symbol.",
+      "parent": "source_tower_old_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to UPGRADE. Other images are approved palette and hex-plot layout references. Same building, same FRONT-FACING camera, same muted palette and EXACT SAME HEXAGONAL ground shape, position, width and depth as image1. Preserve identity and existing defining details. Upgrade only: restore the same tower with patches of new grey metal on its tank, a repaired ladder, a connected pipe running to ground, a wet dark patch under a tap, repaint the water-drop symbol.\nOrthographic camera49degrees above horizon, no azimuth rotation, front edges horizontal and uprights vertical. No diamond perspective. Keep all additions INSIDE the hex plot; do not expand its skirt. Ground is flat-top hex, width:height1.54:1, pointed left/right, flat top/bottom. Transparent RGBA square1024, margins all sides, full object, no text, people, background or long shadow.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-032c2e6d-14b5-49fe-9bbd-51242369cc81.png"
+    },
+    {
+      "id": "tool_workshop_t1_hex",
+      "description": "Open-sided workshop lean-to with wooden posts, a corrugated roof, workbench with an anvil and a vise, hand tools on the rear wall, a barrel of scrap.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Open-sided workshop lean-to with wooden posts, a corrugated roof, workbench with an anvil and a vise, hand tools on the rear wall, a barrel of scrap.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-bfb13b9f-2992-43c9-8337-32be7767d135.png"
+    },
+    {
+      "id": "tool_workshop_t2_hex",
+      "description": "add closed shed walls, a brick chimney with only a tiny wisp of smoke kept within canvas, a pedal grinding wheel and a rack of finished shovels and picks.",
+      "parent": "tool_workshop_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT sprite to upgrade, images2-4 palette references, image5 footprint reference. Same building, FRONT-FACING camera, palette and HEXAGONAL ground plot. Preserve existing identity. Upgrade: add closed shed walls, a brick chimney with only a tiny wisp of smoke kept within canvas, a pedal grinding wheel and a rack of finished shovels and picks.\n49degree orthographic top-down camera with ZERO azimuth: front walls parallel to screen, horizontal front edges and vertical uprights, depth straight upward. Keep all added parts on the hex plot. Ground flat-top hex1.54:1, pointed left/right, horizontal top/bottom. Do not introduce diamond or diagonal side walls. Transparent square1024 RGBA, complete object with margins, no people, lettering, long shadows or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/tool_workshop_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-5efc2172-abc4-44b5-b9e1-baf0c5b2c0a4.png"
+    },
+    {
+      "id": "tool_workshop_t3_hex",
+      "description": "add a second bay with a taller chimney, a belt-driven drill press, crates of tools and a small hammer SYMBOL, no lettering.",
+      "parent": "tool_workshop_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Upgrade image1, preserving this workshop identity, materials, FRONT-FACING camera and flat-top hexagonal ground. Other images are palette and footprint references. Upgrade: add a second bay with a taller chimney, a belt-driven drill press, crates of tools and a small hammer SYMBOL, no lettering. Chimney smoke must be a SMALL soft wisp entirely inside the canvas. 49-degree camera, zero azimuth rotation; front wall horizontal, posts vertical, nearly no side walls. Keep ALL details inside the same hex plot. Ground width:height1.54:1, flat upper/lower edge, pointed left/right. Transparent square1024 RGBA, complete silhouette and generous margins, no lettering, people, backdrop or diamond.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/tool_workshop_t2_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-e6942c3f-4c5d-42d9-9f35-a9c4a3304e13.png"
+    },
+    {
+      "id": "warehouse_t1_hex",
+      "description": "Small weathered storage shed with a corrugated roof and open front canopy, neatly stacked wooden crates, sacks and a handcart.",
+      "parent": null,
+      "kind": "building",
+      "prompt": "Use case: stylized-concept. One hand-painted game sprite. Match reference images 1-3's approved materials and front-facing projection: rusted corrugated iron, sun-bleached wood, cracked grey concrete, muted ochre dust, khaki and grey-blue metal. Reference 4 is the terrain. Reference 5 is the EXACT ground layout.\nCAMERA: orthographic top-down oblique, about 49 degrees above horizon, ZERO rotation around vertical axis. Front wall faces viewer directly; all front edges horizontal, upright posts vertical; depth goes straight UP screen. Roof and front wall visible, nearly NO side wall. NO isometric 45-degree rotation.\nGROUND: exactly one FLAT-TOP HEXAGON, 1.54 times wider than tall, pointed left and right, horizontal top and bottom. Match reference 5 geometry. On a square1024 canvas: hex vertices (112,704),(312,444),(712,444),(912,704),(712,964),(312,964). Ground depth must be 65% of width, not a shallow diamond. Flat plot, no extruded slab. Thin natural dusty skirt and a short top-left-lit shadow contained INSIDE that hex. Object compact and centered within plot, tall parts can rise above rear edge.\nComposition: single object on genuinely TRANSPARENT background, complete silhouette and margin on every edge, no text, people, backdrop, long shadow, neon, photo, 3D render, thick cartoon outline, cropped second object. Output square RGBA PNG.\nSUBJECT: Small weathered storage shed with a corrugated roof and open front canopy, neatly stacked wooden crates, sacks and a handcart.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/tiles/tile_dust.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-fd103668-85e1-492d-83ec-bb2ad3a4d5e8.png"
+    },
+    {
+      "id": "warehouse_t2_hex",
+      "description": "enlarge the same storage shed with a deeper covered loading area, more orderly crates and barrels.",
+      "parent": "warehouse_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to upgrade. Images2-4 are materials references, image5 is hex geometry. Same building, same FRONT-FACING camera, same palette and same HEXAGONAL ground plot. Preserve identity and existing architecture. Upgrade: enlarge the same storage shed with a deeper covered loading area, more orderly crates and barrels.\nCamera49degrees above horizon, ZERO azimuth rotation; all front walls parallel to screen, front edges horizontal, uprights vertical. Depth runs straight upward. No 45-degree side walls or diamond. Keep all additions inside the base. Base is flat-top hexagon width:height1.54:1, pointed left/right, flat top/bottom, no ground or shadow outside. One object on transparent square1024 RGBA, complete silhouette and margins, no people, text or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/warehouse_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-bbfef716-4b40-4349-80b9-838feb1fa9d5.png"
+    },
+    {
+      "id": "warehouse_t3_hex",
+      "description": "reinforce the same warehouse into a broad two-bay depot with metal braces, raised loading platform and stacked supplies.",
+      "parent": "warehouse_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT sprite to upgrade, images2-4 palette references, image5 footprint reference. Same building, FRONT-FACING camera, palette and HEXAGONAL ground plot. Preserve existing identity. Upgrade: reinforce the same warehouse into a broad two-bay depot with metal braces, raised loading platform and stacked supplies.\n49degree orthographic top-down camera with ZERO azimuth: front walls parallel to screen, horizontal front edges and vertical uprights, depth straight upward. Keep all added parts on the hex plot. Ground flat-top hex1.54:1, pointed left/right, horizontal top/bottom. Do not introduce diamond or diagonal side walls. Transparent square1024 RGBA, complete object with margins, no people, lettering, long shadows or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/warehouse_t2_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-b4c90e7f-2d3d-4a64-9287-d077f490f5a8.png"
+    },
+    {
+      "id": "well_pump_t2_hex",
+      "description": "add a cast-iron hand pump column beside the well, a longer trough and a barrel.",
+      "parent": "well_pump_t1_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to UPGRADE. Other images are approved palette and hex-plot layout references. Same building, same FRONT-FACING camera, same muted palette and EXACT SAME HEXAGONAL ground shape, position, width and depth as image1. Preserve identity and existing defining details. Upgrade only: add a cast-iron hand pump column beside the well, a longer trough and a barrel.\nOrthographic camera49degrees above horizon, no azimuth rotation, front edges horizontal and uprights vertical. No diamond perspective. Keep all additions INSIDE the hex plot; do not expand its skirt. Ground is flat-top hex, width:height1.54:1, pointed left/right, flat top/bottom. Transparent RGBA square1024, margins all sides, full object, no text, people, background or long shadow.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-1deead22-c37d-4d2b-b8a1-a9575844d9de.png"
+    },
+    {
+      "id": "well_pump_t3_hex",
+      "description": "upgrade with a small engine-driven pump under a tin roof, a small elevated tank and a pipe leading away INSIDE the hexagon.",
+      "parent": "well_pump_t2_hex",
+      "kind": "building",
+      "prompt": "Use case: precise-object-edit. Image1 is the EXACT base sprite to upgrade. Images2-4 are materials references, image5 is hex geometry. Same building, same FRONT-FACING camera, same palette and same HEXAGONAL ground plot. Preserve identity and existing architecture. Upgrade: upgrade with a small engine-driven pump under a tin roof, a small elevated tank and a pipe leading away INSIDE the hexagon.\nCamera49degrees above horizon, ZERO azimuth rotation; all front walls parallel to screen, front edges horizontal, uprights vertical. Depth runs straight upward. No 45-degree side walls or diamond. Keep all additions inside the base. Base is flat-top hexagon width:height1.54:1, pointed left/right, flat top/bottom, no ground or shadow outside. One object on transparent square1024 RGBA, complete silhouette and margins, no people, text or background.",
+      "references": [
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t2_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/shelter_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/well_pump_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/godot/assets/buildings/tiers/source_tower_old_t1_hex.png",
+        "/Users/antyukhin_alexey/Desktop/Проекты/MandateCities/docs/art/p7_hex_layout.png"
+      ],
+      "source": "/Users/antyukhin_alexey/.codex/generated_images/01a0d036-3b7c-7861-a821-17d93605e3f0/exec-8c0d5fcd-0741-4595-b9a9-6a203a14f6eb.png"
     }
   ]
 }

@@ -253,7 +253,7 @@ func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: boo
 
 
 func _uses_hex_footprint(def: Dictionary, level: int) -> bool:
-	# The projection trial replaces t1 only; t2/t3 must retain their diamond anchors.
+	# Check the selected asset too: mixed content packs can still contain legacy tiers.
 	var sprites: Array = def.get("sprites_by_level", []) as Array
 	if def.get("footprint", "") != "hex" or sprites.is_empty():
 		return false

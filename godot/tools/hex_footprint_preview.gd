@@ -41,7 +41,8 @@ func _ready() -> void:
 	if _legacy:
 		for i: int in IDS.size():
 			var def: Dictionary = ContentDB.get_building_def(IDS[i])
-			def["sprites_by_level"][0] = "res://assets/buildings/tiers/%s.png" % NAMES[i]
+			for level: int in (def["sprites_by_level"] as Array).size():
+				def["sprites_by_level"][level] = (def["sprites_by_level"][level] as String).replace("_hex.png", ".png")
 			def.erase("footprint")
 	var bg := ColorRect.new()
 	bg.size = Vector2(1280, 900)
@@ -55,13 +56,13 @@ func _ready() -> void:
 		_add_sample(IDS[i], Vector2(x, 400), 4.0)
 		_add_sample(IDS[i], Vector2(x, 580), 1.0)
 		_add_sample(IDS[i], Vector2(x - 45, 760), 2.0, true)
-	# Partial migration must not move unconverted upgrade sprites.
+	# All migrated levels use hex; legacy preview restores the original paths.
 	var probe := Buildings.new()
 	for type_id: String in IDS:
 		assert(probe._uses_hex_footprint(ContentDB.get_building_def(type_id), 0) == not _legacy)
 	for type_id: String in ["bld_shelter", "bld_well_pump"]:
-		assert(not probe._uses_hex_footprint(ContentDB.get_building_def(type_id), 1))
-		assert(not probe._uses_hex_footprint(ContentDB.get_building_def(type_id), 2))
+		assert(probe._uses_hex_footprint(ContentDB.get_building_def(type_id), 1) == not _legacy)
+		assert(probe._uses_hex_footprint(ContentDB.get_building_def(type_id), 2) == not _legacy)
 	assert(not probe._uses_hex_footprint({}, 0))
 	assert(probe._get_building_sprite("missing_building", 0) == null)
 	probe.free()
@@ -85,7 +86,6 @@ func _label(text: String, at: Vector2, size: int) -> void:
 func _capture() -> void:
 	await get_tree().process_frame
 	RenderingServer.force_draw(true)
-	await RenderingServer.frame_post_draw
 	var path := _dir.path_join("hex_preview.png")
 	var err := get_viewport().get_texture().get_image().save_png(path)
 	print("HEX PREVIEW: ", path, "; saved=", err == OK)

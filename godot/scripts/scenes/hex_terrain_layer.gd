@@ -6,6 +6,7 @@ var _hex_grid: HexGrid
 var _colors: Dictionary = {}  # terrain_id → Color, from terrain.json (Rust Pit palette)
 var _tile_cache: Dictionary = {}  # resource path → Texture2D (or null for a missing tile)
 var _prop_cache: Dictionary = {}  # prop id → silhouette-trimmed Texture2D (or null)
+var _prop_paths: Dictionary = {}  # prop id → preferred hex path, or legacy fallback
 
 const PIPE_COLOR := Color("7a4a2e")
 const PIPE_JOINT := Color("4e2f1c")
@@ -71,9 +72,10 @@ func _draw_props() -> void:
 		var texture: Texture2D = _prop_texture(prop["id"] as String)
 		if texture == null:
 			continue
-		var width: float = HexCoords.HEX_SIZE * 1.6
+		var hex_footprint: bool = _prop_texture_path(prop["id"] as String).ends_with("_hex.png")
+		var width: float = HexCoords.HEX_SIZE * (2.0 * 0.9 if hex_footprint else 1.6)
 		var draw_size := Vector2(width, texture.get_height() * width / texture.get_width())
-		var anchor := Vector2(width * 0.5, draw_size.y - width * 0.25)
+		var anchor := Vector2(width * 0.5, draw_size.y - width * (0.325 if hex_footprint else 0.25))
 		draw_texture_rect(texture, Rect2(_prop_center(prop) - anchor, draw_size), false)
 
 
@@ -83,7 +85,7 @@ func _prop_center(prop: Dictionary) -> Vector2:
 
 func _prop_texture(id: String) -> Texture2D:
 	if not _prop_cache.has(id):
-		var path: String = "res://assets/props/%s.png" % id
+		var path: String = _prop_texture_path(id)
 		var texture: Texture2D = ResourceLoader.load(path) as Texture2D if ResourceLoader.exists(path) else null
 		if texture != null:
 			var image: Image = texture.get_image()
@@ -91,6 +93,13 @@ func _prop_texture(id: String) -> Texture2D:
 			texture = ImageTexture.create_from_image(image.get_region(used)) if used.has_area() else null
 		_prop_cache[id] = texture
 	return _prop_cache[id] as Texture2D
+
+
+func _prop_texture_path(id: String) -> String:
+	if not _prop_paths.has(id):
+		var hex_path: String = "res://assets/props/%s_hex.png" % id
+		_prop_paths[id] = hex_path if ResourceLoader.exists(hex_path) else "res://assets/props/%s.png" % id
+	return _prop_paths[id] as String
 
 
 func _terrain_texture(terrain_id: int, dusty: bool) -> Texture2D:
