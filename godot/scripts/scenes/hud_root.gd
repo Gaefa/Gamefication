@@ -64,6 +64,7 @@ var _start_dim: ColorRect
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_resource_bar()
+	_build_day_clock()
 	_build_build_panel()
 	_build_info_panel()
 	_build_event_panel()
@@ -80,6 +81,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_update_day_clock()  # also reflects pause and speed, which emit no signal
 	_update_minimap_camera()
 	_update_toast_fade(delta)
 
@@ -110,6 +112,8 @@ func _connect_signals() -> void:
 	EventBus.ranges_changed.connect(_on_ranges_changed)
 	EventBus.logistics_lens_changed.connect(_on_logistics_lens_changed)
 	Localization.locale_changed.connect(_on_locale_changed)
+	EventBus.day_timer_updated.connect(func(_left: float) -> void: _update_day_clock())
+	EventBus.phase_changed.connect(func(_phase: String) -> void: _update_day_clock())
 
 
 # ===========================================================
@@ -184,8 +188,91 @@ func _bar_rich_label() -> RichTextLabel:
 	return label
 
 
+# ===========================================================
+# DAY CLOCK (top centre) — which day it is and how long until the evening Desk
+# ===========================================================
+
+var _clock_panel: PanelContainer
+var _clock_day: Label
+var _clock_bar: ProgressBar
+var _clock_left: Label
+
+
+func _build_day_clock() -> void:
+	_clock_panel = PanelContainer.new()
+	_clock_panel.anchor_left = 0.5
+	_clock_panel.anchor_right = 0.5
+	_clock_panel.offset_left = -190
+	_clock_panel.offset_right = 190
+	_clock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_clock_panel.tooltip_text = Localization.ru_en("Пробел — пауза · 1 / 2 / 3 — скорость", "Space — pause · 1 / 2 / 3 — speed")
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.10, 0.09, 0.08, 0.88)
+	style.border_color = Color(0.55, 0.5, 0.35, 0.8)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(5)
+	style.set_content_margin_all(6)
+	_clock_panel.add_theme_stylebox_override("panel", style)
+	add_child(_clock_panel)
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_clock_panel.add_child(row)
+
+	_clock_day = Label.new()
+	_clock_day.add_theme_font_size_override("font_size", 14)
+	_clock_day.add_theme_color_override("font_color", Color(0.98, 0.93, 0.75))
+	_clock_day.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(_clock_day)
+
+	_clock_bar = ProgressBar.new()
+	_clock_bar.min_value = 0.0
+	_clock_bar.max_value = 1.0
+	_clock_bar.show_percentage = false
+	_clock_bar.custom_minimum_size = Vector2(110, 10)
+	_clock_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_clock_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_clock_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(_clock_bar)
+
+	_clock_left = Label.new()
+	_clock_left.add_theme_font_size_override("font_size", 12)
+	_clock_left.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(_clock_left)
+	_update_day_clock()
+
+
+func _update_day_clock() -> void:
+	if _clock_day == null:
+		return
+	_clock_panel.visible = SimulationRunner.run_active
+	_clock_day.text = "%s %d" % [Localization.ru_en("День", "Day"), SimulationRunner.day_count]
+	var duration: float = maxf(SimulationRunner.day_duration, 1.0)
+	_clock_bar.value = clampf(1.0 - SimulationRunner.day_timer / duration, 0.0, 1.0)
+	var text: String
+	var color := Color(0.85, 0.85, 0.8)
+	if SimulationRunner.current_phase == SimulationRunner.Phase.EVENING:
+		text = Localization.ru_en("Вечер — Стол администратора", "Evening — the Administrator's Desk")
+		_clock_bar.value = 1.0
+	elif SimulationRunner.paused:
+		text = Localization.ru_en("⏸ Пауза (Пробел)", "⏸ Paused (Space)")
+		color = Color(0.95, 0.8, 0.3)
+	else:
+		# Real seconds until the evening Desk at the current speed.
+		var left: int = int(ceil(maxf(SimulationRunner.day_timer, 0.0) / maxf(SimulationRunner.speed_scale, 0.1)))
+		text = "%s %d:%02d · ×%d" % [Localization.ru_en("до вечера", "evening in"), left / 60, left % 60, int(SimulationRunner.speed_scale)]
+		if left <= 30:
+			color = Color(0.95, 0.65, 0.35)
+	_clock_left.text = text
+	_clock_left.add_theme_color_override("font_color", color)
+
+
 func _position_below_resource_bar() -> void:
 	var bottom: float = _resource_bar.position.y + _resource_bar.size.y
+	if _clock_panel:
+		_clock_panel.offset_top = bottom + 6.0
+		_clock_panel.offset_bottom = bottom + 6.0
 	if _build_panel:
 		_build_panel.offset_top = bottom + 4.0
 	if _minimap_panel:

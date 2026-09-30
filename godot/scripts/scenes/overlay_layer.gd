@@ -4,6 +4,7 @@ extends Node2D
 const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules.gd")
 
 var _selected: Vector2i = Vector2i(-9999, -9999)
+var _hover: Vector2i = Vector2i(-9999, -9999)  # cell under the pointer (inspection mode only)
 var _build_preview: String = ""
 var _show_ranges: bool = false
 var _show_logistics: bool = false
@@ -63,9 +64,12 @@ func _draw() -> void:
 	_draw_diagnostic_pins()
 
 	# Selection highlight
+	# The highlight is the cell's own hexagon, never a circle: it must not spill onto neighbours.
+	if _hover != Vector2i(-9999, -9999) and _hover != _selected and _build_preview == "":
+		_draw_cell_outline(_hover, Color(1.0, 0.97, 0.88, 0.45), 1.5, Color(1.0, 1.0, 1.0, 0.05))
 	if _selected != Vector2i(-9999, -9999):
 		var center: Vector2 = HexCoords.axial_to_pixel(_selected)
-		draw_arc(center, HexCoords.HEX_SIZE * 0.9, 0.0, TAU, 32, Color.WHITE, 2.0)
+		_draw_cell_outline(_selected, Color(1.0, 0.95, 0.75, 0.95), 2.0, Color(1.0, 0.95, 0.75, 0.10))
 
 		# Range display for selected building
 		if _show_ranges:
@@ -389,13 +393,43 @@ func _hex_polygon(hex_size: float) -> PackedVector2Array:
 
 
 func _draw_preview_hex(center: Vector2, color: Color) -> void:
+	# Same footprint as the cell: a light wash so the ground stays readable, a solid edge.
 	var pts := PackedVector2Array()
-	for p: Vector2 in _hex_polygon(HexCoords.HEX_SIZE * 0.84):
+	for p: Vector2 in _hex_polygon(HexCoords.HEX_SIZE * 0.97):
 		pts.append(center + p)
-	draw_colored_polygon(pts, color)
-	draw_polyline(pts, color.lerp(Color.WHITE, 0.35), 2.0)
+	var wash := color
+	wash.a = minf(color.a, 0.28)
+	draw_colored_polygon(pts, wash)
+	var edge := color
+	edge.a = 0.95
+	draw_polyline(pts, Color(0.1, 0.08, 0.06, 0.7), 4.0)
+	draw_polyline(pts, edge, 2.0)
+
+
+func _draw_cell_outline(coord: Vector2i, edge: Color, width: float, fill: Color) -> void:
+	var center: Vector2 = HexCoords.axial_to_pixel(coord)
+	var pts := PackedVector2Array()
+	for p: Vector2 in _hex_polygon(HexCoords.HEX_SIZE * 0.97):
+		pts.append(center + p)
+	draw_colored_polygon(pts, fill)
+	draw_polyline(pts, Color(0.1, 0.08, 0.06, 0.55 * edge.a), width + 2.0)
+	draw_polyline(pts, edge, width)
 
 
 func _process(_delta: float) -> void:
+	_update_hover()
 	if _has_blinking_pin or _build_preview != "" or _show_ranges or _show_logistics:
+		queue_redraw()
+
+
+func _update_hover() -> void:
+	var hover := Vector2i(-9999, -9999)
+	var scene: Node = get_tree().current_scene
+	# main.gd already knows whether the pointer is over the world ("" = over UI).
+	if _hex_grid != null and scene != null and (scene.get("_cursor_kind") as String) != "":
+		var coord: Vector2i = HexCoords.pixel_to_axial(get_global_mouse_position())
+		if _hex_grid.is_valid(coord):
+			hover = coord
+	if hover != _hover:
+		_hover = hover
 		queue_redraw()
