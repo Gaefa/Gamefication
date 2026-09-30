@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Mandate Cities"
-config/version="0.1.1"
+config/version="0.1.2"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 
@@ -34,6 +34,7 @@ EventLogPanel="*res://scripts/autoload/event_log_panel.gd"
 SeasonPanel="*res://scripts/autoload/season_panel.gd"
 WaterPanel="*res://scripts/autoload/water_panel.gd"
 OnboardingManager="*res://scripts/autoload/onboarding_manager.gd"
+TutorialManager="*res://scripts/autoload/tutorial_manager.gd"
 SaveService="*res://scripts/autoload/save_service.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
 Localization="*res://scripts/autoload/localization.gd"

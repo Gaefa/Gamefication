@@ -866,6 +866,7 @@ func _rebuild_building_list() -> void:
 		btn.add_theme_font_size_override("font_size", 12)
 		btn.tooltip_text = Localization.content_text(def, "description", "")
 		btn.pressed.connect(_on_build_button.bind(type_id))
+		btn.set_meta("type_id", type_id)  # lets the tutorial point at this button
 		_build_vbox.add_child(btn)
 
 		# Key effect wraps within the menu instead of widening the scroll content.
@@ -1522,6 +1523,13 @@ func _build_main_menu_options(container: Control) -> void:
 	btn_continue.pressed.connect(_on_continue_pressed)
 	container.add_child(btn_continue)
 
+	var tutorial_box := CheckBox.new()
+	tutorial_box.text = Localization.ru_en("Обучение: первые пять минут под руководством", "Tutorial: a guided first five minutes")
+	tutorial_box.button_pressed = TutorialManager.enabled_for_next_run
+	tutorial_box.add_theme_font_size_override("font_size", 12)
+	tutorial_box.toggled.connect(func(on: bool) -> void: TutorialManager.enabled_for_next_run = on)
+	container.add_child(tutorial_box)
+
 	# Language right on the menu: testers pick it before the first letter arrives.
 	var lang_row := HBoxContainer.new()
 	lang_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -1660,6 +1668,7 @@ func _start_new_run(profile_id: String) -> void:
 	if main_node and main_node.has_method("start_new_run"):
 		main_node.call("start_new_run", profile_id)
 	_close_start_panel()
+	TutorialManager.on_run_started()
 	_update_resource_bar()
 	_rebuild_building_list()
 	_info_label.text = _get_welcome_text()

@@ -5,6 +5,7 @@ const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules
 
 var _selected: Vector2i = Vector2i(-9999, -9999)
 var _hover: Vector2i = Vector2i(-9999, -9999)  # cell under the pointer (inspection mode only)
+var _tutorial_cells: Array = []  # cells the tutorial asks the player to click
 var _build_preview: String = ""
 var _show_ranges: bool = false
 var _show_logistics: bool = false
@@ -64,6 +65,17 @@ func _draw() -> void:
 	_draw_diagnostic_pins()
 
 	# Selection highlight
+	# Tutorial targets: a pulsing gold hexagon and an arrow pointing down at the cell.
+	if not _tutorial_cells.is_empty():
+		var pulse: float = 0.55 + 0.45 * absf(sin(float(Time.get_ticks_msec()) / 300.0))
+		var bob: float = 5.0 * sin(float(Time.get_ticks_msec()) / 220.0)
+		for cell: Variant in _tutorial_cells:
+			var coord: Vector2i = cell as Vector2i
+			_draw_cell_outline(coord, Color(1.0, 0.85, 0.35, pulse), 3.0, Color(1.0, 0.85, 0.35, 0.16 * pulse))
+			var tip: Vector2 = HexCoords.axial_to_pixel(coord) + Vector2(0.0, -34.0 + bob)
+			draw_colored_polygon(PackedVector2Array([tip + Vector2(-9, -16), tip + Vector2(9, -16), tip]), Color(1.0, 0.85, 0.35, 0.95))
+			draw_polyline(PackedVector2Array([tip + Vector2(-9, -16), tip + Vector2(9, -16), tip, tip + Vector2(-9, -16)]), Color(0.1, 0.08, 0.06, 0.8), 1.5)
+
 	# The highlight is the cell's own hexagon, never a circle: it must not spill onto neighbours.
 	if _hover != Vector2i(-9999, -9999) and _hover != _selected and _build_preview == "":
 		_draw_cell_outline(_hover, Color(1.0, 0.97, 0.88, 0.45), 1.5, Color(1.0, 1.0, 1.0, 0.05))
@@ -416,9 +428,14 @@ func _draw_cell_outline(coord: Vector2i, edge: Color, width: float, fill: Color)
 	draw_polyline(pts, edge, width)
 
 
+func set_tutorial_cells(cells: Array) -> void:
+	_tutorial_cells = cells
+	queue_redraw()
+
+
 func _process(_delta: float) -> void:
 	_update_hover()
-	if _has_blinking_pin or _build_preview != "" or _show_ranges or _show_logistics:
+	if not _tutorial_cells.is_empty() or _has_blinking_pin or _build_preview != "" or _show_ranges or _show_logistics:
 		queue_redraw()
 
 
