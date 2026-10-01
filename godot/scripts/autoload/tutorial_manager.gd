@@ -32,6 +32,7 @@ var _title: Label
 var _text: RichTextLabel
 var _next_btn: Button
 var _skip_btn: Button
+var _hint: Label
 var _target_rect: Rect2 = Rect2()
 var _has_target: bool = false
 
@@ -196,8 +197,8 @@ func _make_steps() -> Array[Dictionary]:
 			"top": true,
 		},
 		{
-			"text": t.call("Дальше сами. [b]H[/b] — справка, [b]C[/b] — вода, [b]K[/b] — сезон и прогноз, [b]N[/b] — журнал ваших ответов. Значок над зданием — кликните по нему.\n\nУдачи, администратор.",
-				"You are on your own now. [b]H[/b] — help, [b]C[/b] — water, [b]K[/b] — season and forecast, [b]N[/b] — log of your answers. An icon over a building — click it.\n\nGood luck, administrator."),
+			"text": t.call("Дальше сами. Слева под картой — [b]цели[/b] и кнопки панелей: [b]Q[/b] вода, [b]E[/b] сезон и прогноз, [b]T[/b] журнал ваших ответов, [b]H[/b] справка. Значок над зданием — кликните по нему.\n\nУдачи, администратор.",
+				"You are on your own now. Under the minimap on the left are your [b]goals[/b] and the panel buttons: [b]Q[/b] water, [b]E[/b] season and forecast, [b]T[/b] log of your answers, [b]H[/b] help. An icon over a building — click it.\n\nGood luck, administrator."),
 			"top": true,
 			"last": true,
 		},
@@ -224,15 +225,28 @@ func _show_step() -> void:
 	_layer.visible = true
 	_title.text = "%s · %d / %d" % [Localization.ru_en("Обучение", "Tutorial"), _index + 1, _steps.size()]
 	_text.text = step.get("text", "") as String
-	_next_btn.visible = not step.has("done")
-	_next_btn.text = Localization.ru_en("Играть", "Play") if (step.get("last", false) as bool) else Localization.ru_en("Дальше", "Next")
+	# The right-hand button is always there: "Дальше" on reading steps, "Пропустить шаг" on
+	# action steps — so a player who can't (or won't) do the action is never stuck.
+	var is_action: bool = step.has("done")
+	_next_btn.visible = true
+	_next_btn.flat = is_action
+	if step.get("last", false) as bool:
+		_next_btn.text = Localization.ru_en("Играть", "Play")
+	elif is_action:
+		_next_btn.text = Localization.ru_en("Пропустить шаг →", "Skip this step →")
+	else:
+		_next_btn.text = Localization.ru_en("Дальше", "Next")
+	_hint.visible = is_action
+	_hint.text = Localization.ru_en("▶ Сделайте это в игре — шаг засчитается сам.", "▶ Do it in the game — the step completes by itself.")
 	_skip_btn.text = Localization.ru_en("Пропустить обучение", "Skip tutorial")
 	_skip_btn.visible = not (step.get("last", false) as bool)
 	_update_target(step)
 
 
 func _finish(completed: bool) -> void:
-	if completed or active:
+	# Only a tutorial played to the end is remembered as done. Skipping leaves the menu
+	# box ticked, so the next "Новая игра" starts it from step one again.
+	if completed:
 		_save_done()
 		enabled_for_next_run = false
 	if _paused_by_us and SimulationRunner.current_phase == SimulationRunner.Phase.DAY and not SimulationRunner.card_open:
@@ -415,7 +429,7 @@ func _build_ui() -> void:
 	_bubble.add_child(box)
 
 	_title = Label.new()
-	_title.add_theme_font_size_override("font_size", 11)
+	_title.add_theme_font_size_override("font_size", 12)
 	_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
 	box.add_child(_title)
 
@@ -429,12 +443,18 @@ func _build_ui() -> void:
 	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(_text)
 
+	_hint = Label.new()
+	_hint.add_theme_font_size_override("font_size", 12)
+	_hint.add_theme_color_override("font_color", Color(0.6, 0.9, 0.6))
+	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(_hint)
+
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	box.add_child(row)
 	_skip_btn = Button.new()
 	_skip_btn.flat = true
-	_skip_btn.add_theme_font_size_override("font_size", 11)
+	_skip_btn.add_theme_font_size_override("font_size", 12)
 	_skip_btn.pressed.connect(func() -> void: _finish(false))
 	row.add_child(_skip_btn)
 	var spacer := Control.new()

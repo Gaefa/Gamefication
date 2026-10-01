@@ -29,13 +29,13 @@ func _on_locale_changed(_locale: String) -> void:
 
 func _apply_static_text() -> void:
 	_title.text = Localization.ru_en("СЕЗОН И ПРОГНОЗ", "SEASON AND FORECAST")
-	_close_btn.text = Localization.ru_en("Закрыть (K)", "Close (K)")
+	_close_btn.text = Localization.ru_en("Закрыть (E)", "Close (E)")
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var ke := event as InputEventKey
-		if ke.pressed and not ke.echo and (ke.keycode == KEY_K or ke.physical_keycode == KEY_K):
+		if ke.pressed and not ke.echo and (ke.keycode == KEY_E or ke.physical_keycode == KEY_E or ke.keycode == KEY_K or ke.physical_keycode == KEY_K):
 			if SimulationRunner.paused and not _visible:
 				return
 			_toggle()

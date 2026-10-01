@@ -26,7 +26,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var ke := event as InputEventKey
-		if ke.pressed and not ke.echo and (ke.keycode == KEY_J or ke.physical_keycode == KEY_J):
+		if ke.pressed and not ke.echo and (ke.keycode == KEY_Y or ke.physical_keycode == KEY_Y or ke.keycode == KEY_J or ke.physical_keycode == KEY_J):
 			# Не открываем поверх Стола/кризиса/финала (они ставят паузу).
 			if SimulationRunner.paused and not _panel_visible:
 				return
@@ -90,7 +90,7 @@ func _discover(frag: Dictionary) -> void:
 		return
 	discovered.append(fid)
 	EventBus.diary_fragment_found.emit(fid)
-	EventBus.toast_requested.emit(Localization.ru_en("Найден фрагмент дневника прежнего администратора (J)", "Found a fragment of the previous administrator's diary (J)"), 5.0)
+	EventBus.toast_requested.emit(Localization.ru_en("Найден фрагмент дневника прежнего администратора (Y)", "Found a fragment of the previous administrator's diary (Y)"), 5.0)
 	if _panel_visible:
 		_rebuild_list()
 
@@ -170,7 +170,7 @@ func _rebuild_list() -> void:
 	for child: Node in _list.get_children():
 		child.queue_free()
 	_title.text = Localization.ru_en("ДНЕВНИК ПРЕЖНЕГО АДМИНИСТРАТОРА", "THE PREVIOUS ADMINISTRATOR'S DIARY")
-	_close_btn.text = Localization.ru_en("Закрыть (J)", "Close (J)")
+	_close_btn.text = Localization.ru_en("Закрыть (Y)", "Close (Y)")
 	var discovered: Array = GameStateStore.diary().get("discovered", []) as Array
 	if discovered.is_empty():
 		var empty := Label.new()

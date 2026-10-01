@@ -14,7 +14,19 @@ const CATEGORIES := {
 	"Production": "production", "Commercial": "commercial",
 	"Culture": "culture", "Advanced": "advanced",
 }
+## One hue per meaning, used wherever the icon appears (HUD chips, pressure gauges, map
+## badges), so "blue = water, green = food" reads without looking at the shape.
+const COLORS := {
+	"money": Color("e6c14a"), "food": Color("86c45a"), "water": Color("5fb0ee"),
+	"wood": Color("c8935c"), "stone": Color("b9b9c4"), "tools": Color("e0916a"),
+	"people": Color("e8c9a0"), "mandate": Color("d9c27a"), "power": Color("f2d84b"),
+	"storage": Color("c9a36b"), "residential": Color("e8c9a0"),
+}
 static var _cache: Dictionary = {}
+
+
+static func color(icon: String) -> Color:
+	return COLORS.get(icon, Color(0.96, 0.95, 0.92)) as Color
 
 
 static func texture(icon: String, folder: String = "icons") -> Texture2D:

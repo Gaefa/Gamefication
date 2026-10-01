@@ -81,7 +81,10 @@ func _draw() -> void:
 		_draw_cell_outline(_hover, Color(1.0, 0.97, 0.88, 0.45), 1.5, Color(1.0, 1.0, 1.0, 0.05))
 	if _selected != Vector2i(-9999, -9999):
 		var center: Vector2 = HexCoords.axial_to_pixel(_selected)
-		_draw_cell_outline(_selected, Color(1.0, 0.95, 0.75, 0.95), 2.0, Color(1.0, 0.95, 0.75, 0.10))
+		# A building draws its own frame in BuildingLayer (behind the sprite); here only
+		# empty cells and roads get the outline, so nothing is drawn across a building.
+		if not _has_sprite_building(_selected):
+			_draw_cell_outline(_selected, Color(1.0, 0.95, 0.75, 0.95), 2.0, Color(1.0, 0.95, 0.75, 0.10))
 
 		# Range display for selected building
 		if _show_ranges:
@@ -416,6 +419,15 @@ func _draw_preview_hex(center: Vector2, color: Color) -> void:
 	edge.a = 0.95
 	draw_polyline(pts, Color(0.1, 0.08, 0.06, 0.7), 4.0)
 	draw_polyline(pts, edge, 2.0)
+
+
+func _has_sprite_building(coord: Vector2i) -> bool:
+	var bld: Dictionary = GameStateStore.get_building(coord)
+	if bld.is_empty():
+		return false
+	var type_id: String = bld.get("type", "") as String
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	return not _is_road_building(type_id, def) and not (def.get("sprites_by_level", []) as Array).is_empty()
 
 
 func _draw_cell_outline(coord: Vector2i, edge: Color, width: float, fill: Color) -> void:

@@ -18,6 +18,7 @@
     "tags": ["landmark"]
   },
   "bld_source_tower_restored": {
+    "badge": "water",
     "name": "Башня Истока (восстановлена)",
     "name_en": "Source Tower (restored)",
     "description": "Старую башню подлатали и снова подключили к сети. Держит покрытие и напор воды в центре района — теперь это не память, а рабочий узел.",
@@ -54,6 +55,7 @@
     "tags": ["landmark"]
   },
   "bld_solar_panel": {
+    "badge": "power",
     "name": "Солнечная панель",
     "name_en": "Solar Panel",
     "description": "В Окно кормит город током. В Пыль зарастает пылью и слабеет вдвое — тогда света на всех не хватает.",
@@ -73,6 +75,7 @@
     "tags": ["power_source", "solar", "needs_road"]
   },
   "bld_generator": {
+    "badge": "power",
     "name": "Генератор",
     "name_en": "Generator",
     "description": "Жрёт топливо и деньги, зато ровно гудит даже в бурю — свет не зависит от солнца.",
@@ -92,6 +95,7 @@
     "tags": ["power_source", "needs_road"]
   },
   "bld_admin_post": {
+    "badge": "mandate",
     "name": "Пост администрации",
     "name_en": "Administration Post",
     "description": "Здание администрации, где принимаются решения. Обязательно.",
@@ -126,6 +130,7 @@
     "tags": ["admin", "core"]
   },
   "bld_main_cistern": {
+    "badge": "water",
     "name": "Главная Цистерна",
     "name_en": "Main Cistern",
     "description": "Хранилище основного запаса воды города. Само по себе не дает покрытие водой домам.",
@@ -193,6 +198,7 @@
     "tags": ["road"]
   },
   "bld_warehouse": {
+    "badge": "storage",
     "name": "Склад",
     "name_en": "Warehouse",
     "description": "Центр хранения всех базовых ресурсов.",
@@ -227,6 +233,7 @@
     "tags": ["storage"]
   },
   "bld_shelter": {
+    "badge": "people",
     "name": "Жилой барак",
     "name_en": "Shelter",
     "description": "Укрытие для жителей. Потребляет еду и воду.",
@@ -271,6 +278,7 @@
     "tags": ["housing", "needs_road"]
   },
   "bld_well_pump": {
+    "badge": "water",
     "name": "Колодец-насос",
     "name_en": "Well Pump",
     "description": "Добывает воду из глубинных слоев, пополняет запас воды и дает покрытие водой ближайшему жилью.",
@@ -309,6 +317,7 @@
     "tags": ["water_source", "needs_road"]
   },
   "bld_field_strip": {
+    "badge": "food",
     "name": "Пылевая грядка",
     "name_en": "Dust Plot",
     "description": "Выращивает базовую еду для города.",
@@ -345,6 +354,7 @@
     "tags": ["food_source", "needs_road"]
   },
   "bld_lumber_yard": {
+    "badge": "wood",
     "name": "Лесной двор",
     "name_en": "Lumber Yard",
     "description": "Добыча древесины.",
@@ -381,6 +391,7 @@
     "tags": ["production", "needs_road"]
   },
   "bld_quarry_pit": {
+    "badge": "stone",
     "name": "Каменный карьер",
     "name_en": "Stone Quarry",
     "description": "Добыча камня.",
@@ -417,6 +428,7 @@
     "tags": ["production", "needs_road"]
   },
   "bld_tool_workshop": {
+    "badge": "tools",
     "name": "Мастерская инструментов",
     "name_en": "Tool Workshop",
     "description": "Производство инструментов из дерева и камня.",

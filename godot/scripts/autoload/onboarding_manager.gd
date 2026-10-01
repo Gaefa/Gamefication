@@ -18,15 +18,15 @@ const HINTS := {
 		"Now a \"Well Pump\" by the road: it gives water within 4 tiles (V shows the range). A second pump is a second reserve for the Dust."],
 	"build_shelter": ["«Жильё» → «Барак» в зоне воды — приедут жители. Барак без воды пустует. Кликните по зданию — увидите, чего ему не хватает.",
 		"\"Residential\" → \"Shelter\" inside the water zone, and residents will arrive. A shelter without water stays empty. Click a building to see what it lacks."],
-	"first_desk": ["Так будет каждый вечер: письма и обращения на Столе, последствия — при наведении на ответ. Всё, что вы ответили, хранится в журнале (N).",
-		"This happens every evening: letters and petitions on the Desk; hover an answer to see its consequences. Everything you answered is kept in the log (N)."],
+	"first_desk": ["Так будет каждый вечер: письма и обращения на Столе, последствия — при наведении на ответ. Всё, что вы ответили, хранится в журнале (T).",
+		"This happens every evening: letters and petitions on the Desk; hover an answer to see its consequences. Everything you answered is kept in the log (T)."],
 	# --- Contextual: fire on the first occurrence of the situation ---
 	"water_days": ["Вверху — «Воды на N дней»: сколько город протянет при текущем расходе. Не дайте упасть к нулю, особенно перед Пылью.",
 		"At the top, \"Water for N days\": how long the city lasts at current use. Don't let it hit zero, especially before the Dust."],
 	"building_problem": ["Над зданием значок проблемы. Кликните по зданию — игра покажет причину, но чинить решаете вы.",
 		"A problem icon over a building. Click it and the game shows the cause; the fix is up to you."],
-	"season_dust": ["Сезон Пыли: воды уходит больше, урожай падает. Нажмите K — там прогноз и чек-лист готовности. J — дневник прежнего администратора.",
-		"Dust season: water goes faster, harvests drop. Press K for the forecast and readiness checklist. J opens the previous administrator's diary."],
+	"season_dust": ["Сезон Пыли: воды уходит больше, урожай падает. Нажмите E — там прогноз и чек-лист готовности. Y — дневник прежнего администратора.",
+		"Dust season: water goes faster, harvests drop. Press E for the forecast and readiness checklist. Y opens the previous administrator's diary."],
 }
 
 ## The first-session chain in order, with the building count that completes each step
@@ -109,6 +109,15 @@ func _offer(hint_id: String) -> void:
 func _flush() -> void:
 	if _active != "" or _queue.is_empty():
 		return
+	# The guided tutorial already taught the chain steps hands-on: drop them unseen.
+	if TutorialManager.ran_this_run:
+		for step: Dictionary in CHAIN:
+			var chain_id: String = step.get("id", "") as String
+			if _queue.has(chain_id):
+				_queue.erase(chain_id)
+				_mark_shown(chain_id)
+		if _queue.is_empty():
+			return
 	if SimulationRunner.paused or suppressed or TutorialManager.active:
 		return  # don't pop a hint over the desk / crisis / finale / start menu
 	_active = _queue.pop_front()
@@ -175,7 +184,7 @@ func _build_ui() -> void:
 
 	_head = Label.new()
 	var head := _head
-	head.add_theme_font_size_override("font_size", 11)
+	head.add_theme_font_size_override("font_size", 12)
 	head.add_theme_color_override("font_color", Color(0.7, 0.66, 0.5))
 	vbox.add_child(head)
 

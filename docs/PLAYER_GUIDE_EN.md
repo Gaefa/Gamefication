@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.1.2 — "Rust Pit" test build (September 2026). A run takes 20–40 minutes.
+Version 0.1.3 — "Rust Pit" test build (September 2026). A run takes 20–40 minutes.
 
 ## How to run
 
@@ -34,7 +34,11 @@ The ending screen explains why things ended the way they did: the two masters, t
 
 1. **Day.** Build, repair, watch the map. Time runs; you can pause (Space) and change speed (1 / 2 / 3).
 2. **Evening — the Administrator's Desk.** The game pauses and the secretary lays out patron letters and resident petitions. **Hover over an answer to see its consequences** (trust, support, resources, pressure). Choose. Urgent items (audit, ultimatum) arrive in the middle of the day.
-3. **Morning.** Your decisions take effect. Everything you answered is in the log (N).
+3. **Morning.** Your decisions take effect. Everything you answered is in the log (T).
+
+## Goals and panels
+
+Under the minimap on the left is your list of **goals**: days until the Dust, the audit targets with check marks (water, food, mood), the grant contest with the neighboring district, and the day you must reach. Below it are the panel buttons: Water (Q), Season (E), Log (T), Diary (Y), Help (H). Coloured badges over buildings show what each is for: a drop for water, a bolt for power, a crate for storage, a sprout for food.
 
 ## What you see at the top
 
@@ -50,11 +54,11 @@ This is the main thing to understand in the game:
 
 | Value | What it is | Where to see it | How to fix it |
 |---|---|---|---|
-| **Reserve** | how much water is in the Cistern | "Water for N days" at the top, panel C | more pumps, Cistern upgrade, rationing |
-| **Coverage** | whether water reaches a house | ranges (V), panel C, "droplet" pin over a house | a pump closer to the house |
-| **Pressure** | whether there is enough head | panel C, "P" pin over a house | house is far from the pump or the pump feeds too many houses — build a second pump |
+| **Reserve** | how much water is in the Cistern | "Water for N days" at the top, the Water panel (Q) | more pumps, Cistern upgrade, rationing |
+| **Coverage** | whether water reaches a house | ranges (V), the Water panel (Q), "droplet" pin over a house | a pump closer to the house |
+| **Pressure** | whether there is enough head | the Water panel (Q), "P" pin over a house | house is far from the pump or the pump feeds too many houses — build a second pump |
 
-You can have plenty of reserve and the far block still sits without water. Panel **C** tells you which of the three is failing.
+You can have plenty of reserve and the far block still sits without water. The **Water panel (Q)** tells you which of the three is failing.
 
 ## Icons over buildings
 
@@ -76,10 +80,10 @@ Starting objects: administration post, the Main Cistern, warehouse, pump, shelte
 | Key | What |
 |---|---|
 | **H** | in-game help |
-| **C** | water: reserve, coverage, pressure |
-| **K** | season and forecast, Dust readiness checklist |
-| **J** | previous administrator's diary (found during play) |
-| **N** | log of your answers to letters and petitions |
+| **Q** | water: reserve, coverage, pressure |
+| **E** | season and forecast, Dust readiness checklist |
+| **T** | log of your answers to letters and petitions |
+| **Y** | previous administrator's diary (found during play) |
 | **G** | governance (policies) |
 | **O** | options, language |
 | **V** | water and power ranges |
