@@ -1113,6 +1113,12 @@ func _build_build_mode_info_text(type_id: String) -> String:
 	var effect: String = _format_key_effect(ldata)
 	if effect != "":
 		lines.append("%s: %s" % [Localization.t("ui.meta.effects", "Effects"), effect])
+	# What to put it next to (or keep it away from) — before the generic hints, so it is
+	# visible without scrolling.
+	var orch_adj := _get_orchestrator()
+	if orch_adj != null:
+		for rule: Dictionary in orch_adj.adjacency.rules_for_type(type_id):
+			lines.append("• " + Localization.content_text(rule, "description", ""))
 
 	var req_level: int = def.get("unlock_level", 1) as int
 	if (GameStateStore.progression().city_level as int) < req_level:
@@ -1278,6 +1284,12 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	var flow_text: String = _build_flow_diagnostics(coord, type_id, def, ldata, bld)
 	if flow_text != "":
 		text += flow_text + "\n"
+
+	# Neighbour rules in force for this building.
+	var orch_adj := _get_orchestrator()
+	if orch_adj != null:
+		for entry: Dictionary in orch_adj.adjacency.active_rules(coord, type_id):
+			text += "%s: %s\n" % [Localization.ru_en("Соседство", "Neighbours"), Localization.content_text(entry.rule as Dictionary, "description", "")]
 
 	# --- Problem ---
 	if bld.get("damaged", false) as bool:

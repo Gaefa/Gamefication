@@ -19,6 +19,9 @@ const PRESSURE_CAPACITY_PER_LEVEL := 2 # each source upgrade serves this many mo
 const PRESSURE_MIN := 0.3
 
 
+var _adjacency := AdjacencyCalculator.new()
+
+
 func _init(spatial: SpatialIndex, hex_grid: HexGrid) -> void:
 	_spatial = spatial
 	_hex_grid = hex_grid
@@ -164,6 +167,9 @@ func _rebuild_water_pressure(sources: Array[Dictionary]) -> void:
 		var capacity: int = PRESSURE_CAPACITY_BASE + PRESSURE_CAPACITY_PER_LEVEL * (src.level as int)
 		var load_factor: float = minf(1.0, float(capacity) / float(demand[idx]))
 		_water_pressure[coord] = clampf(dist_factor * load_factor, PRESSURE_MIN, 1.0)
+		# Housing right at the Cistern fills its buckets first (synergies.json).
+		if _adjacency.value_at(coord, GameStateStore.get_building(coord).get("type", "") as String, "full_pressure") > 0.0:
+			_water_pressure[coord] = 1.0
 
 
 func _consumes_water(coord: Vector2i) -> bool:

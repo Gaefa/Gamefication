@@ -198,7 +198,29 @@ func _is_already_pending(event_id: String) -> bool:
 func _on_phase_changed(new_phase: String) -> void:
 	if new_phase == "evening":
 		# Передаём накопленные события в DeskUI
-		EventBus.evening_started.emit(pending_events.duplicate())
+		EventBus.evening_started.emit(_evening_mail())
+
+
+const MAX_CARDS_PER_EVENING := 3
+
+
+## Tonight's mail: at most three cards, crises first, then the patron's letters, then
+## petitions. Whatever does not fit stays in the queue for tomorrow, so a bad day never
+## buries the player under a stack of paper.
+func _evening_mail() -> Array:
+	var mail: Array = pending_events.duplicate()
+	mail.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return _mail_rank(a) < _mail_rank(b))  # stable enough: ranks differ by kind only
+	return mail.slice(0, MAX_CARDS_PER_EVENING)
+
+
+func _mail_rank(evt: Dictionary) -> int:
+	var id: String = evt.get("runtime_id", "") as String
+	if id.begins_with("crisis."):
+		return 0
+	if id.begins_with("patron.") or id.begins_with("rival."):
+		return 1
+	return 2
 
 
 func _on_option_selected(event_id: String, option_index: int, effects: Dictionary, cost: Dictionary) -> void:

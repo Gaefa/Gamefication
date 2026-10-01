@@ -1,1 +1,66 @@
-[]
+[
+  {
+    "id": "warehouse_lumber",
+    "pair": ["bld_warehouse", "bld_lumber_yard"],
+    "effects_b": {"res_wood": 0.1},
+    "max_stack": 1,
+    "description": "Лесной двор у склада: +10% дерева — возить ближе.",
+    "description_en": "Lumber yard next to a warehouse: +10% wood — a shorter haul."
+  },
+  {
+    "id": "warehouse_quarry",
+    "pair": ["bld_warehouse", "bld_quarry_pit"],
+    "effects_b": {"res_stone": 0.1},
+    "max_stack": 1,
+    "description": "Карьер у склада: +10% камня — возить ближе.",
+    "description_en": "Quarry next to a warehouse: +10% stone — a shorter haul."
+  },
+  {
+    "id": "warehouse_workshop",
+    "pair": ["bld_warehouse", "bld_tool_workshop"],
+    "effects_b": {"res_tools": 0.1},
+    "max_stack": 1,
+    "description": "Мастерская у склада: +10% инструментов — материал под рукой.",
+    "description_en": "Workshop next to a warehouse: +10% tools — materials at hand."
+  },
+  {
+    "id": "warehouse_field",
+    "pair": ["bld_warehouse", "bld_field_strip"],
+    "effects_b": {"res_food": 0.1},
+    "max_stack": 1,
+    "description": "Грядка у склада: +10% еды — урожай не лежит на жаре.",
+    "description_en": "Field next to a warehouse: +10% food — the harvest does not sit in the heat."
+  },
+  {
+    "id": "pump_field",
+    "pair": ["bld_well_pump", "bld_field_strip"],
+    "effects_b": {"res_food": 0.15},
+    "max_stack": 1,
+    "description": "Грядка у насоса: +15% еды — полив без потерь.",
+    "description_en": "Field next to a pump: +15% food — watering without losses."
+  },
+  {
+    "id": "quarry_shelter",
+    "pair": ["bld_quarry_pit", "bld_shelter"],
+    "mood_b": -3,
+    "description": "Барак у карьера: −3 к счастью за каждый карьер — пыль и грохот.",
+    "description_en": "Shelter next to a quarry: −3 mood per quarry — dust and noise."
+  },
+  {
+    "id": "tower_shelter",
+    "pair": ["bld_source_tower", "bld_shelter"],
+    "mood_b": 2,
+    "max_stack": 1,
+    "description": "Барак у старой Башни Истока: +2 к счастью — район помнит башню.",
+    "description_en": "Shelter next to the old Source Tower: +2 mood — the district remembers the tower."
+  },
+  {
+    "id": "cistern_shelter",
+    "pair": ["bld_main_cistern", "bld_shelter"],
+    "full_pressure_b": 1,
+    "water_queue_b": 0.15,
+    "max_stack": 1,
+    "description": "Барак у Цистерны: напор всегда полный, но очередь у цистерны растёт — давление «вода» копится на 15% быстрее.",
+    "description_en": "Shelter next to the Cistern: always full pressure, but the queue at the cistern grows — the water pressure builds 15% faster."
+  }
+]

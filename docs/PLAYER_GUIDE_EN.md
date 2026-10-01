@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.1.4 — "Rust Pit" test build (September 2026). A run takes 20–40 minutes.
+Version 0.1.5 — "Rust Pit" test build (September 2026). A run takes 20–40 minutes.
 
 ## How to run
 
@@ -74,6 +74,20 @@ Click a building — at the bottom left the game names **the one main cause** of
 - **Solar Panel / Generator** — power. In the Dust, panels drop to half.
 
 Starting objects: administration post, the Main Cistern, warehouse, pump, shelter, plot, panel. Plus the legacy of the Clear Source Company: the old Source Tower (on day 8 you decide its fate), the Company office, and ruins along the dead pipeline (ruins can be salvaged for stone).
+
+## Neighbours
+
+What stands next to what matters. The rules are shown in a building's card when you pick it in the build menu, and in the card of a building already placed.
+
+| What is next to what | Effect |
+|---|---|
+| Lumber yard, quarry, workshop or field next to a warehouse | +10% output |
+| Field next to a pump | +15% food |
+| Shelter next to a quarry | −3 mood per quarry |
+| Shelter next to the old Source Tower | +2 mood |
+| Shelter next to the Main Cistern | always full pressure, but the water pressure builds 15% faster |
+
+No more than three papers land on the Desk in an evening: urgent matters first, then the patron's letters, then petitions. The rest arrives the next evening. The same petition does not return sooner than two days later.
 
 ## Panels and keys
 

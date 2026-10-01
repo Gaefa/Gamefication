@@ -45,6 +45,8 @@ func process_tick() -> void:
 			var gain: float = GAIN_PER_TICK * risk * gov
 			if dust and (cat == "food" or cat == "water"):
 				gain *= DUST_AMPLIFY
+			if cat == "water":
+				gain *= 1.0 + _water_queue()
 			value += gain
 		else:
 			value -= DECAY_PER_TICK
@@ -76,6 +78,15 @@ func _index_to_phase(index: float) -> String:
 		return "crisis"
 	else:
 		return "emergency"
+
+
+## Housing crowding the Cistern makes the queue there worse (synergies.json: water_queue).
+func _water_queue() -> float:
+	var adjacency := AdjacencyCalculator.new()
+	var total: float = 0.0
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		total += adjacency.value_at(coord, GameStateStore.get_building(coord).get("type", "") as String, "water_queue")
+	return total
 
 
 func _governance_factor() -> float:

@@ -8,7 +8,7 @@ extends Node
 ## Run: Godot --headless --fixed-fps 60 --path <proj> res://tools/loop_smoke.tscn
 ## Dev tool, not shipped.
 
-const SPEED := 5.0            # 5 ticks per sim second → a 300-tick day in 60 sim seconds
+var SPEED := 5.0              # 5 ticks per sim second → a 300-tick day in 60 sim seconds (override: -- speed=1)
 const MAX_DAY := 34
 const STUCK_FRAMES := 600     # 10 sim seconds paused with no desk and no finale → blocker
 
@@ -22,6 +22,9 @@ var _ending: String = ""
 
 func _ready() -> void:
 	SaveService.set("_autosave_timer", -1.0e12)  # never write over the player's real save slot
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("speed="):
+			SPEED = arg.trim_prefix("speed=").to_float()
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
 		_ending = "%s (%s)" % [eid, kind])
 	EventBus.evening_started.connect(func(events: Array) -> void:
