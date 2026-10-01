@@ -70,31 +70,31 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 	if directorate:
 		match score:
 			3:
-				verdict = "Комиссар кивнул и что-то отметил в планшете. «Порядок соблюдён. Директорат это учтёт.»"
-				verdict_en = "The Commissar nodded and noted something on his tablet. \"Order maintained. The Directorate will take note.\""
+				verdict = "Заключение комиссара: нормы выполнены, замечаний нет."
+				verdict_en = "Commissar's conclusion: the targets are met, no remarks."
 			2:
-				verdict = "Комиссар не поднял глаз. «Приемлемо. Но отклонения накапливаются, администратор.»"
-				verdict_en = "The Commissar didn't look up. \"Acceptable. But the deviations are adding up, administrator.\""
+				verdict = "Заключение комиссара: приемлемо. Одна норма не выполнена и внесена в дело."
+				verdict_en = "Commissar's conclusion: acceptable. One target was missed and entered in the file."
 			1:
-				verdict = "Комиссар долго молчал. «Показатели ниже нормы. Директорат не любит объяснений — он любит цифры.»"
-				verdict_en = "The Commissar was silent a long time. \"Figures below standard. The Directorate doesn't like explanations. It likes numbers.\""
+				verdict = "Заключение комиссара: показатели ниже нормы. Объяснения к делу не приобщаются."
+				verdict_en = "Commissar's conclusion: figures below standard. Explanations are not added to the file."
 			_:
-				verdict = "Комиссар закрыл планшет. «Это не управление, это беспорядок. Дальше будет комиссия.»"
-				verdict_en = "The Commissar closed his tablet. \"This isn't administration, it's disorder. A commission comes next.\""
+				verdict = "Заключение комиссара: район не управляется. Вопрос передан комиссии Директората."
+				verdict_en = "Commissar's conclusion: the district is not under control. The matter goes to a Directorate commission."
 	else:
 		match score:
 			3:
-				verdict = "Койл уехала с хорошими новостями, как любит. «Так и держите. Я доложу наверх, что мандат в надёжных руках.»"
-				verdict_en = "Coyle left with good news, the way she likes it. \"Keep it up. I'll report upstairs that the mandate is in safe hands.\""
+				verdict = "Заключение Койл: район готов. Наверх уходит доклад без замечаний."
+				verdict_en = "Coyle's conclusion: the district is ready. The report goes up with no remarks."
 			2:
-				verdict = "Койл кивнула без улыбки. «Сойдёт. Но я приеду снова, и в следующий раз этого будет мало.»"
-				verdict_en = "Coyle nodded without a smile. \"It'll do. But I'll be back, and next time this won't be enough.\""
+				verdict = "Заключение Койл: приемлемо. Одна норма не выполнена; к следующей проверке её нужно закрыть."
+				verdict_en = "Coyle's conclusion: acceptable. One target was missed; it must be met by the next inspection."
 			1:
-				verdict = "Койл говорила тихо и долго смотрела на пустые полки. «Я пока держу вашу сторону. Пока.»"
-				verdict_en = "Coyle spoke quietly and stared at the empty shelves. \"I'm still on your side. For now.\""
+				verdict = "Заключение Койл: две нормы из трёх не выполнены. В докладе она просит дать вам ещё срок."
+				verdict_en = "Coyle's conclusion: two targets out of three were missed. In her report she asks to give you more time."
 			_:
-				verdict = "Койл не повышала голос — это было хуже крика. «Вода по часам, склады пусты. Я не смогу защищать это наверху.»"
-				verdict_en = "Coyle didn't raise her voice, which was worse than shouting. \"Water by the hour, empty stores. I can't defend this upstairs.\""
+				verdict = "Заключение Койл: ни одна норма не выполнена. Защищать ваш мандат наверху ей нечем."
+				verdict_en = "Coyle's conclusion: none of the targets is met. She has nothing to defend your mandate with."
 
 	var checklist: String = "\n".join([
 		"— Запас воды: %s" % ("в порядке" if water_ok else "недостаточно"),

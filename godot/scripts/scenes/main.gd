@@ -14,10 +14,23 @@ var _cursor_kind: String = ""
 
 
 func _ready() -> void:
+	get_window().size_changed.connect(_apply_ui_scale)
+	_apply_ui_scale()
 	_orchestrator = GameOrchestrator.new()
 	_orchestrator.new_game()
 	_setup_scene_tree()
 	_connect_signals()
+
+
+## Text is sharp only at whole-number UI scales: a 1080p window stretched ×1.5 smears the
+## small fonts (playtest). So the UI is drawn 1:1 until the window is at least twice the
+## 1280×720 design size, then ×2, ×3…
+func _apply_ui_scale() -> void:
+	var window: Window = get_window()
+	var size: Vector2i = window.size
+	@warning_ignore("integer_division")
+	var factor: int = maxi(1, mini(size.x / 1280, size.y / 720))
+	window.content_scale_size = Vector2i(ceili(float(size.x) / float(factor)), ceili(float(size.y) / float(factor)))
 
 
 func _setup_scene_tree() -> void:

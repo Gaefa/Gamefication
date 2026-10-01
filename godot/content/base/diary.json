@@ -5,8 +5,8 @@
       "order": 1,
       "title": "Дневник прежнего администратора — I",
       "title_en": "Previous Administrator's Diary — I",
-      "body": "Первая запись. Мне дали район, печать и список того, чего здесь нет. Воды нет, денег почти нет, доверия нет вовсе. Зато есть Башня и вид на трубы Компании, которые ржавеют красиво, как закат. Завтра начну с воды. Здесь всё начинается с воды.",
-      "body_en": "First entry. They gave me a district, a stamp and a list of what isn't here. No water, almost no money, no trust at all. But there is the Tower and a view of the Company's pipes, rusting as nicely as a sunset. Tomorrow I start with water. Everything here starts with water.",
+      "body": "Первый день. Принял район, печать и опись имущества. Воды мало, денег почти нет, жители мне не верят. Из окна видно башню и трубы Компании. Завтра начну с воды: без неё здесь ничего не работает.",
+      "body_en": "Day one. Took over the district, the seal and the inventory. Little water, almost no money, and the residents do not trust me. From the window I can see the tower and the Company's pipes. Tomorrow I start with water: nothing here works without it.",
       "unlock": { "day": 1 }
     },
     {
@@ -14,8 +14,8 @@
       "order": 2,
       "title": "Дневник прежнего администратора — II",
       "title_en": "Previous Administrator's Diary — II",
-      "body": "Понял сегодня важное и поздно. Воды в цистерне было полно, а дальний квартал всё равно сидел сухой. Дело не в запасе — труба до них длинная, напора не хватает. Запас — это не то же самое, что вода в кране. Запомни это, кто бы ты ни был после меня.",
-      "body_en": "Learned something important today, and late. The cistern was full, and the far block still sat dry. It isn't the reserve — the pipe to them is long, and the pressure falls short. A reserve is not the same as water in the tap. Remember that, whoever you are after me.",
+      "body": "Сегодня понял то, что надо было понять раньше. Цистерна была полная, а дальний квартал сидел без воды. Труба до них длинная, напора не хватает. Запас в цистерне и вода в кране — разные вещи. Пишу для того, кто будет после меня.",
+      "body_en": "Today I understood what I should have understood earlier. The cistern was full, and the far quarter had no water. The pipe to them is long and the pressure is not enough. A reserve in the cistern and water at the tap are different things. I am writing this for whoever comes after me.",
       "unlock": { "metric": "res_water_stockpile", "op": "<=", "value": 40 }
     },
     {
@@ -23,8 +23,8 @@
       "order": 3,
       "title": "Дневник прежнего администратора — III",
       "title_en": "Previous Administrator's Diary — III",
-      "body": "Пыль пришла на три дня раньше прогноза. Я не успел поднять экраны. Грядки выгорели за неделю, вода ушла вдвое быстрее обычного, люди начали кашлять. Готовиться надо было в Окно, а не в Пыль. В Окно всегда кажется, что время есть. Времени нет.",
-      "body_en": "The Dust came three days ahead of the forecast. I didn't get the screens up in time. The plots burned out in a week, water went twice as fast as usual, people started coughing. The time to prepare was the Window, not the Dust. In the Window it always feels like there's time. There isn't.",
+      "body": "Пыль пришла на три дня раньше прогноза. Экраны над грядками поставить не успел. Урожай сгорел за неделю, воды уходит вдвое больше, люди кашляют. Готовиться надо было в Окно. В Окно кажется, что времени много.",
+      "body_en": "The Dust came three days ahead of the forecast. I did not get the screens up over the fields in time. The crop burned in a week, water goes twice as fast, people are coughing. I should have prepared during the Window. During the Window it seems there is plenty of time.",
       "unlock": { "season": "season_dust" }
     },
     {
@@ -32,8 +32,8 @@
       "order": 4,
       "title": "Дневник прежнего администратора — IV",
       "title_en": "Previous Administrator's Diary — IV",
-      "body": "Если ты это читаешь, значит, со мной что-то случилось, а район достался тебе. Может, белые машины. Они приезжают днём, вежливо, с бумагой о «переводе на восстановление». Никто не кричит. Соседи кивают. Так это и работает у Лиги — тихо и по-доброму. Береги воду. И не верь, что забота не бывает оружием.",
-      "body_en": "If you're reading this, something happened to me and the district is yours now. Maybe the white vans. They come in daylight, politely, with a paper about a \"transfer for recovery.\" Nobody shouts. The neighbors nod. That's how it works with the League — quietly and kindly. Save water. And don't believe that care can't be a weapon.",
+      "body": "Если это читает новый администратор, значит, меня уже увезли. У Лиги это делают белые машины: приезжают днём, вежливо, с актом о «переводе на восстановление». Никто не кричит, соседи молчат. Берегите воду. И помните, что забота Лиги — тоже способ управлять.",
+      "body_en": "If a new administrator is reading this, I have already been taken away. With the League it is the white vans: they come in daylight, politely, with an order for \"transfer for recovery.\" Nobody shouts, the neighbors keep quiet. Look after the water. And remember that the League's care is also a way of governing.",
       "unlock": { "metric": "stat_league_trust", "op": "<=", "value": 30 }
     }
   ]

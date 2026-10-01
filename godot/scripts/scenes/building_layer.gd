@@ -1,8 +1,31 @@
 extends Node2D
+
+const UiIcons := preload("res://scripts/scenes/ui_icons.gd")
 ## Renders buildings on the hex grid with drawn icons per building type.
 
 var _hex_grid: HexGrid
 var _sprite_cache: Dictionary = {}
+var _selected: Vector2i = Vector2i(-9999, -9999)
+
+const SELECT_EDGE := Color(1.0, 0.95, 0.75, 0.95)
+const SELECT_SCALE := 1.08  # just outside the sprite's ground, so the frame stays visible
+
+
+func _ready() -> void:
+	EventBus.selection_changed.connect(func(coord: Vector2i) -> void:
+		_selected = coord
+		queue_redraw())
+
+
+## The frame of a selected building is split in two: the far edges are drawn before the
+## sprite (the building hides them where it stands), the near edges after it.
+func _draw_select_half(center: Vector2, far: bool) -> void:
+	var ring: PackedVector2Array = _hex_polygon(HexCoords.HEX_SIZE * SELECT_SCALE)
+	var pts := PackedVector2Array()
+	for i: int in ([3, 4, 5, 0] if far else [0, 1, 2, 3]):
+		pts.append(center + ring[i])
+	draw_polyline(pts, Color(0.1, 0.08, 0.06, 0.55), 4.0)
+	draw_polyline(pts, SELECT_EDGE, 2.0)
 
 # Category colors for base hex fill
 const CAT_COLORS: Dictionary = {
@@ -46,6 +69,7 @@ func _draw() -> void:
 	# Painter's order: tall sprites overlap the row behind them.
 	building_coords.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 		return HexCoords.axial_to_pixel(a).y < HexCoords.axial_to_pixel(b).y)
+	var badges: Array = []  # [center, icon] — drawn last so no sprite hides them
 	for coord: Vector2i in building_coords:
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		var type_id: String = bld.get("type", "") as String
@@ -66,7 +90,14 @@ func _draw() -> void:
 		var center: Vector2 = HexCoords.axial_to_pixel(coord)
 
 		# Real sprite: no coloured hex under it — just a ground shadow, the sprite, and pins.
-		if _draw_building_sprite(center, type_id, level, damaged):
+		var is_selected: bool = coord == _selected
+		if is_selected and _get_building_sprite(type_id, level) != null:
+			_draw_select_half(center, true)
+		if _draw_building_sprite(center, type_id, level, damaged, is_selected):
+			if is_selected:
+				_draw_select_half(center, false)
+			if def.has("badge"):
+				badges.append([center, def.get("badge", "") as String])
 			if damaged:
 				_draw_crack(center)
 			if level > 0:
@@ -98,6 +129,22 @@ func _draw() -> void:
 		# Level dots at bottom
 		if level > 0:
 			_draw_level_dots(center, level)
+
+	for badge: Array in badges:
+		_draw_badge(badge[0] as Vector2, badge[1] as String)
+
+
+## A small coloured badge at the cell's upper-left: bolt = power, crate = storage, drop =
+## water… Similar-looking sheds become tellable at a glance (playtest).
+func _draw_badge(c: Vector2, icon: String) -> void:
+	var texture: Texture2D = UiIcons.texture(icon)
+	if texture == null:
+		return
+	var at: Vector2 = c + Vector2(-19.0, -25.0)
+	var hue: Color = UiIcons.color(icon)
+	draw_circle(at, 8.5, Color(0.09, 0.08, 0.07, 0.92))
+	draw_arc(at, 8.5, 0.0, TAU, 20, hue, 1.5)
+	draw_texture_rect(texture, Rect2(at - Vector2(6, 6), Vector2(12, 12)), false, hue)
 
 
 func _draw_road_tile(coord: Vector2i, bld: Dictionary) -> void:
@@ -220,7 +267,7 @@ func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Co
 const SPRITE_WIDTH_FACTOR := 2.25
 
 
-func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: bool = false) -> bool:
+func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: bool = false, selected: bool = false) -> bool:
 	var texture: Texture2D = _get_building_sprite(type_id, level)
 	if texture == null:
 		return false
@@ -248,6 +295,8 @@ func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: boo
 		tint = Color(def.get("sprite_tint", "ffffff") as String)
 	if damaged:
 		tint = tint.lerp(Color(0.85, 0.3, 0.25), 0.45)
+	if selected:
+		tint = Color(tint.r * 1.12, tint.g * 1.12, tint.b * 1.08, tint.a)
 	draw_texture_rect(texture, rect, false, tint)
 	return true
 

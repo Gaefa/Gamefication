@@ -22,7 +22,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var ke := event as InputEventKey
-		if ke.pressed and not ke.echo and (ke.keycode == KEY_N or ke.physical_keycode == KEY_N):
+		if ke.pressed and not ke.echo and (ke.keycode == KEY_T or ke.physical_keycode == KEY_T or ke.keycode == KEY_N or ke.physical_keycode == KEY_N):
 			# Не открываем поверх Стола/кризиса/финала (они ставят паузу).
 			if SimulationRunner.paused and not _panel_visible:
 				return
@@ -110,7 +110,7 @@ func _rebuild_list() -> void:
 	for child: Node in _list.get_children():
 		child.queue_free()
 	_title.text = Localization.ru_en("ЖУРНАЛ СОБЫТИЙ", "EVENT LOG")
-	_close_btn.text = Localization.ru_en("Закрыть (N)", "Close (N)")
+	_close_btn.text = Localization.ru_en("Закрыть (T)", "Close (T)")
 	var entries: Array = GameStateStore.events().get("log", []) as Array
 	if entries.is_empty():
 		var empty := Label.new()

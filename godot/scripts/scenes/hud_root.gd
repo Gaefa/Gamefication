@@ -80,6 +80,7 @@ func _ready() -> void:
 	_build_toast()
 	_build_start_panel()
 	_build_minimap()
+	_build_left_column()
 	_build_help_panel()
 	_build_city_panel()
 	_build_governance_panel()
@@ -170,6 +171,9 @@ func _build_resource_bar() -> void:
 	_pop_label = _chip_text(pop_box, 14, Color(0.97, 0.95, 0.88))
 	_happy_label = _chip_text(_chip(top), 14, Color(0.97, 0.95, 0.88))
 	_level_label = _chip_text(_chip(top), 12, Color(0.9, 0.85, 0.6))
+	var power_box: HBoxContainer = _chip(top)
+	_chip_icon(power_box, "power")
+	_power_label = _chip_text(power_box, 12, Color(0.95, 0.85, 0.5))
 
 	# --- Row 2: what threatens you ---
 	var water_box: HBoxContainer = _chip(bottom)
@@ -178,7 +182,6 @@ func _build_resource_bar() -> void:
 	_utility_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_utility_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_utility_label.gui_input.connect(_on_utility_gui_input)
-	_power_label = _chip_text(_chip(bottom), 12, Color(0.95, 0.85, 0.5))
 
 	_city_label = _chip_text(_chip(bottom), 13, Color(0.9, 0.85, 0.6))
 	_city_label.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -188,11 +191,11 @@ func _build_resource_bar() -> void:
 	# The two masters: a bar each, so "who is about to end me" reads without digits.
 	var masters: HBoxContainer = _chip(bottom)
 	_chip_text(masters, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Лига", "League")
-	_trust_bar = _chip_bar(masters, 64)
+	_trust_bar = _chip_bar(masters, 54)
 	_trust_value = _chip_text(masters, 13, Color.WHITE)
 	_chip_text(masters, 12, Color(0.6, 0.6, 0.6)).text = "↕"
 	_chip_text(masters, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Город", "City")
-	_support_bar = _chip_bar(masters, 64)
+	_support_bar = _chip_bar(masters, 54)
 	_support_value = _chip_text(masters, 13, Color.WHITE)
 	_rival_label = RichTextLabel.new()
 	_rival_label.bbcode_enabled = true
@@ -210,7 +213,7 @@ func _build_resource_bar() -> void:
 	_pressure_bars.clear()
 	for pair: Array in [["food", "food"], ["water", "water"], ["happiness", "people"], ["mandate", "mandate"]]:
 		_chip_icon(pressure, pair[1] as String)
-		var bar: ProgressBar = _chip_bar(pressure, 34)
+		var bar: ProgressBar = _chip_bar(pressure, 28)
 		var num: Label = _chip_text(pressure, 11, Color(0.7, 0.7, 0.75))
 		_pressure_bars[pair[0]] = { "bar": bar, "value": num }
 
@@ -245,6 +248,7 @@ func _chip_icon(box: HBoxContainer, icon: String) -> void:
 	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	rect.custom_minimum_size = Vector2(18, 18)
+	rect.modulate = UiIcons.color(icon)
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(rect)
 
@@ -372,6 +376,117 @@ func _position_below_resource_bar() -> void:
 		_build_panel.offset_top = bottom + 4.0
 	if _minimap_panel:
 		_minimap_panel.position.y = bottom + 8.0
+	if _left_column:
+		_left_column.position = Vector2(10.0, bottom + 8.0 + _minimap_panel.size.y + 6.0)
+
+
+# ===========================================================
+# LEFT COLUMN (under the minimap) — current goals + panel buttons
+# ===========================================================
+
+var _left_column: VBoxContainer
+var _goals_label: RichTextLabel
+
+## Panels in the order of their keys: Q E T Y sit in one row next to WASD (W and R are taken).
+const PANEL_BUTTONS := [
+	["water", "Вода", "Water", "Q"],
+	["season", "Сезон", "Season", "E"],
+	["log", "Журнал", "Log", "T"],
+	["diary", "Дневник", "Diary", "Y"],
+	["help", "Справка", "Help", "H"],
+]
+
+
+func _build_left_column() -> void:
+	_left_column = VBoxContainer.new()
+	_left_column.add_theme_constant_override("separation", 6)
+	_left_column.custom_minimum_size.x = 230
+	add_child(_left_column)
+
+	var goals := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.10, 0.09, 0.08, 0.88)
+	style.border_color = Color(0.55, 0.5, 0.35, 0.8)
+	style.border_width_left = 3
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(8)
+	goals.add_theme_stylebox_override("panel", style)
+	goals.mouse_filter = Control.MOUSE_FILTER_STOP
+	_left_column.add_child(goals)
+	_goals_label = RichTextLabel.new()
+	_goals_label.bbcode_enabled = true
+	_goals_label.fit_content = true
+	_goals_label.scroll_active = false
+	_goals_label.custom_minimum_size.x = 212
+	_goals_label.add_theme_font_size_override("normal_font_size", 12)
+	_goals_label.add_theme_font_size_override("bold_font_size", 12)
+	_goals_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	goals.add_child(_goals_label)
+
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 4)
+	grid.add_theme_constant_override("v_separation", 4)
+	_left_column.add_child(grid)
+	for entry: Array in PANEL_BUTTONS:
+		var btn := Button.new()
+		btn.text = "%s  %s" % [Localization.ru_en(entry[1] as String, entry[2] as String), entry[3]]
+		btn.add_theme_font_size_override("font_size", 12)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.pressed.connect(_open_panel.bind(entry[0] as String))
+		grid.add_child(btn)
+	_update_goals()
+
+
+func _open_panel(panel_id: String) -> void:
+	match panel_id:
+		"water": WaterPanel.call("_toggle")
+		"season": SeasonPanel.call("_toggle")
+		"log": EventLogPanel.call("_toggle")
+		"diary": DiaryManager.call("_toggle")
+		"help": toggle_help()
+
+
+## What the player should be working on right now (playtest: "нужен список целей").
+func _update_goals() -> void:
+	if _goals_label == null:
+		return
+	_left_column.visible = SimulationRunner.run_active
+	var ok := "[color=#86c45a]✔[/color]"
+	var no := "[color=#e6902b]○[/color]"
+	var day: int = GameStateStore.climate().get("total_day", 1) as int
+	var lines: Array[String] = ["[b]%s[/b]" % Localization.ru_en("ЦЕЛИ", "GOALS")]
+
+	# 1. The season ahead.
+	var climate: Dictionary = GameStateStore.climate()
+	var sid: String = climate.get("season_id", "") as String
+	if sid == "season_window" and day < 19:
+		lines.append("%s %s" % [no, Localization.ru_en("Подготовиться к Пыли: через %d дн." % (19 - day), "Get ready for the Dust: %d days left" % (19 - day))])
+
+	# 2. The audit checklist, live — the same three checks the inspector runs.
+	var mandate: Dictionary = GameStateStore.mandate()
+	if not (mandate.get("audit_done", false) as bool):
+		var water: float = GameStateStore.get_resource("res_water_stockpile")
+		var food: float = GameStateStore.get_resource("res_food")
+		var mood: float = GameStateStore.population().get("happiness", 50.0) as float
+		lines.append(Localization.ru_en("Аудит на %d-й день:", "Audit on day %d:") % MandateManager.AUDIT_DAY)
+		lines.append("  %s %s %d / %d" % [ok if water >= MandateManager.WATER_OK else no, Localization.ru_en("вода", "water"), int(water), int(MandateManager.WATER_OK)])
+		lines.append("  %s %s %d / %d" % [ok if food >= MandateManager.FOOD_OK else no, Localization.ru_en("еда", "food"), int(food), int(MandateManager.FOOD_OK)])
+		lines.append("  %s %s %d%% / %d%%" % [ok if mood >= MandateManager.HAPPINESS_OK else no, Localization.ru_en("счастье", "mood"), int(mood), int(MandateManager.HAPPINESS_OK)])
+	else:
+		lines.append("%s %s" % [ok, Localization.ru_en("Аудит пройден", "Audit done")])
+
+	# 3. The grant contest with the neighbour.
+	if not (GameStateStore.rival().get("grant_decided", false) as bool):
+		var ours: int = int(RivalManager.player_score())
+		var theirs: int = int(RivalManager.rival_score())
+		lines.append("%s %s" % [ok if ours >= theirs else no,
+			Localization.ru_en("Грант на %d-й день: вы %d, Восс %d", "Grant on day %d: you %d, Voss %d") % [RivalManager.GRANT_DAY, ours, theirs]])
+
+	# 4. The finish line.
+	lines.append("%s %s" % [no, Localization.ru_en("Дожить до %d-го дня (сейчас %d)", "Reach day %d (now %d)") % [EndingManager.WIN_DAY, day]])
+	_goals_label.text = "\n".join(lines)
 
 
 func _top_resource_ids() -> Array[String]:
@@ -402,6 +517,7 @@ func _on_resources_changed(_resources: Dictionary) -> void:
 
 
 func _update_resource_bar() -> void:
+	_update_goals()
 	# --- Resources: number + trend per day ---
 	var production: Dictionary = GameStateStore.economy().get("production", {}) as Dictionary
 	for res_id: String in _res_chips:
@@ -470,14 +586,14 @@ func _update_resource_bar() -> void:
 	_utility_label.tooltip_text = "%s · %s · %s" % [
 		_coverage_ratio_text(Localization.t("ui.flow.water", "Water"), water_ok, water_total),
 		"%s %d" % [Localization.t("ui.city.water_reserve_short", "Reserve"), int(_resource_value("res_water_stockpile", "water_res"))],
-		Localization.ru_en("клик — панель воды (C)", "click: water panel (C)"),
+		Localization.ru_en("клик — панель воды (Q)", "click: water panel (Q)"),
 	]
 	_power_label.text = _power_readout().strip_edges()
 	(_power_label.get_parent().get_parent() as Control).visible = _power_label.text != ""
 
 	# --- Season ---
 	_city_label.text = _season_bar_text()
-	_city_label.tooltip_text = Localization.ru_en("Клик — сезон и прогноз (K)", "Click: season and forecast (K)")
+	_city_label.tooltip_text = Localization.ru_en("Клик — сезон и прогноз (E)", "Click: season and forecast (E)")
 
 	# --- The two masters (League ↕ City): trust at zero → recall, support at zero → riot ---
 	var trust: float = GameStateStore.mandate().get("patron_trust", 50) as float
@@ -665,23 +781,23 @@ func _build_build_panel() -> void:
 	header.add_child(_build_title_label)
 
 	_build_city_button = Button.new()
-	_build_city_button.add_theme_font_size_override("font_size", 10)
+	_build_city_button.add_theme_font_size_override("font_size", 12)
 	_build_city_button.pressed.connect(toggle_city_panel)
 	header.add_child(_build_city_button)
 
 	_build_gov_button = Button.new()
-	_build_gov_button.add_theme_font_size_override("font_size", 10)
+	_build_gov_button.add_theme_font_size_override("font_size", 12)
 	_build_gov_button.pressed.connect(toggle_governance)
 	header.add_child(_build_gov_button)
 
 	_build_settings_button = Button.new()
-	_build_settings_button.add_theme_font_size_override("font_size", 10)
+	_build_settings_button.add_theme_font_size_override("font_size", 12)
 	_build_settings_button.pressed.connect(toggle_settings)
 	header.add_child(_build_settings_button)
 
 	_category_select = OptionButton.new()
 	_category_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_category_select.add_theme_font_size_override("font_size", 10)
+	_category_select.add_theme_font_size_override("font_size", 12)
 	_category_select.item_selected.connect(_on_category_selected)
 	_category_select.visible = false
 	header.add_child(_category_select)
@@ -702,7 +818,7 @@ func _build_build_panel() -> void:
 		cat_btn.expand_icon = true
 		cat_btn.add_theme_constant_override("icon_max_width", 18)
 		cat_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		cat_btn.add_theme_font_size_override("font_size", 9)
+		cat_btn.add_theme_font_size_override("font_size", 12)
 		cat_btn.pressed.connect(_set_active_category.bind(cat))
 		category_grid.add_child(cat_btn)
 		_category_buttons[cat] = cat_btn
@@ -718,14 +834,14 @@ func _build_build_panel() -> void:
 	_range_lens_button = Button.new()
 	_range_lens_button.toggle_mode = true
 	_range_lens_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_range_lens_button.add_theme_font_size_override("font_size", 10)
+	_range_lens_button.add_theme_font_size_override("font_size", 12)
 	_range_lens_button.pressed.connect(_toggle_ranges_from_button)
 	lens_grid.add_child(_range_lens_button)
 
 	_logistics_lens_button = Button.new()
 	_logistics_lens_button.toggle_mode = true
 	_logistics_lens_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_logistics_lens_button.add_theme_font_size_override("font_size", 10)
+	_logistics_lens_button.add_theme_font_size_override("font_size", 12)
 	_logistics_lens_button.pressed.connect(_toggle_logistics_lens_from_button)
 	lens_grid.add_child(_logistics_lens_button)
 	_refresh_lens_buttons(false, false)
@@ -876,7 +992,7 @@ func _rebuild_building_list() -> void:
 			eff_lbl.text = "  " + effect_text
 			eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			eff_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			eff_lbl.add_theme_font_size_override("font_size", 10)
+			eff_lbl.add_theme_font_size_override("font_size", 12)
 			eff_lbl.add_theme_color_override("font_color", Color(0.7, 0.9, 0.7))
 			eff_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			_build_vbox.add_child(eff_lbl)
@@ -893,7 +1009,7 @@ func _rebuild_building_list() -> void:
 			cost_lbl.text = "  " + ", ".join(cost_parts)
 			cost_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			cost_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			cost_lbl.add_theme_font_size_override("font_size", 10)
+			cost_lbl.add_theme_font_size_override("font_size", 12)
 			cost_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			_build_vbox.add_child(cost_lbl)
 
@@ -1334,9 +1450,26 @@ func _build_help_panel() -> void:
 	margin.add_theme_constant_override("margin_bottom", 12)
 	_help_panel.add_child(margin)
 
+	var help_box := VBoxContainer.new()
+	help_box.add_theme_constant_override("separation", 8)
+	margin.add_child(help_box)
+	var help_head := HBoxContainer.new()
+	help_box.add_child(help_head)
+	var help_title := Label.new()
+	help_title.text = Localization.ru_en("Справка", "Help")
+	help_title.add_theme_font_size_override("font_size", 18)
+	help_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	help_head.add_child(help_title)
+	var help_close := Button.new()
+	help_close.text = "✕"
+	help_close.tooltip_text = Localization.ru_en("Закрыть (H)", "Close (H)")
+	help_close.custom_minimum_size = Vector2(34, 30)
+	help_close.pressed.connect(toggle_help)
+	help_head.add_child(help_close)
+
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(530, 390)
-	margin.add_child(scroll)
+	scroll.custom_minimum_size = Vector2(530, 350)
+	help_box.add_child(scroll)
 
 	_help_label = Label.new()
 	_help_label.custom_minimum_size.x = 510
@@ -1351,7 +1484,7 @@ func _build_help_panel() -> void:
 
 
 func _get_help_text() -> String:
-	return Localization.t("ui.help.text", "H — справка. C вода · K сезон · J дневник · N журнал · Пробел пауза · 1/2/3 скорость.")
+	return Localization.t("ui.help.text", "H — справка. Q вода · E сезон · T журнал · Y дневник · Пробел пауза · 1/2/3 скорость.")
 
 
 func toggle_help() -> void:
@@ -1410,7 +1543,7 @@ func _build_minimap() -> void:
 
 	var label := Label.new()
 	label.text = Localization.ru_en("КАРТА", "MINIMAP")
-	label.add_theme_font_size_override("font_size", 10)
+	label.add_theme_font_size_override("font_size", 12)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	v_box.add_child(label)
 
@@ -1572,8 +1705,23 @@ func _build_campaign_list(container: Control) -> void:
 	var ids: Array = ContentDB.get_start_profile_ids()
 	ids.sort_custom(func(a: String, b: String) -> bool:
 		return _profile_rank(a) < _profile_rank(b))
+	var experimental: Array = []
 	for profile_id: String in ids:
-		list.add_child(_build_start_profile_row(profile_id))
+		if _profile_rank(profile_id) >= 2:
+			experimental.append(profile_id)
+		else:
+			list.add_child(_build_start_profile_row(profile_id))
+	if not experimental.is_empty():
+		# Founder starts sit outside the current chapter: keep them out of a first-timer's way.
+		var more := Button.new()
+		more.flat = true
+		more.text = Localization.ru_en("Показать экспериментальные старты (%d)", "Show experimental starts (%d)") % experimental.size()
+		more.add_theme_font_size_override("font_size", 12)
+		list.add_child(more)
+		more.pressed.connect(func() -> void:
+			more.queue_free()
+			for profile_id: String in experimental:
+				list.add_child(_build_start_profile_row(profile_id)))
 
 
 func _profile_rank(profile_id: String) -> int:
@@ -1586,7 +1734,7 @@ func _profile_rank(profile_id: String) -> int:
 func _build_sandbox_options(container: Control) -> void:
 	var intro := Label.new()
 	intro.text = "Sandbox mode: unlimited potential, no pressure."
-	intro.add_theme_font_size_override("font_size", 11)
+	intro.add_theme_font_size_override("font_size", 12)
 	container.add_child(intro)
 	
 	# For now, just use the first profile as default sandbox
@@ -1602,65 +1750,81 @@ func _build_sandbox_options(container: Control) -> void:
 func _build_start_profile_row(profile_id: String) -> Control:
 	var def: Dictionary = ContentDB.get_start_profile_def(profile_id)
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.y = 98
 
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
+	row.add_theme_constant_override("separation", 12)
 	panel.add_child(row)
 
 	var text_box := VBoxContainer.new()
+	text_box.add_theme_constant_override("separation", 4)
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(text_box)
 
 	var title := Label.new()
 	title.text = Localization.content_text(def, "label", profile_id)
-	title.add_theme_font_size_override("font_size", 13)
+	title.add_theme_font_size_override("font_size", 15)
 	text_box.add_child(title)
 
+	# One line on how it plays, instead of a paragraph of terms.
+	var style_text: String = _profile_playstyle(profile_id)
+	if style_text == "":
+		style_text = Localization.content_text(def, "description", "")
 	var desc := Label.new()
-	desc.text = Localization.content_text(def, "description", "")
+	desc.text = style_text
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", 10)
+	desc.add_theme_font_size_override("font_size", 12)
+	desc.add_theme_color_override("font_color", Color(0.85, 0.84, 0.8))
 	text_box.add_child(desc)
 
-	var meta := Label.new()
-	meta.text = _format_start_profile_meta(def)
-	meta.add_theme_font_size_override("font_size", 10)
-	meta.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
-	text_box.add_child(meta)
+	# The two meters the whole game is about — each explains itself on hover.
+	var mandate_data: Dictionary = def.get("mandate", {})
+	var stats := HBoxContainer.new()
+	stats.add_theme_constant_override("separation", 14)
+	text_box.add_child(stats)
+	_profile_stat(stats, Localization.ru_en("Доверие покровителя", "Patron trust"), mandate_data.get("patron_trust", 0) as int,
+		Localization.ru_en("Как к вам относится тот, кто вас назначил. Растёт, когда вы выполняете его просьбы и проходите аудит. Упадёт до нуля — вас отзовут.",
+			"How the one who appointed you sees you. It grows when you do what they ask and pass the audit. At zero you are recalled."))
+	_profile_stat(stats, Localization.ru_en("Поддержка города", "City support"), mandate_data.get("support", 0) as int,
+		Localization.ru_en("Как к вам относятся жители. Растёт, когда вы встаёте на их сторону. Упадёт до нуля — бунт.",
+			"How the residents see you. It grows when you take their side. At zero they riot."))
 
-	var badge_text: String = ""
 	if profile_id == "appointed_administrator":
-		badge_text = Localization.t("ui.start.recommended", "Рекомендуется для первой игры")
-	elif (def.get("start_path", "appointed") as String) != "appointed":
-		badge_text = Localization.t("ui.start.experimental", "Экспериментальный старт")
-	if badge_text != "":
 		var badge := Label.new()
-		badge.text = badge_text
-		badge.add_theme_font_size_override("font_size", 10)
-		badge.add_theme_color_override("font_color", Color(0.6, 0.9, 0.6) if profile_id == "appointed_administrator" else Color(0.7, 0.7, 0.75))
+		badge.text = Localization.t("ui.start.recommended", "Рекомендуется для первой игры")
+		badge.add_theme_font_size_override("font_size", 12)
+		badge.add_theme_color_override("font_color", Color(0.6, 0.9, 0.6))
 		text_box.add_child(badge)
 
 	var btn := Button.new()
 	btn.text = Localization.t("ui.start.begin", "Begin")
+	btn.custom_minimum_size = Vector2(96, 40)
+	btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	btn.pressed.connect(_start_new_run.bind(profile_id))
 	row.add_child(btn)
 
 	return panel
 
 
-func _format_start_profile_meta(def: Dictionary) -> String:
-	var mandate_data: Dictionary = def.get("mandate", {})
-	var path_label := Localization.ru_en("Назначение", "Appointed") if (def.get("start_path", "appointed") as String) == "appointed" else Localization.ru_en("Основатель", "Founder")
-	return "%s | %s:%d | %s:%d | %s:%d" % [
-		path_label,
-		Localization.t("ui.start.trust", "Trust"),
-		mandate_data.get("patron_trust", 0) as int,
-		Localization.t("ui.start.support", "Support"),
-		mandate_data.get("support", 0) as int,
-		Localization.t("ui.start.autonomy", "Autonomy"),
-		mandate_data.get("autonomy", 0) as int,
-	]
+func _profile_playstyle(profile_id: String) -> String:
+	match profile_id:
+		"appointed_administrator":
+			return Localization.ru_en("Мандат Лиги Восстановления. Покровитель мягкий, требует беречь людей. Игра о балансе между его просьбами и жителями.",
+				"A Restoration League mandate. A soft patron who wants the people kept safe. A game of balancing its requests against the residents.")
+		"directorate_administrator":
+			return Localization.ru_en("Мандат Гражданского Директората. Больше денег, но жители холоднее, а проверки жёстче. Игра о порядке и отчётности.",
+				"A Civic Directorate mandate. More money, but colder residents and harsher inspections. A game of order and reporting.")
+	return ""
+
+
+func _profile_stat(parent: Control, label: String, value: int, hint: String) -> void:
+	var stat := Label.new()
+	stat.text = "%s: %d  ⓘ" % [label, value]
+	stat.tooltip_text = hint
+	stat.mouse_filter = Control.MOUSE_FILTER_STOP
+	stat.mouse_default_cursor_shape = Control.CURSOR_HELP
+	stat.add_theme_font_size_override("font_size", 12)
+	stat.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
+	parent.add_child(stat)
 
 
 func _start_new_run(profile_id: String) -> void:
@@ -1821,7 +1985,7 @@ func _rebuild_city_panel() -> void:
 	var note := Label.new()
 	note.text = Localization.t("ui.city.spend_note", "Upgrade spends the required resources and unlocks the next building tier.")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	note.add_theme_font_size_override("font_size", 11)
+	note.add_theme_font_size_override("font_size", 12)
 	note.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	root.add_child(note)
 
@@ -1995,7 +2159,7 @@ func _rebuild_settings_panel() -> void:
 	var note := Label.new()
 	note.text = Localization.t("ui.settings.language_note", "Language is saved automatically.")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	note.add_theme_font_size_override("font_size", 11)
+	note.add_theme_font_size_override("font_size", 12)
 	note.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	root.add_child(note)
 
@@ -2109,7 +2273,7 @@ func _build_tech_row(tech_id: String) -> Control:
 	var desc := Label.new()
 	desc.text = Localization.content_text(def, "description", "")
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", 10)
+	desc.add_theme_font_size_override("font_size", 12)
 	text_box.add_child(desc)
 
 	var meta := Label.new()
@@ -2119,7 +2283,7 @@ func _build_tech_row(tech_id: String) -> Control:
 		Localization.t("ui.meta.effects", "Effects"),
 		_format_effects(def.get("effects", {})),
 	]
-	meta.add_theme_font_size_override("font_size", 10)
+	meta.add_theme_font_size_override("font_size", 12)
 	meta.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	text_box.add_child(meta)
 
@@ -2180,7 +2344,7 @@ func _build_policy_row(policy_id: String) -> Control:
 	var desc := Label.new()
 	desc.text = Localization.content_text(def, "description", "")
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", 10)
+	desc.add_theme_font_size_override("font_size", 12)
 	text_box.add_child(desc)
 
 	var meta := Label.new()
@@ -2190,7 +2354,7 @@ func _build_policy_row(policy_id: String) -> Control:
 		Localization.t("ui.meta.effects", "Effects"),
 		_format_effects(def.get("effects", {})),
 	]
-	meta.add_theme_font_size_override("font_size", 10)
+	meta.add_theme_font_size_override("font_size", 12)
 	meta.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
 	text_box.add_child(meta)
 
@@ -2329,7 +2493,7 @@ func _on_event_spawned(event_data: Dictionary) -> void:
 			var rdef: Dictionary = ContentDB.get_resource_def(res_id)
 			cp.append("%s: %d" % [Localization.content_text(rdef, "label", res_id), int((cost_raw as Dictionary)[res_id] as float)])
 		cost_label.text = Localization.t("ui.meta.cost", "Cost") + ": " + ", ".join(cp)
-		cost_label.add_theme_font_size_override("font_size", 11)
+		cost_label.add_theme_font_size_override("font_size", 12)
 		cost_label.add_theme_color_override("font_color", Color(1.0, 0.7, 0.4))
 		cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vbox.add_child(cost_label)

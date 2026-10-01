@@ -67,10 +67,10 @@ func _raise_grant_card() -> void:
 			"runtime_id": "rival.grant_result",
 			"title": "Грант на Пыль — Ржавой Норе",
 			"title_en": "The Dust grant goes to the Rust Pit",
-			"body": "%s распределил грант на Пыль: %d в казну Ржавой Норы. Ваш показатель — %d, у района %s (%s) — %d.\n\nВосс прислала записку в одну строку: «Поздравляю. Посмотрим, на что вы его потратите.»" % [patron, int(GRANT_MONEY), ours, NAME, DISTRICT, theirs],
-			"body_en": "%s has awarded the Dust grant: %d to the Rust Pit treasury. Your score: %d; %s's district (%s): %d.\n\nVoss sent a one-line note: \"Congratulations. Let's see what you spend it on.\"" % [patron_en, int(GRANT_MONEY), ours, NAME_EN, DISTRICT_EN, theirs],
+			"body": "%s распределил грант на Пыль: %d в казну Ржавой Норы. Ваш показатель — %d, у района %s (%s) — %d.\n\nДеньги зачислены в казну района." % [patron, int(GRANT_MONEY), ours, NAME, DISTRICT, theirs],
+			"body_en": "%s has awarded the Dust grant: %d to the Rust Pit treasury. Your score: %d; %s's district (%s): %d.\n\nThe money has been credited to the district treasury." % [patron_en, int(GRANT_MONEY), ours, NAME_EN, DISTRICT_EN, theirs],
 			"options": [
-				{ "text": "Принять грант", "text_en": "Accept the grant", "effects": { "add_resources": { "res_money": GRANT_MONEY }, "stat_league_trust": 3, "message": "Деньги пришли с короткой припиской сверху: «Оправдайте.»", "message_en": "The money arrived with a short note from above: \"Justify it.\"" } },
+				{ "text": "Принять грант", "text_en": "Accept the grant", "effects": { "add_resources": { "res_money": GRANT_MONEY }, "stat_league_trust": 3, "message": "Грант получен.", "message_en": "The grant has been received." } },
 			],
 		}
 	else:
@@ -78,10 +78,10 @@ func _raise_grant_card() -> void:
 			"runtime_id": "rival.grant_result",
 			"title": "Грант на Пыль ушёл району Восс",
 			"title_en": "The Dust grant went to Voss's district",
-			"body": "%s распределил грант на Пыль: он уходит району %s (%s). Её показатель — %d, ваш — %d.\n\nВосс прислала записку: «Порядок — это не жестокость. Это расписание, которое выдерживает Пыль.»\n\nНаверху запомнили, чей район оказался готов." % [patron, NAME, DISTRICT, theirs, ours],
-			"body_en": "%s has awarded the Dust grant to %s's district (%s). Her score: %d; yours: %d.\n\nVoss sent a note: \"Order isn't cruelty. It's a schedule that survives the Dust.\"\n\nUpstairs, they noted whose district was ready." % [patron_en, NAME_EN, DISTRICT_EN, theirs, ours],
+			"body": "%s распределил грант на Пыль: он уходит району %s (%s). Её показатель — %d, ваш — %d.\n\nВ докладе покровителю отмечено, что соседний район подготовлен лучше." % [patron, NAME, DISTRICT, theirs, ours],
+			"body_en": "%s has awarded the Dust grant to %s's district (%s). Her score: %d; yours: %d.\n\nThe report to your patron notes that the neighboring district is better prepared." % [patron_en, NAME_EN, DISTRICT_EN, theirs, ours],
 			"options": [
-				{ "text": "Принять к сведению", "text_en": "Noted", "effects": { "stat_league_trust": -4, "message": "Письмо легло в папку. Папка стала толще.", "message_en": "The letter went into a folder. The folder got thicker." } },
+				{ "text": "Принять к сведению", "text_en": "Noted", "effects": { "stat_league_trust": -4, "message": "Грант получил соседний район.", "message_en": "The grant went to the neighboring district." } },
 			],
 		}
 	EventManager.pending_events.append(card)

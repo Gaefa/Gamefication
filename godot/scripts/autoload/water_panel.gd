@@ -32,13 +32,13 @@ func _on_locale_changed(_locale: String) -> void:
 
 func _apply_static_text() -> void:
 	_title.text = Localization.ru_en("ВОДА — ЗАПАС · ПОКРЫТИЕ · ДАВЛЕНИЕ", "WATER: RESERVE · COVERAGE · PRESSURE")
-	_close_btn.text = Localization.ru_en("Закрыть (C)", "Close (C)")
+	_close_btn.text = Localization.ru_en("Закрыть (Q)", "Close (Q)")
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var ke := event as InputEventKey
-		if ke.pressed and not ke.echo and (ke.keycode == KEY_C or ke.physical_keycode == KEY_C):
+		if ke.pressed and not ke.echo and (ke.keycode == KEY_Q or ke.physical_keycode == KEY_Q or ke.keycode == KEY_C or ke.physical_keycode == KEY_C):
 			if SimulationRunner.paused and not _visible:
 				return
 			_toggle()
