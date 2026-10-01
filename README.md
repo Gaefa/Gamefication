@@ -10,7 +10,7 @@
 
 ## Скачать сборку
 
-Тестовая сборка **0.1.1** (Windows EXE, macOS .app, гиды): https://github.com/Gaefa/Gamefication/releases/tag/v0.1.1 — как запустить, написано в `PLAYER_GUIDE.md` там же.
+Последняя тестовая сборка (Windows EXE, macOS DMG, гиды): https://github.com/Gaefa/Gamefication/releases/latest — как запустить, написано в `PLAYER_GUIDE.md` там же.
 
 Свежие сборки с каждого push в `main` — в GitHub Actions («Godot Export» → Artifacts); они для разработки, не для тестеров.
 
