@@ -45,8 +45,8 @@
     "tier": 2,
     "cost": {
       "coins": 250,
-      "planks": 80,
-      "science": 20
+      "stone": 80,
+      "tools": 5
     },
     "requires": [
       "basic_logistics"
@@ -65,8 +65,7 @@
     "tier": 2,
     "cost": {
       "coins": 300,
-      "tools": 80,
-      "science": 30
+      "tools": 15
     },
     "requires": [
       "civic_planning"

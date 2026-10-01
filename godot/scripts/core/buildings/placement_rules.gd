@@ -25,7 +25,7 @@ static func validate(coord: Vector2i, type_id: String, hex_grid: HexGrid = null)
 	if city_level < req_level:
 		return _fail(Localization.t("ui.command.requires_city_level", "Requires city level %d") % req_level)
 
-	var build_cost: Dictionary = def.get("build_cost", {})
+	var build_cost: Dictionary = build_cost_for(def)
 	if not GameStateStore.can_afford(build_cost):
 		return _fail("%s: %s" % [
 			Localization.t("ui.command.not_enough_resources", "Not enough resources"),
@@ -33,6 +33,19 @@ static func validate(coord: Vector2i, type_id: String, hex_grid: HexGrid = null)
 		])
 
 	return {"ok": true, "message": Localization.t("ui.placement.valid", "Can build here")}
+
+
+## What a building costs right now: the base price times the season's build_cost_mult
+## (the Window makes construction 10% cheaper, as the season panel says).
+static func build_cost_for(def: Dictionary) -> Dictionary:
+	var mult: float = (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("build_cost_mult", 1.0) as float
+	var base: Dictionary = def.get("build_cost", {})
+	if is_equal_approx(mult, 1.0):
+		return base
+	var cost: Dictionary = {}
+	for res_id: String in base:
+		cost[res_id] = ceilf((base[res_id] as float) * mult)
+	return cost
 
 
 static func missing_cost_text(cost: Dictionary) -> String:

@@ -18,7 +18,9 @@ var pending_events: Array:
 		return ev_state["pending"] as Array
 var _check_interval: float = 5.0
 var _timer: float = 0.0
-const DEFAULT_COOLDOWN_SEC := 300.0
+## Cooldowns are in game seconds (ticks at ×1): 300 = one game day. They follow the game
+## speed, so a repeatable petition returns after the same number of days at ×1 and ×3.
+const DEFAULT_COOLDOWN_SEC := 900.0
 
 
 func _ready() -> void:
@@ -31,7 +33,8 @@ func _process(delta: float) -> void:
 	# Только днём проверяем триггеры
 	if not SimulationRunner.is_running():
 		return
-	_tick_cooldowns(delta)
+	# Game time, not wall time: at ×3 a cooldown must still last the same number of game days.
+	_tick_cooldowns(delta * SimulationRunner.speed_scale)
 	_timer -= delta
 	if _timer <= 0.0:
 		_timer = _check_interval
@@ -53,11 +56,21 @@ func _check_triggers() -> void:
 		# One-shot events (письма Койл, развилки) фаярятся ровно один раз за игру.
 		if (def.get("once", false) as bool) and _has_fired(event_id):
 			continue
+		if _patronless_skip(def):
+			continue
 		# Pressure-driven crises are raised by the pressure director, not polled (GDD §15).
 		if (def.get("driver", "") as String) == "pressure":
 			continue
 		if _trigger_met(def):
 			_raise(event_id, def)
+
+
+## Patron business (letters, sanctions, the recall ultimatum) never reaches a founder,
+## who has no patron. The Forecaster quest is filed under "mandate" but is the district's own.
+func _patronless_skip(def: Dictionary) -> bool:
+	if (GameStateStore.mandate().get("patron_id", "") as String) != "":
+		return false
+	return (def.get("category", "") as String) == "mandate" and not (def.get("id", "") as String).begins_with("quest.")
 
 
 func _raise(event_id: String, def: Dictionary) -> void:
@@ -127,7 +140,7 @@ func _trigger_met(def: Dictionary) -> bool:
 		return false
 	
 	# Случайный шанс (1% за проверку)
-	return randf() < 0.01
+	return _rng_chance(0.01)
 
 
 func _evaluate_trigger(trigger: String) -> bool:
@@ -279,7 +292,7 @@ func _demolish_building(type_id: String) -> void:
 	if coord == NO_COORD or orch == null:
 		push_warning("EventManager: cannot demolish %s" % type_id)
 		return
-	orch.command_bus.execute(BulldozeCommand.new(coord))
+	orch.command_bus.execute(BulldozeCommand.new(coord, true))
 
 
 func _replace_building(from_type: String, to_type: String) -> void:
@@ -339,6 +352,9 @@ func _damage_random_buildings(count: int) -> void:
 		bld["damaged"] = true
 		GameStateStore.set_building(coord, bld)
 		EventBus.building_damaged.emit(coord, 1.0)
+	var orch: GameOrchestrator = _orchestrator()
+	if orch != null:
+		orch.coverage.invalidate()  # a broken pump stops covering its radius
 
 
 func _candidate_problem_coords(skip_damaged: bool, skip_issues: bool) -> Array:
@@ -360,10 +376,21 @@ func _pick_unique_coords(candidates: Array, count: int) -> Array:
 	var pool: Array = candidates.duplicate()
 	var picked: Array = []
 	while picked.size() < count and not pool.is_empty():
-		var idx: int = randi() % pool.size()
+		var idx: int = _rng_index(pool.size())
 		picked.append(pool[idx])
 		pool.remove_at(idx)
 	return picked
+
+
+## Event randomness draws from the run's seeded generator, so a load replays it exactly.
+func _rng_chance(probability: float) -> bool:
+	var orch: GameOrchestrator = _orchestrator()
+	return orch.rng.chance(probability) if orch != null else randf() < probability
+
+
+func _rng_index(size: int) -> int:
+	var orch: GameOrchestrator = _orchestrator()
+	return orch.rng.range_int(0, size - 1) if orch != null else randi() % size
 
 
 func _event_cooldowns() -> Dictionary:

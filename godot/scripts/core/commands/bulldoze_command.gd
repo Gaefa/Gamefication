@@ -2,10 +2,20 @@ class_name BulldozeCommand extends CommandBase
 ## Removes a building, refunding 10% of build cost.
 
 var coord: Vector2i
+## Set by scripted events (the fate of the old tower): the player alone cannot remove
+## the district's fixed buildings.
+var force: bool = false
 
 
-func _init(p_coord: Vector2i) -> void:
+func _init(p_coord: Vector2i, p_force: bool = false) -> void:
 	coord = p_coord
+	force = p_force
+
+
+## The Cistern, the admin post and the landmarks are not the player's to demolish: losing
+## the Cistern would drop the water cap for good. Ruins are fair game — they yield salvage.
+static func is_protected(def: Dictionary) -> bool:
+	return not (def.get("player_buildable", true) as bool) and not def.has("salvage")
 
 
 func execute(ctx: Dictionary) -> void:
@@ -17,6 +27,9 @@ func execute(ctx: Dictionary) -> void:
 	var type_id: String = bld.get("type", "") as String
 	var def: Dictionary = ContentDB.get_building_def(type_id)
 	var spatial: SpatialIndex = ctx.spatial as SpatialIndex
+	if not force and is_protected(def):
+		message = Localization.ru_en("Это здание нельзя снести", "This building cannot be demolished")
+		return
 
 	# Refund 10%
 	var build_cost: Dictionary = def.get("build_cost", {})

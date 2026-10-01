@@ -42,6 +42,16 @@ jobs:
           mkdir -p "${PROJECT_DIR}/export/windows"
           "./Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64" --headless --path "${PROJECT_DIR}" --export-release "Windows Desktop" "export/windows/${EXPORT_NAME}-${SHORT_SHA}.exe"
 
+      # After the export the project is imported, so headless tools can run: unresolved
+      # content references and the reviewed gameplay rules fail the build.
+      - name: Content and rules checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT="./Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64"
+          "$GODOT" --headless --path "${PROJECT_DIR}" res://tools/content_check.tscn
+          "$GODOT" --headless --path "${PROJECT_DIR}" res://tools/rules_smoke.tscn
+
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:

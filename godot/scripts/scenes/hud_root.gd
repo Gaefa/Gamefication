@@ -15,6 +15,8 @@ var _happy_label: Label
 var _level_label: Label
 var _power_label: Label
 var _trust_bar: ProgressBar
+var _patron_label: Label
+var _masters_arrow: Label
 var _support_bar: ProgressBar
 var _trust_value: Label
 var _support_value: Label
@@ -190,10 +192,11 @@ func _build_resource_bar() -> void:
 
 	# The two masters: a bar each, so "who is about to end me" reads without digits.
 	var masters: HBoxContainer = _chip(bottom)
-	_chip_text(masters, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Лига", "League")
+	_patron_label = _chip_text(masters, 12, Color(0.8, 0.8, 0.85))
 	_trust_bar = _chip_bar(masters, 54)
 	_trust_value = _chip_text(masters, 13, Color.WHITE)
-	_chip_text(masters, 12, Color(0.6, 0.6, 0.6)).text = "↕"
+	_masters_arrow = _chip_text(masters, 12, Color(0.6, 0.6, 0.6))
+	_masters_arrow.text = "↕"
 	_chip_text(masters, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Город", "City")
 	_support_bar = _chip_bar(masters, 54)
 	_support_value = _chip_text(masters, 13, Color.WHITE)
@@ -466,7 +469,10 @@ func _update_goals() -> void:
 
 	# 2. The audit checklist, live — the same three checks the inspector runs.
 	var mandate: Dictionary = GameStateStore.mandate()
-	if not (mandate.get("audit_done", false) as bool):
+	var has_patron: bool = (mandate.get("patron_id", "") as String) != ""
+	if not has_patron:
+		pass  # a founder faces no audit and no grant contest
+	elif not (mandate.get("audit_done", false) as bool):
 		var water: float = GameStateStore.get_resource("res_water_stockpile")
 		var food: float = GameStateStore.get_resource("res_food")
 		var mood: float = GameStateStore.population().get("happiness", 50.0) as float
@@ -478,7 +484,7 @@ func _update_goals() -> void:
 		lines.append("%s %s" % [ok, Localization.ru_en("Аудит пройден", "Audit done")])
 
 	# 3. The grant contest with the neighbour.
-	if not (GameStateStore.rival().get("grant_decided", false) as bool):
+	if has_patron and not (GameStateStore.rival().get("grant_decided", false) as bool):
 		var ours: int = int(RivalManager.player_score())
 		var theirs: int = int(RivalManager.rival_score())
 		lines.append("%s %s" % [ok if ours >= theirs else no,
@@ -598,6 +604,13 @@ func _update_resource_bar() -> void:
 	# --- The two masters (League ↕ City): trust at zero → recall, support at zero → riot ---
 	var trust: float = GameStateStore.mandate().get("patron_trust", 50) as float
 	var support: float = GameStateStore.mandate().get("support", 50) as float
+	# The patron half names the actual patron and disappears for a founder, who has none.
+	var patron_id: String = GameStateStore.mandate().get("patron_id", "") as String
+	var has_patron: bool = patron_id != ""
+	_patron_label.text = Localization.ru_en("Директорат", "Directorate") if patron_id == "civic_directorate" else Localization.ru_en("Лига", "League")
+	for part: Control in [_patron_label, _trust_bar, _trust_value, _masters_arrow]:
+		part.visible = has_patron
+	(_rival_label.get_parent().get_parent() as Control).visible = has_patron
 	_set_bar(_trust_bar, trust, _level_color(trust, 25.0, 45.0))
 	_set_bar(_support_bar, support, _level_color(support, 25.0, 45.0))
 	_trust_value.text = str(int(trust))
@@ -998,7 +1011,7 @@ func _rebuild_building_list() -> void:
 			_build_vbox.add_child(eff_lbl)
 
 		# Cost line
-		var build_cost: Dictionary = def.get("build_cost", {})
+		var build_cost: Dictionary = PlacementRulesRef.build_cost_for(def)
 		var cost_lbl: Label = null
 		if not build_cost.is_empty():
 			var cost_parts: Array[String] = []
@@ -1052,7 +1065,7 @@ func _update_build_list_affordability() -> void:
 			continue
 		var etype_id: String = entry.type_id
 		var edef: Dictionary = ContentDB.get_building_def(etype_id)
-		var cost: Dictionary = edef.get("build_cost", {})
+		var cost: Dictionary = PlacementRulesRef.build_cost_for(edef)
 		var affordable: bool = GameStateStore.can_afford(cost)
 		if affordable:
 			(cost_lbl as Label).add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
@@ -1096,7 +1109,7 @@ func _build_build_mode_info_text(type_id: String) -> String:
 	var ldata: Dictionary = ContentDB.building_level_data(type_id, 0)
 	var lines: Array[String] = []
 	lines.append("%s: %s" % [Localization.t("ui.build.selected", "Selected"), Localization.content_text(def, "label", type_id)])
-	lines.append("%s: %s" % [Localization.t("ui.meta.cost", "Cost"), _format_cost(def.get("build_cost", {}))])
+	lines.append("%s: %s" % [Localization.t("ui.meta.cost", "Cost"), _format_cost(PlacementRulesRef.build_cost_for(def))])
 	var effect: String = _format_key_effect(ldata)
 	if effect != "":
 		lines.append("%s: %s" % [Localization.t("ui.meta.effects", "Effects"), effect])
@@ -1104,10 +1117,10 @@ func _build_build_mode_info_text(type_id: String) -> String:
 	var req_level: int = def.get("unlock_level", 1) as int
 	if (GameStateStore.progression().city_level as int) < req_level:
 		lines.append(Localization.t("ui.command.requires_city_level", "Requires city level %d") % req_level)
-	elif not GameStateStore.can_afford(def.get("build_cost", {})):
+	elif not GameStateStore.can_afford(PlacementRulesRef.build_cost_for(def)):
 		lines.append("%s: %s" % [
 			Localization.t("ui.command.not_enough_resources", "Not enough resources"),
-			PlacementRulesRef.missing_cost_text(def.get("build_cost", {})),
+			PlacementRulesRef.missing_cost_text(PlacementRulesRef.build_cost_for(def)),
 		])
 	else:
 		lines.append(Localization.t("ui.placement.preview_hint", "Move over the map: green can build, red cannot."))

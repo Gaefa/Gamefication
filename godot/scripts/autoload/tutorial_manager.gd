@@ -192,8 +192,8 @@ func _make_steps() -> Array[Dictionary]:
 			"done": func() -> bool: return _desk_seen,
 		},
 		{
-			"text": t.call("[b]Вечер — Стол администратора.[/b] Письма покровителя и обращения жителей. [b]Наведите курсор на ответ[/b] — увидите, чем он обернётся. Утром решения вступают в силу.",
-				"[b]Evening — the Administrator's Desk.[/b] Patron letters and residents' petitions. [b]Hover an answer[/b] to see what it leads to. Decisions take effect in the morning."),
+			"text": t.call("[b]Вечер — Стол администратора.[/b] Письма покровителя и обращения жителей. [b]Наведите курсор на ответ[/b] — увидите, чем он обернётся. Решение действует сразу; после почты начинается новый день.",
+				"[b]Evening — the Administrator's Desk.[/b] Patron letters and residents' petitions. [b]Hover an answer[/b] to see what it leads to. A decision takes effect at once; after the mail a new day begins."),
 			"top": true,
 		},
 		{

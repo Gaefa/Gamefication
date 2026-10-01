@@ -71,8 +71,9 @@ func _evaluate() -> void:
 	var disclosure: bool = (mandate.get("flags", {}) as Dictionary).get("disclosure", false) as bool
 	var happiness: float = GameStateStore.population().get("happiness", 50.0) as float
 
-	# Losses take priority over wins.
-	if trust <= 0.0:
+	# Losses take priority over wins. A founder has no patron, hence no one to recall them.
+	var has_patron: bool = (mandate.get("patron_id", "") as String) != ""
+	if has_patron and trust <= 0.0:
 		# Recall method is the patron's, not hardcoded: Конвой is the cross-faction emergency
 		# tool (any patron, if the player tried to expose them); otherwise each patron has
 		# its own procedure — Лига's Социальная изоляция, Директорат's Чрезвычайный комиссар.

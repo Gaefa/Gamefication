@@ -422,7 +422,7 @@ func _default_rival() -> Dictionary:
 	return {
 		"id": "mara_voss",       # RivalManager: the neighbour the patron measures you against
 		"score": 55.0,           # district score 0–100, drifts with the season
-		"last_day": 0,           # last game day already applied (load re-emits the day signal)
+		"last_day": 1,           # last game day already applied (load re-emits the day signal)
 		"grant_decided": false,  # the Dust grant goes to one of the two districts, once
 	}
 

@@ -12,6 +12,8 @@ func _init(rng: SeededRNG) -> void:
 
 
 func process_tick() -> void:
+	# The Dust clogs machinery: the season's wear_mult scales the breakdown chance.
+	var wear: float = (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("wear_mult", 1.0) as float
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("has_issue", false) as bool:
@@ -21,7 +23,9 @@ func process_tick() -> void:
 		var type_id: String = bld.get("type", "") as String
 		if type_id == "road" or type_id == "bld_road":
 			continue
-		if _rng.chance(ISSUE_CHANCE_PER_BUILDING):
+		if ContentDB.is_inert_landmark(type_id):
+			continue  # ruins and monuments have nothing to break and nothing to repair
+		if _rng.chance(ISSUE_CHANCE_PER_BUILDING * wear):
 			bld["has_issue"] = true
 			GameStateStore.set_building(coord, bld)
 			EventBus.building_issue_added.emit(coord)

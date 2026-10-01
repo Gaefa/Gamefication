@@ -34,6 +34,8 @@ func process_tick() -> void:
 		"happiness": _below(GameStateStore.population().get("happiness", 50.0) as float, HAPPINESS_SAFE),
 		"mandate": _below(GameStateStore.mandate().get("patron_trust", 50) as float, TRUST_SAFE),
 	}
+	if (GameStateStore.mandate().get("patron_id", "") as String) == "":
+		risks["mandate"] = 0.0  # a founder answers to no patron
 
 	var top: float = 0.0
 	for cat: String in CATEGORIES:

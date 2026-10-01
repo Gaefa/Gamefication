@@ -39,7 +39,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		var ke := event as InputEventKey
 		if ke.pressed and not ke.echo and (ke.keycode == KEY_Q or ke.physical_keycode == KEY_Q or ke.keycode == KEY_C or ke.physical_keycode == KEY_C):
-			if SimulationRunner.paused and not _visible:
+			if SimulationRunner.blocks_panels() and not _visible:
 				return
 			_toggle()
 			get_viewport().set_input_as_handled()

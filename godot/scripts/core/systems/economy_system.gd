@@ -111,7 +111,10 @@ func _process_bank_interest(net: Dictionary) -> void:
 
 
 func _apply_maintenance() -> void:
-	var bld_count: int = GameStateStore.get_all_building_coords().size()
+	var bld_count: int = 0
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		if not ContentDB.is_inert_landmark(GameStateStore.get_building(coord).get("type", "") as String):
+			bld_count += 1
 	if bld_count == 0:
 		return  # No buildings = no maintenance
 	var pop: int = GameStateStore.population().total as int

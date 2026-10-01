@@ -28,6 +28,8 @@ Godot 4.6.1 или новее. Первый headless-запуск без про�
 ## Проверки для разработчика
 
 ```bash
+Godot --headless --path godot res://tools/content_check.tscn      # ссылки в контенте (ресурсы, здания)
+Godot --headless --path godot res://tools/rules_smoke.tscn        # правила: снос, вода, дороги, основатели
 Godot --headless --path godot res://tools/balance_sim.tscn        # экономика, сценарии A–F
 Godot --headless --path godot res://tools/save_roundtrip.tscn     # сохранение тик-в-тик
 Godot --headless --fixed-fps 60 --path godot res://tools/loop_smoke.tscn   # полный цикл до финала

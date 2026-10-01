@@ -68,6 +68,7 @@ func _ready() -> void:
 	_load_endings()
 	_load_diary()
 	_normalize_governance_defs()
+	_validate_content()
 	_normalize_start_profiles()
 
 
@@ -199,6 +200,83 @@ func _with_resource_aliases(raw: Dictionary) -> Dictionary:
 		else:
 			out[canonical] = value
 	return out
+
+
+## Ruins and monuments: fixed scenery with no function. They never break down and cost no
+## upkeep. A restored tower is a working water source, so it does not count.
+func is_inert_landmark(type_id: String) -> bool:
+	var tags: Array = get_building_def(type_id).get("tags", []) as Array
+	return tags.has("landmark") and not tags.has("water_source")
+
+
+## Content mistakes that used to fail silently: a price in a resource that does not exist
+## (so the item can never be bought), a synergy or an event pointing at a missing building,
+## a desk card with no free answer. Collected here and warned about at load; the dev tool
+## tools/content_check.tscn fails on any of them.
+var content_warnings: Array[String] = []
+
+
+func _validate_content() -> void:
+	content_warnings.clear()
+	for tech_id: String in technologies:
+		var tech: Dictionary = technologies[tech_id] as Dictionary
+		_check_resources(tech.get("cost", {}), "technology %s cost" % tech_id)
+		_check_resources((tech.get("effects", {}) as Dictionary).get("production_mult", {}), "technology %s effects" % tech_id)
+		for req: Variant in tech.get("requires", []) as Array:
+			if not technologies.has(req as String):
+				content_warnings.append("technology %s requires unknown technology %s" % [tech_id, req])
+	for policy_id: String in policies:
+		var policy: Dictionary = policies[policy_id] as Dictionary
+		_check_resources(policy.get("switch_cost", {}), "policy %s cost" % policy_id)
+		_check_resources((policy.get("effects", {}) as Dictionary).get("production_mult", {}), "policy %s effects" % policy_id)
+	for type_id: String in buildings:
+		var def: Dictionary = buildings[type_id] as Dictionary
+		_check_resources(def.get("build_cost", {}), "building %s cost" % type_id)
+		for level: Variant in def.get("levels", []) as Array:
+			var ldata: Dictionary = level as Dictionary
+			for key: String in ["cost", "produces", "consumes"]:
+				_check_resources(ldata.get(key, {}), "building %s %s" % [type_id, key])
+	for syn: Dictionary in synergies:
+		for other: Variant in syn.get("pair", []) as Array:
+			if not buildings.has(other as String):
+				content_warnings.append("synergy %s names unknown building %s" % [syn.get("id", "?"), other])
+	for event_id: String in events:
+		var options: Array = (events[event_id] as Dictionary).get("options", []) as Array
+		var has_free: bool = options.is_empty()
+		for option: Variant in options:
+			var opt: Dictionary = option as Dictionary
+			var cost: Dictionary = opt.get("cost", {})
+			if cost.is_empty():
+				has_free = true
+			_check_resources(cost, "event %s cost" % event_id)
+			var effects: Dictionary = opt.get("effects", {})
+			_check_resources(effects.get("add_resources", {}), "event %s add_resources" % event_id)
+			_check_resources(effects.get("remove_resources", {}), "event %s remove_resources" % event_id)
+			var targets: Array = [effects.get("demolish_building", "")]
+			var swap: Dictionary = effects.get("replace_building", {})
+			targets.append(swap.get("from", ""))
+			targets.append(swap.get("to", ""))
+			for target: Variant in targets:
+				if (target as String) != "" and not buildings.has(target as String):
+					content_warnings.append("event %s names unknown building %s" % [event_id, target])
+		if not has_free:
+			content_warnings.append("event %s has no free answer: a broke player would be stuck at the Desk" % event_id)
+	for profile_id: String in start_profiles:
+		var profile: Dictionary = start_profiles[profile_id] as Dictionary
+		_check_resources(profile.get("starting_resources", {}), "start profile %s resources" % profile_id)
+		for policy: Variant in profile.get("default_policies", []) as Array:
+			if not policies.has(policy as String):
+				content_warnings.append("start profile %s names unknown policy %s" % [profile_id, policy])
+	for warning: String in content_warnings:
+		push_warning("ContentDB: " + warning)
+
+
+func _check_resources(raw: Variant, where: String) -> void:
+	if raw is not Dictionary:
+		return
+	for res_id: String in raw as Dictionary:
+		if not resources.has(RESOURCE_ID_ALIASES.get(res_id, res_id) as String):
+			content_warnings.append("%s uses unknown resource %s" % [where, res_id])
 
 
 # --- Public queries ---
