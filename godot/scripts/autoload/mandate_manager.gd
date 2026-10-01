@@ -5,7 +5,7 @@ extends Node
 ## staying — and the result moves patron trust up or down. Low trust then drives the
 ## existing escalation (grant_freeze ≤40, recall_ultimatum ≤25) and the endings.
 ##
-## Foreshadowed by patron.letter.audit_warning (day 8); the audit lands on day 10.
+## Foreshadowed by patron.letter.audit_warning (day 15); the audit lands on AUDIT_DAY (20).
 ## Presented as a dynamic result card via the critical-card path (DeskUI critical mode).
 ## Self-contained autoload — no orchestrator/tick-pipeline changes.
 
@@ -23,6 +23,8 @@ func _on_tick_finished(_tick: int) -> void:
 	var mandate: Dictionary = GameStateStore.mandate()
 	if mandate.get("audit_done", false) as bool:
 		return
+	if (mandate.get("patron_id", "") as String) == "":
+		return  # a founder has no patron to audit them
 	if (GameStateStore.climate().get("total_day", 1) as int) < AUDIT_DAY:
 		return
 	_run_audit()

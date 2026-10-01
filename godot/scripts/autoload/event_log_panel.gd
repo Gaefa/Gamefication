@@ -24,7 +24,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var ke := event as InputEventKey
 		if ke.pressed and not ke.echo and (ke.keycode == KEY_T or ke.physical_keycode == KEY_T or ke.keycode == KEY_N or ke.physical_keycode == KEY_N):
 			# Не открываем поверх Стола/кризиса/финала (они ставят паузу).
-			if SimulationRunner.paused and not _panel_visible:
+			if SimulationRunner.blocks_panels() and not _panel_visible:
 				return
 			_toggle()
 			get_viewport().set_input_as_handled()

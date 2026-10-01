@@ -321,6 +321,11 @@ func _is_road_building(type_id: String, def: Dictionary) -> bool:
 
 
 func _has_road_neighbor(coord: Vector2i) -> bool:
+	var scene: Node = get_tree().current_scene
+	if scene != null and scene.has_method("get_orchestrator"):
+		var orch: GameOrchestrator = scene.call("get_orchestrator") as GameOrchestrator
+		if orch != null:
+			return orch.coverage.is_road_connected(coord)
 	for nb: Vector2i in HexCoords.neighbors_of(coord):
 		var bld: Dictionary = GameStateStore.get_building(nb)
 		if bld.is_empty():

@@ -19,6 +19,10 @@ func _process(delta: float) -> void:
 	if not SimulationRunner.run_active:
 		return
 	_autosave_timer += delta
+	# Only mid-day: a save taken at the Desk (or under an urgent card) would load into a
+	# fresh day with the same day number — a free day of production.
+	if SimulationRunner.current_phase != SimulationRunner.Phase.DAY or SimulationRunner.card_open:
+		return
 	if _autosave_timer >= AUTOSAVE_INTERVAL:
 		_autosave_timer = 0.0
 		save_game(0, true)  # slot 0 = autosave (silent)

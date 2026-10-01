@@ -86,10 +86,28 @@ func _rebuild_road_coverage() -> void:
 	var road_set: Dictionary = {}
 	for c: Vector2i in _coords_with_tag_or_type("road", ["road", "bld_road"]):
 		road_set[c] = true
-	# A building is "road connected" if any neighbor is a road
+	# Only roads whose stretch reaches a hub (a warehouse or the admin post) carry goods:
+	# a lone road tile next to a workshop is not logistics.
+	var live: Dictionary = {}
+	var frontier: Array[Vector2i] = []
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var tags: Array = ContentDB.get_building_def(GameStateStore.get_building(coord).get("type", "") as String).get("tags", []) as Array
+		if not (tags.has("storage") or tags.has("admin")):
+			continue
+		for nb: Vector2i in HexCoords.neighbors_of(coord):
+			if road_set.has(nb) and not live.has(nb):
+				live[nb] = true
+				frontier.append(nb)
+	while not frontier.is_empty():
+		var cell: Vector2i = frontier.pop_back()
+		for nb: Vector2i in HexCoords.neighbors_of(cell):
+			if road_set.has(nb) and not live.has(nb):
+				live[nb] = true
+				frontier.append(nb)
+	# A building is "road connected" if any neighbor is a live road
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		for nb: Vector2i in HexCoords.neighbors_of(coord):
-			if road_set.has(nb):
+			if live.has(nb):
 				_road_connected[coord] = true
 				break
 
@@ -99,6 +117,8 @@ func _rebuild_water_coverage() -> void:
 	var sources: Array[Dictionary] = []
 	for wc: Vector2i in _coords_with_tag_or_type("water_source", ["water_tower", "bld_well_pump"]):
 		var bld: Dictionary = GameStateStore.get_building(wc)
+		if bld.get("damaged", false) as bool:
+			continue  # a broken pump supplies nobody until it is repaired
 		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)

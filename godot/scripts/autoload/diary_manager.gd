@@ -28,7 +28,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var ke := event as InputEventKey
 		if ke.pressed and not ke.echo and (ke.keycode == KEY_Y or ke.physical_keycode == KEY_Y or ke.keycode == KEY_J or ke.physical_keycode == KEY_J):
 			# Не открываем поверх Стола/кризиса/финала (они ставят паузу).
-			if SimulationRunner.paused and not _panel_visible:
+			if SimulationRunner.blocks_panels() and not _panel_visible:
 				return
 			_toggle()
 			get_viewport().set_input_as_handled()
@@ -77,7 +77,7 @@ func _metric_value(metric: String) -> float:
 		"stat_city_trust":
 			return GameStateStore.mandate().get("support", 50) as float
 		"stat_unrest_pressure":
-			return GameStateStore.pressure().get("index", 0.0) as float
+			return (GameStateStore.pressure().get("categories", {}) as Dictionary).get("happiness", 0.0) as float
 		"stat_happiness":
 			return GameStateStore.population().get("happiness", 50.0) as float
 	return 0.0

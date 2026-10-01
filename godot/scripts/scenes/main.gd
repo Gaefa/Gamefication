@@ -204,17 +204,16 @@ func _handle_key(ke: InputEventKey) -> void:
 		if _hud and _hud.has_method("toggle_settings"):
 			_hud.call("toggle_settings")
 	elif _matches_key(ke, KEY_U) or Input.is_action_just_pressed("upgrade_building"):
-		if _selected_coord != Vector2i(-9999, -9999):
+		if _world_actions_allowed() and _selected_coord != Vector2i(-9999, -9999):
 			var cmd := UpgradeBuildingCommand.new(_selected_coord)
 			_orchestrator.command_bus.execute(cmd)
 	elif _matches_key(ke, KEY_R) or Input.is_action_just_pressed("repair_building"):
-		if _selected_coord != Vector2i(-9999, -9999):
+		if _world_actions_allowed() and _selected_coord != Vector2i(-9999, -9999):
 			var cmd := RepairBuildingCommand.new(_selected_coord)
 			_orchestrator.command_bus.execute(cmd)
 	elif _matches_key(ke, KEY_B) or Input.is_action_just_pressed("bulldoze"):
-		if _selected_coord != Vector2i(-9999, -9999):
-			var cmd := BulldozeCommand.new(_selected_coord)
-			_orchestrator.command_bus.execute(cmd)
+		if _world_actions_allowed() and _selected_coord != Vector2i(-9999, -9999):
+			_request_bulldoze()
 	elif _matches_key(ke, KEY_SPACE):
 		SimulationRunner.toggle_pause()
 	elif _matches_key(ke, KEY_1):
@@ -223,6 +222,32 @@ func _handle_key(ke: InputEventKey) -> void:
 		SimulationRunner.set_speed(2.0)
 	elif _matches_key(ke, KEY_3):
 		SimulationRunner.set_speed(3.0)
+
+
+## Upgrade / repair / bulldoze act on the world, so they work only while the day is running:
+## not under the Desk, an urgent card, the start menu or the finale.
+func _world_actions_allowed() -> bool:
+	return SimulationRunner.run_active and SimulationRunner.current_phase == SimulationRunner.Phase.DAY and not SimulationRunner.card_open
+
+
+var _bulldoze_armed: Vector2i = Vector2i(-9999, -9999)
+var _bulldoze_armed_until: int = 0
+
+
+## Demolition is irreversible, so B asks first: the second press within four seconds does it.
+func _request_bulldoze() -> void:
+	var bld: Dictionary = GameStateStore.get_building(_selected_coord)
+	if bld.is_empty():
+		return
+	var def: Dictionary = ContentDB.get_building_def(bld.get("type", "") as String)
+	var now: int = Time.get_ticks_msec()
+	if BulldozeCommand.is_protected(def) or (_bulldoze_armed == _selected_coord and now <= _bulldoze_armed_until):
+		_bulldoze_armed = Vector2i(-9999, -9999)
+		_orchestrator.command_bus.execute(BulldozeCommand.new(_selected_coord))  # refuses protected ones itself
+		return
+	_bulldoze_armed = _selected_coord
+	_bulldoze_armed_until = now + 4000
+	EventBus.toast_requested.emit(Localization.ru_en("Снести «%s»? Нажмите B ещё раз.", "Demolish \"%s\"? Press B again.") % Localization.content_text(def, "label", ""), 4.0)
 
 
 func _on_build_mode_changed(type_id: String) -> void:

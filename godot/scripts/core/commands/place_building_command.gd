@@ -23,7 +23,7 @@ func execute(ctx: Dictionary) -> void:
 		return
 
 	# Spend & place
-	var build_cost: Dictionary = def.get("build_cost", {})
+	var build_cost: Dictionary = PlacementRules.build_cost_for(def)
 	GameStateStore.spend(build_cost)
 	var bld: Dictionary = {
 		"type": type_id,

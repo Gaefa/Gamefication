@@ -4,6 +4,7 @@ class_name ProgressionSystem
 var _aura_cache: AuraCache
 var _coverage: CoverageMap
 var _notified_upgrade_level: int = 0
+var _win_emitted: bool = false
 
 # --- Population retention (tuning) ---
 const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick under duress
@@ -33,7 +34,11 @@ func _update_population() -> void:
 	# Housing gives a capacity ceiling; the actual resident count drifts toward it.
 	# People leave under duress (famine, thirst, misery) and arrive when the city is
 	# content. This gives Пыль an irreversible cost and feeds the exodus/riot endings.
+	# "Served" housing is what people can really live in: water reaches it and a road serves
+	# it. A shelter outside the pump's radius stays empty — it must not add residents who
+	# then consume nothing.
 	var capacity: int = 0
+	var served: int = 0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("damaged", false) as bool:
@@ -41,12 +46,17 @@ func _update_population() -> void:
 		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
-		capacity += ldata.get("population", 0) as int
+		var beds: int = ldata.get("population", 0) as int
+		if beds <= 0:
+			continue
+		capacity += beds
+		if _coverage.is_water_covered(coord) and _coverage.road_efficiency(coord) >= 1.0:
+			served += beds
 
 	var pop_state: Dictionary = GameStateStore.population()
-	var residents: float = pop_state.get("residents", float(capacity)) as float
+	var residents: float = pop_state.get("residents", float(served)) as float
 	if not pop_state.has("residents"):
-		residents = float(capacity)  # a freshly-settled district starts full
+		residents = float(served)  # a freshly-settled district starts full
 
 	var food: float = GameStateStore.get_resource("res_food")
 	var water: float = GameStateStore.get_resource("res_water_stockpile")
@@ -55,12 +65,16 @@ func _update_population() -> void:
 
 	if under_duress:
 		residents -= float(capacity) * OUTFLOW_RATE
-	elif residents < float(capacity) and happiness >= CONTENT_HAPPINESS:
-		residents += (float(capacity) - residents) * INFLOW_RATE
+	elif residents > float(served):
+		# Housing lost its water or road: people move out over a few days, not at once.
+		residents = maxf(residents - float(capacity) * OUTFLOW_RATE, float(served))
+	elif residents < float(served) and happiness >= CONTENT_HAPPINESS:
+		residents += (float(served) - residents) * INFLOW_RATE
 	residents = clampf(residents, 0.0, float(capacity))
 
 	pop_state["residents"] = residents
 	pop_state["capacity"] = capacity
+	pop_state["served"] = served
 	var total: int = int(round(residents))
 	var prev: int = pop_state.total as int
 	pop_state.total = total
@@ -113,7 +127,7 @@ func _update_happiness() -> void:
 	var prev: float = GameStateStore.population().happiness as float
 	var happiness: float = lerpf(prev, target, HAPPINESS_SMOOTH)
 	GameStateStore.population().happiness = happiness
-	if absf(happiness - prev) > 0.5:
+	if int(happiness) != int(prev):
 		EventBus.happiness_changed.emit(happiness)
 
 
@@ -216,7 +230,8 @@ func _check_level_up() -> void:
 
 func _check_win_condition() -> void:
 	var max_levels: int = ContentDB.city_levels.size()
-	if (GameStateStore.progression().city_level as int) >= max_levels:
+	if not _win_emitted and (GameStateStore.progression().city_level as int) >= max_levels:
+		_win_emitted = true
 		EventBus.win_condition_met.emit()
 
 

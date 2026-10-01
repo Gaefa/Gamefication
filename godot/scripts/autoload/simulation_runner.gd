@@ -47,6 +47,8 @@ func _physics_process(delta: float) -> void:
 		_accumulator -= TICK_INTERVAL
 		ticks_this_frame += 1
 		tick_callback.call()
+		if not is_running():
+			break  # an audit card or a finale paused the run mid-frame
 
 
 func _transition_to_evening() -> void:
@@ -71,6 +73,12 @@ func _start_new_day() -> void:
 	paused = false
 	day_count += 1
 	EventBus.phase_changed.emit("day")
+
+
+## Side panels stay closed only under a modal: the evening Desk, an urgent card, or when no
+## run is going (start menu, finale). A manual pause must not lock them.
+func blocks_panels() -> bool:
+	return not run_active or current_phase == Phase.EVENING or card_open
 
 
 func is_running() -> bool:

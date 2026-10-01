@@ -36,7 +36,9 @@ func process_tick() -> void:
 			continue
 		var def: Dictionary = ContentDB.get_building_def(bld.get("type", "") as String)
 		var out: float = def.get("power_output", 0.0) as float
-		if out > 0.0:
+		# A generator burns fuel money: with an empty treasury it stands still.
+		var fuel: Dictionary = def.get("consumes", {})
+		if out > 0.0 and (fuel.is_empty() or GameStateStore.can_afford(fuel)):
 			var is_solar: bool = (def.get("tags", []) as Array).has("solar")
 			generation += out * (solar_mult if is_solar else 1.0)
 		var need: float = def.get("power_need", 0.0) as float

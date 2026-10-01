@@ -30,6 +30,8 @@ func _ready() -> void:
 
 func _on_day_advanced(season_id: String, _day_in_season: int, _length: int) -> void:
 	# SeasonSystem also emits this when a save is loaded; only a new day may move the rival.
+	if (GameStateStore.mandate().get("patron_id", "") as String) == "":
+		return  # the grant contest is a patron's affair; founders are not in it
 	var rival: Dictionary = GameStateStore.rival()
 	var day: int = GameStateStore.climate().get("total_day", 1) as int
 	if day <= (rival.get("last_day", 0) as int):

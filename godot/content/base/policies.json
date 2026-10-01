@@ -65,9 +65,7 @@
     "effects": {
       "production_mult": {
         "wood": 0.1,
-        "stone": 0.1,
-        "planks": 0.1,
-        "bricks": 0.1
+        "stone": 0.1
       },
       "happiness_add": -3,
       "pressure_delta": 3
@@ -92,8 +90,7 @@
     "effects": {
       "production_mult": {
         "wood": -0.05,
-        "stone": -0.05,
-        "culture": 0.08
+        "stone": -0.05
       },
       "happiness_add": 5,
       "pressure_delta": -3

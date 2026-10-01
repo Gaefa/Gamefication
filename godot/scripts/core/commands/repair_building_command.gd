@@ -10,7 +10,7 @@ func _init(p_coord: Vector2i) -> void:
 	coord = p_coord
 
 
-func execute(_ctx: Dictionary) -> void:
+func execute(ctx: Dictionary) -> void:
 	if not GameStateStore.has_building(coord):
 		message = Localization.t("ui.command.no_building_here", "No building here")
 		return
@@ -30,6 +30,9 @@ func execute(_ctx: Dictionary) -> void:
 	bld["damaged"] = false
 	bld["has_issue"] = false
 	GameStateStore.set_building(coord, bld)
+	var coverage: CoverageMap = ctx.get("coverage") as CoverageMap
+	if coverage:
+		coverage.invalidate()  # a repaired pump covers its radius again
 
 	success = true
 	message = Localization.t("ui.command.building_repaired", "Building repaired")
