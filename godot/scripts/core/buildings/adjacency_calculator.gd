@@ -1,45 +1,68 @@
 class_name AdjacencyCalculator
-## Computes adjacency-based bonuses between specific building pairs.
-## Uses synergy definitions from ContentDB.
+## Neighbour rules between specific building pairs (GDD §16.2), from content/base/synergies.json.
+##
+## A rule names a pair [a, b] and what each side gets when the other stands next to it:
+##   effects_a / effects_b   {res_id: bonus} added to that side's output (+0.1 = +10%)
+##   mood_a / mood_b         happiness points for that side (housing by a quarry: −3)
+##   full_pressure_a / _b    1 = that side always gets full water pressure
+##   water_queue_a / _b      extra growth of the "water" pressure per such building
+##   max_stack               how many neighbours of the other type count (default: all)
+## Stateless: everything is read from GameStateStore, so it needs no save data.
 
 
 func calculate_adjacency_bonus(coord: Vector2i, type_id: String) -> Dictionary:
 	## Returns {resource_id: bonus_multiplier} from adjacent building synergies.
 	var bonuses: Dictionary = {}
+	for entry: Dictionary in active_rules(coord, type_id):
+		var effects: Dictionary = (entry.rule as Dictionary).get("effects_" + (entry.side as String), {})
+		for res_id: String in effects:
+			bonuses[res_id] = (bonuses.get(res_id, 0.0) as float) + (effects[res_id] as float) * (entry.count as int)
+	return bonuses
+
+
+## Sum of a numeric rule field ("mood", "water_queue", "full_pressure") for this building.
+func value_at(coord: Vector2i, type_id: String, key: String) -> float:
+	var total: float = 0.0
+	for entry: Dictionary in active_rules(coord, type_id):
+		total += ((entry.rule as Dictionary).get("%s_%s" % [key, entry.side], 0.0) as float) * (entry.count as int)
+	return total
+
+
+## Rules currently in force for the building at coord: [{rule, side ("a"/"b"), count}].
+func active_rules(coord: Vector2i, type_id: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
 	var neighbors: Array[Vector2i] = HexCoords.neighbors_of(coord)
-
 	for syn: Dictionary in ContentDB.synergies:
-		if (syn.get("type", "") as String) != "adjacency":
+		var side: String = _side_of(syn, type_id)
+		if side == "":
 			continue
-		var pair: Array = syn.get("pair", [])
-		if pair.size() != 2:
-			continue
-		var pair_a: String = pair[0] as String
-		var pair_b: String = pair[1] as String
-
-		# Check if this building is one of the pair
-		var other_type: String = ""
-		var effects_key: String = ""
-		if type_id == pair_a:
-			other_type = pair_b
-			effects_key = "effects_a"
-		elif type_id == pair_b:
-			other_type = pair_a
-			effects_key = "effects_b"
-		else:
-			continue
-
-		# Count adjacent buildings of the other type
-		var adjacent_count: int = 0
+		var other_type: String = (syn.get("pair", []) as Array)[1 if side == "a" else 0] as String
+		var count: int = 0
 		for nb: Vector2i in neighbors:
 			var nb_bld: Dictionary = GameStateStore.get_building(nb)
 			if not nb_bld.is_empty() and (nb_bld.get("type", "") as String) == other_type:
-				adjacent_count += 1
+				count += 1
+		count = mini(count, syn.get("max_stack", 6) as int)
+		if count > 0:
+			result.append({ "rule": syn, "side": side, "count": count })
+	return result
 
-		if adjacent_count > 0:
-			var effects: Dictionary = syn.get(effects_key, {})
-			for res_id: String in effects:
-				var bonus: float = (effects[res_id] as float) * adjacent_count
-				bonuses[res_id] = bonuses.get(res_id, 0.0) as float + bonus
 
-	return bonuses
+## Rules that could apply to this building type — shown when the player picks it to build.
+func rules_for_type(type_id: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for syn: Dictionary in ContentDB.synergies:
+		if _side_of(syn, type_id) != "":
+			result.append(syn)
+	return result
+
+
+func _side_of(syn: Dictionary, type_id: String) -> String:
+	var pair: Array = syn.get("pair", [])
+	if pair.size() != 2:
+		return ""
+	if type_id == (pair[0] as String):
+		return "a"
+	if type_id == (pair[1] as String):
+		return "b"
+	return ""

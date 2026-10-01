@@ -237,6 +237,8 @@ func _validate_content() -> void:
 			for key: String in ["cost", "produces", "consumes"]:
 				_check_resources(ldata.get(key, {}), "building %s %s" % [type_id, key])
 	for syn: Dictionary in synergies:
+		_check_resources(syn.get("effects_a", {}), "synergy %s effects" % syn.get("id", "?"))
+		_check_resources(syn.get("effects_b", {}), "synergy %s effects" % syn.get("id", "?"))
 		for other: Variant in syn.get("pair", []) as Array:
 			if not buildings.has(other as String):
 				content_warnings.append("synergy %s names unknown building %s" % [syn.get("id", "?"), other])

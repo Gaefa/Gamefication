@@ -86,6 +86,23 @@ func _ready() -> void:
 	var now: float = PlacementRules.build_cost_for(def).get("res_wood", 0.0) as float
 	_check(now < base, "the Window makes a shelter cheaper (%d → %d wood)" % [int(base), int(now)])
 
+	# Neighbour rules (synergies.json).
+	_new_game("appointed_administrator")
+	var warehouse: Vector2i = _first("bld_warehouse")
+	var beside: Vector2i = _free_neighbour(warehouse)
+	_place(beside, "bld_lumber_yard")
+	_check(is_equal_approx(orch.adjacency.calculate_adjacency_bonus(beside, "bld_lumber_yard").get("res_wood", 0.0) as float, 0.1), "a lumber yard next to a warehouse gets +10% wood")
+	_place(Vector2i(13, 3), "bld_lumber_yard")
+	_check(orch.adjacency.calculate_adjacency_bonus(Vector2i(13, 3), "bld_lumber_yard").is_empty(), "a lumber yard far from a warehouse gets nothing")
+	var quarry := Vector2i(10, -5)
+	_place(quarry, "bld_quarry_pit")
+	_place(quarry + Vector2i(1, 0), "bld_shelter")
+	_check(is_equal_approx(orch.adjacency.value_at(quarry + Vector2i(1, 0), "bld_shelter", "mood"), -3.0), "a shelter next to a quarry loses 3 mood")
+	var by_cistern: Vector2i = _free_neighbour(_first("bld_main_cistern"))
+	_place(by_cistern, "bld_shelter")
+	_check(orch.coverage.is_water_covered(by_cistern) and is_equal_approx(orch.coverage.water_pressure(by_cistern), 1.0), "a shelter at the Cistern has full pressure")
+	_check(PressureSystem.new().call("_water_queue") > 0.0, "…and makes the water queue grow")
+
 	# 4/5. Content references resolve.
 	_check(ContentDB.content_warnings.is_empty(), "content check is clean (%d problems)" % ContentDB.content_warnings.size())
 
@@ -111,6 +128,13 @@ func _first(type_id: String) -> Vector2i:
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		if (GameStateStore.get_building(coord).get("type", "") as String) == type_id:
 			return coord
+	return Vector2i(-9999, -9999)
+
+
+func _free_neighbour(coord: Vector2i) -> Vector2i:
+	for nb: Vector2i in HexCoords.neighbors_of(coord):
+		if not GameStateStore.has_building(nb):
+			return nb
 	return Vector2i(-9999, -9999)
 
 

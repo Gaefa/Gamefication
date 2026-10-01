@@ -1,4 +1,4 @@
-Mandate Cities 0.1.4 — playtest build / тестовая сборка
+Mandate Cities 0.1.5 — playtest build / тестовая сборка
 
 WINDOWS
   Run MandateCities.exe. If SmartScreen warns "Windows protected your PC":

@@ -5,6 +5,7 @@ var _aura_cache: AuraCache
 var _coverage: CoverageMap
 var _notified_upgrade_level: int = 0
 var _win_emitted: bool = false
+var _adjacency := AdjacencyCalculator.new()
 
 # --- Population retention (tuning) ---
 const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick under duress
@@ -87,6 +88,7 @@ func _update_happiness() -> void:
 	var bld_count: int = 0
 	var dark_housing: int = 0
 	var weak_water_housing: int = 0
+	var neighbour_mood: float = 0.0  # housing by a quarry, by the old tower… (synergies.json)
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("damaged", false) as bool:
@@ -99,6 +101,7 @@ func _update_happiness() -> void:
 		var aura_h: float = _aura_cache.get_happiness_bonus(coord)
 		total_happiness += base_h + aura_h
 		bld_count += 1
+		neighbour_mood += _adjacency.value_at(coord, type_id, "mood")
 		# Dark housing (shed by the power director) drags morale — the "кому свет" cost.
 		if (ldata.get("population", 0) as int) > 0 and not (bld.get("powered", true) as bool):
 			dark_housing += 1
@@ -120,7 +123,7 @@ func _update_happiness() -> void:
 	var power_term: float = float(dark_housing) * -6.0
 	var pressure_term: float = float(weak_water_housing) * -3.0
 	GameStateStore.population()["low_pressure_housing"] = weak_water_housing
-	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term + pressure_term, 0.0, 100.0)
+	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term + pressure_term + neighbour_mood, 0.0, 100.0)
 	# Ease happiness toward the target instead of snapping. At the scarcity boundary the
 	# instantaneous supply term jitters tick-to-tick (food produced then eaten); a mood
 	# is slow-moving, so this low-pass filter turns that jitter into a steady slide.
