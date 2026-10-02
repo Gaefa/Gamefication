@@ -30,86 +30,122 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	# Полноэкранный тёмный фон
+	# The room goes dark; a sheet of paper lies on the desk.
 	_bg = ColorRect.new()
-	_bg.color = Color(0.08, 0.06, 0.12, 0.95)
+	_bg.color = Color(0.04, 0.03, 0.025, 0.93)
 	_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_bg)
-	
-	# Центральная панель
-	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(700, 500)
-	panel.position = Vector2(-350, -250)
-	_bg.add_child(panel)
-	
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 30)
-	margin.add_theme_constant_override("margin_right", 30)
-	margin.add_theme_constant_override("margin_top", 20)
-	margin.add_theme_constant_override("margin_bottom", 20)
-	panel.add_child(margin)
-	
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 12)
-	margin.add_child(vbox)
-	
-	# Заголовок: "Стол Администратора"
+
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_bg.add_child(center)
+
+	var column := VBoxContainer.new()
+	column.custom_minimum_size.x = 740
+	column.add_theme_constant_override("separation", 10)
+	center.add_child(column)
+
+	# Above the sheet: where we are and which letter this is.
 	_title_label = Label.new()
 	_title_label.text = Localization.ru_en("СТОЛ АДМИНИСТРАТОРА", "THE ADMINISTRATOR'S DESK")
 	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_title_label.add_theme_font_size_override("font_size", 22)
-	vbox.add_child(_title_label)
-	
-	# Счётчик: "Письмо 1 из 3"
+	UiStyle.title(_title_label, 22, UiStyle.ACCENT)
+	column.add_child(_title_label)
+
 	_counter_label = Label.new()
 	_counter_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_counter_label.add_theme_font_size_override("font_size", 14)
-	_counter_label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.7))
-	vbox.add_child(_counter_label)
-	
-	# Разделитель
-	var sep := HSeparator.new()
-	vbox.add_child(sep)
-	
-	# Заголовок события
+	UiStyle.caption(_counter_label)
+	_counter_label.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
+	column.add_child(_counter_label)
+
+	# The sheet itself.
+	var sheet := PanelContainer.new()
+	sheet.add_theme_stylebox_override("panel", UiStyle.paper_box())
+	column.add_child(sheet)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 10)
+	sheet.add_child(vbox)
+
 	_header_label = Label.new()
-	_header_label.add_theme_font_size_override("font_size", 18)
 	_header_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	UiStyle.title(_header_label, 20, UiStyle.INK)
 	vbox.add_child(_header_label)
-	
-	# Тело события
+
+	var rule := HSeparator.new()
+	var ink_line := StyleBoxLine.new()
+	ink_line.color = UiStyle.PAPER_EDGE
+	ink_line.thickness = 1
+	rule.add_theme_stylebox_override("separator", ink_line)
+	vbox.add_child(rule)
+
 	_body_label = RichTextLabel.new()
 	_body_label.bbcode_enabled = true
 	_body_label.fit_content = true
-	_body_label.custom_minimum_size = Vector2(0, 120)
+	_body_label.custom_minimum_size = Vector2(0, 90)
 	_body_label.scroll_active = false
+	_body_label.add_theme_font_override("normal_font", UiStyle.font_doc)
 	_body_label.add_theme_font_size_override("normal_font_size", 15)
+	_body_label.add_theme_color_override("default_color", UiStyle.INK)
+	_body_label.add_theme_constant_override("line_separation", 3)
+	_body_label.add_theme_constant_override("paragraph_separation", 10)
 	vbox.add_child(_body_label)
-	
-	# Контейнер для кнопок-вариантов
+
+	# The answers: each is a resolution with its consequences written under it.
 	_options_container = VBoxContainer.new()
-	_options_container.add_theme_constant_override("separation", 8)
+	_options_container.add_theme_constant_override("separation", 2)
 	vbox.add_child(_options_container)
-	
-	# Разделитель
-	var sep2 := HSeparator.new()
-	vbox.add_child(sep2)
-	
-	# Кнопка "Следующее письмо"
+
+	# Under the sheet: move on.
 	_next_btn = Button.new()
 	_next_btn.text = Localization.ru_en("Следующее письмо →", "Next letter →")
 	_next_btn.visible = false
+	_next_btn.custom_minimum_size.y = 44
+	UiStyle.primary(_next_btn)
 	_next_btn.pressed.connect(_show_next_event)
-	vbox.add_child(_next_btn)
-	
-	# Кнопка "Завершить вечер"
+	column.add_child(_next_btn)
+
 	_finish_btn = Button.new()
 	_finish_btn.text = Localization.ru_en("Завершить вечер — начать новый день", "End the evening — start a new day")
 	_finish_btn.visible = false
+	_finish_btn.custom_minimum_size.y = 44
+	UiStyle.primary(_finish_btn)
 	_finish_btn.pressed.connect(_finish_evening)
-	vbox.add_child(_finish_btn)
+	column.add_child(_finish_btn)
+
+
+## A letter's paragraphs sit half a line apart, as on paper, instead of a full blank line.
+func _paragraphs(text: String) -> String:
+	return text.replace("\n\n", "\n")
+
+
+## One answer on the sheet: the resolution and, right under it, what it will cost and change.
+func _add_option(text: String, effects: Dictionary, cost: Dictionary, on_pressed: Callable) -> void:
+	var btn := Button.new()
+	btn.text = text
+	btn.custom_minimum_size.y = 34
+	btn.focus_mode = Control.FOCUS_NONE
+	UiStyle.paper_button(btn)
+	if not cost.is_empty() and not GameStateStore.can_afford(cost):
+		btn.disabled = true
+		btn.text += Localization.ru_en(" (не хватает ресурсов)", " (not enough resources)")
+	btn.pressed.connect(on_pressed)
+	_options_container.add_child(btn)
+	var consequences: String = _consequences_text(effects, cost).replace("\n", " · ")
+	if consequences == "":
+		var gap := Control.new()
+		gap.custom_minimum_size.y = 6
+		_options_container.add_child(gap)
+		return
+	var note := Label.new()
+	note.text = consequences
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	note.custom_minimum_size.y = 22
+	note.add_theme_font_size_override("font_size", 12)
+	note.add_theme_color_override("font_color", UiStyle.INK_DIM)
+	_options_container.add_child(note)
 
 
 func _on_critical_event_started(event_data: Dictionary) -> void:
@@ -150,7 +186,7 @@ func _show_event(index: int) -> void:
 	var evt: Dictionary = _events[index]
 	_counter_label.text = Localization.ru_en("Письмо %d из %d", "Letter %d of %d") % [index + 1, _events.size()]
 	_header_label.text = Localization.content_text(evt, "title", evt.get("runtime_id", Localization.ru_en("Событие", "Event")) as String)
-	_body_label.text = Localization.content_text(evt, "body", Localization.content_text(evt, "text", ""))
+	_body_label.text = _paragraphs(Localization.content_text(evt, "body", Localization.content_text(evt, "text", "")))
 	_next_btn.text = Localization.ru_en("Следующее письмо →", "Next letter →")
 	
 	# Очищаем старые кнопки
@@ -169,44 +205,24 @@ func _show_event(index: int) -> void:
 		# Новый TDD-формат (массив options с text/effects)
 		for i: int in options.size():
 			var opt: Dictionary = options[i] as Dictionary
-			var btn := Button.new()
-			btn.text = Localization.content_text(opt, "text", Localization.ru_en("Вариант %d", "Option %d") % (i + 1))
 			var event_id: String = evt.get("runtime_id", "") as String
 			var effects: Dictionary = opt.get("effects", {})
 			var cost: Dictionary = opt.get("cost", {})
-			btn.tooltip_text = _consequences_text(effects, cost)
-			if not cost.is_empty() and not GameStateStore.can_afford(cost):
-				btn.disabled = true
-				btn.text += Localization.ru_en(" (не хватает ресурсов)", " (not enough resources)")
 			var opt_idx: int = i
-			btn.pressed.connect(func() -> void: _select_option(event_id, opt_idx, effects, cost))
-			_options_container.add_child(btn)
+			_add_option(Localization.content_text(opt, "text", Localization.ru_en("Вариант %d", "Option %d") % (i + 1)),
+				effects, cost, func() -> void: _select_option(event_id, opt_idx, effects, cost))
 
 
 func _create_legacy_buttons(evt: Dictionary) -> void:
 	var event_id: String = evt.get("runtime_id", evt.get("id", "")) as String
-	
-	# Accept
-	var accept_btn := Button.new()
-	accept_btn.text = Localization.content_text(evt, "accept_label", Localization.ru_en("Принять", "Accept"))
 	var accept_effects: Dictionary = evt.get("accept_effects", {})
 	var accept_cost: Variant = evt.get("accept_cost", null)
-	if accept_cost is Dictionary and not (accept_cost as Dictionary).is_empty():
-		if not GameStateStore.can_afford(accept_cost as Dictionary):
-			accept_btn.disabled = true
-			accept_btn.text += Localization.ru_en(" (не хватает ресурсов)", " (not enough resources)")
 	var accept_cost_dict: Dictionary = accept_cost as Dictionary if accept_cost is Dictionary else {}
-	accept_btn.tooltip_text = _consequences_text(accept_effects, accept_cost_dict)
-	accept_btn.pressed.connect(func() -> void: _select_option(event_id, 0, accept_effects, accept_cost_dict))
-	_options_container.add_child(accept_btn)
-	
-	# Decline
-	var decline_btn := Button.new()
-	decline_btn.text = Localization.content_text(evt, "decline_label", Localization.ru_en("Отклонить", "Decline"))
+	_add_option(Localization.content_text(evt, "accept_label", Localization.ru_en("Принять", "Accept")),
+		accept_effects, accept_cost_dict, func() -> void: _select_option(event_id, 0, accept_effects, accept_cost_dict))
 	var decline_effects: Dictionary = evt.get("decline_effects", {})
-	decline_btn.tooltip_text = _consequences_text(decline_effects, {})
-	decline_btn.pressed.connect(func() -> void: _select_option(event_id, 1, decline_effects, {}))
-	_options_container.add_child(decline_btn)
+	_add_option(Localization.content_text(evt, "decline_label", Localization.ru_en("Отклонить", "Decline")),
+		decline_effects, {}, func() -> void: _select_option(event_id, 1, decline_effects, {}))
 
 
 const RES_LABELS := {

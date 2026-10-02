@@ -18,8 +18,8 @@ const HINTS := {
 		"Now a \"Well Pump\" by the road: it gives water within 4 tiles (V shows the range). A second pump is a second reserve for the Dust."],
 	"build_shelter": ["«Жильё» → «Барак» в зоне воды — приедут жители. Барак без воды пустует. Кликните по зданию — увидите, чего ему не хватает.",
 		"\"Residential\" → \"Shelter\" inside the water zone, and residents will arrive. A shelter without water stays empty. Click a building to see what it lacks."],
-	"first_desk": ["Так будет каждый вечер: письма и обращения на Столе, последствия — при наведении на ответ. Всё, что вы ответили, хранится в журнале (T).",
-		"This happens every evening: letters and petitions on the Desk; hover an answer to see its consequences. Everything you answered is kept in the log (T)."],
+	"first_desk": ["Так будет каждый вечер: письма и обращения на Столе, последствия написаны под каждым ответом. Всё, что вы ответили, хранится в журнале (T).",
+		"This happens every evening: letters and petitions on the Desk, with the consequences written under each answer. Everything you answered is kept in the log (T)."],
 	# --- Contextual: fire on the first occurrence of the situation ---
 	"water_days": ["Вверху — «Воды на N дней»: сколько город протянет при текущем расходе. Не дайте упасть к нулю, особенно перед Пылью.",
 		"At the top, \"Water for N days\": how long the city lasts at current use. Don't let it hit zero, especially before the Dust."],
@@ -170,12 +170,8 @@ func _build_ui() -> void:
 	_panel.offset_bottom = -40
 	_layer.add_child(_panel)
 
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.12, 0.11, 0.16, 0.96)
-	style.border_color = Color(0.55, 0.5, 0.35)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	style.set_content_margin_all(14)
+	var style: StyleBoxFlat = UiStyle.panel_box(14)
+	style.border_color = UiStyle.ACCENT_DIM
 	_panel.add_theme_stylebox_override("panel", style)
 
 	var vbox := VBoxContainer.new()
@@ -184,8 +180,7 @@ func _build_ui() -> void:
 
 	_head = Label.new()
 	var head := _head
-	head.add_theme_font_size_override("font_size", 12)
-	head.add_theme_color_override("font_color", Color(0.7, 0.66, 0.5))
+	UiStyle.caption(head)
 	vbox.add_child(head)
 
 	_label = Label.new()

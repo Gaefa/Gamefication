@@ -165,7 +165,7 @@ func _build_ui() -> void:
 	_layer.add_child(_root)
 
 	var bg := ColorRect.new()
-	bg.color = Color(0.05, 0.06, 0.08, 0.92)
+	bg.color = Color(0.04, 0.03, 0.025, 0.9)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	_root.add_child(bg)
@@ -190,7 +190,7 @@ func _build_ui() -> void:
 	_title = Label.new()
 	var title := _title
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 20)
+	UiStyle.title(title, 22, UiStyle.ACCENT)
 	vbox.add_child(title)
 
 	vbox.add_child(HSeparator.new())

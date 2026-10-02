@@ -192,8 +192,8 @@ func _make_steps() -> Array[Dictionary]:
 			"done": func() -> bool: return _desk_seen,
 		},
 		{
-			"text": t.call("[b]Вечер — Стол администратора.[/b] Письма покровителя и обращения жителей. [b]Наведите курсор на ответ[/b] — увидите, чем он обернётся. Решение действует сразу; после почты начинается новый день.",
-				"[b]Evening — the Administrator's Desk.[/b] Patron letters and residents' petitions. [b]Hover an answer[/b] to see what it leads to. A decision takes effect at once; after the mail a new day begins."),
+			"text": t.call("[b]Вечер — Стол администратора.[/b] Письма покровителя и обращения жителей. [b]Под каждым ответом[/b] написано, чем он обернётся. Решение действует сразу; после почты начинается новый день.",
+				"[b]Evening — the Administrator's Desk.[/b] Patron letters and residents' petitions. [b]Under each answer[/b] it says what it leads to. A decision takes effect at once; after the mail a new day begins."),
 			"top": true,
 		},
 		{
@@ -415,12 +415,9 @@ func _build_ui() -> void:
 
 	_bubble = PanelContainer.new()
 	_bubble.mouse_filter = Control.MOUSE_FILTER_STOP
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.11, 0.10, 0.15, 0.97)
-	style.border_color = Color(1.0, 0.85, 0.35)
+	var style: StyleBoxFlat = UiStyle.panel_box(14)
+	style.border_color = UiStyle.ACCENT
 	style.set_border_width_all(2)
-	style.set_corner_radius_all(6)
-	style.set_content_margin_all(14)
 	_bubble.add_theme_stylebox_override("panel", style)
 	_layer.add_child(_bubble)
 
@@ -429,8 +426,7 @@ func _build_ui() -> void:
 	_bubble.add_child(box)
 
 	_title = Label.new()
-	_title.add_theme_font_size_override("font_size", 12)
-	_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
+	UiStyle.caption(_title)
 	box.add_child(_title)
 
 	_text = RichTextLabel.new()
@@ -462,6 +458,7 @@ func _build_ui() -> void:
 	row.add_child(spacer)
 	_next_btn = Button.new()
 	_next_btn.custom_minimum_size = Vector2(110, 32)
+	UiStyle.primary(_next_btn)
 	_next_btn.pressed.connect(func() -> void: _go(_index + 1))
 	row.add_child(_next_btn)
 

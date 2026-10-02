@@ -71,8 +71,9 @@ func _compose() -> String:
 	var gross_day: float = _gross_daily_consumption()
 	if gross_day > 0.0:
 		var days: float = reserve / gross_day
-		var color: String = "#d98c66" if days < 3.0 else "#7fbf7f"
-		lines.append(Localization.ru_en("— Хватит примерно на [color=%s]%.1f дн.[/color] при текущем расходе (%.0f/день)", "— Lasts about [color=%s]%.1f days[/color] at current use (%.0f/day)") % [color, days, gross_day])
+		# How long the tanks alone would last. A warning only when the reserve is actually draining.
+		var color: String = "#d98c66" if days < 3.0 and net < 0.0 else "#aaa08c"
+		lines.append(Localization.ru_en("— Если насосы встанут, запаса хватит на [color=%s]%.1f дн.[/color] (расход %.0f/день)", "— If the pumps stop, the reserve lasts [color=%s]%.1f days[/color] (use %.0f/day)") % [color, days, gross_day])
 	lines.append(Localization.ru_en("— Баланс: %s", "— Balance: %s") % _net_text(net))
 	lines.append("")
 
@@ -196,7 +197,7 @@ func _build_ui() -> void:
 	_layer.add_child(_root)
 
 	var bg := ColorRect.new()
-	bg.color = Color(0.04, 0.06, 0.08, 0.92)
+	bg.color = Color(0.04, 0.03, 0.025, 0.9)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	_root.add_child(bg)
@@ -221,7 +222,7 @@ func _build_ui() -> void:
 	_title = Label.new()
 	var title := _title
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 18)
+	UiStyle.title(title, 22, UiStyle.ACCENT)
 	vbox.add_child(title)
 
 	vbox.add_child(HSeparator.new())

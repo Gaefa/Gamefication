@@ -247,7 +247,7 @@ func _request_bulldoze() -> void:
 		return
 	_bulldoze_armed = _selected_coord
 	_bulldoze_armed_until = now + 4000
-	EventBus.toast_requested.emit(Localization.ru_en("Снести «%s»? Нажмите B ещё раз.", "Demolish \"%s\"? Press B again.") % Localization.content_text(def, "label", ""), 4.0)
+	EventBus.toast_requested.emit(Localization.ru_en("Снести «%s»? Нажмите ещё раз.", "Demolish \"%s\"? Press again.") % Localization.content_text(def, "label", ""), 4.0)
 
 
 func _on_build_mode_changed(type_id: String) -> void:

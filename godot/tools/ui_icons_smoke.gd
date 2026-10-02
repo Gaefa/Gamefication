@@ -162,9 +162,9 @@ func _check_build_list(context: String) -> void:
 	_check(not scroll.get_h_scroll_bar().visible, context + ": no horizontal scroll")
 	_check(list.size.x <= scroll.size.x + 1, context + ": building cards fit menu width")
 	for child: Control in list.get_children():
-		_check(child.size.x <= scroll.size.x + 1, context + ": card text fits width")
-		if child is Label:
-			_check(child.get_visible_line_count() == child.get_line_count(), context + ": all description/cost lines visible")
+		_check(child.size.x <= scroll.size.x + 1, context + ": card fits width")
+		for label: Node in child.find_children("*", "Label", true, false):
+			_check((label as Label).get_visible_line_count() == (label as Label).get_line_count(), context + ": all card lines visible")
 
 
 func _settle() -> void:

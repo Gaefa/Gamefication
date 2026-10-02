@@ -33,7 +33,7 @@ The ending screen explains why things ended the way they did: the two masters, t
 ## How a day goes
 
 1. **Day.** Build, repair, watch the map. Time runs; you can pause (Space) and change speed (1 / 2 / 3).
-2. **Evening — the Administrator's Desk.** The game pauses and the secretary lays out patron letters and resident petitions. **Hover over an answer to see its consequences** (trust, support, resources, pressure). Choose. Urgent items (audit, ultimatum) arrive in the middle of the day.
+2. **Evening — the Administrator's Desk.** The game pauses and the secretary lays out patron letters and resident petitions. **Each answer has its consequences written under it** (trust, support, resources, pressure). Choose. Urgent items (audit, ultimatum) arrive in the middle of the day.
 3. **Morning.** A new day begins. Decisions take effect as soon as you make them. Everything you answered is in the log (T).
 
 ## Goals and panels
