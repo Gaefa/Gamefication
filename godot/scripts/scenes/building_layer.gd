@@ -98,8 +98,7 @@ func _draw() -> void:
 				_draw_select_half(center, false)
 			if def.has("badge"):
 				badges.append([marker_anchor(coord), def.get("badge", "") as String])
-			if damaged:
-				_draw_crack(center)
+			# A damaged sprite is tinted red and carries the repair pin; no cross drawn over the art.
 			if level > 0:
 				_draw_level_dots(center, level)
 			continue
