@@ -244,6 +244,8 @@ func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
 				parts.append(Localization.ru_en("снос: %s", "demolition: %s") % _building_name(value as String))
 			"replace_building":
 				parts.append(Localization.ru_en("перестройка: %s", "rebuild: %s") % _building_name((value as Dictionary).get("to", "") as String))
+			"add_buff":
+				parts.append(_buff_text(value as Dictionary))
 			"force_issues":
 				parts.append(Localization.ru_en("поломки: %d", "breakdowns: %d") % (value as int))
 			"damage_buildings":
@@ -260,6 +262,18 @@ func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
 			costs.append("%s %d" % [_res_label(res_id), int(cost[res_id] as float)])
 		lines.append(Localization.ru_en("Цена: ", "Cost: ") + ", ".join(costs))
 	return "\n".join(lines)
+
+
+## A temporary effect: what it changes, by how much and for how many days.
+func _buff_text(buff: Dictionary) -> String:
+	var days: int = maxi(1, roundi((buff.get("remaining", 0.0) as float) / SimulationRunner.day_duration))
+	var term: String = Localization.ru_en("%d дн.", "%d d") % days
+	if buff.has("happiness_add"):
+		return Localization.ru_en("счастье %s на %s", "happiness %s for %s") % [_signed(buff["happiness_add"] as float), term]
+	var target: String = buff.get("target", "") as String
+	var who: String = _building_name(target) if target != "" else Localization.ru_en("все здания", "all buildings")
+	var percent: String = _signed(roundf((buff.get("production_mult", 0.0) as float) * 100.0))
+	return Localization.ru_en("выработка (%s) %s%% на %s", "output (%s) %s%% for %s") % [who, percent, term]
 
 
 func _signed(v: float) -> String:

@@ -103,6 +103,31 @@ func _ready() -> void:
 	_check(orch.coverage.is_water_covered(by_cistern) and is_equal_approx(orch.coverage.water_pressure(by_cistern), 1.0), "a shelter at the Cistern has full pressure")
 	_check(PressureSystem.new().call("_water_queue") > 0.0, "…and makes the water queue grow")
 
+	# A card's temporary effect raises output for its term and then expires.
+	_new_game("appointed_administrator")
+	var log_pump: Vector2i = _first("bld_well_pump")
+	var pump_before: float = orch.production_mult.compute(log_pump).get("res_water_stockpile", 0.0) as float
+	var log_card: Dictionary = (ContentDB.get_event_def("petition.pump_log").get("options", []) as Array)[0] as Dictionary
+	EventManager.call("_apply_effects", log_card.get("effects", {}))
+	var pump_tuned: float = orch.production_mult.compute(log_pump).get("res_water_stockpile", 0.0) as float
+	_check(pump_before > 0.0 and is_equal_approx(pump_tuned / pump_before, 1.15), "the pump log gives the pumps +15% output")
+	_ticks(1500)
+	_check(GameStateStore.get_buffs().is_empty(), "…and the effect ends after five days")
+
+	# The Desk is never silent for long: from day 5 to the finale a League administrator
+	# gets a scheduled letter at least every third evening.
+	var mail_days: Array = [RivalManager.GRANT_DAY, MandateManager.AUDIT_DAY, EndingManager.WIN_DAY]
+	for event_id: String in ContentDB.get_event_ids():
+		var evt_def: Dictionary = ContentDB.get_event_def(event_id)
+		if evt_def.has("trigger_day") and not evt_def.has("trigger_condition") and (evt_def.get("patron", "restoration_league") as String) == "restoration_league":
+			mail_days.append(evt_def.get("trigger_day") as int)
+	var longest_gap: int = 0
+	var quiet: int = 0
+	for day: int in range(5, EndingManager.WIN_DAY + 1):
+		quiet = 0 if mail_days.has(day) else quiet + 1
+		longest_gap = maxi(longest_gap, quiet)
+	_check(longest_gap <= 2, "no more than two quiet evenings in a row (longest: %d)" % longest_gap)
+
 	# 4/5. Content references resolve.
 	_check(ContentDB.content_warnings.is_empty(), "content check is clean (%d problems)" % ContentDB.content_warnings.size())
 
