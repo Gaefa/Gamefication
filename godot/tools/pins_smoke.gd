@@ -150,7 +150,7 @@ func _run() -> void:
 	GameStateStore.get_building(Vector2i.ZERO)["damaged"] = true
 	probe.queue_redraw()
 	await _capture()
-	_check(probe.cracks > 0, "damaged sprite retains crack")
+	_check(probe.cracks == 0, "damaged sprite has no cross over the art (tint and repair pin say it)")
 	GameStateStore.set_building(Vector2i.ZERO, {"type": "missing_building", "level": 0, "has_issue": true})
 	probe.queue_redraw()
 	await _capture()
