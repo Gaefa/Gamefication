@@ -47,6 +47,29 @@ func _ready() -> void:
 	orch.command_bus.execute(BulldozeCommand.new(ruin))
 	_check(not GameStateStore.has_building(ruin) and GameStateStore.get_resource("res_stone") > stone_before, "a ruin can be salvaged")
 
+	# The only home cannot be demolished while people live in it; with a second one it can.
+	_new_game("appointed_administrator")
+	_ticks(5)
+	var home: Vector2i = _first("bld_shelter")
+	orch.command_bus.execute(BulldozeCommand.new(home))
+	_check(GameStateStore.has_building(home), "the last shelter cannot be demolished from under its residents")
+	_place(_free_neighbour(home), "bld_shelter")
+	orch.command_bus.execute(BulldozeCommand.new(home))
+	_check(not GameStateStore.has_building(home), "with a second shelter the first can go")
+
+	# Spare housing standing empty does not make people leave faster in a bad day.
+	_new_game("appointed_administrator")
+	_ticks(5)
+	_place(Vector2i(14, 6), "bld_shelter")
+	_place(Vector2i(15, 6), "bld_shelter")
+	var field: Vector2i = _first("bld_field_strip")
+	GameStateStore.remove_building(field)
+	orch.spatial.remove(field, "bld_field_strip")
+	GameStateStore.set_resource("res_food", 0.0)
+	_ticks(250)
+	var left: int = GameStateStore.population().get("total", 0) as int
+	_check(left >= 2 and left < 4, "a hungry day with empty barracks around thins the district but does not empty it (%d of 4 left)" % left)
+
 	# 6. Housing without water adds no residents.
 	_new_game("appointed_administrator")
 	_ticks(5)

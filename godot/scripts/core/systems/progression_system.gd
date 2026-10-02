@@ -64,11 +64,15 @@ func _update_population() -> void:
 	var happiness: float = pop_state.get("happiness", 50.0) as float
 	var under_duress: bool = food <= 0.0 or water <= 0.0 or happiness < MISERY_HAPPINESS
 
+	# The pace is set by the housing people actually live in. Spare barracks standing empty
+	# must not make the district drain faster (it used to: three empty barracks and one bad
+	# day emptied a district of four).
+	var lived_in: float = float(mini(capacity, maxi(served, ceili(residents))))
 	if under_duress:
-		residents -= float(capacity) * OUTFLOW_RATE
+		residents -= lived_in * OUTFLOW_RATE
 	elif residents > float(served):
 		# Housing lost its water or road: people move out over a few days, not at once.
-		residents = maxf(residents - float(capacity) * OUTFLOW_RATE, float(served))
+		residents = maxf(residents - lived_in * OUTFLOW_RATE, float(served))
 	elif residents < float(served) and happiness >= CONTENT_HAPPINESS:
 		residents += (float(served) - residents) * INFLOW_RATE
 	residents = clampf(residents, 0.0, float(capacity))

@@ -30,7 +30,10 @@ func _apply_ui_scale() -> void:
 	var size: Vector2i = window.size
 	@warning_ignore("integer_division")
 	var factor: int = maxi(1, mini(size.x / 1280, size.y / 720))
-	window.content_scale_size = Vector2i(ceili(float(size.x) / float(factor)), ceili(float(size.y) / float(factor)))
+	var logical := Vector2(size) / float(factor)
+	# A window smaller than the design size shows the whole interface scaled down, not cut off.
+	var shrink: float = minf(1.0, minf(logical.x / 1280.0, logical.y / 720.0))
+	window.content_scale_size = Vector2i(ceili(logical.x / shrink), ceili(logical.y / shrink))
 
 
 func _setup_scene_tree() -> void:

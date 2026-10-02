@@ -43,7 +43,7 @@ var _info_actions: HBoxContainer
 var _upgrade_button: Button
 var _repair_button: Button
 var _bulldoze_button: Button
-const INFO_W := 360.0
+const INFO_W := 380.0
 
 var _event_panel: PanelContainer
 var _toast_label: Label
@@ -117,6 +117,16 @@ func _update_minimap_camera() -> void:
 		_minimap_camera.global_position = main_cam.global_position
 
 
+## Texts set once when the HUD is built. They are re-applied when the language changes,
+## so a switch on the menu or in Options leaves nothing in the old language.
+var _static_texts: Array = []  # [control, property, text_fn]
+
+
+func _loc(control: Control, text_fn: Callable, property: String = "text") -> void:
+	_static_texts.append([control, property, text_fn])
+	control.set(property, text_fn.call())
+
+
 func _connect_signals() -> void:
 	EventBus.resources_changed.connect(_on_resources_changed)
 	EventBus.toast_requested.connect(_on_toast)
@@ -180,10 +190,10 @@ func _build_resource_bar() -> void:
 	var pop_box: HBoxContainer = _chip(top)
 	_chip_icon(pop_box, "people")
 	_pop_label = _chip_text(pop_box, 14, Color(0.97, 0.95, 0.88))
-	_happy_label = _chip_text(_chip(top, Localization.ru_en(
+	_happy_label = _chip_text(_chip(top, func() -> String: return Localization.ru_en(
 		"Счастье жителей: вода, еда, жильё. Аудит требует не ниже %d%%.",
 		"Residents' happiness: water, food, housing. The audit requires at least %d%%.") % int(MandateManager.HAPPINESS_OK)), 14, Color(0.97, 0.95, 0.88))
-	_level_label = _chip_text(_chip(top, Localization.ru_en(
+	_level_label = _chip_text(_chip(top, func() -> String: return Localization.ru_en(
 		"Уровень поселения. Условия следующего уровня — кнопка «Город».",
 		"Settlement level. The next level's requirements are under the City button.")), 12, Color(0.9, 0.85, 0.6))
 	var power_box: HBoxContainer = _chip(top)
@@ -204,7 +214,7 @@ func _build_resource_bar() -> void:
 	_city_label.gui_input.connect(_on_city_gui_input)
 
 	# The two masters: a bar each, so "who is about to end me" reads without digits.
-	var masters: HBoxContainer = _chip(bottom, Localization.ru_en(
+	var masters: HBoxContainer = _chip(bottom, func() -> String: return Localization.ru_en(
 		"Доверие покровителя и поддержка города. Упадёт до нуля первое — вас отзовут, второе — бунт.",
 		"Patron trust and city support. If the first hits zero you are recalled; the second — a riot."))
 	_patron_label = _chip_text(masters, 12, Color(0.8, 0.8, 0.85))
@@ -212,7 +222,7 @@ func _build_resource_bar() -> void:
 	_trust_value = _chip_text(masters, 13, Color.WHITE)
 	_masters_arrow = _chip_text(masters, 12, Color(0.6, 0.6, 0.6))
 	_masters_arrow.text = "↕"
-	_chip_text(masters, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Город", "City")
+	_loc(_chip_text(masters, 12, Color(0.8, 0.8, 0.85)), func() -> String: return Localization.ru_en("Город", "City"))
 	_support_bar = _chip_bar(masters, 54)
 	_support_value = _chip_text(masters, 13, Color.WHITE)
 	_rival_label = RichTextLabel.new()
@@ -223,15 +233,15 @@ func _build_resource_bar() -> void:
 	_rival_label.add_theme_font_size_override("normal_font_size", 12)
 	_rival_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_rival_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_chip(bottom, Localization.ru_en(
+	_chip(bottom, func() -> String: return Localization.ru_en(
 		"Сводный показатель района Мары Восс и ваш. По нему делят грант на %d-й день.",
 		"The combined score of Mara Voss's district and yours. It decides the grant on day %d.") % RivalManager.GRANT_DAY).add_child(_rival_label)
 
 	# Pressure director: four gauges filling toward a crisis at 100.
-	var pressure: HBoxContainer = _chip(bottom, Localization.ru_en(
+	var pressure: HBoxContainer = _chip(bottom, func() -> String: return Localization.ru_en(
 		"Давление: еда, вода, люди, мандат. Шкала дошла до 100 — на Стол приходит срочное письмо.",
 		"Pressure: food, water, people, mandate. When a gauge reaches 100, an urgent letter lands on the Desk."))
-	_chip_text(pressure, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Давление", "Pressure")
+	_loc(_chip_text(pressure, 12, Color(0.8, 0.8, 0.85)), func() -> String: return Localization.ru_en("Давление", "Pressure"))
 	_pressure_bars.clear()
 	for pair: Array in [["food", "food"], ["water", "water"], ["happiness", "people"], ["mandate", "mandate"]]:
 		_chip_icon(pressure, pair[1] as String)
@@ -240,14 +250,15 @@ func _build_resource_bar() -> void:
 		_pressure_bars[pair[0]] = { "bar": bar, "value": num }
 
 
-func _chip(parent: Control, tip: String = "") -> HBoxContainer:
+func _chip(parent: Control, tip: Callable = Callable()) -> HBoxContainer:
 	var panel := PanelContainer.new()
 	var style: StyleBoxFlat = UiStyle.box(UiStyle.BG_RAISED, UiStyle.LINE, 5, 3)
 	style.content_margin_left = 8
 	style.content_margin_right = 8
 	panel.add_theme_stylebox_override("panel", style)
 	panel.mouse_filter = Control.MOUSE_FILTER_PASS
-	panel.tooltip_text = tip
+	if tip.is_valid():
+		_loc(panel, tip, "tooltip_text")
 	parent.add_child(panel)
 	var box := HBoxContainer.new()
 	box.add_theme_constant_override("separation", 5)
@@ -319,7 +330,7 @@ func _build_day_clock() -> void:
 	_clock_panel.offset_left = -190
 	_clock_panel.offset_right = 190
 	_clock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	_clock_panel.tooltip_text = Localization.ru_en("Пробел — пауза · 1 / 2 / 3 — скорость", "Space — pause · 1 / 2 / 3 — speed")
+	_loc(_clock_panel, func() -> String: return Localization.ru_en("Пробел — пауза · 1 / 2 / 3 — скорость", "Space — pause · 1 / 2 / 3 — speed"), "tooltip_text")
 	var style: StyleBoxFlat = UiStyle.panel_box(6)
 	style.border_color = UiStyle.ACCENT_DIM
 	style.content_margin_left = 12
@@ -425,7 +436,7 @@ func _build_left_column() -> void:
 	box.add_theme_constant_override("separation", 3)
 	goals.add_child(box)
 	var head := Label.new()
-	head.text = Localization.ru_en("Цели", "Goals")
+	_loc(head, func() -> String: return Localization.ru_en("Цели", "Goals"))
 	UiStyle.caption(head)
 	box.add_child(head)
 	_goal_rows.clear()
@@ -439,7 +450,7 @@ func _build_left_column() -> void:
 			row.add_theme_constant_override("separation", 4)
 			_left_column.add_child(row)
 		var btn := Button.new()
-		btn.text = "%s  %s" % [Localization.ru_en(entry[1] as String, entry[2] as String), entry[3]]
+		_loc(btn, func() -> String: return "%s  %s" % [Localization.ru_en(entry[1] as String, entry[2] as String), entry[3]])
 		btn.add_theme_font_size_override("font_size", 12)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.focus_mode = Control.FOCUS_NONE
@@ -885,7 +896,7 @@ func _build_build_panel() -> void:
 
 	# Map layers: what the overlay shows on top of the district.
 	var lens_title := Label.new()
-	lens_title.text = Localization.ru_en("Слои карты", "Map layers")
+	_loc(lens_title, func() -> String: return Localization.ru_en("Слои карты", "Map layers"))
 	UiStyle.caption(lens_title)
 	vbox.add_child(lens_title)
 	var lens_row := HBoxContainer.new()
@@ -1246,7 +1257,7 @@ func _build_build_mode_info_text(type_id: String) -> String:
 	if orch_adj != null:
 		for rule: Dictionary in orch_adj.adjacency.rules_for_type(type_id):
 			has_rules = true
-			lines.append("[color=%s]•[/color] %s" % [UiStyle.hex(UiStyle.ACCENT), Localization.content_text(rule, "description", "")])
+			lines.append("[color=%s]•[/color] %s" % [UiStyle.hex(UiStyle.ACCENT), _rule_text(rule)])
 
 	var req_level: int = def.get("unlock_level", 1) as int
 	if (GameStateStore.progression().city_level as int) < req_level:
@@ -1262,6 +1273,9 @@ func _build_build_mode_info_text(type_id: String) -> String:
 
 
 func _on_locale_changed(_locale: String) -> void:
+	for entry: Array in _static_texts:
+		if is_instance_valid(entry[0]):
+			(entry[0] as Control).set(entry[1] as String, (entry[2] as Callable).call())
 	_refresh_build_panel_labels()
 	_update_resource_bar()
 	_rebuild_building_list()
@@ -1319,15 +1333,15 @@ func _build_info_panel() -> void:
 	_info_actions = HBoxContainer.new()
 	_info_actions.add_theme_constant_override("separation", 6)
 	box.add_child(_info_actions)
-	_upgrade_button = _action_button(Localization.ru_en("Улучшить", "Upgrade"), KEY_U)
-	_repair_button = _action_button(Localization.ru_en("Починить", "Repair"), KEY_R)
-	_bulldoze_button = _action_button(Localization.ru_en("Снести", "Demolish"), KEY_B)
+	_upgrade_button = _action_button("Улучшить", "Upgrade", KEY_U)
+	_repair_button = _action_button("Починить", "Repair", KEY_R)
+	_bulldoze_button = _action_button("Снести", "Demolish", KEY_B)
 	_show_info(_get_welcome_text())
 
 
-func _action_button(label: String, key: Key) -> Button:
+func _action_button(ru: String, en: String, key: Key) -> Button:
 	var btn := Button.new()
-	btn.text = "%s  %s" % [label, OS.get_keycode_string(key)]
+	_loc(btn, func() -> String: return "%s  %s" % [Localization.ru_en(ru, en), OS.get_keycode_string(key)])
 	btn.add_theme_font_size_override("font_size", 12)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.focus_mode = Control.FOCUS_NONE
@@ -1365,6 +1379,11 @@ func _mark_bb(ok: bool, text: String) -> String:
 	if ok:
 		return "[color=%s]✔[/color]\u00a0%s" % [UiStyle.hex(UiStyle.GOOD), text]
 	return "[color=%s]✘\u00a0%s[/color]" % [UiStyle.hex(UiStyle.BAD), text]
+
+
+## A neighbour rule in the card's one-line form; the full sentence lives in the help.
+func _rule_text(rule: Dictionary) -> String:
+	return Localization.content_text(rule, "short", Localization.content_text(rule, "description", ""))
 
 
 ## A price with resource icons; what the district cannot pay yet turns red.
@@ -1466,7 +1485,7 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	var orch_adj := _get_orchestrator()
 	if orch_adj != null:
 		for entry: Dictionary in orch_adj.adjacency.active_rules(coord, type_id):
-			lines.append("%s %s" % [_dim_bb(Localization.ru_en("Соседство:", "Neighbours:")), Localization.content_text(entry.rule as Dictionary, "description", "")])
+			lines.append("%s %s" % [_dim_bb(Localization.ru_en("Соседство:", "Neighbours:")), _rule_text(entry.rule as Dictionary)])
 	if bld.get("damaged", false) as bool:
 		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), Localization.ru_en("Повреждено: не работает, пока не починят.", "Damaged: out of action until repaired.")])
 	elif bld.get("has_issue", false) as bool:
@@ -1598,13 +1617,13 @@ func _build_help_panel() -> void:
 	var help_head := HBoxContainer.new()
 	help_box.add_child(help_head)
 	var help_title := Label.new()
-	help_title.text = Localization.ru_en("Справка", "Help")
+	_loc(help_title, func() -> String: return Localization.ru_en("Справка", "Help"))
 	UiStyle.title(help_title, 22, UiStyle.ACCENT)
 	help_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	help_head.add_child(help_title)
 	var help_close := Button.new()
 	help_close.text = "✕"
-	help_close.tooltip_text = Localization.ru_en("Закрыть (H)", "Close (H)")
+	_loc(help_close, func() -> String: return Localization.ru_en("Закрыть (H)", "Close (H)"), "tooltip_text")
 	help_close.custom_minimum_size = Vector2(34, 30)
 	help_close.pressed.connect(toggle_help)
 	help_head.add_child(help_close)
@@ -1662,7 +1681,7 @@ func _build_start_panel() -> void:
 
 func _build_minimap() -> void:
 	_minimap_panel = PanelContainer.new()
-	_minimap_panel.custom_minimum_size = Vector2(LEFT_W, 132)
+	_minimap_panel.custom_minimum_size = Vector2(LEFT_W, 124)
 	_minimap_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	
 	# Position: Top-left, under resource bar
@@ -1680,7 +1699,7 @@ func _build_minimap() -> void:
 	_minimap_panel.add_child(v_box)
 
 	var label := Label.new()
-	label.text = Localization.ru_en("Карта", "Map")
+	_loc(label, func() -> String: return Localization.ru_en("Карта", "Map"))
 	UiStyle.caption(label)
 	v_box.add_child(label)
 
@@ -2366,13 +2385,13 @@ func _build_governance_panel() -> void:
 	root.add_child(header)
 
 	var title := Label.new()
-	title.text = Localization.t("ui.governance.title", "Governance")
+	_loc(title, func() -> String: return Localization.t("ui.governance.title", "Governance"))
 	UiStyle.title(title, 22, UiStyle.ACCENT)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
 	var close_btn := Button.new()
-	close_btn.text = Localization.t("ui.common.close", "Close")
+	_loc(close_btn, func() -> String: return Localization.t("ui.common.close", "Close"))
 	close_btn.pressed.connect(toggle_governance)
 	header.add_child(close_btn)
 
