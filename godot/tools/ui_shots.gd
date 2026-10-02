@@ -91,9 +91,13 @@ func _run() -> void:
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		bld[pair[1]] = true
 		GameStateStore.set_building(coord, bld)
-		EventBus.building_damaged.emit(coord, 1.0)
+		if pair[1] == "damaged":
+			EventBus.building_damaged.emit(coord, 1.0)
+		else:
+			EventBus.building_issue_added.emit(coord)
+	EventBus.building_placed.emit(_first("bld_field_strip"), "bld_field_strip")
 	EventBus.selection_changed.emit(Vector2i(-9999, -9999))
-	await _shot("20_pins")
+	await _shot("20_pins", 4)  # early, while the flashes are still on screen
 	EndingManager.call("_show_finale", ContentDB.get_ending_def("ending.win.protector"), "ending.win.protector")
 	await _shot("21_ending")
 	get_tree().quit()
@@ -106,8 +110,8 @@ func _first(type_id: String) -> Vector2i:
 	return Vector2i.ZERO
 
 
-func _shot(shot_name: String) -> void:
-	for _i: int in 12:
+func _shot(shot_name: String, frames: int = 12) -> void:
+	for _i: int in frames:
 		await get_tree().process_frame
 	RenderingServer.force_draw(true)
 	await RenderingServer.frame_post_draw
