@@ -227,7 +227,7 @@ func _draw_hex_fill(coord: Vector2i, fill_color: Color, border_color: Color) -> 
 
 
 func _draw_diagnostic_pin(coord: Vector2i, diag: Dictionary) -> void:
-	var center: Vector2 = HexCoords.axial_to_pixel(coord) + Vector2(14, -28)
+	var center: Vector2 = _pin_position(coord)
 	var label: String = diag.get("label", "") as String
 	var tint := Color.WHITE
 	if label in ["repair", "road", "water"]:
@@ -251,6 +251,16 @@ func _draw_diagnostic_pin(coord: Vector2i, diag: Dictionary) -> void:
 		12,
 		tint
 	)
+
+
+## Over the roof, like the building's own badge; beside that badge when it has one.
+func _pin_position(coord: Vector2i) -> Vector2:
+	var buildings: Node = get_node_or_null("../BuildingLayer")
+	if buildings == null or not buildings.has_method("marker_anchor"):
+		return HexCoords.axial_to_pixel(coord) + Vector2(0, -28)
+	var anchor: Vector2 = buildings.call("marker_anchor", coord) as Vector2
+	var def: Dictionary = ContentDB.get_building_def(GameStateStore.get_building(coord).get("type", "") as String)
+	return anchor + (Vector2(18, -2) if def.has("badge") else Vector2(0, -3))
 
 
 func _pin_texture(label: String) -> Texture2D:

@@ -69,7 +69,7 @@ func _draw() -> void:
 	# Painter's order: tall sprites overlap the row behind them.
 	building_coords.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 		return HexCoords.axial_to_pixel(a).y < HexCoords.axial_to_pixel(b).y)
-	var badges: Array = []  # [center, icon] — drawn last so no sprite hides them
+	var badges: Array = []  # [anchor, icon] — drawn last so no sprite hides them
 	for coord: Vector2i in building_coords:
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		var type_id: String = bld.get("type", "") as String
@@ -97,7 +97,7 @@ func _draw() -> void:
 			if is_selected:
 				_draw_select_half(center, false)
 			if def.has("badge"):
-				badges.append([center, def.get("badge", "") as String])
+				badges.append([marker_anchor(coord), def.get("badge", "") as String])
 			if damaged:
 				_draw_crack(center)
 			if level > 0:
@@ -134,13 +134,37 @@ func _draw() -> void:
 		_draw_badge(badge[0] as Vector2, badge[1] as String)
 
 
-## A small coloured badge at the cell's upper-left: bolt = power, crate = storage, drop =
-## water… Similar-looking sheds become tellable at a glance (playtest).
-func _draw_badge(c: Vector2, icon: String) -> void:
+## Where a building's markers sit: centred over its roof, so it is clear whose they are.
+func marker_anchor(coord: Vector2i) -> Vector2:
+	var c: Vector2 = HexCoords.axial_to_pixel(coord)
+	var bld: Dictionary = GameStateStore.get_building(coord)
+	var type_id: String = bld.get("type", "") as String
+	var level: int = bld.get("level", 0) as int
+	var texture: Texture2D = _get_building_sprite(type_id, level)
+	if texture == null:
+		return c + Vector2(0.0, -24.0)
+	var rect: Rect2 = _sprite_rect(c, texture, ContentDB.get_building_def(type_id), level)
+	return Vector2(c.x, rect.position.y + rect.size.y * _art_top(texture) - 5.0)
+
+
+## How far down its texture a picture actually starts (0..1): sprites carry empty sky above.
+var _art_top_cache: Dictionary = {}
+
+
+func _art_top(texture: Texture2D) -> float:
+	if not _art_top_cache.has(texture):
+		var image: Image = texture.get_image()
+		var used: Rect2i = image.get_used_rect() if image != null else Rect2i()
+		_art_top_cache[texture] = float(used.position.y) / maxf(texture.get_size().y, 1.0) if used.has_area() else 0.0
+	return _art_top_cache[texture] as float
+
+
+## A small coloured badge over the roof: bolt = power, crate = storage, drop = water…
+## Similar-looking sheds become tellable at a glance (playtest).
+func _draw_badge(at: Vector2, icon: String) -> void:
 	var texture: Texture2D = UiIcons.texture(icon)
 	if texture == null:
 		return
-	var at: Vector2 = c + Vector2(-19.0, -25.0)
 	var hue: Color = UiIcons.color(icon)
 	draw_circle(at, 8.5, Color(0.09, 0.08, 0.07, 0.92))
 	draw_arc(at, 8.5, 0.0, TAU, 20, hue, 1.5)
@@ -277,11 +301,7 @@ func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: boo
 
 	var def: Dictionary = ContentDB.get_building_def(type_id)
 	var hex_footprint: bool = _uses_hex_footprint(def, level)
-	var width: float = HexCoords.HEX_SIZE * (2.0 * 1.04 if hex_footprint else SPRITE_WIDTH_FACTOR)
-	var scale: float = width / tex_size.x
-	var draw_size := Vector2(width, tex_size.y * scale)
-	var anchor := Vector2(width * 0.5, draw_size.y - width * (0.325 if hex_footprint else 0.25))
-	var rect := Rect2(c - anchor, draw_size)
+	var rect: Rect2 = _sprite_rect(c, texture, def, level)
 
 	# Hex art already includes its ground and shadow. Keep the legacy underlay for diamonds.
 	if not hex_footprint:
@@ -299,6 +319,16 @@ func _draw_building_sprite(c: Vector2, type_id: String, level: int, damaged: boo
 		tint = Color(tint.r * 1.12, tint.g * 1.12, tint.b * 1.08, tint.a)
 	draw_texture_rect(texture, rect, false, tint)
 	return true
+
+
+## Where a building's picture lands on the map for a cell centred at `c`.
+func _sprite_rect(c: Vector2, texture: Texture2D, def: Dictionary, level: int) -> Rect2:
+	var tex_size: Vector2 = texture.get_size()
+	var hex_footprint: bool = _uses_hex_footprint(def, level)
+	var width: float = HexCoords.HEX_SIZE * (2.0 * 1.04 if hex_footprint else SPRITE_WIDTH_FACTOR)
+	var draw_size := Vector2(width, tex_size.y * width / tex_size.x)
+	var anchor := Vector2(width * 0.5, draw_size.y - width * (0.325 if hex_footprint else 0.25))
+	return Rect2(c - anchor, draw_size)
 
 
 func _uses_hex_footprint(def: Dictionary, level: int) -> bool:

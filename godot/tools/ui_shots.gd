@@ -85,8 +85,17 @@ func _run() -> void:
 	TutorialManager.call("_go", 5)
 	await _shot("19_tutorial_target")
 	TutorialManager.call("_finish", false)
+	# A broken pump and a faulty warehouse: badges and warning pins side by side.
+	for pair: Array in [["bld_well_pump", "damaged"], ["bld_warehouse", "has_issue"]]:
+		var coord: Vector2i = _first(pair[0] as String)
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		bld[pair[1]] = true
+		GameStateStore.set_building(coord, bld)
+		EventBus.building_damaged.emit(coord, 1.0)
+	EventBus.selection_changed.emit(Vector2i(-9999, -9999))
+	await _shot("20_pins")
 	EndingManager.call("_show_finale", ContentDB.get_ending_def("ending.win.protector"), "ending.win.protector")
-	await _shot("20_ending")
+	await _shot("21_ending")
 	get_tree().quit()
 
 
