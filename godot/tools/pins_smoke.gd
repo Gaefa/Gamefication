@@ -80,6 +80,8 @@ func _fixture(label: String) -> Dictionary:
 	GameStateStore.set_building(Vector2i.ZERO, bld)
 	if label not in ["repair", "issue", "road"]:
 		GameStateStore.set_building(Vector2i(0, -1), {"type": "bld_road", "level": 0})
+		# A road counts only when its stretch reaches a hub.
+		GameStateStore.set_building(Vector2i(0, -2), {"type": "bld_warehouse", "level": 0})
 	if label in ["stock", "pressure", "healthy"]:
 		var source := Vector2i(4, 0) if label == "pressure" else Vector2i(1, 0)
 		GameStateStore.set_building(source, {"type": "bld_well_pump", "level": 0})
