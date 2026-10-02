@@ -72,7 +72,7 @@
     "levels": [
       {"stage": "Панель", "stage_en": "Panel"}
     ],
-    "tags": ["power_source", "solar", "needs_road"]
+    "tags": ["power_source", "solar"]
   },
   "bld_generator": {
     "badge": "power",
@@ -92,7 +92,7 @@
     "levels": [
       {"stage": "Генератор", "stage_en": "Generator", "consumes": {"res_money": 0.05}}
     ],
-    "tags": ["power_source", "needs_road"]
+    "tags": ["power_source"]
   },
   "bld_admin_post": {
     "badge": "mandate",

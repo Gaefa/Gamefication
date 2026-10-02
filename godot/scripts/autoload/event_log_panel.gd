@@ -55,7 +55,7 @@ func _build_ui() -> void:
 	_layer.add_child(root)
 
 	var bg := ColorRect.new()
-	bg.color = Color(0.04, 0.05, 0.07, 0.92)
+	bg.color = Color(0.04, 0.03, 0.025, 0.9)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	root.add_child(bg)
@@ -79,7 +79,7 @@ func _build_ui() -> void:
 
 	_title = Label.new()
 	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_title.add_theme_font_size_override("font_size", 20)
+	UiStyle.title(_title, 22, UiStyle.ACCENT)
 	vbox.add_child(_title)
 
 	vbox.add_child(HSeparator.new())
@@ -128,7 +128,7 @@ func _rebuild_list() -> void:
 		head.text = Localization.ru_en("День %d — %s", "Day %d — %s") % [e.get("day", 0) as int, Localization.content_text(e, "title", "")]
 		head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		head.add_theme_font_size_override("font_size", 15)
-		head.add_theme_color_override("font_color", Color(0.85, 0.88, 0.95))
+		head.add_theme_color_override("font_color", UiStyle.TEXT)
 		entry.add_child(head)
 		var choice := Label.new()
 		choice.text = "→ " + Localization.content_text(e, "choice", "")
@@ -141,6 +141,6 @@ func _rebuild_list() -> void:
 			reply_label.text = reply
 			reply_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			reply_label.add_theme_font_size_override("font_size", 12)
-			reply_label.add_theme_color_override("font_color", Color(0.65, 0.65, 0.7))
+			reply_label.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 			entry.add_child(reply_label)
 		_list.add_child(entry)

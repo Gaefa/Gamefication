@@ -173,7 +173,8 @@ func _build_ui() -> void:
 	_title_label = Label.new()
 	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_title_label.add_theme_font_size_override("font_size", 26)
+	_title_label.add_theme_font_override("font", UiStyle.font_title)
+	_title_label.add_theme_font_size_override("font_size", 28)
 	vbox.add_child(_title_label)
 
 	var sep := HSeparator.new()
@@ -190,6 +191,7 @@ func _build_ui() -> void:
 	_body_label.scroll_active = false
 	_body_label.custom_minimum_size = Vector2(0, 240)
 	_body_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_body_label.add_theme_font_override("normal_font", UiStyle.font_doc)
 	_body_label.add_theme_font_size_override("normal_font_size", 16)
 	columns.add_child(_body_label)
 
@@ -206,6 +208,7 @@ func _build_ui() -> void:
 	_menu_btn = Button.new()
 	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
 	_menu_btn.custom_minimum_size.y = 44
+	UiStyle.primary(_menu_btn)
 	_menu_btn.pressed.connect(_on_menu_pressed)
 	vbox.add_child(_menu_btn)
 

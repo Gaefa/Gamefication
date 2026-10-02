@@ -38,10 +38,16 @@ var _active_category: String = ""
 var _active_build_type: String = ""
 
 var _info_panel: PanelContainer
-var _info_label: Label
+var _info_label: RichTextLabel
+var _info_actions: HBoxContainer
+var _upgrade_button: Button
+var _repair_button: Button
+var _bulldoze_button: Button
+const INFO_W := 360.0
 
 var _event_panel: PanelContainer
 var _toast_label: Label
+var _toast_panel: PanelContainer
 var _toast_timer: float = 0.0
 
 var _start_panel: PanelContainer
@@ -60,7 +66,9 @@ var _settings_language_select: OptionButton
 
 var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 
-var _build_entries: Array[Dictionary] = []  # {type_id, btn, cost_label}
+var _build_entries: Array[Dictionary] = []  # {type_id, card, cost_labels: {res_id: Label}, locked}
+var _hover_build_type: String = ""
+var _category_rows: VBoxContainer
 
 # --- Minimap ---
 var _minimap_panel: PanelContainer
@@ -90,6 +98,9 @@ func _ready() -> void:
 	_connect_signals()
 	_set_active_category("Infrastructure")
 	_position_below_resource_bar.call_deferred()
+	move_child(_info_panel, _left_column.get_index())  # above the left column, below the pop-ups
+	_start_dim.move_to_front()
+	_start_panel.move_to_front()
 
 
 func _process(delta: float) -> void:
@@ -139,10 +150,8 @@ func _build_resource_bar() -> void:
 	_resource_bar.set_anchors_preset(PRESET_TOP_WIDE)
 	_resource_bar.mouse_filter = Control.MOUSE_FILTER_STOP
 	_resource_bar.resized.connect(_position_below_resource_bar)
-	var bar_style := StyleBoxFlat.new()
-	bar_style.bg_color = Color(0.08, 0.07, 0.06, 0.93)
-	bar_style.content_margin_left = 8
-	bar_style.content_margin_right = 8
+	var bar_style: StyleBoxFlat = UiStyle.box(Color("0f0d0bfa"), UiStyle.LINE, 0, 8, 0)
+	bar_style.border_width_bottom = 1
 	bar_style.content_margin_top = 6
 	bar_style.content_margin_bottom = 6
 	_resource_bar.add_theme_stylebox_override("panel", bar_style)
@@ -171,8 +180,12 @@ func _build_resource_bar() -> void:
 	var pop_box: HBoxContainer = _chip(top)
 	_chip_icon(pop_box, "people")
 	_pop_label = _chip_text(pop_box, 14, Color(0.97, 0.95, 0.88))
-	_happy_label = _chip_text(_chip(top), 14, Color(0.97, 0.95, 0.88))
-	_level_label = _chip_text(_chip(top), 12, Color(0.9, 0.85, 0.6))
+	_happy_label = _chip_text(_chip(top, Localization.ru_en(
+		"Счастье жителей: вода, еда, жильё. Аудит требует не ниже %d%%.",
+		"Residents' happiness: water, food, housing. The audit requires at least %d%%.") % int(MandateManager.HAPPINESS_OK)), 14, Color(0.97, 0.95, 0.88))
+	_level_label = _chip_text(_chip(top, Localization.ru_en(
+		"Уровень поселения. Условия следующего уровня — кнопка «Город».",
+		"Settlement level. The next level's requirements are under the City button.")), 12, Color(0.9, 0.85, 0.6))
 	var power_box: HBoxContainer = _chip(top)
 	_chip_icon(power_box, "power")
 	_power_label = _chip_text(power_box, 12, Color(0.95, 0.85, 0.5))
@@ -191,7 +204,9 @@ func _build_resource_bar() -> void:
 	_city_label.gui_input.connect(_on_city_gui_input)
 
 	# The two masters: a bar each, so "who is about to end me" reads without digits.
-	var masters: HBoxContainer = _chip(bottom)
+	var masters: HBoxContainer = _chip(bottom, Localization.ru_en(
+		"Доверие покровителя и поддержка города. Упадёт до нуля первое — вас отзовут, второе — бунт.",
+		"Patron trust and city support. If the first hits zero you are recalled; the second — a riot."))
 	_patron_label = _chip_text(masters, 12, Color(0.8, 0.8, 0.85))
 	_trust_bar = _chip_bar(masters, 54)
 	_trust_value = _chip_text(masters, 13, Color.WHITE)
@@ -208,10 +223,14 @@ func _build_resource_bar() -> void:
 	_rival_label.add_theme_font_size_override("normal_font_size", 12)
 	_rival_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_rival_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_chip(bottom).add_child(_rival_label)
+	_chip(bottom, Localization.ru_en(
+		"Сводный показатель района Мары Восс и ваш. По нему делят грант на %d-й день.",
+		"The combined score of Mara Voss's district and yours. It decides the grant on day %d.") % RivalManager.GRANT_DAY).add_child(_rival_label)
 
 	# Pressure director: four gauges filling toward a crisis at 100.
-	var pressure: HBoxContainer = _chip(bottom)
+	var pressure: HBoxContainer = _chip(bottom, Localization.ru_en(
+		"Давление: еда, вода, люди, мандат. Шкала дошла до 100 — на Стол приходит срочное письмо.",
+		"Pressure: food, water, people, mandate. When a gauge reaches 100, an urgent letter lands on the Desk."))
 	_chip_text(pressure, 12, Color(0.8, 0.8, 0.85)).text = Localization.ru_en("Давление", "Pressure")
 	_pressure_bars.clear()
 	for pair: Array in [["food", "food"], ["water", "water"], ["happiness", "people"], ["mandate", "mandate"]]:
@@ -221,19 +240,14 @@ func _build_resource_bar() -> void:
 		_pressure_bars[pair[0]] = { "bar": bar, "value": num }
 
 
-func _chip(parent: Control) -> HBoxContainer:
+func _chip(parent: Control, tip: String = "") -> HBoxContainer:
 	var panel := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.17, 0.15, 0.13, 0.95)
-	style.border_color = Color(0.32, 0.29, 0.24)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(4)
-	style.content_margin_left = 7
-	style.content_margin_right = 7
-	style.content_margin_top = 3
-	style.content_margin_bottom = 3
+	var style: StyleBoxFlat = UiStyle.box(UiStyle.BG_RAISED, UiStyle.LINE, 5, 3)
+	style.content_margin_left = 8
+	style.content_margin_right = 8
 	panel.add_theme_stylebox_override("panel", style)
 	panel.mouse_filter = Control.MOUSE_FILTER_PASS
+	panel.tooltip_text = tip
 	parent.add_child(panel)
 	var box := HBoxContainer.new()
 	box.add_theme_constant_override("separation", 5)
@@ -242,7 +256,7 @@ func _chip(parent: Control) -> HBoxContainer:
 	return box
 
 
-func _chip_icon(box: HBoxContainer, icon: String) -> void:
+func _chip_icon(box: HBoxContainer, icon: String, px: int = 18) -> void:
 	var texture: Texture2D = UiIcons.texture(icon) if icon != "" else null
 	if texture == null:
 		return
@@ -250,7 +264,8 @@ func _chip_icon(box: HBoxContainer, icon: String) -> void:
 	rect.texture = texture
 	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	rect.custom_minimum_size = Vector2(18, 18)
+	rect.custom_minimum_size = Vector2(px, px)
+	rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	rect.modulate = UiIcons.color(icon)
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(rect)
@@ -273,10 +288,7 @@ func _chip_bar(box: HBoxContainer, width: float) -> ProgressBar:
 	bar.custom_minimum_size = Vector2(width, 9)
 	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var track := StyleBoxFlat.new()
-	track.bg_color = Color(0.05, 0.05, 0.05, 0.9)
-	track.set_corner_radius_all(3)
-	bar.add_theme_stylebox_override("background", track)
+	bar.add_theme_stylebox_override("background", UiStyle.box(Color("0b0a08"), UiStyle.LINE_SOFT, 3, 0))
 	var fill := StyleBoxFlat.new()
 	fill.bg_color = Color(0.5, 0.75, 0.5)
 	fill.set_corner_radius_all(3)
@@ -308,12 +320,10 @@ func _build_day_clock() -> void:
 	_clock_panel.offset_right = 190
 	_clock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	_clock_panel.tooltip_text = Localization.ru_en("Пробел — пауза · 1 / 2 / 3 — скорость", "Space — pause · 1 / 2 / 3 — speed")
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.10, 0.09, 0.08, 0.88)
-	style.border_color = Color(0.55, 0.5, 0.35, 0.8)
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(5)
-	style.set_content_margin_all(6)
+	var style: StyleBoxFlat = UiStyle.panel_box(6)
+	style.border_color = UiStyle.ACCENT_DIM
+	style.content_margin_left = 12
+	style.content_margin_right = 12
 	_clock_panel.add_theme_stylebox_override("panel", style)
 	add_child(_clock_panel)
 
@@ -323,8 +333,7 @@ func _build_day_clock() -> void:
 	_clock_panel.add_child(row)
 
 	_clock_day = Label.new()
-	_clock_day.add_theme_font_size_override("font_size", 14)
-	_clock_day.add_theme_color_override("font_color", Color(0.98, 0.93, 0.75))
+	UiStyle.title(_clock_day, 15, UiStyle.ACCENT)
 	_clock_day.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(_clock_day)
 
@@ -388,7 +397,9 @@ func _position_below_resource_bar() -> void:
 # ===========================================================
 
 var _left_column: VBoxContainer
-var _goals_label: RichTextLabel
+var _goal_rows: Dictionary = {}  # id → {"row": Control, "mark": Label, "name": Label, "value": Label}
+const LEFT_W := 236.0
+const GOAL_ROWS := ["dust", "audit", "water", "food", "mood", "grant", "finish"]
 
 ## Panels in the order of their keys: Q E T Y sit in one row next to WASD (W and R are taken).
 const PANEL_BUTTONS := [
@@ -403,43 +414,71 @@ const PANEL_BUTTONS := [
 func _build_left_column() -> void:
 	_left_column = VBoxContainer.new()
 	_left_column.add_theme_constant_override("separation", 6)
-	_left_column.custom_minimum_size.x = 230
+	_left_column.custom_minimum_size.x = LEFT_W
 	add_child(_left_column)
 
 	var goals := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.10, 0.09, 0.08, 0.88)
-	style.border_color = Color(0.55, 0.5, 0.35, 0.8)
-	style.border_width_left = 3
-	style.set_corner_radius_all(4)
-	style.set_content_margin_all(8)
-	goals.add_theme_stylebox_override("panel", style)
+	goals.add_theme_stylebox_override("panel", UiStyle.panel_box(10))
 	goals.mouse_filter = Control.MOUSE_FILTER_STOP
 	_left_column.add_child(goals)
-	_goals_label = RichTextLabel.new()
-	_goals_label.bbcode_enabled = true
-	_goals_label.fit_content = true
-	_goals_label.scroll_active = false
-	_goals_label.custom_minimum_size.x = 212
-	_goals_label.add_theme_font_size_override("normal_font_size", 12)
-	_goals_label.add_theme_font_size_override("bold_font_size", 12)
-	_goals_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	goals.add_child(_goals_label)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 3)
+	goals.add_child(box)
+	var head := Label.new()
+	head.text = Localization.ru_en("Цели", "Goals")
+	UiStyle.caption(head)
+	box.add_child(head)
+	_goal_rows.clear()
+	for id: String in GOAL_ROWS:
+		_goal_rows[id] = _goal_row(box)
 
-	var grid := GridContainer.new()
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 4)
-	grid.add_theme_constant_override("v_separation", 4)
-	_left_column.add_child(grid)
+	var row: HBoxContainer = null
 	for entry: Array in PANEL_BUTTONS:
+		if row == null or row.get_child_count() >= 3:
+			row = HBoxContainer.new()
+			row.add_theme_constant_override("separation", 4)
+			_left_column.add_child(row)
 		var btn := Button.new()
 		btn.text = "%s  %s" % [Localization.ru_en(entry[1] as String, entry[2] as String), entry[3]]
 		btn.add_theme_font_size_override("font_size", 12)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.pressed.connect(_open_panel.bind(entry[0] as String))
-		grid.add_child(btn)
+		row.add_child(btn)
 	_update_goals()
+
+
+func _goal_row(parent: Control) -> Dictionary:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	parent.add_child(row)
+	var mark := Label.new()
+	mark.custom_minimum_size.x = 12
+	mark.add_theme_font_size_override("font_size", 12)
+	row.add_child(mark)
+	var title := Label.new()
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.add_theme_font_size_override("font_size", 12)
+	row.add_child(title)
+	var value := Label.new()
+	value.add_theme_font_size_override("font_size", 12)
+	row.add_child(value)
+	return { "row": row, "mark": mark, "name": title, "value": value }
+
+
+## One line of the goals list. `done` picks the mark; a heading row has no mark and no value.
+func _set_goal(id: String, shown: bool, done: bool = false, title: String = "", value: String = "", heading: bool = false) -> void:
+	var row: Dictionary = _goal_rows[id] as Dictionary
+	(row["row"] as Control).visible = shown
+	if not shown:
+		return
+	var mark: Label = row["mark"] as Label
+	mark.text = "" if heading else ("✔" if done else "○")
+	mark.add_theme_color_override("font_color", UiStyle.GOOD if done else UiStyle.WARN)
+	(row["name"] as Label).text = title
+	(row["name"] as Label).add_theme_color_override("font_color", UiStyle.TEXT_DIM if heading else UiStyle.TEXT)
+	(row["value"] as Label).text = value
+	(row["value"] as Label).add_theme_color_override("font_color", UiStyle.GOOD if done else UiStyle.WARN)
 
 
 func _open_panel(panel_id: String) -> void:
@@ -453,46 +492,41 @@ func _open_panel(panel_id: String) -> void:
 
 ## What the player should be working on right now (playtest: "нужен список целей").
 func _update_goals() -> void:
-	if _goals_label == null:
+	if _goal_rows.is_empty():
 		return
 	_left_column.visible = SimulationRunner.run_active
-	var ok := "[color=#86c45a]✔[/color]"
-	var no := "[color=#e6902b]○[/color]"
 	var day: int = GameStateStore.climate().get("total_day", 1) as int
-	var lines: Array[String] = ["[b]%s[/b]" % Localization.ru_en("ЦЕЛИ", "GOALS")]
 
 	# 1. The season ahead.
-	var climate: Dictionary = GameStateStore.climate()
-	var sid: String = climate.get("season_id", "") as String
-	if sid == "season_window" and day < 19:
-		lines.append("%s %s" % [no, Localization.ru_en("Подготовиться к Пыли: через %d дн." % (19 - day), "Get ready for the Dust: %d days left" % (19 - day))])
+	var sid: String = GameStateStore.climate().get("season_id", "") as String
+	_set_goal("dust", sid == "season_window" and day < 19, false,
+		Localization.ru_en("Сезон Пыли", "The Dust"), Localization.ru_en("через %d дн.", "in %d days") % (19 - day))
 
 	# 2. The audit checklist, live — the same three checks the inspector runs.
 	var mandate: Dictionary = GameStateStore.mandate()
-	var has_patron: bool = (mandate.get("patron_id", "") as String) != ""
-	if not has_patron:
-		pass  # a founder faces no audit and no grant contest
-	elif not (mandate.get("audit_done", false) as bool):
-		var water: float = GameStateStore.get_resource("res_water_stockpile")
-		var food: float = GameStateStore.get_resource("res_food")
-		var mood: float = GameStateStore.population().get("happiness", 50.0) as float
-		lines.append(Localization.ru_en("Аудит на %d-й день:", "Audit on day %d:") % MandateManager.AUDIT_DAY)
-		lines.append("  %s %s %d / %d" % [ok if water >= MandateManager.WATER_OK else no, Localization.ru_en("вода", "water"), int(water), int(MandateManager.WATER_OK)])
-		lines.append("  %s %s %d / %d" % [ok if food >= MandateManager.FOOD_OK else no, Localization.ru_en("еда", "food"), int(food), int(MandateManager.FOOD_OK)])
-		lines.append("  %s %s %d%% / %d%%" % [ok if mood >= MandateManager.HAPPINESS_OK else no, Localization.ru_en("счастье", "mood"), int(mood), int(MandateManager.HAPPINESS_OK)])
-	else:
-		lines.append("%s %s" % [ok, Localization.ru_en("Аудит пройден", "Audit done")])
+	var has_patron: bool = (mandate.get("patron_id", "") as String) != ""  # a founder faces no audit and no grant contest
+	var audit_done: bool = mandate.get("audit_done", false) as bool
+	var checking: bool = has_patron and not audit_done
+	_set_goal("audit", has_patron, audit_done,
+		Localization.ru_en("Аудит пройден", "Audit done") if audit_done else Localization.ru_en("Аудит · день %d", "Audit · day %d") % MandateManager.AUDIT_DAY,
+		"", not audit_done)
+	var water: float = GameStateStore.get_resource("res_water_stockpile")
+	var food: float = GameStateStore.get_resource("res_food")
+	var mood: float = GameStateStore.population().get("happiness", 50.0) as float
+	_set_goal("water", checking, water >= MandateManager.WATER_OK, Localization.ru_en("Вода", "Water"), "%d / %d" % [int(water), int(MandateManager.WATER_OK)])
+	_set_goal("food", checking, food >= MandateManager.FOOD_OK, Localization.ru_en("Еда", "Food"), "%d / %d" % [int(food), int(MandateManager.FOOD_OK)])
+	_set_goal("mood", checking, mood >= MandateManager.HAPPINESS_OK, Localization.ru_en("Счастье", "Mood"), "%d%% / %d%%" % [int(mood), int(MandateManager.HAPPINESS_OK)])
 
 	# 3. The grant contest with the neighbour.
-	if has_patron and not (GameStateStore.rival().get("grant_decided", false) as bool):
-		var ours: int = int(RivalManager.player_score())
-		var theirs: int = int(RivalManager.rival_score())
-		lines.append("%s %s" % [ok if ours >= theirs else no,
-			Localization.ru_en("Грант на %d-й день: вы %d, Восс %d", "Grant on day %d: you %d, Voss %d") % [RivalManager.GRANT_DAY, ours, theirs]])
+	var ours: int = int(RivalManager.player_score())
+	var theirs: int = int(RivalManager.rival_score())
+	_set_goal("grant", has_patron and not (GameStateStore.rival().get("grant_decided", false) as bool), ours >= theirs,
+		Localization.ru_en("Грант · день %d", "Grant · day %d") % RivalManager.GRANT_DAY,
+		Localization.ru_en("вы %d : %d Восс", "you %d : %d Voss") % [ours, theirs])
 
 	# 4. The finish line.
-	lines.append("%s %s" % [no, Localization.ru_en("Дожить до %d-го дня (сейчас %d)", "Reach day %d (now %d)") % [EndingManager.WIN_DAY, day]])
-	_goals_label.text = "\n".join(lines)
+	_set_goal("finish", true, false, Localization.ru_en("Дожить до дня %d", "Reach day %d") % EndingManager.WIN_DAY,
+		Localization.ru_en("день %d", "day %d") % day)
 
 
 func _top_resource_ids() -> Array[String]:
@@ -764,7 +798,7 @@ const CATEGORY_KEYS := {
 	"Culture": "ui.category.culture",
 	"Advanced": "ui.category.advanced",
 }
-const BUILD_PANEL_W := 280.0
+const BUILD_PANEL_W := 300.0
 
 func _build_build_panel() -> void:
 	_build_panel = PanelContainer.new()
@@ -777,88 +811,64 @@ func _build_build_panel() -> void:
 	_build_panel.offset_left = -BUILD_PANEL_W
 	_build_panel.offset_top = 52
 	_build_panel.offset_bottom = 0
+	var style: StyleBoxFlat = UiStyle.box(UiStyle.BG, UiStyle.LINE, 0, 10, 0)
+	style.border_width_left = 1
+	_build_panel.add_theme_stylebox_override("panel", style)
 	add_child(_build_panel)
 
 	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
 	vbox.mouse_filter = Control.MOUSE_FILTER_PASS
 	_build_panel.add_child(vbox)
 
-	# Header row
-	var header := HBoxContainer.new()
-	header.mouse_filter = Control.MOUSE_FILTER_PASS
-	vbox.add_child(header)
+	# District screens: level, governance, options.
+	var nav := HBoxContainer.new()
+	nav.add_theme_constant_override("separation", 4)
+	vbox.add_child(nav)
+	_build_city_button = _nav_button(nav, toggle_city_panel)
+	_build_gov_button = _nav_button(nav, toggle_governance)
+	_build_settings_button = _nav_button(nav, toggle_settings)
 
 	_build_title_label = Label.new()
-	_build_title_label.add_theme_font_size_override("font_size", 12)
+	UiStyle.caption(_build_title_label)
 	_build_title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	header.add_child(_build_title_label)
-
-	_build_city_button = Button.new()
-	_build_city_button.add_theme_font_size_override("font_size", 12)
-	_build_city_button.pressed.connect(toggle_city_panel)
-	header.add_child(_build_city_button)
-
-	_build_gov_button = Button.new()
-	_build_gov_button.add_theme_font_size_override("font_size", 12)
-	_build_gov_button.pressed.connect(toggle_governance)
-	header.add_child(_build_gov_button)
-
-	_build_settings_button = Button.new()
-	_build_settings_button.add_theme_font_size_override("font_size", 12)
-	_build_settings_button.pressed.connect(toggle_settings)
-	header.add_child(_build_settings_button)
+	vbox.add_child(_build_title_label)
 
 	_category_select = OptionButton.new()
-	_category_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_category_select.add_theme_font_size_override("font_size", 12)
 	_category_select.item_selected.connect(_on_category_selected)
 	_category_select.visible = false
-	header.add_child(_category_select)
-	_refresh_build_panel_labels()
+	vbox.add_child(_category_select)
 
-	var category_grid := GridContainer.new()
-	category_grid.columns = 2
-	category_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	category_grid.add_theme_constant_override("h_separation", 4)
-	category_grid.add_theme_constant_override("v_separation", 4)
-	vbox.add_child(category_grid)
-
+	# Categories two to a row; an odd last one takes the whole row.
+	_category_rows = VBoxContainer.new()
+	_category_rows.add_theme_constant_override("separation", 4)
+	vbox.add_child(_category_rows)
 	_category_buttons.clear()
+	var row: HBoxContainer = null
 	for cat: String in CATEGORY_ORDER:
 		var cat_btn := Button.new()
+		cat_btn.toggle_mode = true
 		cat_btn.text = _category_label(cat)
 		cat_btn.icon = UiIcons.texture(UiIcons.CATEGORIES[cat])
 		cat_btn.expand_icon = true
-		cat_btn.add_theme_constant_override("icon_max_width", 18)
+		cat_btn.add_theme_constant_override("icon_max_width", 16)
+		cat_btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		cat_btn.clip_text = true  # no minimum width of its own, so a row splits evenly
 		cat_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		cat_btn.add_theme_font_size_override("font_size", 12)
+		cat_btn.focus_mode = Control.FOCUS_NONE
 		cat_btn.pressed.connect(_set_active_category.bind(cat))
-		category_grid.add_child(cat_btn)
 		_category_buttons[cat] = cat_btn
-
-
-	var lens_grid := GridContainer.new()
-	lens_grid.columns = 2
-	lens_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	lens_grid.add_theme_constant_override("h_separation", 4)
-	lens_grid.add_theme_constant_override("v_separation", 4)
-	vbox.add_child(lens_grid)
-
-	_range_lens_button = Button.new()
-	_range_lens_button.toggle_mode = true
-	_range_lens_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_range_lens_button.add_theme_font_size_override("font_size", 12)
-	_range_lens_button.pressed.connect(_toggle_ranges_from_button)
-	lens_grid.add_child(_range_lens_button)
-
-	_logistics_lens_button = Button.new()
-	_logistics_lens_button.toggle_mode = true
-	_logistics_lens_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_logistics_lens_button.add_theme_font_size_override("font_size", 12)
-	_logistics_lens_button.pressed.connect(_toggle_logistics_lens_from_button)
-	lens_grid.add_child(_logistics_lens_button)
-	_refresh_lens_buttons(false, false)
-	_refresh_build_panel_labels()
+		# A category with nothing to build in this chapter stays out of the menu.
+		if not _category_has_buildings(cat):
+			cat_btn.visible = false
+			_category_rows.add_child(cat_btn)
+			continue
+		if row == null or row.get_child_count() >= 2:
+			row = HBoxContainer.new()
+			row.add_theme_constant_override("separation", 4)
+			_category_rows.add_child(row)
+		row.add_child(cat_btn)
 
 	# Scrollable building list
 	_build_scroll = ScrollContainer.new()
@@ -868,9 +878,48 @@ func _build_build_panel() -> void:
 	vbox.add_child(_build_scroll)
 
 	_build_vbox = VBoxContainer.new()
+	_build_vbox.add_theme_constant_override("separation", 6)
 	_build_vbox.mouse_filter = Control.MOUSE_FILTER_PASS
 	_build_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_build_scroll.add_child(_build_vbox)
+
+	# Map layers: what the overlay shows on top of the district.
+	var lens_title := Label.new()
+	lens_title.text = Localization.ru_en("Слои карты", "Map layers")
+	UiStyle.caption(lens_title)
+	vbox.add_child(lens_title)
+	var lens_row := HBoxContainer.new()
+	lens_row.add_theme_constant_override("separation", 4)
+	vbox.add_child(lens_row)
+	_range_lens_button = _lens_button(lens_row, _toggle_ranges_from_button)
+	_logistics_lens_button = _lens_button(lens_row, _toggle_logistics_lens_from_button)
+	_refresh_lens_buttons(false, false)
+	_refresh_build_panel_labels()
+
+
+func _nav_button(parent: Control, action: Callable) -> Button:
+	var btn := Button.new()
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn.add_theme_font_size_override("font_size", 12)
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.clip_text = true
+	btn.pressed.connect(action)
+	parent.add_child(btn)
+	return btn
+
+
+func _lens_button(parent: Control, action: Callable) -> Button:
+	var btn: Button = _nav_button(parent, action)
+	btn.toggle_mode = true
+	return btn
+
+
+func _category_has_buildings(cat: String) -> bool:
+	for type_id: String in ContentDB.get_building_ids():
+		var def: Dictionary = ContentDB.get_building_def(type_id)
+		if (def.get("player_buildable", true) as bool) and (def.get("category", "") as String) == cat:
+			return true
+	return false
 
 
 func _toggle_ranges_from_button() -> void:
@@ -920,13 +969,13 @@ func _refresh_build_panel_labels() -> void:
 	if _build_title_label:
 		_build_title_label.text = Localization.t("ui.build.title", "Build")
 	if _build_city_button:
-		_build_city_button.text = Localization.t("ui.city.short", "City")
+		_build_city_button.text = Localization.ru_en("Город", "City")
 		_build_city_button.tooltip_text = Localization.t("ui.city.tooltip", "City level requirements and upgrade")
 	if _build_gov_button:
-		_build_gov_button.text = Localization.t("ui.governance.short", "Gov")
+		_build_gov_button.text = Localization.ru_en("Управление", "Governance")
 		_build_gov_button.tooltip_text = Localization.t("ui.governance.tooltip", "Governance (G): tech tree and policies")
 	if _build_settings_button:
-		_build_settings_button.text = Localization.t("ui.settings.short", "Opt")
+		_build_settings_button.text = Localization.ru_en("Настройки", "Options")
 		_build_settings_button.tooltip_text = Localization.t("ui.settings.tooltip", "Options (O): language and settings")
 	if _range_lens_button:
 		_range_lens_button.text = Localization.t("ui.lens.ranges", "Радиусы V")
@@ -950,8 +999,7 @@ func _refresh_build_panel_labels() -> void:
 
 func _update_category_buttons() -> void:
 	for cat: String in _category_buttons:
-		var btn: Button = _category_buttons[cat] as Button
-		btn.modulate = Color(0.8, 1.0, 0.5) if cat == _active_category else Color.WHITE
+		(_category_buttons[cat] as Button).set_pressed_no_signal(cat == _active_category)
 
 
 func _category_label(category: String) -> String:
@@ -962,6 +1010,7 @@ func _rebuild_building_list() -> void:
 	for c: Node in _build_vbox.get_children():
 		c.queue_free()
 	_build_entries.clear()
+	_hover_build_type = ""
 
 	var city_lv: int = GameStateStore.progression().city_level as int
 
@@ -969,136 +1018,214 @@ func _rebuild_building_list() -> void:
 		var def: Dictionary = ContentDB.get_building_def(type_id)
 		if not (def.get("player_buildable", true) as bool):
 			continue
-		var cat: String = def.get("category", "") as String
-		if cat != _active_category:
+		if (def.get("category", "") as String) != _active_category:
 			continue
 
 		var unlock_lv: int = def.get("unlock_level", 1) as int
 		var is_locked: bool = city_lv < unlock_lv
-		var label_name: String = Localization.content_text(def, "label", type_id)
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, 0)
 
-		# Button — compact: name only (tooltip has description)
-		var btn := Button.new()
-		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		# One card per building: picture, name, what it gives, what it costs.
+		var card := PanelContainer.new()
+		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		card.tooltip_text = Localization.content_text(def, "description", "")
+		card.set_meta("type_id", type_id)  # lets the tutorial point at this card
+		_build_vbox.add_child(card)
+
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card.add_child(row)
+
+		var thumb := TextureRect.new()
+		var sprites: Array = def.get("sprites_by_level", []) as Array
+		if not sprites.is_empty():
+			thumb.texture = _thumbnail(sprites[0] as String)
+		thumb.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		thumb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		thumb.custom_minimum_size = Vector2(46, 46)
+		thumb.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		thumb.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		if is_locked:
-			btn.text = "%s [Lv%d]" % [label_name, unlock_lv]
-			btn.disabled = true
-			btn.modulate = Color(0.5, 0.5, 0.5)
+			thumb.modulate = Color(0.45, 0.45, 0.45)
+		row.add_child(thumb)
+
+		var col := VBoxContainer.new()
+		col.add_theme_constant_override("separation", 2)
+		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(col)
+
+		var name_lbl := Label.new()
+		name_lbl.text = Localization.content_text(def, "label", type_id)
+		name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		name_lbl.add_theme_font_size_override("font_size", 13)
+		name_lbl.add_theme_color_override("font_color", UiStyle.TEXT_MUTE if is_locked else UiStyle.TEXT)
+		name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		col.add_child(name_lbl)
+
+		var cost_labels: Dictionary = {}
+		if is_locked:
+			var lock_lbl := Label.new()
+			lock_lbl.text = Localization.ru_en("Откроется на уровне %d", "Unlocks at level %d") % unlock_lv
+			lock_lbl.add_theme_font_size_override("font_size", 12)
+			lock_lbl.add_theme_color_override("font_color", UiStyle.TEXT_MUTE)
+			lock_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			col.add_child(lock_lbl)
 		else:
-			btn.text = label_name
-			# Active build highlight
-			if type_id == _active_build_type:
-				btn.modulate = Color(0.8, 1.0, 0.5)
-		btn.add_theme_font_size_override("font_size", 12)
-		btn.tooltip_text = Localization.content_text(def, "description", "")
-		btn.pressed.connect(_on_build_button.bind(type_id))
-		btn.set_meta("type_id", type_id)  # lets the tutorial point at this button
-		_build_vbox.add_child(btn)
+			var effect_bb: String = _effects_bb(ldata)
+			if effect_bb != "":
+				col.add_child(_bb_line(effect_bb, UiStyle.TEXT_DIM))
+			var build_cost: Dictionary = PlacementRulesRef.build_cost_for(def)
+			if not build_cost.is_empty():
+				var cost_row := HBoxContainer.new()
+				cost_row.add_theme_constant_override("separation", 3)
+				cost_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				col.add_child(cost_row)
+				for res_id: String in build_cost:
+					_chip_icon(cost_row, UiIcons.RESOURCES.get(res_id, "") as String, 14)
+					var amount := Label.new()
+					amount.text = _num(build_cost[res_id] as float) + "  "
+					amount.add_theme_font_size_override("font_size", 12)
+					amount.mouse_filter = Control.MOUSE_FILTER_IGNORE
+					cost_row.add_child(amount)
+					cost_labels[res_id] = amount
+			card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			card.gui_input.connect(_on_build_card_input.bind(type_id))
+			card.mouse_entered.connect(_on_build_card_hover.bind(type_id))
+			card.mouse_exited.connect(_on_build_card_hover.bind(""))
 
-		# Key effect wraps within the menu instead of widening the scroll content.
-		var effect_text: String = _format_key_effect(ldata)
-		if effect_text != "":
-			var eff_lbl := Label.new()
-			eff_lbl.text = "  " + effect_text
-			eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			eff_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			eff_lbl.add_theme_font_size_override("font_size", 12)
-			eff_lbl.add_theme_color_override("font_color", Color(0.7, 0.9, 0.7))
-			eff_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			_build_vbox.add_child(eff_lbl)
-
-		# Cost line
-		var build_cost: Dictionary = PlacementRulesRef.build_cost_for(def)
-		var cost_lbl: Label = null
-		if not build_cost.is_empty():
-			var cost_parts: Array[String] = []
-			for res_id: String in build_cost:
-				var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-				cost_parts.append("%s:%d" % [Localization.content_text(rdef, "label", res_id), int(build_cost[res_id] as float)])
-			cost_lbl = Label.new()
-			cost_lbl.text = "  " + ", ".join(cost_parts)
-			cost_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			cost_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			cost_lbl.add_theme_font_size_override("font_size", 12)
-			cost_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			_build_vbox.add_child(cost_lbl)
-
-		_build_entries.append({"type_id": type_id, "btn": btn, "cost_label": cost_lbl})
+		_build_entries.append({"type_id": type_id, "card": card, "cost_labels": cost_labels, "locked": is_locked})
+	_refresh_build_cards()
+	_update_build_list_affordability()
 
 
-func _format_key_effect(ldata: Dictionary) -> String:
-	## Single-line summary of what the building does.
+## A building's picture without the empty margin around it, so it fills the card's slot.
+var _thumb_cache: Dictionary = {}
+
+
+func _thumbnail(path: String) -> Texture2D:
+	if not _thumb_cache.has(path):
+		var texture: Texture2D = load(path) as Texture2D if ResourceLoader.exists(path) else null
+		var image: Image = texture.get_image() if texture != null else null
+		var used: Rect2i = image.get_used_rect() if image != null else Rect2i()
+		if used.has_area():
+			var atlas := AtlasTexture.new()
+			atlas.atlas = texture
+			atlas.region = Rect2(used)
+			texture = atlas
+		_thumb_cache[path] = texture
+	return _thumb_cache[path] as Texture2D
+
+
+func _on_build_card_input(event: InputEvent, type_id: String) -> void:
+	var mb := event as InputEventMouseButton
+	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+		_on_build_button(type_id)
+
+
+func _on_build_card_hover(type_id: String) -> void:
+	_hover_build_type = type_id
+	_refresh_build_cards()
+
+
+func _refresh_build_cards() -> void:
+	for entry: Dictionary in _build_entries:
+		var state: String = "normal"
+		if entry.locked as bool:
+			state = "locked"
+		elif (entry.type_id as String) == _active_build_type:
+			state = "active"
+		elif (entry.type_id as String) == _hover_build_type:
+			state = "hover"
+		(entry.card as PanelContainer).add_theme_stylebox_override("panel", UiStyle.card_box(state))
+
+
+## A wrapping line of rich text (icons inline) that takes only the height it needs.
+func _bb_line(bb: String, color: Color, font_size: int = 12) -> RichTextLabel:
+	var label := RichTextLabel.new()
+	label.bbcode_enabled = true
+	label.fit_content = true
+	label.scroll_active = false
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.add_theme_font_size_override("normal_font_size", font_size)
+	label.add_theme_color_override("default_color", color)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.text = bb
+	return label
+
+
+## Whole numbers stay whole; fractions keep their digits ("0.05", never "-0").
+func _num(value: float) -> String:
+	if is_equal_approx(value, roundf(value)):
+		return str(int(roundf(value)))
+	return ("%.2f" % value).rstrip("0").rstrip(".")
+
+
+func _icon_bb(icon: String, px: int = 14) -> String:
+	if icon == "" or UiIcons.texture(icon) == null:
+		return ""
+	return "[img=%dx%d color=%s]res://assets/ui/icons/%s.svg[/img]" % [px, px, UiStyle.hex(UiIcons.color(icon)), icon]
+
+
+## "icon amount" for a resource; falls back to the resource's name when it has no icon.
+func _res_bb(res_id: String, amount: String) -> String:
+	var icon: String = _icon_bb(UiIcons.RESOURCES.get(res_id, "") as String)
+	if icon != "":
+		return "%s\u00a0%s" % [icon, amount]
+	return "%s %s" % [amount, Localization.content_text(ContentDB.get_resource_def(res_id), "label", res_id)]
+
+
+## What a building does, with resource icons: income green, upkeep amber.
+func _effects_bb(ldata: Dictionary) -> String:
 	var parts: Array[String] = []
 	var produces: Dictionary = ldata.get("produces", {})
 	for r: String in produces:
-		var rdef: Dictionary = ContentDB.get_resource_def(r)
-		parts.append("+%.0f %s" % [produces[r] as float, Localization.content_text(rdef, "label", r)])
+		parts.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD), _res_bb(r, "+" + _num(produces[r] as float))])
 	var consumes: Dictionary = ldata.get("consumes", {})
 	for r: String in consumes:
-		var rdef: Dictionary = ContentDB.get_resource_def(r)
-		parts.append("-%.0f %s" % [consumes[r] as float, Localization.content_text(rdef, "label", r)])
+		parts.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), _res_bb(r, "−" + _num(consumes[r] as float))])
 	var bld_pop: int = ldata.get("population", 0) as int
 	if bld_pop > 0:
-		parts.append("+%d %s" % [bld_pop, Localization.t("ui.effect.population", "pop")])
+		parts.append("%s\u00a0+%d" % [_icon_bb("people"), bld_pop])
 	var storage_value: Variant = ldata.get("storage", 0)
 	if storage_value is Dictionary:
+		var stores: Array[String] = []
 		for r: String in storage_value as Dictionary:
-			var rdef: Dictionary = ContentDB.get_resource_def(r)
-			parts.append("+%.0f %s %s" % [(storage_value as Dictionary)[r] as float, Localization.content_text(rdef, "label", r), Localization.t("ui.effect.storage", "storage")])
+			stores.append(_res_bb(r, "+" + _num((storage_value as Dictionary)[r] as float)))
+		parts.append("%s: %s" % [Localization.t("ui.effect.storage", "storage").capitalize(), "  ".join(stores)])
 	elif (storage_value as float) > 0.0:
 		parts.append("+%d %s" % [int(storage_value as float), Localization.t("ui.effect.storage", "storage")])
 	var synergy: Dictionary = ldata.get("synergy", {})
 	if synergy.has("water_radius"):
-		parts.append("%s r%d" % [Localization.t("ui.effect.water_coverage", "water cover"), synergy["water_radius"] as int])
-	if parts.is_empty():
-		return ""
-	return ", ".join(parts)
+		parts.append("%s\u00a0%s %d" % [_icon_bb("water"), Localization.ru_en("радиус", "radius"), synergy["water_radius"] as int])
+	return "   ".join(parts)
 
 
 func _update_build_list_affordability() -> void:
+	# Each price turns red on its own: the player sees exactly which resource is short.
 	for entry: Dictionary in _build_entries:
-		var cost_lbl: Variant = entry.get("cost_label", null)
-		if cost_lbl == null or not (cost_lbl is Label):
-			continue
-		var etype_id: String = entry.type_id
-		var edef: Dictionary = ContentDB.get_building_def(etype_id)
-		var cost: Dictionary = PlacementRulesRef.build_cost_for(edef)
-		var affordable: bool = GameStateStore.can_afford(cost)
-		if affordable:
-			(cost_lbl as Label).add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
-		else:
-			(cost_lbl as Label).add_theme_color_override("font_color", Color(1.0, 0.5, 0.4))
+		var cost: Dictionary = PlacementRulesRef.build_cost_for(ContentDB.get_building_def(entry.type_id as String))
+		var labels: Dictionary = entry.cost_labels as Dictionary
+		for res_id: String in labels:
+			var enough: bool = GameStateStore.get_resource(res_id) >= (cost.get(res_id, 0.0) as float)
+			(labels[res_id] as Label).add_theme_color_override("font_color", UiStyle.TEXT if enough else UiStyle.BAD)
 
 
 func _on_build_button(type_id: String) -> void:
 	_active_build_type = type_id
 	EventBus.build_mode_changed.emit(type_id)
-	_info_label.text = _build_build_mode_info_text(type_id)
-	# Refresh button highlights
-	for entry: Dictionary in _build_entries:
-		var btn: Button = entry.btn
-		if not btn.disabled:
-			if (entry.type_id as String) == type_id:
-				btn.modulate = Color(0.8, 1.0, 0.5)
-			else:
-				btn.modulate = Color.WHITE
+	_show_info(_build_build_mode_info_text(type_id))
+	_refresh_build_cards()
 
 
 func _on_build_mode_changed(type_id: String) -> void:
 	_active_build_type = type_id
 	if _info_label and type_id != "":
-		_info_label.text = _build_build_mode_info_text(type_id)
-	# Update button highlights when build mode changes externally (e.g. RMB cancel)
-	for entry: Dictionary in _build_entries:
-		var btn: Button = entry.btn
-		if not btn.disabled:
-			if (entry.type_id as String) == type_id:
-				btn.modulate = Color(0.8, 1.0, 0.5)
-			else:
-				btn.modulate = Color.WHITE
+		_show_info(_build_build_mode_info_text(type_id))
+	# Update the highlight when build mode changes externally (e.g. RMB cancel)
+	_refresh_build_cards()
 
 
 func _build_build_mode_info_text(type_id: String) -> String:
@@ -1107,36 +1234,30 @@ func _build_build_mode_info_text(type_id: String) -> String:
 		return Localization.t("ui.command.unknown_building", "Unknown building: %s") % type_id
 
 	var ldata: Dictionary = ContentDB.building_level_data(type_id, 0)
-	var lines: Array[String] = []
-	lines.append("%s: %s" % [Localization.t("ui.build.selected", "Selected"), Localization.content_text(def, "label", type_id)])
-	lines.append("%s: %s" % [Localization.t("ui.meta.cost", "Cost"), _format_cost(PlacementRulesRef.build_cost_for(def))])
-	var effect: String = _format_key_effect(ldata)
+	var cost: Dictionary = PlacementRulesRef.build_cost_for(def)
+	var lines: Array[String] = [_heading_bb(Localization.content_text(def, "label", type_id))]
+	lines.append("%s  %s" % [_dim_bb(Localization.t("ui.meta.cost", "Cost") + ":"), _cost_bb(cost)])
+	var effect: String = _effects_bb(ldata)
 	if effect != "":
-		lines.append("%s: %s" % [Localization.t("ui.meta.effects", "Effects"), effect])
-	# What to put it next to (or keep it away from) — before the generic hints, so it is
-	# visible without scrolling.
+		lines.append(effect)
+	# What to put it next to (or keep it away from).
+	var has_rules: bool = false
 	var orch_adj := _get_orchestrator()
 	if orch_adj != null:
 		for rule: Dictionary in orch_adj.adjacency.rules_for_type(type_id):
-			lines.append("• " + Localization.content_text(rule, "description", ""))
+			has_rules = true
+			lines.append("[color=%s]•[/color] %s" % [UiStyle.hex(UiStyle.ACCENT), Localization.content_text(rule, "description", "")])
 
 	var req_level: int = def.get("unlock_level", 1) as int
 	if (GameStateStore.progression().city_level as int) < req_level:
-		lines.append(Localization.t("ui.command.requires_city_level", "Requires city level %d") % req_level)
-	elif not GameStateStore.can_afford(PlacementRulesRef.build_cost_for(def)):
-		lines.append("%s: %s" % [
+		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.t("ui.command.requires_city_level", "Requires city level %d") % req_level])
+	elif not GameStateStore.can_afford(cost):
+		lines.append("[color=%s]%s: %s[/color]" % [UiStyle.hex(UiStyle.BAD),
 			Localization.t("ui.command.not_enough_resources", "Not enough resources"),
-			PlacementRulesRef.missing_cost_text(PlacementRulesRef.build_cost_for(def)),
-		])
-	else:
-		lines.append(Localization.t("ui.placement.preview_hint", "Move over the map: green can build, red cannot."))
-
-	if def.get("requires_road", false) as bool:
-		lines.append(Localization.t("ui.placement.road_hint", "Road access affects efficiency."))
+			PlacementRulesRef.missing_cost_text(cost)])
 	var desc: String = Localization.content_text(def, "description", "")
-	if desc != "":
-		lines.append("")
-		lines.append(desc.substr(0, 140) + ("..." if desc.length() > 140 else ""))
+	if desc != "" and not has_rules:
+		lines.append(_dim_bb(desc))
 	return "\n".join(lines)
 
 
@@ -1145,7 +1266,7 @@ func _on_locale_changed(_locale: String) -> void:
 	_update_resource_bar()
 	_rebuild_building_list()
 	if _selected_coord == Vector2i(-9999, -9999):
-		_info_label.text = _get_welcome_text()
+		_show_info(_get_welcome_text())
 	else:
 		_update_info()
 	if _help_label:
@@ -1165,49 +1286,104 @@ func _on_locale_changed(_locale: String) -> void:
 # ===========================================================
 
 func _build_info_panel() -> void:
+	# Grows upward from the bottom-left corner to fit whatever is selected.
 	_info_panel = PanelContainer.new()
 	_info_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	_info_panel.anchor_left = 0.0
 	_info_panel.anchor_right = 0.0
 	_info_panel.anchor_top = 1.0
 	_info_panel.anchor_bottom = 1.0
-	_info_panel.offset_left = 0
-	_info_panel.offset_right = 360
-	_info_panel.offset_top = -190
-	_info_panel.offset_bottom = 0
+	_info_panel.offset_left = 10
+	_info_panel.offset_right = 10 + INFO_W
+	_info_panel.offset_top = -10
+	_info_panel.offset_bottom = -10
+	_info_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	add_child(_info_panel)
 
-	var margin := MarginContainer.new()
-	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_bottom", 8)
-	_info_panel.add_child(margin)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_info_panel.add_child(box)
 
-	var scroll := ScrollContainer.new()
-	scroll.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	scroll.custom_minimum_size = Vector2(340, 174)
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	margin.add_child(scroll)
-
-	_info_label = Label.new()
-	_info_label.text = _get_welcome_text()
-	_info_label.custom_minimum_size.x = 330
-	_info_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_info_label.add_theme_font_size_override("font_size", 12)
-	_info_label.add_theme_color_override("font_color", Color(0.9, 0.95, 0.85))
-	_info_label.add_theme_constant_override("line_spacing", 3)
+	_info_label = RichTextLabel.new()
+	_info_label.bbcode_enabled = true
+	_info_label.fit_content = true
+	_info_label.scroll_active = false
+	_info_label.custom_minimum_size.x = INFO_W - 24
+	_info_label.add_theme_font_size_override("normal_font_size", 13)
+	_info_label.add_theme_constant_override("line_separation", 4)
 	_info_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	scroll.add_child(_info_label)
+	box.add_child(_info_label)
+
+	# The same actions as the U / R / B keys, for players who use the mouse.
+	_info_actions = HBoxContainer.new()
+	_info_actions.add_theme_constant_override("separation", 6)
+	box.add_child(_info_actions)
+	_upgrade_button = _action_button(Localization.ru_en("Улучшить", "Upgrade"), KEY_U)
+	_repair_button = _action_button(Localization.ru_en("Починить", "Repair"), KEY_R)
+	_bulldoze_button = _action_button(Localization.ru_en("Снести", "Demolish"), KEY_B)
+	_show_info(_get_welcome_text())
+
+
+func _action_button(label: String, key: Key) -> Button:
+	var btn := Button.new()
+	btn.text = "%s  %s" % [label, OS.get_keycode_string(key)]
+	btn.add_theme_font_size_override("font_size", 12)
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.pressed.connect(_press_world_key.bind(key))
+	_info_actions.add_child(btn)
+	return btn
+
+
+## A panel button does exactly what its key does, rules and confirmations included.
+func _press_world_key(key: Key) -> void:
+	var main_node: Node = get_tree().current_scene
+	if main_node == null or not main_node.has_method("_handle_key"):
+		return
+	var event := InputEventKey.new()
+	event.keycode = key
+	event.pressed = true
+	main_node.call("_handle_key", event)
+	_update_info()
+
+
+func _show_info(bb: String, with_actions: bool = false) -> void:
+	_info_label.text = bb
+	_info_actions.visible = with_actions
+
+
+func _heading_bb(text: String) -> String:
+	return "[font=%sIBMPlexSerif-Bold.ttf][font_size=17]%s[/font_size][/font]" % [UiStyle.FONT_DIR, text]
+
+
+func _dim_bb(text: String) -> String:
+	return "[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.TEXT_DIM), text]
+
+
+func _mark_bb(ok: bool, text: String) -> String:
+	if ok:
+		return "[color=%s]✔[/color]\u00a0%s" % [UiStyle.hex(UiStyle.GOOD), text]
+	return "[color=%s]✘\u00a0%s[/color]" % [UiStyle.hex(UiStyle.BAD), text]
+
+
+## A price with resource icons; what the district cannot pay yet turns red.
+func _cost_bb(cost: Dictionary) -> String:
+	var parts: Array[String] = []
+	for res_id: String in cost:
+		var need: float = cost[res_id] as float
+		var part: String = _res_bb(res_id, _num(need))
+		if GameStateStore.get_resource(res_id) < need:
+			part = "[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), part]
+		parts.append(part)
+	return "   ".join(parts)
 
 
 func _get_welcome_text() -> String:
-	return Localization.t("ui.welcome.text", "Осмотр: клик по клетке
-Камера: WASD · Зум: колесо
-Пауза: Пробел · H — справка")
+	return "%s\n%s" % [
+		_heading_bb(Localization.ru_en("Управление", "Controls")),
+		_dim_bb(Localization.t("ui.welcome.text", "Осмотр: клик по клетке\nКамера: WASD · Зум: колесо\nПауза: Пробел · H — справка")),
+	]
 
 
 func _on_selection_changed(coord: Vector2i) -> void:
@@ -1221,21 +1397,28 @@ func _update_info() -> void:
 
 	var bld: Dictionary = GameStateStore.get_building(_selected_coord)
 	if bld.is_empty():
-		_info_label.text = _build_tile_info_text(_selected_coord)
+		_show_info(_build_tile_info_text(_selected_coord))
 		return
 
-	_info_label.text = _build_building_info_text(_selected_coord, bld)
+	_show_info(_build_building_info_text(_selected_coord, bld), true)
+	var type_id: String = bld.get("type", "") as String
+	var level: int = bld.get("level", 0) as int
+	var broken: bool = (bld.get("damaged", false) as bool) or (bld.get("has_issue", false) as bool)
+	var has_next: bool = level + 1 < ContentDB.max_building_level(type_id)
+	var next_cost: Variant = ContentDB.building_level_data(type_id, level + 1).get("cost", null) if has_next else null
+	_upgrade_button.visible = has_next
+	_upgrade_button.disabled = not (next_cost is Dictionary) or not GameStateStore.can_afford(next_cost as Dictionary)
+	_repair_button.visible = broken
+	_bulldoze_button.visible = not BulldozeCommand.is_protected(ContentDB.get_building_def(type_id))
+	_info_actions.visible = _upgrade_button.visible or _repair_button.visible or _bulldoze_button.visible
 
 
 func _build_tile_info_text(coord: Vector2i) -> String:
 	var terrain_id: int = GameStateStore.get_terrain(coord)
 	var tdef: Dictionary = ContentDB.get_terrain_def(terrain_id)
-	var t_label: String = Localization.content_text(tdef, "label", Localization.t("ui.common.unknown", "Unknown"))
-	var buildable: bool = tdef.get("buildable", true) as bool
-
-	var text: String = "%s (%d,%d)" % [t_label, coord.x, coord.y]
-	if not buildable:
-		text += "\n" + Localization.t("ui.tile.cannot_build", "Cannot build here")
+	var lines: Array[String] = [_heading_bb(Localization.content_text(tdef, "label", Localization.t("ui.common.unknown", "Unknown")))]
+	if not (tdef.get("buildable", true) as bool):
+		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.t("ui.tile.cannot_build", "Cannot build here")])
 	else:
 		# Show terrain bonuses compactly
 		var bonuses: Array[String] = []
@@ -1245,10 +1428,12 @@ func _build_tile_info_text(coord: Vector2i) -> String:
 			if tb.has(str(terrain_id)):
 				var bonus: float = tb[str(terrain_id)] as float
 				if bonus > 0:
-					bonuses.append("+%d%% %s" % [int(bonus * 100), Localization.content_text(bdef, "label", btype_id)])
-		if not bonuses.is_empty():
-			text += "\n%s: %s" % [Localization.t("ui.tile.bonus", "Bonus"), ", ".join(bonuses)]
-	return text
+					bonuses.append("[color=%s]+%d%%[/color] %s" % [UiStyle.hex(UiStyle.GOOD), int(bonus * 100), Localization.content_text(bdef, "label", btype_id)])
+		if bonuses.is_empty():
+			lines.append(_dim_bb(Localization.ru_en("Обычная земля: можно строить.", "Plain ground: you can build here.")))
+		else:
+			lines.append("%s: %s" % [_dim_bb(Localization.t("ui.tile.bonus", "Bonus")), ", ".join(bonuses)])
+	return "\n".join(lines)
 
 
 func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
@@ -1256,140 +1441,76 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	var level: int = bld.get("level", 0) as int
 	var def: Dictionary = ContentDB.get_building_def(type_id)
 	var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
-	var stage: String = Localization.content_text(ldata, "stage", "?")
+	var max_level: int = ContentDB.max_building_level(type_id)
 
-	# --- Status ---
-	var text: String = "%s (%s) %s%d\n" % [
-		Localization.content_text(def, "label", type_id),
-		stage,
-		Localization.t("ui.common.level_short", "Lv"),
-		level,
-	]
-
-	var effect: String = _format_key_effect(ldata)
+	# --- What it is ---
+	var lines: Array[String] = [_heading_bb(Localization.content_text(def, "label", type_id))]
+	var stage: String = Localization.content_text(ldata, "stage", "")
+	var level_text: String = Localization.ru_en("уровень %d из %d", "level %d of %d") % [level + 1, max_level]
+	lines.append(_dim_bb(level_text if stage == "" or max_level <= 1 else "%s · %s" % [stage, level_text]))
+	var effect: String = _effects_bb(ldata)
 	if effect != "":
-		text += effect + "\n"
+		lines.append(effect)
 
 	# Landmarks (material traces of the old owner) carry flavor, not production —
 	# show their description so clicking them tells the district's story.
 	if (def.get("tags", []) as Array).has("landmark"):
 		var flavor: String = Localization.content_text(def, "description", "")
 		if flavor != "":
-			text += "\n" + flavor + "\n"
+			lines.append(_dim_bb(flavor))
 
-	var needs_text: String = _build_building_needs_text(coord, type_id, def, ldata)
-	if needs_text != "":
-		text += needs_text + "\n"
-
-	var flow_text: String = _build_flow_diagnostics(coord, type_id, def, ldata, bld)
-	if flow_text != "":
-		text += flow_text + "\n"
-
-	# Neighbour rules in force for this building.
+	# --- How it is doing ---
+	var status: String = _status_bb(coord, type_id, def, ldata, bld)
+	if status != "":
+		lines.append(status)
 	var orch_adj := _get_orchestrator()
 	if orch_adj != null:
 		for entry: Dictionary in orch_adj.adjacency.active_rules(coord, type_id):
-			text += "%s: %s\n" % [Localization.ru_en("Соседство", "Neighbours"), Localization.content_text(entry.rule as Dictionary, "description", "")]
-
-	# --- Problem ---
+			lines.append("%s %s" % [_dim_bb(Localization.ru_en("Соседство:", "Neighbours:")), Localization.content_text(entry.rule as Dictionary, "description", "")])
 	if bld.get("damaged", false) as bool:
-		text += "\n" + Localization.t("ui.building.damaged", "DAMAGED - press R to repair")
+		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), Localization.ru_en("Повреждено: не работает, пока не починят.", "Damaged: out of action until repaired.")])
 	elif bld.get("has_issue", false) as bool:
-		text += "\n" + Localization.t("ui.building.issue", "ISSUE - press R to fix")
+		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.ru_en("Неполадка: работает вполсилы.", "Fault: running at half strength.")])
 
-	# --- Next Action ---
-	var max_level: int = ContentDB.max_building_level(type_id)
+	# --- What comes next ---
 	if level + 1 < max_level:
 		var next_ldata: Dictionary = ContentDB.building_level_data(type_id, level + 1)
-		var next_stage: String = Localization.content_text(next_ldata, "stage", "?")
 		var cost_raw: Variant = next_ldata.get("cost", null)
-		var cost: Dictionary = cost_raw as Dictionary if cost_raw is Dictionary else {}
-		if not cost.is_empty():
-			var affordable: bool = GameStateStore.can_afford(cost)
-			if affordable:
-				text += "\n%s %s" % [Localization.t("ui.building.upgrade_to", "[U] Upgrade to"), next_stage]
-			else:
-				# Show what's missing
-				var missing: Array[String] = []
-				for res_id: String in cost:
-					var needed: float = cost[res_id] as float
-					var have: float = GameStateStore.get_resource(res_id)
-					if have < needed:
-						var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-						missing.append("%s %d/%d" % [Localization.content_text(rdef, "label", res_id), int(have), int(needed)])
-				text += "\n%s: %s" % [Localization.t("ui.building.upgrade_need", "Upgrade: need"), ", ".join(missing)]
-	else:
-		text += "\n" + Localization.t("ui.building.max_level", "MAX LEVEL")
-
-	text += "\n" + Localization.t("ui.building.actions", "[U]Up [R]Fix [B]Del [V]Range")
-	return text
+		if cost_raw is Dictionary and not (cost_raw as Dictionary).is_empty():
+			lines.append("%s «%s»:  %s" % [_dim_bb(Localization.ru_en("Улучшение до", "Upgrade to")), Localization.content_text(next_ldata, "stage", "?"), _cost_bb(cost_raw as Dictionary)])
+	elif max_level > 1:
+		lines.append(_dim_bb(Localization.t("ui.building.max_level", "MAX LEVEL")))
+	return "\n".join(lines)
 
 
-func _build_building_needs_text(coord: Vector2i, type_id: String, def: Dictionary, ldata: Dictionary) -> String:
-	var orch := _get_orchestrator()
-	if orch == null or orch.coverage == null:
-		return ""
-
-	var needs: Array[String] = []
-	if def.get("requires_road", false) as bool:
-		needs.append("%s %s" % [Localization.t("ui.flow.road", "Road"), _ok_missing(orch.coverage.is_road_connected(coord))])
-	if (def.get("category", "") as String) == "Residential":
-		needs.append("%s %s" % [Localization.t("ui.flow.water", "Water"), _ok_missing(orch.coverage.is_water_covered(coord))])
-
-	var consumes: Dictionary = ldata.get("consumes", {})
-	if consumes.has("energy") and type_id != "power":
-		needs.append("%s %s" % [Localization.t("ui.flow.power", "Power"), _ok_missing(orch.coverage.is_power_covered(coord))])
-	if not consumes.is_empty():
-		needs.append("%s: %s" % [Localization.t("ui.flow.inputs", "Inputs"), _format_cost(consumes)])
-
-	if needs.is_empty():
-		return ""
-	return "%s:\n%s" % [Localization.t("ui.needs.title", "Needs"), "\n".join(needs)]
-
-
-func _build_flow_diagnostics(coord: Vector2i, type_id: String, def: Dictionary, ldata: Dictionary, bld: Dictionary) -> String:
+## Supply marks in one line: road, water, power, inputs, outputs — and the resulting efficiency.
+func _status_bb(coord: Vector2i, type_id: String, def: Dictionary, ldata: Dictionary, bld: Dictionary) -> String:
 	var orch := _get_orchestrator()
 	if orch == null or orch.coverage == null or orch.resource_flow == null:
 		return ""
-
-	var lines: Array[String] = []
 	var consumes: Dictionary = ldata.get("consumes", {})
 	var produces: Dictionary = ldata.get("produces", {})
-	var input_eff: float = orch.resource_flow.input_efficiency_for(coord, consumes)
-	var condition_eff: float = 0.5 if (bld.get("has_issue", false) as bool) else 1.0
-
+	var marks: Array[String] = []
 	if _uses_road_flow(def, produces, consumes):
-		lines.append("%s: %s" % [Localization.t("ui.flow.road", "Road"), _ok_missing(orch.coverage.is_road_connected(coord))])
-
+		marks.append(_mark_bb(orch.coverage.is_road_connected(coord), Localization.t("ui.flow.road", "Road")))
 	if _uses_water_flow(def, type_id, produces, consumes):
-		lines.append("%s: %s" % [Localization.t("ui.flow.water", "Water"), _ok_missing(orch.coverage.is_water_covered(coord))])
-
+		marks.append(_mark_bb(orch.coverage.is_water_covered(coord), Localization.t("ui.flow.water", "Water")))
 	if _uses_power_flow(type_id, produces, consumes):
-		lines.append("%s: %s" % [Localization.t("ui.flow.power", "Power"), _ok_missing(orch.coverage.is_power_covered(coord))])
-
+		marks.append(_mark_bb(orch.coverage.is_power_covered(coord), Localization.t("ui.flow.power", "Power")))
 	if not consumes.is_empty():
 		var missing_inputs: Array[String] = _missing_inputs(coord, consumes, orch.resource_flow)
 		if missing_inputs.is_empty():
-			lines.append("%s: %s" % [Localization.t("ui.flow.inputs", "Inputs"), _ok_missing(true)])
+			marks.append(_mark_bb(true, Localization.t("ui.flow.inputs", "Inputs")))
 		else:
-			lines.append("%s: %s %s" % [Localization.t("ui.flow.inputs", "Inputs"), Localization.t("ui.flow.missing", "missing"), ", ".join(missing_inputs)])
-
+			marks.append(_mark_bb(false, "%s: %s" % [Localization.t("ui.flow.inputs", "Inputs"), ", ".join(missing_inputs)]))
 	if not produces.is_empty():
 		var blocked_outputs: Array[String] = _blocked_outputs(coord, type_id, produces, orch.resource_flow)
-		if blocked_outputs.is_empty():
-			lines.append("%s: %s" % [Localization.t("ui.flow.outputs", "Outputs"), _ok_missing(true)])
-		else:
-			lines.append("%s: %s %s" % [Localization.t("ui.flow.outputs", "Outputs"), Localization.t("ui.flow.blocked", "blocked"), ", ".join(blocked_outputs)])
-
-	var final_eff: float = input_eff * condition_eff
-	if final_eff < 1.0:
-		lines.append("%s: %d%%" % [Localization.t("ui.flow.efficiency", "Efficiency"), int(final_eff * 100.0)])
-	else:
-		lines.append("%s: 100%%" % Localization.t("ui.flow.efficiency", "Efficiency"))
-
-	if lines.is_empty():
-		return ""
-	return "\n" + "\n".join(lines)
+		if not blocked_outputs.is_empty():
+			marks.append(_mark_bb(false, "%s: %s" % [Localization.t("ui.flow.outputs", "Outputs"), ", ".join(blocked_outputs)]))
+	var efficiency: float = orch.resource_flow.input_efficiency_for(coord, consumes) * (0.5 if (bld.get("has_issue", false) as bool) else 1.0)
+	if efficiency < 1.0:
+		marks.append("[color=%s]%s %d%%[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.t("ui.flow.efficiency", "Efficiency"), int(efficiency * 100.0)])
+	return "   ".join(marks)
 
 
 func _get_orchestrator() -> GameOrchestrator:
@@ -1397,10 +1518,6 @@ func _get_orchestrator() -> GameOrchestrator:
 	if main_node and main_node.has_method("get_orchestrator"):
 		return main_node.call("get_orchestrator") as GameOrchestrator
 	return null
-
-
-func _ok_missing(ok: bool) -> String:
-	return Localization.t("ui.flow.ok", "OK") if ok else Localization.t("ui.flow.missing_caps", "MISSING")
 
 
 func _uses_road_flow(def: Dictionary, produces: Dictionary, consumes: Dictionary) -> bool:
@@ -1482,7 +1599,7 @@ func _build_help_panel() -> void:
 	help_box.add_child(help_head)
 	var help_title := Label.new()
 	help_title.text = Localization.ru_en("Справка", "Help")
-	help_title.add_theme_font_size_override("font_size", 18)
+	UiStyle.title(help_title, 22, UiStyle.ACCENT)
 	help_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	help_head.add_child(help_title)
 	var help_close := Button.new()
@@ -1502,7 +1619,7 @@ func _build_help_panel() -> void:
 	_help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_help_label.add_theme_font_size_override("font_size", 13)
 	_help_label.add_theme_constant_override("line_spacing", 4)
-	_help_label.add_theme_color_override("font_color", Color(0.92, 0.95, 0.88))
+	_help_label.add_theme_color_override("font_color", UiStyle.TEXT)
 	_help_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_help_label.text = _get_help_text()
 	scroll.add_child(_help_label)
@@ -1524,7 +1641,7 @@ func toggle_help() -> void:
 func _build_start_panel() -> void:
 	# Dim the (already booted) map behind the menu so the menu reads as a menu, not a popup.
 	_start_dim = ColorRect.new()
-	_start_dim.color = Color(0.03, 0.04, 0.05, 0.86)
+	_start_dim.color = Color(0.03, 0.025, 0.02, 0.88)
 	_start_dim.set_anchors_preset(PRESET_FULL_RECT)
 	_start_dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_start_dim)
@@ -1532,17 +1649,20 @@ func _build_start_panel() -> void:
 
 	_start_panel = PanelContainer.new()
 	_start_panel.set_anchors_preset(PRESET_CENTER)
-	_start_panel.size = Vector2(620, 500)
-	_start_panel.position = Vector2(-310, -250)
+	_start_panel.size = Vector2(640, 520)
+	_start_panel.position = Vector2(-320, -260)
 	_start_panel.visible = true
 	_start_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	var style: StyleBoxFlat = UiStyle.panel_box(28)
+	style.border_color = UiStyle.ACCENT_DIM
+	_start_panel.add_theme_stylebox_override("panel", style)
 	add_child(_start_panel)
 	_rebuild_start_panel()
 
 
 func _build_minimap() -> void:
 	_minimap_panel = PanelContainer.new()
-	_minimap_panel.custom_minimum_size = Vector2(180, 120)
+	_minimap_panel.custom_minimum_size = Vector2(LEFT_W, 132)
 	_minimap_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	
 	# Position: Top-left, under resource bar
@@ -1553,23 +1673,15 @@ func _build_minimap() -> void:
 	_minimap_panel.offset_left = 10
 	_minimap_panel.offset_top = 55
 	# Add some styling to the panel
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
-	style.border_width_left = 2
-	style.border_width_top = 2
-	style.border_width_right = 2
-	style.border_width_bottom = 2
-	style.border_color = Color(0.4, 0.4, 0.4)
-	_minimap_panel.add_theme_stylebox_override("panel", style)
+	_minimap_panel.add_theme_stylebox_override("panel", UiStyle.panel_box(6))
 	add_child(_minimap_panel)
 
 	var v_box := VBoxContainer.new()
 	_minimap_panel.add_child(v_box)
 
 	var label := Label.new()
-	label.text = Localization.ru_en("КАРТА", "MINIMAP")
-	label.add_theme_font_size_override("font_size", 12)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.text = Localization.ru_en("Карта", "Map")
+	UiStyle.caption(label)
 	v_box.add_child(label)
 
 	var sub_v_cont := SubViewportContainer.new()
@@ -1620,34 +1732,37 @@ func _rebuild_start_panel() -> void:
 	for c: Node in _start_panel.get_children():
 		c.queue_free()
 
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 14)
-	margin.add_theme_constant_override("margin_top", 14)
-	margin.add_theme_constant_override("margin_right", 14)
-	margin.add_theme_constant_override("margin_bottom", 14)
-	_start_panel.add_child(margin)
-
 	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 10)
-	margin.add_child(root)
+	root.add_theme_constant_override("separation", 12)
+	_start_panel.add_child(root)
 
-	var header := HBoxContainer.new()
-	root.add_child(header)
-
-	var title := Label.new()
-	title.text = Localization.t("ui.start.title", "Mandate Cities")
-	title.add_theme_font_size_override("font_size", 22)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title)
-
-	if _start_menu_mode != "main":
+	if _start_menu_mode == "main":
+		# The title screen: the game's name, not a form heading.
+		var title := Label.new()
+		title.text = "MANDATE CITIES"
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		UiStyle.title(title, 38, UiStyle.ACCENT)
+		root.add_child(title)
+		var chapter := Label.new()
+		chapter.text = Localization.ru_en("Ржавая Нора", "The Rust Pit")
+		chapter.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		UiStyle.caption(chapter)
+		chapter.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
+		root.add_child(chapter)
+	else:
+		var header := HBoxContainer.new()
+		root.add_child(header)
+		var title := Label.new()
+		title.text = Localization.t("ui.start.title", "Choose Your Mandate")
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		UiStyle.title(title, 24)
+		header.add_child(title)
 		var back_btn := Button.new()
-		back_btn.text = "< " + Localization.ru_en("Назад", "Back")
+		back_btn.text = "‹  " + Localization.ru_en("Назад", "Back")
 		back_btn.pressed.connect(func(): _start_menu_mode = "main"; _rebuild_start_panel())
 		header.add_child(back_btn)
 
-	var sep := HSeparator.new()
-	root.add_child(sep)
+	root.add_child(HSeparator.new())
 
 	if _start_menu_mode == "main":
 		_build_main_menu_options(root)
@@ -1662,13 +1777,15 @@ func _build_main_menu_options(container: Control) -> void:
 	var desc := Label.new()
 	desc.text = Localization.t("ui.start.pitch", "Mandate Cities — градостроитель о власти взаймы.")
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", 13)
-	desc.add_theme_color_override("font_color", Color(0.88, 0.86, 0.78))
+	desc.add_theme_font_size_override("font_size", 14)
+	desc.add_theme_constant_override("line_spacing", 4)
 	container.add_child(desc)
 
 	var btn_campaign := Button.new()
 	btn_campaign.text = Localization.t("ui.menu.campaign", "НОВАЯ ИГРА")
-	btn_campaign.custom_minimum_size.y = 50
+	btn_campaign.custom_minimum_size.y = 52
+	btn_campaign.add_theme_font_size_override("font_size", 17)
+	UiStyle.primary(btn_campaign)
 	btn_campaign.pressed.connect(func(): _start_menu_mode = "campaign"; _rebuild_start_panel())
 	container.add_child(btn_campaign)
 
@@ -1676,31 +1793,48 @@ func _build_main_menu_options(container: Control) -> void:
 
 	var btn_continue := Button.new()
 	btn_continue.text = Localization.t("ui.menu.continue", "ПРОДОЛЖИТЬ")
-	btn_continue.custom_minimum_size.y = 50
+	btn_continue.custom_minimum_size.y = 44
 	btn_continue.disabled = not SaveService.has_save(0)
 	btn_continue.pressed.connect(_on_continue_pressed)
 	container.add_child(btn_continue)
 
-	var tutorial_box := CheckBox.new()
-	tutorial_box.text = Localization.ru_en("Обучение: первые пять минут под руководством", "Tutorial: a guided first five minutes")
+	var tutorial_text: String = Localization.ru_en("Обучение: первые пять минут под руководством", "Tutorial: a guided first five minutes")
+	var tutorial_box := Button.new()
+	tutorial_box.toggle_mode = true
+	tutorial_box.flat = true
 	tutorial_box.button_pressed = TutorialManager.enabled_for_next_run
-	tutorial_box.add_theme_font_size_override("font_size", 12)
-	tutorial_box.toggled.connect(func(on: bool) -> void: TutorialManager.enabled_for_next_run = on)
+	tutorial_box.text = ("✔  " if tutorial_box.button_pressed else "○  ") + tutorial_text
+	tutorial_box.add_theme_font_size_override("font_size", 13)
+	tutorial_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	tutorial_box.toggled.connect(func(on: bool) -> void:
+		TutorialManager.enabled_for_next_run = on
+		tutorial_box.text = ("✔  " if on else "○  ") + tutorial_text)
 	container.add_child(tutorial_box)
 
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	container.add_child(spacer)
+
 	# Language right on the menu: testers pick it before the first letter arrives.
-	var lang_row := HBoxContainer.new()
-	lang_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	lang_row.add_theme_constant_override("separation", 8)
-	container.add_child(lang_row)
+	var footer := HBoxContainer.new()
+	footer.add_theme_constant_override("separation", 8)
+	container.add_child(footer)
 	for locale: String in ["en", "ru"]:
 		var btn_lang := Button.new()
 		btn_lang.text = "English" if locale == "en" else "Русский"
 		btn_lang.toggle_mode = true
 		btn_lang.button_pressed = Localization.current_locale == locale
-		btn_lang.custom_minimum_size = Vector2(120, 36)
+		btn_lang.custom_minimum_size = Vector2(110, 34)
+		btn_lang.add_theme_font_size_override("font_size", 13)
 		btn_lang.pressed.connect(Localization.set_locale.bind(locale))
-		lang_row.add_child(btn_lang)
+		footer.add_child(btn_lang)
+	var version := Label.new()
+	version.text = "%s %s" % [Localization.ru_en("тестовая сборка", "playtest build"), ProjectSettings.get_setting("application/config/version", "")]
+	version.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	version.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	version.add_theme_font_size_override("font_size", 12)
+	version.add_theme_color_override("font_color", UiStyle.TEXT_MUTE)
+	footer.add_child(version)
 
 
 func _on_continue_pressed() -> void:
@@ -1714,16 +1848,18 @@ func _build_campaign_list(container: Control) -> void:
 	var intro := Label.new()
 	intro.text = Localization.t("ui.start.campaign_intro", "Выберите, кто вас назначил. Для первой игры берите мандат Лиги.")
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	intro.add_theme_font_size_override("font_size", 12)
-	intro.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	intro.add_theme_font_size_override("font_size", 13)
+	intro.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	container.add_child(intro)
 
 	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	container.add_child(scroll)
 
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 8)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
 
 	# Appointed (patron) starts first — that is the chapter; founder starts are experimental.
@@ -1774,20 +1910,31 @@ func _build_sandbox_options(container: Control) -> void:
 
 func _build_start_profile_row(profile_id: String) -> Control:
 	var def: Dictionary = ContentDB.get_start_profile_def(profile_id)
+	var recommended: bool = profile_id == "appointed_administrator"
 	var panel := PanelContainer.new()
+	var card: StyleBoxFlat = UiStyle.card_box("active" if recommended else "normal")
+	card.set_content_margin_all(14)
+	panel.add_theme_stylebox_override("panel", card)
 
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
+	row.add_theme_constant_override("separation", 14)
 	panel.add_child(row)
 
 	var text_box := VBoxContainer.new()
-	text_box.add_theme_constant_override("separation", 4)
+	text_box.add_theme_constant_override("separation", 5)
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(text_box)
 
+	if recommended:
+		var badge := Label.new()
+		badge.text = Localization.t("ui.start.recommended", "Рекомендуется для первой игры")
+		UiStyle.caption(badge)
+		text_box.add_child(badge)
+
 	var title := Label.new()
 	title.text = Localization.content_text(def, "label", profile_id)
-	title.add_theme_font_size_override("font_size", 15)
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	UiStyle.title(title, 17)
 	text_box.add_child(title)
 
 	# One line on how it plays, instead of a paragraph of terms.
@@ -1797,8 +1944,8 @@ func _build_start_profile_row(profile_id: String) -> Control:
 	var desc := Label.new()
 	desc.text = style_text
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc.add_theme_font_size_override("font_size", 12)
-	desc.add_theme_color_override("font_color", Color(0.85, 0.84, 0.8))
+	desc.add_theme_font_size_override("font_size", 13)
+	desc.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	text_box.add_child(desc)
 
 	# The two meters the whole game is about — each explains itself on hover.
@@ -1813,17 +1960,12 @@ func _build_start_profile_row(profile_id: String) -> Control:
 		Localization.ru_en("Как к вам относятся жители. Растёт, когда вы встаёте на их сторону. Упадёт до нуля — бунт.",
 			"How the residents see you. It grows when you take their side. At zero they riot."))
 
-	if profile_id == "appointed_administrator":
-		var badge := Label.new()
-		badge.text = Localization.t("ui.start.recommended", "Рекомендуется для первой игры")
-		badge.add_theme_font_size_override("font_size", 12)
-		badge.add_theme_color_override("font_color", Color(0.6, 0.9, 0.6))
-		text_box.add_child(badge)
-
 	var btn := Button.new()
 	btn.text = Localization.t("ui.start.begin", "Begin")
-	btn.custom_minimum_size = Vector2(96, 40)
+	btn.custom_minimum_size = Vector2(104, 42)
 	btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	if recommended:
+		UiStyle.primary(btn)
 	btn.pressed.connect(_start_new_run.bind(profile_id))
 	row.add_child(btn)
 
@@ -1843,12 +1985,12 @@ func _profile_playstyle(profile_id: String) -> String:
 
 func _profile_stat(parent: Control, label: String, value: int, hint: String) -> void:
 	var stat := Label.new()
-	stat.text = "%s: %d  ⓘ" % [label, value]
+	stat.text = "%s  %d" % [label, value]
 	stat.tooltip_text = hint
 	stat.mouse_filter = Control.MOUSE_FILTER_STOP
 	stat.mouse_default_cursor_shape = Control.CURSOR_HELP
 	stat.add_theme_font_size_override("font_size", 12)
-	stat.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
+	stat.add_theme_color_override("font_color", UiStyle.ACCENT)
 	parent.add_child(stat)
 
 
@@ -1860,7 +2002,7 @@ func _start_new_run(profile_id: String) -> void:
 	TutorialManager.on_run_started()
 	_update_resource_bar()
 	_rebuild_building_list()
-	_info_label.text = _get_welcome_text()
+	_show_info(_get_welcome_text())
 	var profile_def: Dictionary = ContentDB.get_start_profile_def(profile_id)
 	EventBus.toast_requested.emit(
 		Localization.t("ui.start.started", "Started: %s") % Localization.content_text(profile_def, "label", profile_id),
@@ -1889,8 +2031,8 @@ func _on_new_game_started() -> void:
 func _build_city_panel() -> void:
 	_city_panel = PanelContainer.new()
 	_city_panel.set_anchors_preset(PRESET_CENTER)
-	_city_panel.size = Vector2(560, 540)
-	_city_panel.position = Vector2(-280, -270)
+	_city_panel.size = Vector2(560, 500)
+	_city_panel.position = Vector2(-280, -240)
 	_city_panel.visible = false
 	_city_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_city_panel)
@@ -1933,7 +2075,7 @@ func _rebuild_city_panel() -> void:
 
 	var title := Label.new()
 	title.text = Localization.t("ui.city.title", "City Level")
-	title.add_theme_font_size_override("font_size", 18)
+	UiStyle.title(title, 22, UiStyle.ACCENT)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
@@ -1998,7 +2140,7 @@ func _rebuild_city_panel() -> void:
 	var reward_lbl := Label.new()
 	reward_lbl.text = "%s: %s" % [Localization.t("ui.city.reward", "Reward"), _format_cost(reward)]
 	reward_lbl.add_theme_font_size_override("font_size", 12)
-	reward_lbl.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	reward_lbl.add_theme_color_override("font_color", UiStyle.ACCENT)
 	root.add_child(reward_lbl)
 
 	var upgrade_btn := Button.new()
@@ -2011,7 +2153,7 @@ func _rebuild_city_panel() -> void:
 	note.text = Localization.t("ui.city.spend_note", "Upgrade spends the required resources and unlocks the next building tier.")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note.add_theme_font_size_override("font_size", 12)
-	note.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	note.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	root.add_child(note)
 
 	var sep := HSeparator.new()
@@ -2153,7 +2295,7 @@ func _rebuild_settings_panel() -> void:
 
 	var title := Label.new()
 	title.text = Localization.t("ui.settings.title", "Options")
-	title.add_theme_font_size_override("font_size", 18)
+	UiStyle.title(title, 22, UiStyle.ACCENT)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
@@ -2185,7 +2327,7 @@ func _rebuild_settings_panel() -> void:
 	note.text = Localization.t("ui.settings.language_note", "Language is saved automatically.")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note.add_theme_font_size_override("font_size", 12)
-	note.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
+	note.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	root.add_child(note)
 
 
@@ -2225,7 +2367,7 @@ func _build_governance_panel() -> void:
 
 	var title := Label.new()
 	title.text = Localization.t("ui.governance.title", "Governance")
-	title.add_theme_font_size_override("font_size", 18)
+	UiStyle.title(title, 22, UiStyle.ACCENT)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
@@ -2265,9 +2407,11 @@ func _build_tech_tab() -> Control:
 	var scroll := ScrollContainer.new()
 	scroll.name = Localization.t("ui.tech.tab", "Tech")
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 6)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
 
 	for tech_id: String in ContentDB.get_technology_ids():
@@ -2279,7 +2423,7 @@ func _build_tech_tab() -> Control:
 func _build_tech_row(tech_id: String) -> Control:
 	var def: Dictionary = ContentDB.get_technology_def(tech_id)
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.y = 74
+	panel.add_theme_stylebox_override("panel", UiStyle.card_box())
 
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
@@ -2301,16 +2445,12 @@ func _build_tech_row(tech_id: String) -> Control:
 	desc.add_theme_font_size_override("font_size", 12)
 	text_box.add_child(desc)
 
-	var meta := Label.new()
-	meta.text = "%s: %s | %s: %s" % [
-		Localization.t("ui.meta.cost", "Cost"),
-		_format_cost(def.get("cost", {})),
-		Localization.t("ui.meta.effects", "Effects"),
+	text_box.add_child(_bb_line("%s  %s      [color=%s]%s[/color]" % [
+		_dim_bb(Localization.t("ui.meta.cost", "Cost") + ":"),
+		_cost_bb(def.get("cost", {})),
+		UiStyle.hex(UiStyle.GOOD),
 		_format_effects(def.get("effects", {})),
-	]
-	meta.add_theme_font_size_override("font_size", 12)
-	meta.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
-	text_box.add_child(meta)
+	], UiStyle.TEXT))
 
 	var btn := Button.new()
 	btn.text = Localization.t("ui.tech.researched", "Researched") if researched else Localization.t("ui.tech.research", "Research")
@@ -2325,9 +2465,11 @@ func _build_policy_tab() -> Control:
 	var scroll := ScrollContainer.new()
 	scroll.name = Localization.t("ui.policy.tab", "Policies")
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 6)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
 
 	var active_summary := Label.new()
@@ -2347,7 +2489,7 @@ func _build_policy_row(policy_id: String) -> Control:
 	var category: String = def.get("category", "general") as String
 	var active: bool = GameStateStore.get_active_policy(category) == policy_id
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size.y = 74
+	panel.add_theme_stylebox_override("panel", UiStyle.card_box())
 
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8)
@@ -2372,16 +2514,12 @@ func _build_policy_row(policy_id: String) -> Control:
 	desc.add_theme_font_size_override("font_size", 12)
 	text_box.add_child(desc)
 
-	var meta := Label.new()
-	meta.text = "%s: %s | %s: %s" % [
-		Localization.t("ui.meta.switch", "Switch"),
-		_format_cost(def.get("switch_cost", {})),
-		Localization.t("ui.meta.effects", "Effects"),
+	text_box.add_child(_bb_line("%s  %s      [color=%s]%s[/color]" % [
+		_dim_bb(Localization.t("ui.meta.switch", "Switch") + ":"),
+		_cost_bb(def.get("switch_cost", {})) if not (def.get("switch_cost", {}) as Dictionary).is_empty() else Localization.t("ui.common.free", "free"),
+		UiStyle.hex(UiStyle.GOOD),
 		_format_effects(def.get("effects", {})),
-	]
-	meta.add_theme_font_size_override("font_size", 12)
-	meta.add_theme_color_override("font_color", Color(0.75, 0.85, 1.0))
-	text_box.add_child(meta)
+	], UiStyle.TEXT))
 
 	var btn := Button.new()
 	btn.text = Localization.t("ui.policy.active", "Active") if active else Localization.t("ui.policy.set", "Set")
@@ -2560,20 +2698,33 @@ func _resolve_event(ev_id: String, accept: bool) -> void:
 # ===========================================================
 
 func _build_toast() -> void:
+	# A short notice in a pill at the bottom centre, clear of both side panels.
+	var holder := CenterContainer.new()
+	holder.set_anchors_preset(PRESET_BOTTOM_WIDE)
+	holder.offset_top = -74
+	holder.offset_bottom = -30
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(holder)
+	_toast_panel = PanelContainer.new()
+	var style: StyleBoxFlat = UiStyle.panel_box(8)
+	style.border_color = UiStyle.ACCENT_DIM
+	style.content_margin_left = 16
+	style.content_margin_right = 16
+	style.set_corner_radius_all(16)
+	_toast_panel.add_theme_stylebox_override("panel", style)
+	_toast_panel.modulate.a = 0.0
+	_toast_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(_toast_panel)
 	_toast_label = Label.new()
-	_toast_label.set_anchors_preset(PRESET_BOTTOM_WIDE)
-	_toast_label.offset_top = -60
-	_toast_label.offset_bottom = -30
 	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_toast_label.add_theme_font_size_override("font_size", 14)
-	_toast_label.modulate.a = 0.0
 	_toast_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_toast_label)
+	_toast_panel.add_child(_toast_label)
 
 
 func _on_toast(text: String, duration: float) -> void:
 	_toast_label.text = text
-	_toast_label.modulate.a = 1.0
+	_toast_panel.modulate.a = 1.0
 	_toast_timer = duration
 
 
@@ -2581,9 +2732,9 @@ func _update_toast_fade(delta: float) -> void:
 	if _toast_timer > 0.0:
 		_toast_timer -= delta
 		if _toast_timer <= 0.0:
-			_toast_label.modulate.a = 0.0
+			_toast_panel.modulate.a = 0.0
 		elif _toast_timer < 1.0:
-			_toast_label.modulate.a = _toast_timer
+			_toast_panel.modulate.a = _toast_timer
 
 
 func _on_tick_finished(_tick: int) -> void:
