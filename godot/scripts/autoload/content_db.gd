@@ -258,6 +258,7 @@ func _validate_content() -> void:
 			var swap: Dictionary = effects.get("replace_building", {})
 			targets.append(swap.get("from", ""))
 			targets.append(swap.get("to", ""))
+			targets.append((effects.get("add_buff", {}) as Dictionary).get("target", ""))
 			for target: Variant in targets:
 				if (target as String) != "" and not buildings.has(target as String):
 					content_warnings.append("event %s names unknown building %s" % [event_id, target])
