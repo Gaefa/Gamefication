@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.1.7 — "Rust Pit" test build (October 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.1.8 — "Rust Pit" test build (October 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–38. Window returns on day 39; win on day 40 with mood ≥40. Audits: days 20 and 36. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, an empty cistern 15; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
@@ -132,7 +132,7 @@ Play without outside hints. After the run, answer (short is fine, voice or text)
 6. What annoyed you in the controls or interface?
 7. Did you want to play again differently? How?
 
-Also: a screenshot of the ending screen ("SUMMARY"). If the game broke — what you were doing just before and the newest file from the `logs` folder (see "How to run"). Send answers to whoever gave you the build, any way you like.
+Also: a screenshot of the ending screen ("SUMMARY") and the `analytics` folder — the log of your runs (Options → "Open folder"; it stays on your computer only and shows us where the game gets hard or dull). If the game broke — what you were doing just before and the newest file from the `logs` folder (see "How to run"). Send answers to whoever gave you the build, any way you like.
 
 ## Known limitations of the test build
 

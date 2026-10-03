@@ -54,6 +54,7 @@ var _btn: Button
 
 func _ready() -> void:
 	_build_ui()
+	EventBus.run_reset.connect(_reset)
 	EventBus.new_game_started.connect(func() -> void: _offer("welcome"))
 	EventBus.building_issue_added.connect(func(_coord: Vector2i) -> void: _offer("building_problem"))
 	EventBus.season_changed.connect(func(season_id: String, _d: int, _l: int) -> void:
@@ -64,6 +65,13 @@ func _ready() -> void:
 	EventBus.desk_closed.connect(func() -> void:
 		if _is_shown("welcome") and not TutorialManager.ran_this_run:
 			_offer("first_desk"))
+
+
+## Hints queued for the menu map or the previous run must not pop up in this one.
+func _reset() -> void:
+	_queue.clear()
+	_active = ""
+	_layer.visible = false
 
 
 func _on_tick_finished(_tick: int) -> void:
@@ -78,7 +86,12 @@ func _on_tick_finished(_tick: int) -> void:
 ## waits until the player has actually built it, so the hints follow the player's hands.
 func _advance_chain() -> void:
 	if TutorialManager.ran_this_run:
-		return  # the guided tutorial teaches the same steps hands-on
+		# The guided tutorial teaches the same steps hands-on. Mark them in the run state, so
+		# a Continue of this run (where ran_this_run is false again) doesn't start the chain.
+		for step: Dictionary in CHAIN:
+			_mark_shown(step.get("id", "") as String)
+		_mark_shown("first_desk")
+		return
 	for i: int in CHAIN.size():
 		var step: Dictionary = CHAIN[i] as Dictionary
 		var hint_id: String = step.get("id", "") as String
@@ -122,6 +135,9 @@ func _flush() -> void:
 			return
 	if SimulationRunner.paused or suppressed or TutorialManager.active:
 		return  # don't pop a hint over the desk / crisis / finale / start menu
+	_queue.assign(_queue.filter(func(id: String) -> bool: return not _is_shown(id)))
+	if _queue.is_empty():
+		return
 	_active = _queue.pop_front()
 	_apply_text()
 	_layer.visible = true

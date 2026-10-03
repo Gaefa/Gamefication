@@ -13,6 +13,10 @@ const SETTINGS_PATH := "user://settings.cfg"
 const NO_COORD := Vector2i(-9999, -9999)
 const MAX_CELLS := 4
 
+## For the play log (RunLog): which steps players reach and where they skip out.
+signal step_shown(index: int, total: int)
+signal closed(completed: bool, index: int)
+
 var enabled_for_next_run: bool = true
 var active: bool = false
 ## True once the tutorial has started in this run — the text-only onboarding chain stays quiet.
@@ -187,7 +191,11 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("День идёт. Стройте, что считаете нужным, — или нажмите [b]3[/b], чтобы ускорить. Вечером придёт почта.",
 				"The day is running. Build what you think is needed — or press [b]3[/b] to speed up. Mail comes in the evening."),
-			"enter": func() -> void: _paused_by_us = false,
+			# A player who skipped "press Space" would otherwise be left on a frozen clock.
+			"enter": func() -> void:
+				if _paused_by_us and SimulationRunner.current_phase == SimulationRunner.Phase.DAY and not SimulationRunner.card_open:
+					SimulationRunner.paused = false
+				_paused_by_us = false,
 			"compact": true,
 			"done": func() -> bool: return _desk_seen,
 		},
@@ -217,6 +225,7 @@ func _go(index: int) -> void:
 	if step.has("enter"):
 		(step["enter"] as Callable).call()
 	_show_step()
+	step_shown.emit(_index, _steps.size())
 	_push_cells(step)
 
 
@@ -244,6 +253,7 @@ func _show_step() -> void:
 
 
 func _finish(completed: bool) -> void:
+	closed.emit(completed, _index)
 	# Only a tutorial played to the end is remembered as done. Skipping leaves the menu
 	# box ticked, so the next "Новая игра" starts it from step one again.
 	if completed:

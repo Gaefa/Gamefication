@@ -351,18 +351,6 @@
     "en": "water cover",
     "ru": "покрытие воды"
   },
-  "ui.event.accept": {
-    "en": "Accept",
-    "ru": "Принять"
-  },
-  "ui.event.decline": {
-    "en": "Decline",
-    "ru": "Отклонить"
-  },
-  "ui.event.not_enough_resources": {
-    "en": "Not enough resources",
-    "ru": "Не хватает ресурсов"
-  },
   "ui.language.toggle": {
     "en": "RU",
     "ru": "EN"
@@ -1623,10 +1611,6 @@
     "en": "Policy set: %s",
     "ru": "Политика выбрана: %s"
   },
-  "ui.command.no_event_system": {
-    "en": "No event system",
-    "ru": "Система событий недоступна"
-  },
   "ui.command.event_resolved": {
     "en": "Event %s %s",
     "ru": "Событие %s: %s"
@@ -1670,10 +1654,6 @@
   "ui.save.loaded": {
     "en": "Game loaded (slot %d)",
     "ru": "Игра загружена (слот %d)"
-  },
-  "ui.event.title": {
-    "en": "Event",
-    "ru": "Событие"
   },
   "ui.settings.short": {
     "en": "Opt",

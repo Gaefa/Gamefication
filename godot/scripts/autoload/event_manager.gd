@@ -25,12 +25,17 @@ func _ready() -> void:
 	EventBus.phase_changed.connect(_on_phase_changed)
 	EventBus.desk_option_selected.connect(_on_option_selected)
 	EventBus.pressure_threshold_reached.connect(_on_pressure_threshold)
+	EventBus.tick_finished.connect(_on_tick_finished)
 
 
-## Called by the real-time runner once per simulation tick, never by render frames.
-## The poll phase rides the save along with cooldowns, so speed/load cannot reorder mail.
-func process_game_tick() -> void:
-	_tick_cooldowns(1.0)
+## Driven by the simulation tick, so cooldowns and polling follow game time exactly — the
+## same at ×1 and ×5, and at any frame rate. The poll phase rides the save along with the
+## cooldowns, so neither speed nor a load can reorder the mail.
+func _on_tick_finished(_tick: int) -> void:
+	# Только днём проверяем триггеры
+	if not SimulationRunner.is_running():
+		return
+	_tick_cooldowns(SimulationRunner.TICK_INTERVAL)
 	var state: Dictionary = GameStateStore.events()
 	var polls: int = (state.get("poll_ticks", 0) as int) + 1
 	state["poll_ticks"] = polls
