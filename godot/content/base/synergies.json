@@ -5,7 +5,9 @@
     "effects_b": {"res_wood": 0.1},
     "max_stack": 1,
     "description": "Лесной двор у склада: +10% дерева — возить ближе.",
-    "description_en": "Lumber yard next to a warehouse: +10% wood — a shorter haul."
+    "description_en": "Lumber yard next to a warehouse: +10% wood — a shorter haul.",
+    "short": "Лесной двор у склада: +10% дерева",
+    "short_en": "Lumber yard by a warehouse: +10% wood"
   },
   {
     "id": "warehouse_quarry",
@@ -13,7 +15,9 @@
     "effects_b": {"res_stone": 0.1},
     "max_stack": 1,
     "description": "Карьер у склада: +10% камня — возить ближе.",
-    "description_en": "Quarry next to a warehouse: +10% stone — a shorter haul."
+    "description_en": "Quarry next to a warehouse: +10% stone — a shorter haul.",
+    "short": "Карьер у склада: +10% камня",
+    "short_en": "Quarry by a warehouse: +10% stone"
   },
   {
     "id": "warehouse_workshop",
@@ -21,7 +25,9 @@
     "effects_b": {"res_tools": 0.1},
     "max_stack": 1,
     "description": "Мастерская у склада: +10% инструментов — материал под рукой.",
-    "description_en": "Workshop next to a warehouse: +10% tools — materials at hand."
+    "description_en": "Workshop next to a warehouse: +10% tools — materials at hand.",
+    "short": "Мастерская у склада: +10% инструментов",
+    "short_en": "Workshop by a warehouse: +10% tools"
   },
   {
     "id": "warehouse_field",
@@ -29,7 +35,9 @@
     "effects_b": {"res_food": 0.1},
     "max_stack": 1,
     "description": "Грядка у склада: +10% еды — урожай не лежит на жаре.",
-    "description_en": "Field next to a warehouse: +10% food — the harvest does not sit in the heat."
+    "description_en": "Field next to a warehouse: +10% food — the harvest does not sit in the heat.",
+    "short": "Грядка у склада: +10% еды",
+    "short_en": "Field by a warehouse: +10% food"
   },
   {
     "id": "pump_field",
@@ -37,14 +45,18 @@
     "effects_b": {"res_food": 0.15},
     "max_stack": 1,
     "description": "Грядка у насоса: +15% еды — полив без потерь.",
-    "description_en": "Field next to a pump: +15% food — watering without losses."
+    "description_en": "Field next to a pump: +15% food — watering without losses.",
+    "short": "Грядка у насоса: +15% еды",
+    "short_en": "Field by a pump: +15% food"
   },
   {
     "id": "quarry_shelter",
     "pair": ["bld_quarry_pit", "bld_shelter"],
     "mood_b": -3,
     "description": "Барак у карьера: −3 к счастью за каждый карьер — пыль и грохот.",
-    "description_en": "Shelter next to a quarry: −3 mood per quarry — dust and noise."
+    "description_en": "Shelter next to a quarry: −3 mood per quarry — dust and noise.",
+    "short": "Барак у карьера: −3 счастья за карьер",
+    "short_en": "Shelter by a quarry: −3 mood per quarry"
   },
   {
     "id": "tower_shelter",
@@ -52,7 +64,9 @@
     "mood_b": 2,
     "max_stack": 1,
     "description": "Барак у старой Башни Истока: +2 к счастью — район помнит башню.",
-    "description_en": "Shelter next to the old Source Tower: +2 mood — the district remembers the tower."
+    "description_en": "Shelter next to the old Source Tower: +2 mood — the district remembers the tower.",
+    "short": "Барак у Башни Истока: +2 счастья",
+    "short_en": "Shelter by the Source Tower: +2 mood"
   },
   {
     "id": "cistern_shelter",
@@ -61,6 +75,8 @@
     "water_queue_b": 0.15,
     "max_stack": 1,
     "description": "Барак у Цистерны: напор всегда полный, но очередь у цистерны растёт — давление «вода» копится на 15% быстрее.",
-    "description_en": "Shelter next to the Cistern: always full pressure, but the queue at the cistern grows — the water pressure builds 15% faster."
+    "description_en": "Shelter next to the Cistern: always full pressure, but the queue at the cistern grows — the water pressure builds 15% faster.",
+    "short": "Барак у Цистерны: полный напор, давление «вода» +15%",
+    "short_en": "Shelter by the Cistern: full pressure, water pressure +15%"
   }
 ]

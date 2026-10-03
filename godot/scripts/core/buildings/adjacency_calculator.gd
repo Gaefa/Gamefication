@@ -7,6 +7,7 @@ class_name AdjacencyCalculator
 ##   full_pressure_a / _b    1 = that side always gets full water pressure
 ##   water_queue_a / _b      extra growth of the "water" pressure per such building
 ##   max_stack               how many neighbours of the other type count (default: all)
+## Damaged buildings take no part in neighbour rules.
 ## Stateless: everything is read from GameStateStore, so it needs no save data.
 
 
@@ -31,6 +32,9 @@ func value_at(coord: Vector2i, type_id: String, key: String) -> float:
 ## Rules currently in force for the building at coord: [{rule, side ("a"/"b"), count}].
 func active_rules(coord: Vector2i, type_id: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
+	# A damaged building neither gets nor gives neighbour effects: it houses and produces nothing.
+	if GameStateStore.get_building(coord).get("damaged", false) as bool:
+		return result
 	var neighbors: Array[Vector2i] = HexCoords.neighbors_of(coord)
 	for syn: Dictionary in ContentDB.synergies:
 		var side: String = _side_of(syn, type_id)
@@ -40,7 +44,8 @@ func active_rules(coord: Vector2i, type_id: String) -> Array[Dictionary]:
 		var count: int = 0
 		for nb: Vector2i in neighbors:
 			var nb_bld: Dictionary = GameStateStore.get_building(nb)
-			if not nb_bld.is_empty() and (nb_bld.get("type", "") as String) == other_type:
+			if not nb_bld.is_empty() and (nb_bld.get("type", "") as String) == other_type \
+					and not (nb_bld.get("damaged", false) as bool):
 				count += 1
 		count = mini(count, syn.get("max_stack", 6) as int)
 		if count > 0:
