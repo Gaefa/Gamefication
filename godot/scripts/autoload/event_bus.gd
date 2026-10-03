@@ -31,10 +31,6 @@ signal city_level_changed(new_level: int)
 signal prestige_triggered(stars: int)
 signal win_condition_met()
 
-# --- Events (disasters, traders, etc.) ---
-signal game_event_spawned(event_data: Dictionary)
-signal game_event_resolved(event_id: String, accepted: bool)
-
 # --- Pressure Director ---
 signal pressure_updated(index: float, phase: String)
 signal pressure_threshold_reached(category: String)
@@ -56,6 +52,10 @@ signal ending_triggered(ending_id: String, kind: String)
 signal game_saved(slot: int)
 signal game_loaded(slot: int)
 signal new_game_started()
+## Fired by GameOrchestrator at the start of every new or loaded run, before the world is
+## rebuilt. Autoloads drop their per-run runtime state here (queues, timers), so nothing
+## leaks from the throwaway menu map or the previous run.
+signal run_reset()
 
 # --- UI hints ---
 signal toast_requested(text: String, duration: float)

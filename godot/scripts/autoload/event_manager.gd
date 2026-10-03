@@ -16,8 +16,9 @@ var pending_events: Array:
 		if not ev_state.has("pending"):
 			ev_state["pending"] = []
 		return ev_state["pending"] as Array
-var _check_interval: float = 5.0
-var _timer: float = 0.0
+## Triggers are polled every few game ticks; cooldowns count down one tick at a time.
+const CHECK_EVERY_TICKS := 5
+var _ticks_to_check: int = 0
 ## Cooldowns are in game seconds (ticks at ×1): 300 = one game day. They follow the game
 ## speed, so a repeatable petition returns after the same number of days at ×1 and ×3.
 const DEFAULT_COOLDOWN_SEC := 900.0
@@ -27,17 +28,20 @@ func _ready() -> void:
 	EventBus.phase_changed.connect(_on_phase_changed)
 	EventBus.desk_option_selected.connect(_on_option_selected)
 	EventBus.pressure_threshold_reached.connect(_on_pressure_threshold)
+	EventBus.tick_finished.connect(_on_tick_finished)
+	EventBus.run_reset.connect(func() -> void: _ticks_to_check = 0)
 
 
-func _process(delta: float) -> void:
+## Driven by the simulation tick, so cooldowns and polling follow game time exactly —
+## the same at ×1 and ×5, and at any frame rate (the runner caps catch-up ticks per frame).
+func _on_tick_finished(_tick: int) -> void:
 	# Только днём проверяем триггеры
 	if not SimulationRunner.is_running():
 		return
-	# Game time, not wall time: at ×3 a cooldown must still last the same number of game days.
-	_tick_cooldowns(delta * SimulationRunner.speed_scale)
-	_timer -= delta
-	if _timer <= 0.0:
-		_timer = _check_interval
+	_tick_cooldowns(SimulationRunner.TICK_INTERVAL)
+	_ticks_to_check -= 1
+	if _ticks_to_check <= 0:
+		_ticks_to_check = CHECK_EVERY_TICKS
 		_check_triggers()
 
 

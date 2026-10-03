@@ -2,15 +2,24 @@ extends Node
 ## 3-slot save/load system with autosave support.
 ## Integrates SaveMigrator for old saves and SaveValidator for data integrity.
 
-const SAVE_DIR := "user://saves/"
+## Dev tools (res://tools/...) play real runs that autosave and reach finales; they get a
+## folder of their own so they never overwrite or delete the player's saves.
+var SAVE_DIR := "user://saves/"
 const AUTOSAVE_INTERVAL := 120.0  # seconds
 
 var _autosave_timer: float = 0.0
 
 
 func _ready() -> void:
+	for arg: String in OS.get_cmdline_args():
+		if arg.begins_with("res://tools/"):
+			SAVE_DIR = "user://saves_tools/"
 	if not DirAccess.dir_exists_absolute(SAVE_DIR):
 		DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+	EventBus.run_reset.connect(func() -> void: _autosave_timer = 0.0)
+	# A finished run is not something to continue: the autosave would reopen it a moment
+	# before the end, and the same ending would fire again.
+	EventBus.ending_triggered.connect(func(_id: String, _kind: String) -> void: delete_save(0))
 
 
 func _process(delta: float) -> void:

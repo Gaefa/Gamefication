@@ -187,7 +187,11 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("День идёт. Стройте, что считаете нужным, — или нажмите [b]3[/b], чтобы ускорить. Вечером придёт почта.",
 				"The day is running. Build what you think is needed — or press [b]3[/b] to speed up. Mail comes in the evening."),
-			"enter": func() -> void: _paused_by_us = false,
+			# A player who skipped "press Space" would otherwise be left on a frozen clock.
+			"enter": func() -> void:
+				if _paused_by_us and SimulationRunner.current_phase == SimulationRunner.Phase.DAY and not SimulationRunner.card_open:
+					SimulationRunner.paused = false
+				_paused_by_us = false,
 			"compact": true,
 			"done": func() -> bool: return _desk_seen,
 		},
