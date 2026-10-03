@@ -54,6 +54,7 @@ func _attach() -> void:
 	# Back to a clean run for the loop.
 	EventManager.clear_pending()
 	_main.get_node("HUDCanvas/HUD").call("_start_new_run", "appointed_administrator")
+	SimulationRunner.speed_scale = SPEED  # a new run starts at ×1
 
 
 func _physics_process(delta: float) -> void:
