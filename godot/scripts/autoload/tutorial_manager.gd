@@ -13,6 +13,10 @@ const SETTINGS_PATH := "user://settings.cfg"
 const NO_COORD := Vector2i(-9999, -9999)
 const MAX_CELLS := 4
 
+## For the play log (RunLog): which steps players reach and where they skip out.
+signal step_shown(index: int, total: int)
+signal closed(completed: bool, index: int)
+
 var enabled_for_next_run: bool = true
 var active: bool = false
 ## True once the tutorial has started in this run — the text-only onboarding chain stays quiet.
@@ -221,6 +225,7 @@ func _go(index: int) -> void:
 	if step.has("enter"):
 		(step["enter"] as Callable).call()
 	_show_step()
+	step_shown.emit(_index, _steps.size())
 	_push_cells(step)
 
 
@@ -248,6 +253,7 @@ func _show_step() -> void:
 
 
 func _finish(completed: bool) -> void:
+	closed.emit(completed, _index)
 	# Only a tutorial played to the end is remembered as done. Skipping leaves the menu
 	# box ticked, so the next "Новая игра" starts it from step one again.
 	if completed:

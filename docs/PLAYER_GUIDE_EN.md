@@ -129,7 +129,7 @@ Play without outside hints. After the run, answer (short is fine, voice or text)
 6. What annoyed you in the controls or interface?
 7. Did you want to play again differently? How?
 
-Also: a screenshot of the ending screen ("SUMMARY"). If the game broke — what you were doing just before and the newest file from the `logs` folder (see "How to run"). Send answers to whoever gave you the build, any way you like.
+Also: a screenshot of the ending screen ("SUMMARY") and the `analytics` folder — the log of your runs (Options → "Open folder"; it stays on your computer only and shows us where the game gets hard or dull). If the game broke — what you were doing just before and the newest file from the `logs` folder (see "How to run"). Send answers to whoever gave you the build, any way you like.
 
 ## Known limitations of the test build
 
