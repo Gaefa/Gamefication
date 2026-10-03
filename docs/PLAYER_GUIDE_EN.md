@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.1.7 — "Rust Pit" test build (October 2026). A run takes 20–40 minutes.
+Version 0.1.8 — "Rust Pit" test build (October 2026). A run takes 20–40 minutes.
 
 ## How to run
 
