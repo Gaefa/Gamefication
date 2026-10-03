@@ -1,0 +1,109 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+  СРОЧНО, день 32: audit.result2
+sweep (cards, panels, finales): 0 untranslated so far
+  вечер, день 1: 1 карт.
+    день 1: patron.letter.welcome → «Принять мандат»
+  вечер, день 2: 0 карт.
+  вечер, день 3: 1 карт.
+    день 3: rival.voss_intro_league → «Принять к сведению»
+  вечер, день 4: 0 карт.
+  вечер, день 5: 2 карт.
+    день 5: petition.grach_intro → «Ответить вежливо и принять помощь»
+    день 5: petition.thanks → «Ответить благодарностью»
+      ⓘ Effect: city support +4
+  вечер, день 6: 1 карт.
+    день 6: petition.debt_lists → «Списать долги Компании»
+      ⓘ Effect: city support +8, patron trust -3
+  вечер, день 7: 1 карт.
+    день 7: petition.pump_log → «Взять журнал и оставить его в районе»
+      ⓘ Effect: output (Well Pump) +15% for 5 d, city support +4
+  вечер, день 8: 1 карт.
+    день 8: branch.old_tower → «Оставить как есть»
+      ⓘ Effect: city support +6
+  вечер, день 9: 0 карт.
+  вечер, день 10: 2 карт.
+    день 10: petition.thanks → «Ответить благодарностью»
+      ⓘ Effect: city support +4
+    день 10: petition.warehouse_shifts → «Пристроить вторые ворота (20 дерева, 10 »
+      ⓘ Effect: city support +5, "people" pressure -6 | Cost: wood 20, stone 10
+  вечер, день 11: 0 карт.
+  вечер, день 12: 1 карт.
+    день 12: patron.letter.share_water → «Отправить 60 воды в лагерь»
+      ⓘ Effect: patron trust +10, city support -8 | Cost: water 60
+  вечер, день 13: 0 карт.
+  вечер, день 14: 1 карт.
+    день 14: rival.grant_result → «Принять грант»
+      ⓘ Effect: money +150, patron trust +3
+  вечер, день 15: 2 карт.
+    день 15: patron.letter.audit_warning → «Принято, готовимся»
+    день 15: petition.thanks → «Ответить благодарностью»
+      ⓘ Effect: city support +4
+  вечер, день 16: 1 карт.
+    день 16: rival.voss_exchange → «Согласиться на обмен (40 еды за 8 инстру»
+      ⓘ Effect: tools +8 | Cost: food 40
+  вечер, день 17: 1 карт.
+    день 17: petition.fields_before_dust → «Поставить щиты (25 дерева)»
+      ⓘ Effect: output (Dust Plot) +15% for 13 d | Cost: wood 25
+  вечер, день 18: 1 карт.
+    день 18: petition.cistern_evening → «Разрешить и прийти самому»
+      ⓘ Effect: city support +6, "people" pressure -8
+  вечер, день 19: 0 карт.
+  СРОЧНО, день 20: audit.result
+    день 20: audit.result → «Принять к сведению»
+  вечер, день 20: 0 карт.
+  вечер, день 21: 1 карт.
+    день 21: report.dust_filters → «Заменить фильтры (3 инструмента)»
+      ⓘ Cost: tools 3
+  вечер, день 22: 0 карт.
+  вечер, день 23: 1 карт.
+    день 23: petition.camp_families → «Пустить всех и поставить на паёк (30 еды»
+      ⓘ Effect: output (all buildings) +5% for 6 d, city support +4 | Cost: food 30
+  вечер, день 24: 0 карт.
+  вечер, день 25: 1 карт.
+    день 25: report.dust_cough → «Купить повязки и капли (50 денег)»
+      ⓘ Effect: city support +4 | Cost: money 50
+  вечер, день 26: 0 карт.
+  вечер, день 27: 0 карт.
+  вечер, день 28: 1 карт.
+    день 28: patron.letter.heat_warning → «Ввести расписание выдачи»
+      ⓘ Effect: city support -4, "people" pressure -12
+  вечер, день 29: 0 карт.
+  вечер, день 30: 2 карт.
+    день 30: report.heat_stock → «Выдать излишки жителям»
+      ⓘ Effect: city support +5 | Cost: food 30
+    день 30: petition.thanks → «Ответить благодарностью»
+      ⓘ Effect: city support +4
+  вечер, день 31: 1 карт.
+    день 31: petition.covenant_shade → «Поставить навесы»
+      ⓘ Effect: output (Dust Plot) +18% for 8 d | Cost: wood 30
+  вечер, день 32: 0 карт.
+  вечер, день 33: 1 карт.
+    день 33: rival.voss_heat → «Передать 50 воды»
+      ⓘ Effect: city support +3 | Cost: water 50
+  вечер, день 34: 1 карт.
+    день 34: patron.letter.audit2_warning → «Подготовить ведомости»
+  вечер, день 35: 1 карт.
+    день 35: petition.thanks → «Ответить благодарностью»
+      ⓘ Effect: city support +4
+  СРОЧНО, день 36: audit.result2
+    день 36: audit.result2 → «Принять к сведению»
+  вечер, день 36: 0 карт.
+  вечер, день 37: 1 карт.
+    день 37: patron.letter.term_report → «Отправить сводку как есть»
+      ⓘ Effect: patron trust +2, city support +3
+  вечер, день 38: 0 карт.
+  вечер, день 39: 0 карт.
+=== I18N SMOKE: 0 untranslated strings ===
+=== SMOKE: финал ending.win.protector (win) | вечеров 39, карт 29, день 40 ===
+SUMMARY
+
+• Two masters: trust 100 · support 76 — both still holding
+
+• Cistern: 1500 water — 2.5 days' worth
+
+• Pressure: no trouble reached a crisis
+
+• Residents: peak 4, remaining 4
+журнал событий: 29 записей; последняя: { "title": "Письмо Лиги — сводка за срок", "title_en": "League Letter — The Term Report", "choice": "Отправить сводку как есть", "choice_en": "Send the summary as it is", "reply": "Сводка ушла как есть. Койл ответила: «Спасибо. Так проще работать».", "reply_en": "The summary went as it is. Coyle replied: \"Thank you. That makes the work easier.\"", "day": 37 }
+соперник: Восс 55 · вы 58; грант решён: true

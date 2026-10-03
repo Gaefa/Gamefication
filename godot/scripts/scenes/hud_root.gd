@@ -235,7 +235,7 @@ func _build_resource_bar() -> void:
 	_rival_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_chip(bottom, func() -> String: return Localization.ru_en(
 		"Сводный показатель района Мары Восс и ваш. По нему делят грант на %d-й день.",
-		"The combined score of Mara Voss's district and yours. It decides the grant on day %d.") % RivalManager.GRANT_DAY).add_child(_rival_label)
+		"The combined score of Mara Voss's district and yours. It decides the grant on day %d.") % ContentDB.get_grant_day()).add_child(_rival_label)
 
 	# Pressure director: four gauges filling toward a crisis at 100.
 	var pressure: HBoxContainer = _chip(bottom, func() -> String: return Localization.ru_en(
@@ -410,7 +410,7 @@ func _position_below_resource_bar() -> void:
 var _left_column: VBoxContainer
 var _goal_rows: Dictionary = {}  # id → {"row": Control, "mark": Label, "name": Label, "value": Label}
 const LEFT_W := 236.0
-const GOAL_ROWS := ["dust", "audit", "water", "food", "mood", "grant", "finish"]
+const GOAL_ROWS := ["dust", "audit", "water", "food", "mood", "spoilage", "grant", "finish"]
 
 ## Panels in the order of their keys: Q E T Y sit in one row next to WASD (W and R are taken).
 const PANEL_BUTTONS := [
@@ -510,16 +510,21 @@ func _update_goals() -> void:
 
 	# 1. The season ahead.
 	var sid: String = GameStateStore.climate().get("season_id", "") as String
-	_set_goal("dust", sid == "season_window" and day < 19, false,
-		Localization.ru_en("Сезон Пыли", "The Dust"), Localization.ru_en("через %d дн.", "in %d days") % (19 - day))
+	var order: Array = ContentDB.get_season_order()
+	var idx: int = order.find(sid)
+	var next_def: Dictionary = ContentDB.get_season_def(order[(idx + 1) % order.size()] as String) if not order.is_empty() else {}
+	var length: int = ContentDB.get_season_def(sid).get("length_days", 1) as int
+	var remaining: int = length - (GameStateStore.climate().get("day_in_season", 1) as int) + 1
+	_set_goal("dust", not next_def.is_empty(), false,
+		Localization.content_text(next_def, "label", "?"), Localization.ru_en("через %d дн.", "in %d days") % remaining)
 
 	# 2. The audit checklist, live — the same three checks the inspector runs.
 	var mandate: Dictionary = GameStateStore.mandate()
 	var has_patron: bool = (mandate.get("patron_id", "") as String) != ""  # a founder faces no audit and no grant contest
-	var audit_done: bool = mandate.get("audit_done", false) as bool
+	var audit_done: bool = MandateManager.next_audit_day() == 0
 	var checking: bool = has_patron and not audit_done
 	_set_goal("audit", has_patron, audit_done,
-		Localization.ru_en("Аудит пройден", "Audit done") if audit_done else Localization.ru_en("Аудит · день %d", "Audit · day %d") % MandateManager.AUDIT_DAY,
+		Localization.ru_en("Аудиты пройдены", "Audits done") if audit_done else Localization.ru_en("Аудит · день %d", "Audit · day %d") % MandateManager.next_audit_day(),
 		"", not audit_done)
 	var water: float = GameStateStore.get_resource("res_water_stockpile")
 	var food: float = GameStateStore.get_resource("res_food")
@@ -528,15 +533,22 @@ func _update_goals() -> void:
 	_set_goal("food", checking, food >= MandateManager.FOOD_OK, Localization.ru_en("Еда", "Food"), "%d / %d" % [int(food), int(MandateManager.FOOD_OK)])
 	_set_goal("mood", checking, mood >= MandateManager.HAPPINESS_OK, Localization.ru_en("Счастье", "Mood"), "%d%% / %d%%" % [int(mood), int(MandateManager.HAPPINESS_OK)])
 
+	var climate: Dictionary = GameStateStore.climate()
+	var incoming: float = climate.get("heat_food_start", 0.0) as float
+	var spoiled: float = climate.get("heat_food_spoiled", 0.0) as float
+	var loss_percent: float = 100.0 * spoiled / incoming if incoming > 0.0 else 0.0
+	_set_goal("spoilage", checking and climate.has("heat_food_start"), MandateManager.food_preserved(),
+		Localization.ru_en("Порча еды", "Food spoiled"), "%.1f%% / <25%%" % loss_percent)
+
 	# 3. The grant contest with the neighbour.
 	var ours: int = int(RivalManager.player_score())
 	var theirs: int = int(RivalManager.rival_score())
 	_set_goal("grant", has_patron and not (GameStateStore.rival().get("grant_decided", false) as bool), ours >= theirs,
-		Localization.ru_en("Грант · день %d", "Grant · day %d") % RivalManager.GRANT_DAY,
+		Localization.ru_en("Грант · день %d", "Grant · day %d") % ContentDB.get_grant_day(),
 		Localization.ru_en("вы %d : %d Восс", "you %d : %d Voss") % [ours, theirs])
 
 	# 4. The finish line.
-	_set_goal("finish", true, false, Localization.ru_en("Дожить до дня %d", "Reach day %d") % EndingManager.WIN_DAY,
+	_set_goal("finish", true, false, Localization.ru_en("Дожить до дня %d", "Reach day %d") % ContentDB.get_win_day(),
 		Localization.ru_en("день %d", "day %d") % day)
 
 
@@ -756,7 +768,7 @@ func _season_bar_text() -> String:
 		var idx: int = climate.get("season_index", 0) as int
 		var next_id: String = order[(idx + 1) % order.size()] as String
 		var next_name: String = Localization.content_text(ContentDB.get_season_def(next_id), "label", next_id)
-		var days_left: int = maxi(slen - din, 0)
+		var days_left: int = maxi(slen - din + 1, 0)
 		text += " %s %s ~%d%s" % [
 			"→",
 			next_name,

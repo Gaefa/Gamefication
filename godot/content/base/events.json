@@ -7,16 +7,22 @@
     "patron": "restoration_league",
     "trigger_day": 1,
     "cooldown_sec": 999999,
-    "tags": ["patron", "letter"],
+    "tags": [
+      "patron",
+      "letter"
+    ],
     "title": "Лига Восстановления — назначение",
     "title_en": "Restoration League — Appointment",
-    "body": "Лига Восстановления. Инспекция сухих районов.\nАдминистратору района Ржавая Нора.\n\nУведомляю о вашем назначении. С сегодняшнего дня район в вашем ведении, отчитываетесь вы передо мной.\n\nЧто нужно до начала Сезона Пыли (через 18 дней):\n— запас воды и еды, которого хватит на сезон;\n— чтобы жители остались в районе.\n\nНа 20-й день я приеду с проверкой. Печать и ключи от поста администрации переданы вам с этим письмом.\n\nИнспектор Койл",
-    "body_en": "Restoration League. Dry Districts Inspectorate.\nTo the Administrator of the Rust Pit district.\n\nThis is notice of your appointment. As of today the district is yours to run, and you report to me.\n\nWhat is needed before the Dust season (18 days from now):\n— a reserve of water and food that lasts the season;\n— the residents still living in the district.\n\nI will come to inspect on day 20. The seal and the keys to the administration post are enclosed with this letter.\n\nInspector Coyle",
+    "body": "Лига Восстановления. Инспекция сухих районов.\nАдминистратору района Ржавая Нора.\n\nУведомляю о вашем назначении. С сегодняшнего дня район в вашем ведении, отчитываетесь вы передо мной.\n\nЧто нужно до начала Сезона Пыли (через 18 дней):\n— запас воды и еды, которого хватит на сезон;\n— чтобы жители остались в районе.\n\nНа 20-й день я приеду с проверкой. Печать и ключи от поста администрации переданы вам с этим письмом.\n\nИнспектор Койл\n\nПосле Пыли — Жара с 30-го дня. Повторный аудит — день 36, конец срока — день 40.",
+    "body_en": "Restoration League. Dry Districts Inspectorate.\nTo the Administrator of the Rust Pit district.\n\nThis is notice of your appointment. As of today the district is yours to run, and you report to me.\n\nWhat is needed before the Dust season (18 days from now):\n— a reserve of water and food that lasts the season;\n— the residents still living in the district.\n\nI will come to inspect on day 20. The seal and the keys to the administration post are enclosed with this letter.\n\nInspector Coyle\n\nAfter the Dust comes the Heat, from day 30. Second audit: day 36. The term ends on day 40.",
     "options": [
       {
         "text": "Принять мандат",
         "text_en": "Accept the mandate",
-        "effects": { "message": "Мандат принят. До Пыли 18 дней: копите воду и еду.", "message_en": "Mandate accepted. The Dust is 18 days away: stock up on water and food." }
+        "effects": {
+          "message": "Мандат принят. До Пыли 18 дней: копите воду и еду. Жара — с дня 30; второй аудит — 36; конец срока — 40.",
+          "message_en": "Mandate accepted. The Dust is 18 days away: stock up on water and food. Heat starts on day 30; second audit on 36; term ends on 40."
+        }
       }
     ]
   },
@@ -28,16 +34,23 @@
     "patron": "civic_directorate",
     "trigger_day": 1,
     "cooldown_sec": 999999,
-    "tags": ["patron", "letter", "directorate"],
+    "tags": [
+      "patron",
+      "letter",
+      "directorate"
+    ],
     "title": "Директорат — предписание о назначении",
     "title_en": "Directorate — Order of Appointment",
-    "body": "Гражданский Директорат. Управление зон восстановления.\nПредписание № 114/Р\n\nЗона восстановления «Ржавая Нора» передаётся в ваше управление с сегодняшнего дня.\n\nТребования к началу Сезона Пыли (через 18 дней): запас воды и еды на сезон, учёт населения, отсутствие беспорядков.\nОтчётность — по установленной форме. Плановая проверка — на 20-й день, проводит комиссар Директората.\n\nКанцелярия Директората",
-    "body_en": "Civic Directorate. Office of Recovery Zones.\nOrder No. 114/R\n\nThe Rust Pit recovery zone is placed under your administration as of today.\n\nRequirements by the start of the Dust season (18 days from now): a seasonal reserve of water and food, a population register, no disorder.\nReports are filed in the standard form. The scheduled inspection is on day 20 and is carried out by a Directorate commissar.\n\nDirectorate Chancellery",
+    "body": "Гражданский Директорат. Управление зон восстановления.\nПредписание № 114/Р\n\nЗона восстановления «Ржавая Нора» передаётся в ваше управление с сегодняшнего дня.\n\nТребования к началу Сезона Пыли (через 18 дней): запас воды и еды на сезон, учёт населения, отсутствие беспорядков.\nОтчётность — по установленной форме. Плановая проверка — на 20-й день, проводит комиссар Директората.\n\nКанцелярия Директората\n\nПосле Пыли — Жара с 30-го дня. Повторный аудит — день 36, конец срока — день 40.",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\nOrder No. 114/R\n\nThe Rust Pit recovery zone is placed under your administration as of today.\n\nRequirements by the start of the Dust season (18 days from now): a seasonal reserve of water and food, a population register, no disorder.\nReports are filed in the standard form. The scheduled inspection is on day 20 and is carried out by a Directorate commissar.\n\nDirectorate Chancellery\n\nAfter the Dust comes the Heat, from day 30. Second audit: day 36. The term ends on day 40.",
     "options": [
       {
         "text": "Принять предписание",
         "text_en": "Accept the order",
-        "effects": { "message": "Предписание принято. Проверка комиссара — на 20-й день.", "message_en": "Order accepted. The commissar inspects on day 20." }
+        "effects": {
+          "message": "Предписание принято. Проверка комиссара — на 20-й день. Жара — с дня 30; второй аудит — 36; конец срока — 40.",
+          "message_en": "Order accepted. The commissar inspects on day 20. Heat starts on day 30; second audit on 36; term ends on 40."
+        }
       }
     ]
   },
@@ -49,16 +62,23 @@
     "patron": "restoration_league",
     "trigger_day": 15,
     "cooldown_sec": 999999,
-    "tags": ["patron", "letter", "audit"],
+    "tags": [
+      "patron",
+      "letter",
+      "audit"
+    ],
     "title": "Письмо Лиги — перед проверкой",
     "title_en": "League Letter — Before the Inspection",
-    "body": "Администратору Ржавой Норы.\n\nНапоминаю: проверка на 20-й день. Смотреть буду три вещи: запас воды, запас еды и остаются ли люди в районе. Нормы прежние, они есть в вашем списке целей.\n\nЕсли чего-то не хватает, у вас пять дней. После проверки я отправляю доклад наверх, и переписать его будет нельзя.\n\nИнспектор Койл",
-    "body_en": "To the Administrator of the Rust Pit.\n\nA reminder: the inspection is on day 20. I will look at three things: the water reserve, the food reserve, and whether people are staying in the district. The targets have not changed; they are in your list of goals.\n\nIf something is short, you have five days. After the inspection my report goes up the line, and it cannot be rewritten.\n\nInspector Coyle",
+    "body": "Администратору Ржавой Норы.\n\nНапоминаю: проверка на 20-й день. Смотреть буду три вещи: запас воды, запас еды и остаются ли люди в районе. Нормы прежние, они есть в вашем списке целей.\n\nЕсли чего-то не хватает, у вас пять дней. После проверки я отправляю доклад наверх, и переписать его будет нельзя.\n\nИнспектор Койл\n\nПосле Пыли — Жара с 30-го дня. Повторный аудит — день 36, конец срока — день 40.",
+    "body_en": "To the Administrator of the Rust Pit.\n\nA reminder: the inspection is on day 20. I will look at three things: the water reserve, the food reserve, and whether people are staying in the district. The targets have not changed; they are in your list of goals.\n\nIf something is short, you have five days. After the inspection my report goes up the line, and it cannot be rewritten.\n\nInspector Coyle\n\nAfter the Dust comes the Heat, from day 30. Second audit: day 36. The term ends on day 40.",
     "options": [
       {
         "text": "Принято, готовимся",
         "text_en": "Understood, preparing",
-        "effects": { "message": "До проверки пять дней. Нормы — в списке целей слева.", "message_en": "Five days until the inspection. The targets are in the goals list on the left." }
+        "effects": {
+          "message": "До проверки пять дней. Нормы — в списке целей слева. Жара — с дня 30; второй аудит — 36; конец срока — 40.",
+          "message_en": "Five days until the inspection. The targets are in the goals list on the left. Heat starts on day 30; second audit on 36; term ends on 40."
+        }
       }
     ]
   },
@@ -1117,7 +1137,7 @@
     "min_level": 1,
     "once": true,
     "patron": "restoration_league",
-    "trigger_day": 27,
+    "trigger_day": 37,
     "cooldown_sec": 999999,
     "tags": [
       "patron",
@@ -1162,5 +1182,402 @@
         }
       }
     ]
+  },
+  {
+    "id": "patron.letter.heat_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 28,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Письмо Лиги — перед Жарой",
+    "title_en": "League Letter — Before the Heat",
+    "body": "Администратору Ржавой Норы.\n\nЖара начнётся на 30-й день и продлится девять дней. Расход воды вырастет, еда начнёт портиться. Полная цистерна не заменит работающий насос.\n\nПодготовьте расписание выдачи воды. Очереди станут короче, но жители воспримут ограничения тяжело. Второй аудит — на 36-й день.",
+    "body_en": "To the Administrator of the Rust Pit.\n\nThe Heat starts on day 30 and lasts nine days. Water use will rise and food will spoil. A full cistern cannot replace a working pump.\n\nPrepare a water rationing schedule. Queues will shorten, but residents will resent the restrictions. The second audit is on day 36.",
+    "options": [
+      {
+        "text": "Ввести расписание выдачи",
+        "text_en": "Schedule water rationing",
+        "effects": {
+          "stat_city_trust": -4,
+          "stat_unrest_pressure": -12,
+          "style": "pragmatist",
+          "message": "Расписание вывешено. Очереди короче, поддержка снизилась.",
+          "message_en": "The schedule is posted. Queues are shorter; support fell."
+        }
+      },
+      {
+        "text": "Оставить выдачу свободной",
+        "text_en": "Keep water freely available",
+        "effects": {
+          "stat_league_trust": -4,
+          "style": "protector",
+          "message": "Расписания не будет. Покровитель отметил отказ.",
+          "message_en": "There will be no schedule. The patron recorded the refusal."
+        }
+      }
+    ],
+    "patron": "restoration_league"
+  },
+  {
+    "id": "patron.letter.audit2_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 34,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Письмо Лиги — повторный аудит",
+    "title_en": "League Letter — Second Audit",
+    "body": "Администратору Ржавой Норы.\n\nПроверка — на 36-й день. Нормы прежние: вода не ниже 60, еда не ниже 30, счастье не ниже 40. Проверим также потери еды: испорчено должно быть меньше четверти запаса, с которым район вошёл в Жару.\n\nПервый результат остаётся в деле. Повторная проверка влияет на доверие в полтора раза сильнее.",
+    "body_en": "To the Administrator of the Rust Pit.\n\nInspection is on day 36. The targets remain: water at least 60, food at least 30, mood at least 40. We will also check food waste: spoilage must be below a quarter of the reserve held when the Heat began.\n\nThe first result stays on file. This inspection changes trust by one and a half times as much.",
+    "options": [
+      {
+        "text": "Подготовить ведомости",
+        "text_en": "Prepare the ledgers",
+        "effects": {
+          "message": "Повторная проверка через два дня.",
+          "message_en": "The second inspection is in two days."
+        }
+      }
+    ],
+    "patron": "restoration_league"
+  },
+  {
+    "id": "patron.letter.heat_warning_directorate",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 28,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Письмо Директората — перед Жарой",
+    "title_en": "Directorate Letter — Before the Heat",
+    "body": "Администратору Ржавой Норы.\n\nЖара начнётся на 30-й день и продлится девять дней. Расход воды вырастет, еда начнёт портиться. Полная цистерна не заменит работающий насос.\n\nПодготовьте расписание выдачи воды. Очереди станут короче, но жители воспримут ограничения тяжело. Второй аудит — на 36-й день.",
+    "body_en": "To the Administrator of the Rust Pit.\n\nThe Heat starts on day 30 and lasts nine days. Water use will rise and food will spoil. A full cistern cannot replace a working pump.\n\nPrepare a water rationing schedule. Queues will shorten, but residents will resent the restrictions. The second audit is on day 36.",
+    "options": [
+      {
+        "text": "Ввести расписание выдачи",
+        "text_en": "Schedule water rationing",
+        "effects": {
+          "stat_city_trust": -4,
+          "stat_unrest_pressure": -12,
+          "style": "pragmatist",
+          "message": "Расписание вывешено. Очереди короче, поддержка снизилась.",
+          "message_en": "The schedule is posted. Queues are shorter; support fell."
+        }
+      },
+      {
+        "text": "Оставить выдачу свободной",
+        "text_en": "Keep water freely available",
+        "effects": {
+          "stat_league_trust": -4,
+          "style": "protector",
+          "message": "Расписания не будет. Покровитель отметил отказ.",
+          "message_en": "There will be no schedule. The patron recorded the refusal."
+        }
+      }
+    ],
+    "patron": "civic_directorate"
+  },
+  {
+    "id": "patron.letter.audit2_warning_directorate",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 34,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Письмо Директората — повторный аудит",
+    "title_en": "Directorate Letter — Second Audit",
+    "body": "Администратору Ржавой Норы.\n\nПроверка — на 36-й день. Нормы прежние: вода не ниже 60, еда не ниже 30, счастье не ниже 40. Проверим также потери еды: испорчено должно быть меньше четверти запаса, с которым район вошёл в Жару.\n\nПервый результат остаётся в деле. Повторная проверка влияет на доверие в полтора раза сильнее.",
+    "body_en": "To the Administrator of the Rust Pit.\n\nInspection is on day 36. The targets remain: water at least 60, food at least 30, mood at least 40. We will also check food waste: spoilage must be below a quarter of the reserve held when the Heat began.\n\nThe first result stays on file. This inspection changes trust by one and a half times as much.",
+    "options": [
+      {
+        "text": "Подготовить ведомости",
+        "text_en": "Prepare the ledgers",
+        "effects": {
+          "message": "Повторная проверка через два дня.",
+          "message_en": "The second inspection is in two days."
+        }
+      }
+    ],
+    "patron": "civic_directorate"
+  },
+  {
+    "id": "report.heat_stock",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 30,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Ведомость — запас на Жару",
+    "title_en": "Ledger — Heat Supplies",
+    "body": "Администратору. Кладовщица Мила Орт.\n\nВерхние мешки уже тёплые. Ведомость полная, но до конца Жары эта еда не долежит.\n\nМожно выдать часть сейчас или перебрать и высушить запас. Для сушки нужны инструменты. Улучшенный склад тоже сокращает потери.",
+    "body_en": "To the Administrator. Storekeeper Mila Ort.\n\nThe top sacks are already warm. The ledger is full, but this food will not last until the Heat ends.\n\nWe can distribute some now or sort and dry the reserve. Drying takes tools. An upgraded warehouse also reduces losses.",
+    "options": [
+      {
+        "text": "Выдать излишки жителям",
+        "text_en": "Distribute the surplus",
+        "effects": {
+          "stat_city_trust": 5,
+          "style": "protector",
+          "message": "Жители получили еду до того, как она испортилась.",
+          "message_en": "Residents received the food before it spoiled."
+        },
+        "cost": {
+          "res_food": 30
+        }
+      },
+      {
+        "text": "Перебрать и высушить",
+        "text_en": "Sort and dry the reserve",
+        "effects": {
+          "set_flag": "dried_rations",
+          "style": "pragmatist",
+          "message": "Пайки высушены. Потери от порчи вдвое ниже.",
+          "message_en": "Rations dried. Spoilage losses are halved."
+        },
+        "cost": {
+          "res_tools": 15
+        }
+      },
+      {
+        "text": "Оставить на складе",
+        "text_en": "Leave it in storage",
+        "effects": {
+          "message": "Запас оставлен на складе.",
+          "message_en": "The reserve stays in storage."
+        }
+      }
+    ]
+  },
+  {
+    "id": "petition.covenant_shade",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 31,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Зелёный Завет — тень над грядками",
+    "title_en": "Green Covenant — Shade over the Dust Plots",
+    "body": "Администратору. Агроном Зелёного Завета.\n\nЗа 30 дерева поставим навесы над грядками: урожай станет выше на 18% до конца Жары.\n\nМожно вместо этого высушить пайки. На сушку уйдёт 20 еды; оставшиеся будут портиться вдвое медленнее.",
+    "body_en": "To the Administrator. Green Covenant agronomist.\n\nFor 30 wood we can shade the Dust Plots: harvests will rise by 18% until the Heat ends.\n\nAlternatively, we can dry the rations. Drying uses 20 food; the rest will spoil half as fast.",
+    "options": [
+      {
+        "text": "Поставить навесы",
+        "text_en": "Build shade canopies",
+        "effects": {
+          "add_buff": {
+            "id": "covenant_shade",
+            "name": "Тень над грядками",
+            "name_en": "Shade over the Dust Plots",
+            "target": "bld_field_strip",
+            "production_mult": 0.18,
+            "happiness_add": 0,
+            "remaining": 2400,
+            "until_season_end": "season_heat"
+          },
+          "style": "protector",
+          "message": "Навесы установлены до конца Жары.",
+          "message_en": "The canopies will stay up until the Heat ends."
+        },
+        "cost": {
+          "res_wood": 30
+        }
+      },
+      {
+        "text": "Высушить пайки",
+        "text_en": "Dry the rations",
+        "effects": {
+          "set_flag": "dried_rations",
+          "style": "pragmatist",
+          "message": "Часть еды ушла на сушку; потери теперь вдвое ниже.",
+          "message_en": "Some food was used for drying; losses are now halved."
+        },
+        "cost": {
+          "res_food": 20
+        }
+      },
+      {
+        "text": "Отказаться",
+        "text_en": "Decline",
+        "effects": {
+          "message": "Агроном ушёл без заказа.",
+          "message_en": "The agronomist left without an order."
+        }
+      }
+    ]
+  },
+  {
+    "id": "rival.voss_heat",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 33,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Мара Восс — насос встал",
+    "title_en": "Mara Voss — The Pump Stopped",
+    "body": "Ржавая Нора, администратору.\n\nВ Сухом Логу встал насос. Починим за два дня, но цистерна до этого не дотянет. Прошу 50 воды в долг.\n\nВы знаете наши цифры: мы готовились. Одной поломки оказалось достаточно.\n\nМара Восс",
+    "body_en": "Rust Pit, to the Administrator.\n\nThe pump in Dry Gully has stopped. Repairs will take two days; the cistern will not last that long. I ask for a loan of 50 water.\n\nYou know our figures: we prepared. One failure was enough.\n\nMara Voss",
+    "options": [
+      {
+        "text": "Передать 50 воды",
+        "text_en": "Send 50 water",
+        "effects": {
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Вода отправлена в Сухой Лог. Восс подтвердила получение.",
+          "message_en": "Water sent to Dry Gully. Voss confirmed receipt."
+        },
+        "cost": {
+          "res_water_stockpile": 50
+        }
+      },
+      {
+        "text": "Отказать: нам самим мало",
+        "text_en": "Refuse: we need it ourselves",
+        "effects": {
+          "style": "pragmatist",
+          "message": "Восс получила отказ.",
+          "message_en": "Voss received the refusal."
+        }
+      },
+      {
+        "text": "Переслать просьбу покровителю",
+        "text_en": "Forward the request to the patron",
+        "effects": {
+          "stat_league_trust": 3,
+          "style": "loyal",
+          "message": "Просьба ушла наверх вместе с данными о поломке.",
+          "message_en": "The request went higher up with the failure report."
+        }
+      }
+    ]
+  },
+  {
+    "id": "crisis.heat_collapse",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 30,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Жара — люди у цистерны",
+    "title_en": "Heat — People at the Cistern",
+    "body": "Дежурный у цистерны.\n\nДвое потеряли сознание в очереди. Люди требуют немедленной выдачи воды. Обычного расписания сегодня недостаточно.",
+    "body_en": "Cistern attendant.\n\nTwo people fainted in the queue. Residents demand water now. The usual schedule is not enough today.",
+    "options": [
+      {
+        "text": "Выдать воду вне очереди",
+        "text_en": "Distribute emergency water",
+        "effects": {
+          "stat_city_trust": 6,
+          "style": "protector",
+          "message": "Воду выдали. Люди разошлись.",
+          "message_en": "Water distributed. People went home."
+        },
+        "cost": {
+          "res_water_stockpile": 60
+        }
+      },
+      {
+        "text": "Поставить охрану",
+        "text_en": "Post guards",
+        "effects": {
+          "stat_unrest_pressure": 8,
+          "stat_league_trust": 3,
+          "style": "loyal",
+          "message": "Охрана держит очередь. Напряжение выросло.",
+          "message_en": "Guards hold the queue. Tension rose."
+        }
+      },
+      {
+        "text": "Ничего не менять",
+        "text_en": "Change nothing",
+        "effects": {
+          "stat_city_trust": -6,
+          "message": "Очередь осталась без помощи. Поддержка снизилась.",
+          "message_en": "The queue received no help. Support fell."
+        }
+      }
+    ],
+    "driver": "pressure",
+    "season": "season_heat"
+  },
+  {
+    "id": "crisis.spoiled_stock",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 30,
+    "cooldown_sec": 999999,
+    "tags": [
+      "letter"
+    ],
+    "title": "Склад — испорченная партия",
+    "title_en": "Warehouse — Spoiled Stock",
+    "body": "Кладовщица Мила Орт.\n\nВнизу мешки отсырели. Тридцать единиц придётся списать. Остальную сомнительную партию можно выдать немедленно или продать Рубену. Он возьмёт без проверки.",
+    "body_en": "Storekeeper Mila Ort.\n\nThe bottom sacks are damp. Thirty units must be written off. The rest of the suspect batch can be distributed now or sold to Ruben. He will take it without inspection.",
+    "options": [
+      {
+        "text": "Списать испорченное",
+        "text_en": "Write off the spoiled food",
+        "effects": {
+          "res_food": -30,
+          "message": "Потеря внесена в ведомость.",
+          "message_en": "The loss is entered in the ledger."
+        }
+      },
+      {
+        "text": "Выдать остаток партии",
+        "text_en": "Distribute the rest of the batch",
+        "effects": {
+          "stat_city_trust": 5,
+          "style": "protector",
+          "message": "Партию выдали жителям.",
+          "message_en": "The batch was distributed to residents."
+        },
+        "cost": {
+          "res_food": 50
+        }
+      },
+      {
+        "text": "Продать Рубену",
+        "text_en": "Sell to Ruben",
+        "effects": {
+          "res_money": 80,
+          "stat_league_trust": -4,
+          "style": "pragmatist",
+          "message": "Рубен заплатил 80. Покровитель узнал о продаже.",
+          "message_en": "Ruben paid 80. The patron learned of the sale."
+        },
+        "cost": {
+          "res_food": 50
+        }
+      }
+    ],
+    "driver": "pressure",
+    "season": "season_heat"
   }
 ]

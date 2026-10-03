@@ -1,0 +1,64 @@
+loop1_full vs loop5: 32 cards; identical day, ID, order and option.
+    день 1: patron.letter.welcome → «Принять мандат»
+    день 3: rival.voss_intro_league → «Принять к сведению»
+    день 5: petition.grach_intro → «Ответить вежливо и принять помощь»
+    день 5: petition.thanks → «Ответить благодарностью»
+    день 6: petition.debt_lists → «Списать долги Компании»
+    день 7: petition.pump_log → «Взять журнал и оставить его в районе»
+    день 8: branch.old_tower → «Оставить как есть»
+    день 10: petition.thanks → «Ответить благодарностью»
+    день 10: petition.warehouse_shifts → «Пристроить вторые ворота (20 дерева, 10 »
+    день 12: patron.letter.share_water → «Отправить 60 воды в лагерь»
+    день 14: rival.grant_result → «Принять к сведению»
+    день 15: patron.letter.audit_warning → «Принято, готовимся»
+    день 15: petition.thanks → «Ответить благодарностью»
+    день 16: rival.voss_exchange → «Согласиться на обмен (40 еды за 8 инстру»
+    день 17: petition.fields_before_dust → «Поставить щиты (25 дерева)»
+    день 18: petition.cistern_evening → «Разрешить и прийти самому»
+    день 20: audit.result → «Принять к сведению»
+    день 21: report.dust_filters → «Заменить фильтры (3 инструмента)»
+    день 21: petition.water_hours → «Пообещать починить за три дня»
+    день 21: petition.ruben_offer → «Принять воду Рубена (+120 воды)»
+    день 22: crisis.water_fight → «Ввести нормы на раздаче»
+    день 22: petition.strike_warning → «Поднять нормы и выдать паёк (30 еды)»
+    день 23: crisis.water_sickness → «Закрыть квартал на карантин (40 денег)»
+    день 23: petition.camp_families → «Пустить только работников»
+    день 24: petition.water_hours → «Пообещать починить за три дня»
+    день 24: petition.ruben_offer → «Принять воду Рубена (+120 воды)»
+    день 24: petition.unsigned_leaflet → «Снять листовки, расклейщиков оштрафовать»
+    день 25: crisis.food_riot → «Купить и раздать экстренный паёк (100 де»
+    день 25: crisis.water_fight → «Ввести нормы на раздаче»
+    день 25: report.dust_cough → «Купить повязки и капли (50 денег)»
+    день 26: crisis.collective_letter → «Собрать жителей и ответить по пунктам»
+    день 26: petition.strike_warning → «Выйти к бригаде и объяснить положение»
+
+prepared1 vs prepared5: 29 cards; identical day, ID, order and option.
+    день 1: patron.letter.welcome → «Принять мандат»
+    день 3: rival.voss_intro_league → «Принять к сведению»
+    день 5: petition.grach_intro → «Ответить вежливо и принять помощь»
+    день 5: petition.thanks → «Ответить благодарностью»
+    день 6: petition.debt_lists → «Списать долги Компании»
+    день 7: petition.pump_log → «Взять журнал и оставить его в районе»
+    день 8: branch.old_tower → «Оставить как есть»
+    день 10: petition.thanks → «Ответить благодарностью»
+    день 10: petition.warehouse_shifts → «Пристроить вторые ворота (20 дерева, 10 »
+    день 12: patron.letter.share_water → «Отправить 60 воды в лагерь»
+    день 14: rival.grant_result → «Принять грант»
+    день 15: patron.letter.audit_warning → «Принято, готовимся»
+    день 15: petition.thanks → «Ответить благодарностью»
+    день 16: rival.voss_exchange → «Согласиться на обмен (40 еды за 8 инстру»
+    день 17: petition.fields_before_dust → «Поставить щиты (25 дерева)»
+    день 18: petition.cistern_evening → «Разрешить и прийти самому»
+    день 20: audit.result → «Принять к сведению»
+    день 21: report.dust_filters → «Заменить фильтры (3 инструмента)»
+    день 23: petition.camp_families → «Пустить всех и поставить на паёк (30 еды»
+    день 25: report.dust_cough → «Купить повязки и капли (50 денег)»
+    день 28: patron.letter.heat_warning → «Ввести расписание выдачи»
+    день 30: report.heat_stock → «Выдать излишки жителям»
+    день 30: petition.thanks → «Ответить благодарностью»
+    день 31: petition.covenant_shade → «Поставить навесы»
+    день 33: rival.voss_heat → «Передать 50 воды»
+    день 34: patron.letter.audit2_warning → «Подготовить ведомости»
+    день 35: petition.thanks → «Ответить благодарностью»
+    день 36: audit.result2 → «Принять к сведению»
+    день 37: patron.letter.term_report → «Отправить сводку как есть»

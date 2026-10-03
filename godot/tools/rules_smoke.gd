@@ -155,17 +155,19 @@ func _ready() -> void:
 
 	# The Desk is never silent for long: from day 5 to the finale a League administrator
 	# gets a scheduled letter at least every third evening.
-	var mail_days: Array = [RivalManager.GRANT_DAY, MandateManager.AUDIT_DAY, EndingManager.WIN_DAY]
+	var mail_days: Array = [ContentDB.get_grant_day(), ContentDB.get_win_day()] + ContentDB.get_audit_days()
 	for event_id: String in ContentDB.get_event_ids():
 		var evt_def: Dictionary = ContentDB.get_event_def(event_id)
 		if evt_def.has("trigger_day") and not evt_def.has("trigger_condition") and (evt_def.get("patron", "restoration_league") as String) == "restoration_league":
 			mail_days.append(evt_def.get("trigger_day") as int)
 	var longest_gap: int = 0
 	var quiet: int = 0
-	for day: int in range(5, EndingManager.WIN_DAY + 1):
+	for day: int in range(5, ContentDB.get_win_day() + 1):
 		quiet = 0 if mail_days.has(day) else quiet + 1
 		longest_gap = maxi(longest_gap, quiet)
 	_check(longest_gap <= 2, "no more than two quiet evenings in a row (longest: %d)" % longest_gap)
+
+	_heat_rules()
 
 	# 4/5. Content references resolve.
 	_check(ContentDB.content_warnings.is_empty(), "content check is clean (%d problems)" % ContentDB.content_warnings.size())
@@ -212,3 +214,82 @@ func _check(ok: bool, what: String) -> void:
 	if not ok:
 		_failures += 1
 	print(("PASS: " if ok else "FAIL: ") + what)
+
+
+func _heat_rules() -> void:
+	_new_game("appointed_administrator")
+	var climate: Dictionary = GameStateStore.climate()
+	_check(is_zero_approx(EconomySystem.daily_spoilage()), "Window has no food spoilage")
+	SimulationRunner.day_count = 19
+	orch.season_sys.process_tick()
+	_check(is_zero_approx(EconomySystem.daily_spoilage()), "Dust has no food spoilage")
+	GameStateStore.set_resource("res_food", 200.0)
+	SimulationRunner.day_count = 30
+	orch.season_sys.process_tick()
+	_check(climate["season_id"] == "season_heat", "Heat starts on day 30")
+	_check(is_equal_approx(climate["heat_food_start"], 200.0), "Heat records incoming food before spoilage")
+	_check(is_equal_approx(EconomySystem.daily_spoilage(), 8.0), "Heat loses 4% per day")
+	orch.economy_sys.call("_process_daily_spoilage")
+	_check(is_equal_approx(GameStateStore.get_resource("res_food"), 192.0), "daily spoilage subtracts food")
+	orch.economy_sys.call("_process_daily_spoilage")
+	_check(is_equal_approx(GameStateStore.get_resource("res_food"), 192.0), "same-day ticks never repeat spoilage")
+	var warehouse: Dictionary = GameStateStore.get_building(_first("bld_warehouse"))
+	warehouse["level"] = 1
+	GameStateStore.set_building(_first("bld_warehouse"), warehouse)
+	_check(is_equal_approx(EconomySystem.daily_spoilage(), 192.0 * 0.03), "displayed level 2 warehouse cuts loss by a quarter")
+	GameStateStore.mandate()["flags"] = {"dried_rations": true}
+	_check(is_equal_approx(EconomySystem.daily_spoilage(), 192.0 * 0.015), "dried rations halve the remaining loss")
+	for coord: Vector2i in [Vector2i(8, 0), Vector2i(8, 1), Vector2i(8, 2), Vector2i(8, 3)]:
+		GameStateStore.set_building(coord, warehouse.duplicate())
+	_check(is_equal_approx(EconomySystem.daily_spoilage(), 192.0 * 0.005), "warehouse protection has a 25% floor")
+	var water_cap: float = GameStateStore.get_cap("res_water_stockpile")
+	GameStateStore.set_resource("res_water_stockpile", water_cap * 0.3)
+	_check(is_zero_approx(ProgressionSystem.heat_stress_term()), "30% water is outside Heat stress")
+	GameStateStore.set_resource("res_water_stockpile", water_cap * 0.29)
+	_check(is_equal_approx(ProgressionSystem.heat_stress_term(), -8.0), "water below 30% incurs Heat stress")
+	GameStateStore.set_resource("res_water_stockpile", 0.0)
+	_check(is_equal_approx(ProgressionSystem.heat_stress_term(), -15.0), "empty water incurs -15, not stacked -23")
+	orch.power_sys.process_tick()
+	var heat_solar: float = GameStateStore.power().get("generation", 0.0) as float
+	climate["modifiers"] = ContentDB.get_season_def("season_window")["modifiers"].duplicate(true)
+	orch.power_sys.process_tick()
+	_check(is_equal_approx(heat_solar, (GameStateStore.power().get("generation", 0.0) as float) * 1.2), "Heat solar generation is 1.2 times Window")
+	_check(is_zero_approx(ProgressionSystem.heat_stress_term()), "Window never applies Heat stress")
+	_new_game("appointed_administrator")
+	EventManager.call("_on_pressure_threshold", "happiness")
+	_check(not EventManager.pending_events.any(func(e: Dictionary) -> bool: return e.get("runtime_id", "") == "crisis.heat_collapse"), "Heat crisis cannot fire in Window")
+	EventManager.clear_pending()
+	SimulationRunner.day_count = 30
+	orch.season_sys.process_tick()
+	EventManager.call("_on_pressure_threshold", "happiness")
+	_check(EventManager.pending_events.any(func(e: Dictionary) -> bool: return e.get("runtime_id", "") == "crisis.heat_collapse"), "Heat crisis takes priority during Heat")
+	var shade: Dictionary = ContentDB.get_event_def("petition.covenant_shade")["options"][0]["effects"]
+	EventManager.call("_apply_effects", shade)
+	SimulationRunner.day_count = 39
+	orch.season_sys.process_tick()
+	orch.maintenance_sys.process_tick()
+	_check(GameStateStore.get_buffs().is_empty(), "shade expires at Heat end even when accepted late")
+	# Two real scheduled audits; no duplicate when called again on the same day.
+	_new_game("appointed_administrator")
+	GameStateStore.mandate()["patron_trust"] = 20.0
+	GameStateStore.rival()["score"] = 0.0
+	GameStateStore.climate()["total_day"] = 20
+	MandateManager.call("_on_tick_finished", 0)
+	MandateManager.call("_on_tick_finished", 0)
+	_check(GameStateStore.mandate().get("audits_done", 0) == 1, "first audit fires once on day 20")
+	GameStateStore.climate()["total_day"] = 36
+	MandateManager.call("_on_tick_finished", 0)
+	_check(GameStateStore.mandate().get("audits_done", 0) == 2 and MandateManager.next_audit_day() == 0, "both audits complete after day 36")
+	_check(is_equal_approx(GameStateStore.mandate().get("patron_trust", 0.0) as float, 57.5), "second audit applies exactly 1.5 times trust, preserving halves")
+	var old_save: Dictionary = GameStateStore.to_save_dict().duplicate(true)
+	old_save["mandate"].erase("audits_done")
+	old_save["mandate"]["audit_done"] = true
+	var migrated: Dictionary = SaveMigrator.migrate(old_save)
+	_check(migrated["mandate"]["audits_done"] == 1 and not migrated["mandate"].has("audit_done"), "old audit_done migrates to one completed audit")
+	_check(SaveValidator.validate(migrated).is_empty(), "migrated old save validates")
+	GameStateStore.load_from_dict(migrated)
+	orch.load_game()
+	_check(MandateManager.next_audit_day() == 36, "old save loads with second audit still due")
+	SimulationRunner.day_count = 39
+	orch.season_sys.process_tick()
+	_check(GameStateStore.climate()["season_id"] == "season_window", "Window returns on day 39")

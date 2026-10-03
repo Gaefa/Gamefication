@@ -16,8 +16,6 @@ var pending_events: Array:
 		if not ev_state.has("pending"):
 			ev_state["pending"] = []
 		return ev_state["pending"] as Array
-var _check_interval: float = 5.0
-var _timer: float = 0.0
 ## Cooldowns are in game seconds (ticks at ×1): 300 = one game day. They follow the game
 ## speed, so a repeatable petition returns after the same number of days at ×1 and ×3.
 const DEFAULT_COOLDOWN_SEC := 900.0
@@ -29,15 +27,14 @@ func _ready() -> void:
 	EventBus.pressure_threshold_reached.connect(_on_pressure_threshold)
 
 
-func _process(delta: float) -> void:
-	# Только днём проверяем триггеры
-	if not SimulationRunner.is_running():
-		return
-	# Game time, not wall time: at ×3 a cooldown must still last the same number of game days.
-	_tick_cooldowns(delta * SimulationRunner.speed_scale)
-	_timer -= delta
-	if _timer <= 0.0:
-		_timer = _check_interval
+## Called by the real-time runner once per simulation tick, never by render frames.
+## The poll phase rides the save along with cooldowns, so speed/load cannot reorder mail.
+func process_game_tick() -> void:
+	_tick_cooldowns(1.0)
+	var state: Dictionary = GameStateStore.events()
+	var polls: int = (state.get("poll_ticks", 0) as int) + 1
+	state["poll_ticks"] = polls
+	if polls % 5 == 1 and not SimulationRunner.card_open:
 		_check_triggers()
 
 
@@ -87,8 +84,16 @@ func _raise(event_id: String, def: Dictionary) -> void:
 
 
 func _on_pressure_threshold(category: String) -> void:
-	# A pressure category filled up: raise the first eligible crisis of that category.
-	for event_id: String in ContentDB.get_event_ids():
+	# Seasonal crises get first refusal; generic crises remain the fallback.
+	var ids: Array = []
+	var generic: Array = []
+	for id: String in ContentDB.get_event_ids():
+		if ContentDB.get_event_def(id).has("season"):
+			ids.append(id)
+		else:
+			generic.append(id)
+	ids.append_array(generic)
+	for event_id: String in ids:
 		var def: Dictionary = ContentDB.get_event_def(event_id)
 		if (def.get("driver", "") as String) != "pressure" or (def.get("category", "") as String) != category:
 			continue
@@ -98,6 +103,8 @@ func _on_pressure_threshold(category: String) -> void:
 			continue
 		var event_patron: String = def.get("patron", "") as String
 		if event_patron != "" and event_patron != (GameStateStore.mandate().get("patron_id", "") as String):
+			continue
+		if not _season_met(def):
 			continue
 		_raise(event_id, def)
 		# The crisis landed: drop the category back only partway — the cause keeps pushing (§15.3).
@@ -110,7 +117,13 @@ func _on_pressure_threshold(category: String) -> void:
 		return
 
 
+func _season_met(def: Dictionary) -> bool:
+	return not def.has("season") or def["season"] == GameStateStore.climate().get("season_id", "")
+
+
 func _trigger_met(def: Dictionary) -> bool:
+	if not _season_met(def):
+		return false
 	# Пока упрощённая проверка: min_level и условие по ресурсам
 	var min_level: int = def.get("min_level", 1) as int
 	var current_level: int = GameStateStore.progression().get("city_level", 1) as int

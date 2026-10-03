@@ -1,0 +1,58 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+PASS: founder start is not recalled (ended: '')
+PASS: founder has no mandate pressure
+PASS: founder receives no patron mail
+PASS: the Cistern cannot be bulldozed
+PASS: the old tower cannot be bulldozed by hand
+PASS: an event can still remove the tower
+PASS: a ruin can be salvaged
+PASS: the last shelter cannot be demolished from under its residents
+PASS: with a second shelter the first can go
+PASS: a damaged second shelter does not unlock demolishing the last working one
+PASS: a hungry day with empty barracks around thins the district but does not empty it (3 of 4 left)
+PASS: a dry shelter is not served housing
+PASS: a dry shelter adds no residents (4 → 4)
+PASS: an isolated road tile does not connect a building
+PASS: the starter shelter is connected through the hub roads
+PASS: the starter shelter has water
+PASS: a broken pump covers nothing
+PASS: a repaired pump covers again
+PASS: the Window makes a shelter cheaper (10 → 9 wood)
+PASS: a lumber yard next to a warehouse gets +10% wood
+PASS: a lumber yard far from a warehouse gets nothing
+PASS: a shelter next to a quarry loses 3 mood
+PASS: a shelter at the Cistern has full pressure
+PASS: …and makes the water queue grow
+PASS: a damaged shelter at the Cistern adds no queue
+PASS: a damaged quarry no longer bothers its neighbours
+PASS: the pump log gives the pumps +15% output
+PASS: …and the effect ends after five days
+PASS: no more than two quiet evenings in a row (longest: 2)
+PASS: Window has no food spoilage
+PASS: Dust has no food spoilage
+PASS: Heat starts on day 30
+PASS: Heat records incoming food before spoilage
+PASS: Heat loses 4% per day
+PASS: daily spoilage subtracts food
+PASS: same-day ticks never repeat spoilage
+PASS: displayed level 2 warehouse cuts loss by a quarter
+PASS: dried rations halve the remaining loss
+PASS: warehouse protection has a 25% floor
+PASS: 30% water is outside Heat stress
+PASS: water below 30% incurs Heat stress
+PASS: empty water incurs -15, not stacked -23
+PASS: Heat solar generation is 1.2 times Window
+PASS: Window never applies Heat stress
+PASS: Heat crisis cannot fire in Window
+PASS: Heat crisis takes priority during Heat
+PASS: shade expires at Heat end even when accepted late
+PASS: first audit fires once on day 20
+PASS: both audits complete after day 36
+PASS: second audit applies exactly 1.5 times trust, preserving halves
+PASS: old audit_done migrates to one completed audit
+PASS: migrated old save validates
+PASS: old save loads with second audit still due
+PASS: Window returns on day 39
+PASS: content check is clean (0 problems)
+=== RULES SMOKE: 0 failures ===

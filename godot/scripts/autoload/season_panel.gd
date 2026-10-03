@@ -19,6 +19,14 @@ var _close_btn: Button
 func _ready() -> void:
 	_build_ui()
 	Localization.locale_changed.connect(_on_locale_changed)
+	EventBus.season_changed.connect(_on_season_changed)
+
+
+func _on_season_changed(_sid: String, _day: int, _length: int) -> void:
+	if EconomySystem.daily_spoilage() > 0.0:
+		EventBus.toast_requested.emit(Localization.ru_en("Жара: еда портится. Улучшите склад или высушите пайки.", "Heat: food spoils. Upgrade a warehouse or dry the rations."), 6.0)
+	if _visible:
+		_body.text = _compose()
 
 
 func _on_locale_changed(_locale: String) -> void:
@@ -90,7 +98,7 @@ func _compose() -> String:
 		var idx: int = climate.get("season_index", 0) as int
 		var next_def: Dictionary = ContentDB.get_season_def(order[(idx + 1) % order.size()] as String)
 		var next_name: String = Localization.content_text(next_def, "label", "?")
-		var days_left: int = maxi(slen - din, 0)
+		var days_left: int = maxi(slen - din + 1, 0)
 		lines.append(Localization.ru_en("[b]Прогноз[/b]", "[b]Forecast[/b]"))
 		var forecaster: bool = (GameStateStore.mandate().get("flags", {}) as Dictionary).get("forecaster_active", false) as bool
 		if forecaster:
@@ -123,6 +131,9 @@ func _modifier_lines(mods: Dictionary) -> Array[String]:
 	var water_mult: float = mods.get("water_mult", 1.0) as float
 	if not is_equal_approx(water_mult, 1.0):
 		out.append(Localization.ru_en("расход воды %+d%%", "water use %+d%%") % int(round((water_mult - 1.0) * 100.0)))
+	var supply_mult: float = mods.get("water_supply_mult", 1.0) as float
+	if not is_equal_approx(supply_mult, 1.0):
+		out.append(Localization.ru_en("добыча воды %+d%%", "water supply %+d%%") % int(round((supply_mult - 1.0) * 100.0)))
 	var crop_mult: float = mods.get("crop_mult", 1.0) as float
 	if not is_equal_approx(crop_mult, 1.0):
 		out.append(Localization.ru_en("урожай %+d%%", "harvest %+d%%") % int(round((crop_mult - 1.0) * 100.0)))
@@ -135,6 +146,11 @@ func _modifier_lines(mods: Dictionary) -> Array[String]:
 	var wear_mult: float = mods.get("wear_mult", 1.0) as float
 	if not is_equal_approx(wear_mult, 1.0):
 		out.append(Localization.ru_en("износ техники %+d%%", "equipment wear %+d%%") % int(round((wear_mult - 1.0) * 100.0)))
+	if (mods.get("food_spoilage_per_day", 0.0) as float) > 0.0:
+		out.append(Localization.ru_en("еда портится: −%.1f в день", "food spoils: −%.1f per day") % EconomySystem.daily_spoilage())
+		out.append(Localization.ru_en("склады ур. 2+ и сушёные пайки снижают потери", "level 2+ warehouses and dried rations reduce losses"))
+	if mods.get("heat_stress", false):
+		out.append(Localization.ru_en("запас воды <30%: счастье −8; пусто: −15; слабый напор вдвое тяжелее", "water reserve <30%: mood −8; empty: −15; weak pressure hurts twice as much"))
 	return out
 
 
@@ -197,7 +213,7 @@ func _build_ui() -> void:
 
 	_body = RichTextLabel.new()
 	_body.bbcode_enabled = true
-	_body.fit_content = true
+	_body.fit_content = false
 	_body.scroll_active = true
 	_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_body.custom_minimum_size = Vector2(580, 360)

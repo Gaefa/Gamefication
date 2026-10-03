@@ -9,9 +9,10 @@ extends Node
 ## Dev tool, not shipped.
 
 var SPEED := 5.0              # 5 ticks per sim second → a 300-tick day in 60 sim seconds (override: -- speed=1)
-const MAX_DAY := 34
+const MAX_DAY := 44
 const STUCK_FRAMES := 600     # 10 sim seconds paused with no desk and no finale → blocker
 
+var _prepared: bool = false
 var _main: Node
 var _desk: Control
 var _stuck: int = 0
@@ -23,6 +24,8 @@ var _ending: String = ""
 func _ready() -> void:
 	SaveService.set("_autosave_timer", -1.0e12)  # never write over the player's real save slot
 	for arg: String in OS.get_cmdline_user_args():
+		if arg == "prepared":
+			_prepared = true
 		if arg.begins_with("speed="):
 			SPEED = arg.trim_prefix("speed=").to_float()
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
@@ -41,7 +44,19 @@ func _attach() -> void:
 	get_tree().current_scene = _main  # effects and HUD look the orchestrator up here
 	_desk = _main.get_node("HUDCanvas/DeskUI") as Control
 	# Behind the start menu nothing runs; start the run the way the menu button does.
+	seed(12345)  # compare speed runs against the same city and issue sequence
 	_main.get_node("HUDCanvas/HUD").call("_start_new_run", "appointed_administrator")
+	if _prepared:
+		var orch: GameOrchestrator = _main.call("get_orchestrator") as GameOrchestrator
+		for coord: Vector2i in GameStateStore.get_all_building_coords():
+			var bld: Dictionary = GameStateStore.get_building(coord)
+			if bld.get("type", "") in ["bld_well_pump", "bld_main_cistern"]:
+				bld["level"] = 2
+				GameStateStore.set_building(coord, bld)
+		orch.spatial.rebuild_from_state()
+		orch.coverage.invalidate()
+		orch.road_graph.invalidate()
+		orch.infrastructure_sys.process_tick()
 	SimulationRunner.speed_scale = SPEED
 
 

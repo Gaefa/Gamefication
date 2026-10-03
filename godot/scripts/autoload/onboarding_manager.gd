@@ -10,8 +10,8 @@ extends Node
 
 const HINTS := {
 	# --- First-session chain: one step at a time, the next unlocks when the previous is done ---
-	"welcome": ["Вы — администратор Ржавой Норы. Цель: пережить Пыль (с 19-го дня) и аудит Лиги на 20-й. Первый шаг — вода: дорога → колодец-насос → барак. Пробел — пауза, H — справка.",
-		"You are the administrator of the Rust Pit. Goal: survive the Dust (from day 19) and the League audit on day 20. First step is water: road → well pump → shelter. Space pauses, H opens help."],
+	"welcome": ["Вы — администратор Ржавой Норы. Цель: пережить Пыль (дни 19–29), Жару (30–38) и аудиты на 20-й и 36-й. Продержитесь до дня 40 со счастьем не ниже 40. Первый шаг — вода: дорога → колодец-насос → барак. Пробел — пауза, H — справка.",
+		"You are the administrator of the Rust Pit. Goal: survive Dust (days 19–29), Heat (30–38), and audits on days 20 and 36. Reach day 40 with mood at least 40. First step is water: road → well pump → shelter. Space pauses, H opens help."],
 	"build_road": ["Справа «Инфраструктура» → «Дорога». Кликайте по клеткам от поста администрации. Здания работают только рядом с дорогой.",
 		"On the right, \"Infrastructure\" → \"Road\". Click tiles outward from the administration post. Buildings only work next to a road."],
 	"build_pump": ["Теперь «Колодец-насос» у дороги — он даёт воду в радиусе 4 клеток (V покажет радиус). Второй насос — второй запас на Пыль.",
@@ -25,6 +25,8 @@ const HINTS := {
 		"At the top, \"Water for N days\": how long the city lasts at current use. Don't let it hit zero, especially before the Dust."],
 	"building_problem": ["Над зданием значок проблемы. Кликните по зданию — игра покажет причину, но чинить решаете вы.",
 		"A problem icon over a building. Click it and the game shows the cause; the fix is up to you."],
+	"season_heat": ["Жара: еда портится, воды нужно больше. Склад ур. 2 снижает потери. Держите цистерну выше 30% и проверьте напор у жилья. E — прогноз.",
+		"Heat: food spoils and water use rises. A level 2 warehouse cuts losses. Keep the cistern above 30% and check housing pressure. E opens the forecast."],
 	"season_dust": ["Сезон Пыли: воды уходит больше, урожай падает. Нажмите E — там прогноз и чек-лист готовности. Y — дневник прежнего администратора.",
 		"Dust season: water goes faster, harvests drop. Press E for the forecast and readiness checklist. Y opens the previous administrator's diary."],
 }
@@ -55,8 +57,8 @@ func _ready() -> void:
 	EventBus.new_game_started.connect(func() -> void: _offer("welcome"))
 	EventBus.building_issue_added.connect(func(_coord: Vector2i) -> void: _offer("building_problem"))
 	EventBus.season_changed.connect(func(season_id: String, _d: int, _l: int) -> void:
-		if season_id == "season_dust":
-			_offer("season_dust"))
+		if HINTS.has(season_id):
+			_offer(season_id))
 	EventBus.tick_finished.connect(_on_tick_finished)
 	Localization.locale_changed.connect(func(_locale: String) -> void: _apply_text())
 	EventBus.desk_closed.connect(func() -> void:

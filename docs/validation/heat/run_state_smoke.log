@@ -1,0 +1,16 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+PASS: menu: simulation is not running
+PASS: menu: no ticks behind the menu
+PASS: menu: autosave timer does not advance
+PASS: new run: simulation runs
+PASS: new run: desk queue starts empty
+PASS: save: written to test slot
+PASS: load: test slot loads
+PASS: load: saved desk card is back
+PASS: load: day timer restored (got 123.0)
+PASS: load: simulation runs
+PASS: critical card: Space keeps the pause
+PASS: critical card: closing it resumes the day
+PASS: finale: run is over
+=== RUN STATE SMOKE: 0 failures ===

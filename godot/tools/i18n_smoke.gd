@@ -43,6 +43,17 @@ func _attach() -> void:
 		autoload.call("open")
 		_scan(autoload.name)
 		autoload.call("_toggle")
+	# Heat forecast and the dynamically generated second audit also need translation.
+	var orch: GameOrchestrator = _main.call("get_orchestrator") as GameOrchestrator
+	SimulationRunner.day_count = 32
+	orch.season_sys.process_tick()
+	SeasonPanel.open()
+	_scan("Heat forecast")
+	SeasonPanel.call("_toggle")
+	GameStateStore.mandate()["audits_done"] = 1
+	MandateManager.call("_run_audit")
+	_scan("second audit")
+	_desk.visible = false
 	# Every finale.
 	for ending_id: String in ["ending.win.loyal", "ending.win.protector", "ending.win.directorate_order",
 			"ending.win.directorate_defiant", "ending.lose.isolation", "ending.lose.commissar",
@@ -53,7 +64,7 @@ func _attach() -> void:
 	print("sweep (cards, panels, finales): %d untranslated so far" % _found.size())
 	# Back to a clean run for the loop.
 	EventManager.clear_pending()
-	_main.get_node("HUDCanvas/HUD").call("_start_new_run", "appointed_administrator")
+	super._attach()
 
 
 func _physics_process(delta: float) -> void:

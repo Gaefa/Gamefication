@@ -3,6 +3,7 @@
   "seasons": [
     {
       "id": "season_window",
+      "rival_target": 56,
       "label": "Окно",
       "label_key": "season.window.label",
       "description": "Спокойный период. Время строить, чинить и копить запасы перед сезоном.",
@@ -22,6 +23,9 @@
     },
     {
       "id": "season_dust",
+      "rival_target": 50,
+      "tile_variant": "dust",
+      "pressure_amplify": {"food": 1.5, "water": 1.5},
       "label": "Пыль",
       "label_key": "season.dust.label",
       "description": "Сезон Пыли. Урожай гибнет, воды уходит больше, техника засоряется. Главный экзамен подготовки.",
@@ -41,21 +45,26 @@
     },
     {
       "id": "season_heat",
+      "rival_target": 52,
+      "terrain_tint": "ffe4b8",
+      "pressure_amplify": {"water": 1.75, "happiness": 1.25},
       "label": "Жара",
       "label_key": "season.heat.label",
-      "description": "Упрощённая Жара. Резко растёт потребление воды, продукты портятся без холода.",
-      "description_en": "Simplified Heat. Water use spikes, and food spoils without cold storage.",
+      "description": "Жара. Воды нужно больше, продукты портятся. Склад и устойчивое снабжение важнее полного запаса.",
+      "description_en": "Heat. Water use rises and food spoils. Warehouses and steady supply matter more than a full reserve.",
       "length_days": 9,
       "expert_faction": "green_covenant",
-      "enabled_in_mvp": false,
+      "enabled_in_mvp": true,
       "forecast_intensity": "harsh",
       "modifiers": {
         "water_mult": 1.6,
         "water_supply_mult": 0.85,
         "crop_mult": 0.85,
-        "solar_mult": 1.0,
+        "solar_mult": 1.2,
         "wear_mult": 1.1,
-        "build_cost_mult": 1.0
+        "build_cost_mult": 1.0,
+        "food_spoilage_per_day": 0.04,
+        "heat_stress": true
       }
     }
   ]

@@ -1,0 +1,14 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+OpenGL API 4.1 Metal - 91.7 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+PASS: en 25_patron_letter_heat_warning fits 1280x720
+PASS: en 25_patron_letter_heat_warning_directorate fits 1280x720
+PASS: en 25_report_heat_stock fits 1280x720
+PASS: en 25_petition_covenant_shade fits 1280x720
+PASS: en 25_rival_voss_heat fits 1280x720
+PASS: en 25_patron_letter_audit2_warning fits 1280x720
+PASS: en 25_patron_letter_audit2_warning_directorate fits 1280x720
+PASS: en 25_crisis_heat_collapse fits 1280x720
+PASS: en 25_crisis_spoiled_stock fits 1280x720
+PASS: en 26_audit2 fits 1280x720
+UI SHOTS: 0 failures

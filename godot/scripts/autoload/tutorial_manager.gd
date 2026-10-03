@@ -88,8 +88,8 @@ func _make_steps() -> Array[Dictionary]:
 	var t := func(ru: String, en: String) -> String: return Localization.ru_en(ru, en)
 	return [
 		{
-			"text": t.call("Вы — администратор [b]Ржавой Норы[/b]. Через 18 дней придёт сезон [b]Пыли[/b], на 20-й день — аудит Лиги. Продержитесь до 30-го дня, не потеряв ни Лигу, ни город.\n\nВремя пока стоит — спокойно осмотримся.",
-				"You are the administrator of the [b]Rust Pit[/b]. The [b]Dust[/b] season comes in 18 days, the League audit on day 20. Hold out until day 30 without losing the League or the city.\n\nTime is stopped for now — let's look around."),
+			"text": t.call("Вы — администратор [b]Ржавой Норы[/b]. [b]Пыль[/b] — дни 19–29, [b]Жара[/b] — 30–38. Аудиты — дни 20 и 36. Продержитесь до 40-го дня со счастьем не ниже 40,, не потеряв ни Лигу, ни город.\n\nВремя пока стоит — спокойно осмотримся.",
+				"You are the administrator of the [b]Rust Pit[/b]. [b]Dust[/b] runs on days 19–29, [b]Heat[/b] on 30–38. Audits: days 20 and 36. Hold out until day 40 with mood at least 40, without losing the League or the city.\n\nTime is stopped for now — let's look around."),
 		},
 		{
 			"text": t.call("[b]Камера.[/b] WASD или стрелки — двигать, колесо мыши — приближать. Подвиньте карту или покрутите колесо.",

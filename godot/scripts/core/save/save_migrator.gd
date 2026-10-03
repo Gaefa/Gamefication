@@ -10,6 +10,12 @@ static func migrate(data: Dictionary) -> Dictionary:
 
 	if version == 0:
 		data = _migrate_v0_to_v1(data)
+	# Additive migration also applies to existing v1 saves; never replay the first audit.
+	var mandate: Dictionary = data.get("mandate", {})
+	if not mandate.has("audits_done"):
+		mandate["audits_done"] = 1 if mandate.get("audit_done", false) else 0
+	mandate.erase("audit_done")
+	data["mandate"] = mandate
 	return data
 
 

@@ -8,7 +8,6 @@ extends Node
 ## resets on new game. All thresholds are first-pass tuning.
 
 # --- Tuning thresholds ---
-const WIN_DAY := 30                 # survive the whole Пыль and out the other side → win
 const WIN_HAPPINESS := 40.0         # ...and the city is actually stable, not in ruins
 const EXODUS_PEAK_MIN := 12         # only call it an exodus if the city was sizeable
 const EXODUS_FRACTION := 0.4        # ...and shrank to ≤40% of its peak
@@ -90,7 +89,7 @@ func _evaluate() -> void:
 	elif _peak_pop >= 4 and pop <= 0:
 		# Total desertion — even a small district emptying out is an exodus.
 		_trigger("ending.lose.exodus")
-	elif day >= WIN_DAY and happiness >= WIN_HAPPINESS:
+	elif day >= ContentDB.get_win_day() and happiness >= WIN_HAPPINESS:
 		# Survived to the end AND the city is stable — a real win, not a hollow one.
 		# A devastated city (low happiness) simply doesn't win yet; it must recover.
 		# Which win shade depends on how the player governed (style flags), with the
