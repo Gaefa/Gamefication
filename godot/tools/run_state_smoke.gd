@@ -100,6 +100,24 @@ func _run() -> void:
 	_check(not SimulationRunner.run_active, "finale: run is over")
 	_check(not SaveService.has_save(0), "finale: the autosave of the finished run is removed")
 
+	# 6. The play log (RunLog) recorded this run from start to finale, and nothing for the
+	# throwaway map behind the start menu.
+	var log_path: String = "user://analytics_tools/run_%d.jsonl" % (GameStateStore.save_meta().get("rng_seed", 0) as int)
+	var kinds: Array = []
+	var log_file := FileAccess.open(log_path, FileAccess.READ)
+	if log_file != null:
+		while not log_file.eof_reached():
+			var line: String = log_file.get_line()
+			var parsed: Variant = JSON.parse_string(line) if line != "" else null
+			if parsed is Dictionary:
+				kinds.append((parsed as Dictionary).get("kind", ""))
+		log_file.close()
+	_check(kinds.size() > 0 and kinds[0] == "run_start", "play log: starts with run_start (%s)" % ", ".join(kinds))
+	_check(kinds.has("run_continue") and kinds.has("tutorial_step") and kinds.has("tutorial_end"), "play log: the load and the tutorial are there")
+	_check(kinds.size() > 0 and kinds[-1] == "run_end", "play log: ends with run_end")
+	_check(RunLog.get("_path") == "", "play log: closed after the finale")
+	DirAccess.remove_absolute(log_path)
+
 	print("=== RUN STATE SMOKE: %d failures ===" % _failures)
 	get_tree().quit(1 if _failures > 0 else 0)
 

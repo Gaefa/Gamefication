@@ -2345,6 +2345,23 @@ func _rebuild_settings_panel() -> void:
 	note.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	root.add_child(note)
 
+	# Play logs (RunLog): testers attach this folder to their feedback.
+	var logs_row := HBoxContainer.new()
+	logs_row.add_theme_constant_override("separation", 10)
+	root.add_child(logs_row)
+	var logs_note := Label.new()
+	logs_note.text = Localization.ru_en("Журнал партий хранится только на этом компьютере. Приложите папку к отзыву.",
+		"Play logs stay on this computer. Attach the folder to your feedback.")
+	logs_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	logs_note.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	logs_note.add_theme_font_size_override("font_size", 12)
+	logs_note.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
+	logs_row.add_child(logs_note)
+	var logs_btn := Button.new()
+	logs_btn.text = Localization.ru_en("Открыть папку", "Open folder")
+	logs_btn.pressed.connect(func() -> void: OS.shell_open(RunLog.folder()))
+	logs_row.add_child(logs_btn)
+
 
 func _on_settings_language_selected(index: int) -> void:
 	if _settings_language_select == null:
