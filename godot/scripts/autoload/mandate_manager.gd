@@ -127,12 +127,14 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 		verdict_en = "Second inspection: %d of 4 targets met. First audit: %s." % [score, prior_en]
 	var authority: String = "Директората" if directorate else "Лиги"
 	var authority_en: String = "Directorate" if directorate else "League"
-	var trust_line: String = ("Доверие %s %+.1f." if second else "Доверие %s %+d.") % [authority, trust_delta]
-	var trust_line_en: String = ("%s trust %+.1f." if second else "%s trust %+d.") % [authority_en, trust_delta]
+	# The second audit weighs 1.5×, so its change can be fractional; whole numbers stay whole.
+	var delta_text: String = ("%+d" % int(trust_delta)) if is_equal_approx(trust_delta, roundf(trust_delta)) else ("%+.1f" % trust_delta)
+	var trust_line: String = "Доверие %s %s." % [authority, delta_text]
+	var trust_line_en: String = "%s trust %s." % [authority_en, delta_text]
 	var title: String = "Проверка Директората — Комиссар" if directorate else "Аудит Лиги — Инспектор Койл"
 	var title_en: String = "Directorate Inspection — the Commissar" if directorate else "League Audit — Inspector Coyle"
-	var comparison: String = "Для сравнения — район %s: %d, ваш: %d." % [
-		RivalManager.NAME, int(RivalManager.rival_score()), int(RivalManager.player_score())]
+	var comparison: String = "Для сравнения — район Мары Восс: %d, ваш: %d." % [
+		int(RivalManager.rival_score()), int(RivalManager.player_score())]
 	var comparison_en: String = "For comparison — %s's district: %d, yours: %d." % [
 		RivalManager.NAME_EN, int(RivalManager.rival_score()), int(RivalManager.player_score())]
 

@@ -179,24 +179,35 @@ func _log_day(day: int) -> void:
 	])
 
 
-## Literal G fixture: one pump, four Shelters, no panels, full incoming reserves.
-## All indices are zero-based, matching scenario B. No repairs or hidden subsidies.
-func _run_heat_reserve(prepared: bool) -> void:
-	print("\n=== G%s) FOUR SHELTERS, NO PANELS ===" % ("2" if prepared else "1"))
+## Scenario G: the Dust tests the reserve, the Heat tests the flow.
+## A district of four shelters, three plots and a generator on ONE level-3 pump gets through
+## the Window and the Dust with everyone still there, but the Dust drains its cistern. In the
+## Heat water demand doubles, the single pump cannot keep up, and the district empties.
+## The same district with one more basic pump lives to day 40. The administrator repairs
+## faults every morning in both runs; nothing else is subsidised.
+const G_ROADS := [Vector2i(-2, -1), Vector2i(-1, -2), Vector2i(0, -2), Vector2i(1, -2)]
+const G_SHELTERS := [Vector2i(-2, 0), Vector2i(-1, 2), Vector2i(-2, -2)]
+const G_PLOTS := [Vector2i(-1, -3), Vector2i(0, -3)]
+const G_GENERATOR := Vector2i(1, -3)
+const G_SECOND_PUMP := Vector2i(2, -2)
+
+
+func _run_heat_reserve(second_pump: bool) -> void:
+	print("\n=== G%s) ONE PUMP%s, FOUR SHELTERS, THREE PLOTS, GENERATOR ===" % ["2" if second_pump else "1", " + A SECOND PUMP" if second_pump else ""])
 	EventManager.clear_pending()
 	var orch := GameOrchestrator.new()
+	active_orch = orch
 	orch.new_game(12345, "appointed_administrator")
 	_upgrade_water_infra(orch)
-	GameStateStore.remove_building(Vector2i(-1, -1))
-	for coord: Vector2i in [Vector2i(-1, -1), Vector2i(-2, 0), Vector2i(-1, 2)]:
-		GameStateStore.set_building(coord, {"type": "bld_shelter", "level": 0, "damaged": false, "has_issue": false})
-	for coord: Vector2i in [Vector2i(-2, -1), Vector2i(-1, -2), Vector2i(0, -2), Vector2i(1, -2)]:
+	for coord: Vector2i in G_ROADS:
 		GameStateStore.set_building(coord, {"type": "bld_road", "level": 0})
-	if prepared:
-		GameStateStore.set_building(Vector2i(2, -2), {"type": "bld_well_pump", "level": 2, "damaged": false, "has_issue": false})
-		var warehouse: Dictionary = GameStateStore.get_building(Vector2i(0, -1))
-		warehouse["level"] = 1  # displayed warehouse level 2
-		GameStateStore.set_building(Vector2i(0, -1), warehouse)
+	for coord: Vector2i in G_SHELTERS:
+		GameStateStore.set_building(coord, {"type": "bld_shelter", "level": 0, "damaged": false, "has_issue": false})
+	for coord: Vector2i in G_PLOTS:
+		GameStateStore.set_building(coord, {"type": "bld_field_strip", "level": 0, "damaged": false, "has_issue": false})
+	GameStateStore.set_building(G_GENERATOR, {"type": "bld_generator", "level": 0, "damaged": false, "has_issue": false})
+	if second_pump:
+		GameStateStore.set_building(G_SECOND_PUMP, {"type": "bld_well_pump", "level": 0, "damaged": false, "has_issue": false})
 	orch.spatial.rebuild_from_state()
 	orch.coverage.invalidate()
 	orch.road_graph.invalidate()
@@ -204,15 +215,37 @@ func _run_heat_reserve(prepared: bool) -> void:
 	orch.infrastructure_sys.process_tick()
 	GameStateStore.set_resource("res_water_stockpile", GameStateStore.get_cap("res_water_stockpile"))
 	GameStateStore.set_resource("res_food", GameStateStore.get_cap("res_food"))
+	GameStateStore.set_resource("res_money", 400.0)  # generator fuel for the whole run
 	var ending_day: int = 0
+	var people_after_dust: int = 0
+	var seen: Dictionary = {}  # a lambda cannot assign to an outer local; it can fill a dictionary
+	var on_ending := func(eid: String, _kind: String) -> void:
+		if not seen.has("id"):
+			seen["id"] = eid
+	EventBus.ending_triggered.connect(on_ending)
 	for day: int in range(1, DAYS + 1):
 		SimulationRunner.day_count = day
+		for coord: Vector2i in GameStateStore.get_all_building_coords():
+			var bld: Dictionary = GameStateStore.get_building(coord)
+			if bld.get("has_issue", false):
+				bld["has_issue"] = false
+				GameStateStore.set_building(coord, bld)
 		for _t: int in TICKS_PER_DAY:
 			orch.tick_scheduler.run_tick()
-			if ending_day == 0 and EndingManager.get("_ended"):
+			if ending_day == 0 and seen.has("id"):
 				ending_day = day
-		_log_day(day)
-	print("      >> G%s first ending day=%d; Heat spoiled=%.3f" % ["2" if prepared else "1", ending_day, GameStateStore.climate().get("heat_food_spoiled", 0.0)])
-	var meets_target: bool = ending_day == 40 if prepared else ending_day >= 33 and ending_day <= 37
+		if day == 29:
+			people_after_dust = GameStateStore.population().get("total", 0) as int
+		if ending_day == 0 or day == ending_day:
+			_log_day(day)
+	EventBus.ending_triggered.disconnect(on_ending)
+	var ending_id: String = seen.get("id", "") as String
+	print("      >> G%s: after the Dust %d people; first ending %s on day %d" % ["2" if second_pump else "1", people_after_dust, ending_id, ending_day])
+	var heat_start: int = 30
+	var meets_target: bool
+	if second_pump:
+		meets_target = ending_day == ContentDB.get_win_day() and ending_id.begins_with("ending.win.")
+	else:
+		meets_target = people_after_dust >= 16 and ending_day >= heat_start and ending_day <= 38 and ending_id.begins_with("ending.lose.")
 	if not meets_target:
 		_g_failures += 1

@@ -144,10 +144,12 @@ func _update_happiness() -> void:
 static func heat_stress_term() -> float:
 	if not (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("heat_stress", false):
 		return 0.0
-	var water: float = GameStateStore.get_resource("res_water_stockpile")
-	if water <= 0.0:
-		return -15.0
-	return -8.0 if water / maxf(GameStateStore.get_cap("res_water_stockpile"), 1.0) < 0.3 else 0.0
+	# "Empty" is a cistern scraping the bottom, not an exact zero: a district living off what
+	# the pumps bring each tick keeps a few units in the tank and is just as dry.
+	var share: float = GameStateStore.get_resource("res_water_stockpile") / maxf(GameStateStore.get_cap("res_water_stockpile"), 1.0)
+	if share < 0.05:
+		return -20.0
+	return -8.0 if share < 0.3 else 0.0
 
 
 func _supply_happiness_term() -> float:

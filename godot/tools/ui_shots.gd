@@ -118,7 +118,7 @@ func _run() -> void:
 	SeasonPanel.open()
 	await _shot("24_heat_season")
 	SeasonPanel.call("_toggle")
-	for id: String in ["patron.letter.heat_warning", "patron.letter.heat_warning_directorate", "report.heat_stock", "petition.covenant_shade", "rival.voss_heat", "patron.letter.audit2_warning", "patron.letter.audit2_warning_directorate", "crisis.heat_collapse", "crisis.spoiled_stock"]:
+	for id: String in ["patron.letter.welcome", "patron.letter.directorate_welcome", "patron.letter.audit_warning", "patron.letter.heat_warning", "patron.letter.heat_warning_directorate", "report.heat_stock", "petition.covenant_shade", "rival.voss_heat", "patron.letter.audit2_warning", "patron.letter.audit2_warning_directorate", "crisis.heat_collapse", "crisis.spoiled_stock"]:
 		var card: Dictionary = ContentDB.get_event_def(id).duplicate(true)
 		card["runtime_id"] = id
 		desk.call("_on_evening_started", [card])

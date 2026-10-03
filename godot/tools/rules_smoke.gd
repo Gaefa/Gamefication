@@ -247,8 +247,8 @@ func _heat_rules() -> void:
 	_check(is_zero_approx(ProgressionSystem.heat_stress_term()), "30% water is outside Heat stress")
 	GameStateStore.set_resource("res_water_stockpile", water_cap * 0.29)
 	_check(is_equal_approx(ProgressionSystem.heat_stress_term(), -8.0), "water below 30% incurs Heat stress")
-	GameStateStore.set_resource("res_water_stockpile", 0.0)
-	_check(is_equal_approx(ProgressionSystem.heat_stress_term(), -15.0), "empty water incurs -15, not stacked -23")
+	GameStateStore.set_resource("res_water_stockpile", water_cap * 0.04)
+	_check(is_equal_approx(ProgressionSystem.heat_stress_term(), -20.0), "a cistern scraping the bottom (<5%) incurs -20, not stacked -28")
 	orch.power_sys.process_tick()
 	var heat_solar: float = GameStateStore.power().get("generation", 0.0) as float
 	climate["modifiers"] = ContentDB.get_season_def("season_window")["modifiers"].duplicate(true)

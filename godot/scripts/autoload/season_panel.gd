@@ -150,7 +150,7 @@ func _modifier_lines(mods: Dictionary) -> Array[String]:
 		out.append(Localization.ru_en("еда портится: −%.1f в день", "food spoils: −%.1f per day") % EconomySystem.daily_spoilage())
 		out.append(Localization.ru_en("склады ур. 2+ и сушёные пайки снижают потери", "level 2+ warehouses and dried rations reduce losses"))
 	if mods.get("heat_stress", false):
-		out.append(Localization.ru_en("запас воды <30%: счастье −8; пусто: −15; слабый напор вдвое тяжелее", "water reserve <30%: mood −8; empty: −15; weak pressure hurts twice as much"))
+		out.append(Localization.ru_en("запас воды <30%: счастье −8; почти пусто (<5%): −20; слабый напор вдвое тяжелее", "water reserve <30%: mood −8; nearly empty (<5%): −20; weak pressure hurts twice as much"))
 	return out
 
 

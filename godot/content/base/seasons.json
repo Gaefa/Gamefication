@@ -57,7 +57,7 @@
       "enabled_in_mvp": true,
       "forecast_intensity": "harsh",
       "modifiers": {
-        "water_mult": 1.6,
+        "water_mult": 2.0,
         "water_supply_mult": 0.85,
         "crop_mult": 0.85,
         "solar_mult": 1.2,
