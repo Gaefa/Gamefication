@@ -1,0 +1,257 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+OpenGL API 4.1 Metal - 91.7 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+PASS: money vector loads
+PASS: money is cached
+PASS: food vector loads
+PASS: food is cached
+PASS: water vector loads
+PASS: water is cached
+PASS: wood vector loads
+PASS: wood is cached
+PASS: stone vector loads
+PASS: stone is cached
+PASS: tools vector loads
+PASS: tools is cached
+PASS: people vector loads
+PASS: people is cached
+PASS: mandate vector loads
+PASS: mandate is cached
+PASS: infrastructure vector loads
+PASS: infrastructure is cached
+PASS: residential vector loads
+PASS: residential is cached
+PASS: production vector loads
+PASS: production is cached
+PASS: commercial vector loads
+PASS: commercial is cached
+PASS: culture vector loads
+PASS: culture is cached
+PASS: advanced vector loads
+PASS: advanced is cached
+PASS: inspect cursor loads at 32px
+PASS: build cursor loads at 32px
+PASS: blocked cursor loads at 32px
+PASS: pan cursor loads at 32px
+PASS: missing art leaves text-only fallback
+PASS: missing art cached
+PASS: ru / 1280px: bar inside viewport
+PASS: ru / 1280px: _utility_label inside bar
+PASS: ru / 1280px: _city_label inside bar
+PASS: ru / 1280px: _trust_bar inside bar
+PASS: ru / 1280px: _support_bar inside bar
+PASS: ru / 1280px: _rival_label inside bar
+PASS: ru / 1280px: _rival_label fully visible
+PASS: ru / 1280px: panels below bar
+PASS: ru / 1280px: six resource chips / four pressure gauges
+PASS: screenshot ui_ru.png
+PASS: Infrastructure icon keeps localized label
+PASS: Infrastructure selection still works
+PASS: ru / Infrastructure: no horizontal scroll
+PASS: ru / Infrastructure: building cards fit menu width
+PASS: ru / Infrastructure: card fits width
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: card fits width
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: card fits width
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: card fits width
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: card fits width
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: ru / Infrastructure: all card lines visible
+PASS: Residential icon keeps localized label
+PASS: Residential selection still works
+PASS: ru / Residential: no horizontal scroll
+PASS: ru / Residential: building cards fit menu width
+PASS: ru / Residential: card fits width
+PASS: ru / Residential: all card lines visible
+PASS: ru / Residential: all card lines visible
+PASS: Production icon keeps localized label
+PASS: Production selection still works
+PASS: ru / Production: no horizontal scroll
+PASS: ru / Production: building cards fit menu width
+PASS: ru / Production: card fits width
+PASS: ru / Production: all card lines visible
+PASS: ru / Production: all card lines visible
+PASS: ru / Production: card fits width
+PASS: ru / Production: all card lines visible
+PASS: ru / Production: all card lines visible
+PASS: ru / Production: card fits width
+PASS: ru / Production: all card lines visible
+PASS: ru / Production: all card lines visible
+PASS: ru / Production: card fits width
+PASS: ru / Production: all card lines visible
+PASS: ru / Production: all card lines visible
+PASS: ru / Production: all card lines visible
+PASS: Commercial icon keeps localized label
+PASS: Commercial selection still works
+PASS: ru / Commercial: no horizontal scroll
+PASS: ru / Commercial: building cards fit menu width
+PASS: Culture icon keeps localized label
+PASS: Culture selection still works
+PASS: ru / Culture: no horizontal scroll
+PASS: ru / Culture: building cards fit menu width
+PASS: Advanced icon keeps localized label
+PASS: Advanced selection still works
+PASS: ru / Advanced: no horizontal scroll
+PASS: ru / Advanced: building cards fit menu width
+PASS: en / 1280px: bar inside viewport
+PASS: en / 1280px: _utility_label inside bar
+PASS: en / 1280px: _city_label inside bar
+PASS: en / 1280px: _trust_bar inside bar
+PASS: en / 1280px: _support_bar inside bar
+PASS: en / 1280px: _rival_label inside bar
+PASS: en / 1280px: _rival_label fully visible
+PASS: en / 1280px: panels below bar
+PASS: en / 1280px: six resource chips / four pressure gauges
+PASS: screenshot ui_en.png
+PASS: Infrastructure icon keeps localized label
+PASS: Infrastructure selection still works
+PASS: en / Infrastructure: no horizontal scroll
+PASS: en / Infrastructure: building cards fit menu width
+PASS: en / Infrastructure: card fits width
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: card fits width
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: card fits width
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: card fits width
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: card fits width
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: en / Infrastructure: all card lines visible
+PASS: Residential icon keeps localized label
+PASS: Residential selection still works
+PASS: en / Residential: no horizontal scroll
+PASS: en / Residential: building cards fit menu width
+PASS: en / Residential: card fits width
+PASS: en / Residential: all card lines visible
+PASS: en / Residential: all card lines visible
+PASS: Production icon keeps localized label
+PASS: Production selection still works
+PASS: en / Production: no horizontal scroll
+PASS: en / Production: building cards fit menu width
+PASS: en / Production: card fits width
+PASS: en / Production: all card lines visible
+PASS: en / Production: all card lines visible
+PASS: en / Production: card fits width
+PASS: en / Production: all card lines visible
+PASS: en / Production: all card lines visible
+PASS: en / Production: card fits width
+PASS: en / Production: all card lines visible
+PASS: en / Production: all card lines visible
+PASS: en / Production: card fits width
+PASS: en / Production: all card lines visible
+PASS: en / Production: all card lines visible
+PASS: en / Production: all card lines visible
+PASS: Commercial icon keeps localized label
+PASS: Commercial selection still works
+PASS: en / Commercial: no horizontal scroll
+PASS: en / Commercial: building cards fit menu width
+PASS: Culture icon keeps localized label
+PASS: Culture selection still works
+PASS: en / Culture: no horizontal scroll
+PASS: en / Culture: building cards fit menu width
+PASS: Advanced icon keeps localized label
+PASS: Advanced selection still works
+PASS: en / Advanced: no horizontal scroll
+PASS: en / Advanced: building cards fit menu width
+PASS: resource chip shows a number and names itself in the tooltip
+PASS: world inspection cursor
+PASS: middle-drag cursor
+PASS: valid placement cursor
+PASS: occupied placement cursor
+PASS: unaffordable placement cursor
+PASS: HUD retains normal OS cursor
+PASS: Escape cancels build mode
+PASS: water panel click target preserved
+PASS: autoload modal uses normal OS cursor
+PASS: modal click does not select the map behind it
+PASS: modal click does not build or spend resources behind it
+PASS: closing modal restores map selection
+PASS: closing modal restores construction
+PASS: season panel click target preserved
+PASS: ru / 960px / large values: bar inside viewport
+PASS: ru / 960px / large values: _utility_label inside bar
+PASS: ru / 960px / large values: _city_label inside bar
+PASS: ru / 960px / large values: _trust_bar inside bar
+PASS: ru / 960px / large values: _support_bar inside bar
+PASS: ru / 960px / large values: _rival_label inside bar
+PASS: ru / 960px / large values: _rival_label fully visible
+PASS: ru / 960px / large values: panels below bar
+PASS: ru / 960px / large values: six resource chips / four pressure gauges
+PASS: ru / 960px: no horizontal scroll
+PASS: ru / 960px: building cards fit menu width
+PASS: ru / 960px: card fits width
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: card fits width
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: card fits width
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: card fits width
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: card fits width
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: ru / 960px: all card lines visible
+PASS: screenshot ui_ru_960.png
+PASS: en / 960px / large values: bar inside viewport
+PASS: en / 960px / large values: _utility_label inside bar
+PASS: en / 960px / large values: _city_label inside bar
+PASS: en / 960px / large values: _trust_bar inside bar
+PASS: en / 960px / large values: _support_bar inside bar
+PASS: en / 960px / large values: _rival_label inside bar
+PASS: en / 960px / large values: _rival_label fully visible
+PASS: en / 960px / large values: panels below bar
+PASS: en / 960px / large values: six resource chips / four pressure gauges
+PASS: en / 960px: no horizontal scroll
+PASS: en / 960px: building cards fit menu width
+PASS: en / 960px: card fits width
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: card fits width
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: card fits width
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: card fits width
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: card fits width
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: en / 960px: all card lines visible
+PASS: screenshot ui_en_960.png
+UI ICONS SMOKE: 0 failures

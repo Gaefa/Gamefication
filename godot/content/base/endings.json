@@ -5,8 +5,8 @@
       "kind": "win",
       "title": "Удержанный мандат — лоялен Лиге",
       "title_en": "Mandate Held — Loyal to the League",
-      "body": "Проверка пройдена, мандат продлён. Ржавая Нора пережила Пыль: вода доходит до дальних кварталов, склады не опустели, люди остались. В докладе Койл район значится как «стабильный».\n\nЛига предлагает вам следующий район. Он крупнее и суше.",
-      "body_en": "The inspection is passed and the mandate extended. The Rust Pit came through the Dust: water reaches the far quarters, the warehouses did not run empty, the people stayed. Coyle's report lists the district as \"stable.\"\n\nThe League is offering you another district. It is larger and drier."
+      "body": "Проверка пройдена, мандат продлён. Ржавая Нора пережила Пыль и Жару: вода доходит до дальних кварталов, склады не опустели, люди остались. В докладе Койл район значится как «стабильный».\n\nЛига предлагает вам следующий район. Он крупнее и суше.",
+      "body_en": "The inspection is passed and the mandate extended. The Rust Pit came through the Dust and Heat: water reaches the far quarters, the warehouses did not run empty, the people stayed. Coyle's report lists the district as \"stable.\"\n\nThe League is offering you another district. It is larger and drier."
     },
     {
       "id": "ending.win.protector",

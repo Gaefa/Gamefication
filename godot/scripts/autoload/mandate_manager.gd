@@ -5,11 +5,10 @@ extends Node
 ## staying — and the result moves patron trust up or down. Low trust then drives the
 ## existing escalation (grant_freeze ≤40, recall_ultimatum ≤25) and the endings.
 ##
-## Foreshadowed by patron.letter.audit_warning (day 15); the audit lands on AUDIT_DAY (20).
+## Foreshadowed by patron.letter.audit_warning (day 15); audit dates come from scenario.json.
 ## Presented as a dynamic result card via the critical-card path (DeskUI critical mode).
 ## Self-contained autoload — no orchestrator/tick-pipeline changes.
 
-const AUDIT_DAY := 20               # control date — mid-Пыль, so it tests preparation (tuning)
 const WATER_OK := 60.0              # reserve considered "ready" (tuning)
 const FOOD_OK := 30.0
 const HAPPINESS_OK := 40.0          # people are staying, not fleeing
@@ -21,18 +20,20 @@ func _ready() -> void:
 
 func _on_tick_finished(_tick: int) -> void:
 	var mandate: Dictionary = GameStateStore.mandate()
-	if mandate.get("audit_done", false) as bool:
+	var next_day: int = next_audit_day()
+	if next_day == 0:
 		return
 	if (mandate.get("patron_id", "") as String) == "":
 		return  # a founder has no patron to audit them
-	if (GameStateStore.climate().get("total_day", 1) as int) < AUDIT_DAY:
+	if (GameStateStore.climate().get("total_day", 1) as int) < next_day:
 		return
 	_run_audit()
 
 
 func _run_audit() -> void:
 	var mandate: Dictionary = GameStateStore.mandate()
-	mandate["audit_done"] = true
+	var second: bool = (mandate.get("audits_done", 0) as int) == 1
+	mandate["audits_done"] = (mandate.get("audits_done", 0) as int) + 1
 
 	var water: float = GameStateStore.get_resource("res_water_stockpile")
 	var food: float = GameStateStore.get_resource("res_food")
@@ -43,8 +44,11 @@ func _run_audit() -> void:
 	var people_ok: bool = happiness >= HAPPINESS_OK
 	var score: int = (1 if water_ok else 0) + (1 if food_ok else 0) + (1 if people_ok else 0)
 
-	var trust_delta: int
-	match score:
+	var trust_delta: float
+	var spoilage_ok: bool = food_preserved()
+	if second:
+		score += 1 if spoilage_ok else 0
+	match score - (1 if second else 0):
 		3: trust_delta = 12
 		2: trust_delta = 5
 		1: trust_delta = -6
@@ -55,9 +59,13 @@ func _run_audit() -> void:
 		trust_delta -= 4
 	elif gap >= RivalManager.AUDIT_EDGE:
 		trust_delta += 3
+	if second:
+		trust_delta *= 1.5
+	else:
+		mandate["first_audit_score"] = score
 	mandate["patron_trust"] = clampf((mandate.get("patron_trust", 50) as float) + float(trust_delta), 0.0, 100.0)
 
-	var passed: bool = score >= 2
+	var passed: bool = score >= (3 if second else 2)
 	EventBus.audit_completed.emit(passed, score)
 
 	# Pause and show the dynamic result card through the critical-card path.
@@ -65,7 +73,7 @@ func _run_audit() -> void:
 	EventBus.critical_event_started.emit(_build_card(score, water_ok, food_ok, people_ok, trust_delta))
 
 
-func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, trust_delta: int) -> Dictionary:
+func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, trust_delta: float) -> Dictionary:
 	var directorate: bool = (GameStateStore.mandate().get("patron_id", "") as String) == "civic_directorate"
 	var verdict: String
 	var verdict_en: String
@@ -108,19 +116,30 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 		"— Food reserve: %s" % ("OK" if food_ok else "insufficient"),
 		"— People are staying: %s" % ("yes" if people_ok else "no, morale is low"),
 	])
+	var second: bool = (GameStateStore.mandate().get("audits_done", 0) as int) >= 2
+	if second:
+		checklist += "\n— Потери еды <25%% начального запаса: %s" % ("да" if food_preserved() else "нет")
+		checklist_en += "\n— Food lost <25%% of starting reserve: %s" % ("yes" if food_preserved() else "no")
+		var first: Variant = GameStateStore.mandate().get("first_audit_score", null)
+		var prior: String = "%d/3" % int(first) if first != null else "результат в прежнем деле"
+		var prior_en: String = "%d/3" % int(first) if first != null else "result in the previous file"
+		verdict = "Повторная проверка: выполнено %d из 4 норм. Первый аудит: %s." % [score, prior]
+		verdict_en = "Second inspection: %d of 4 targets met. First audit: %s." % [score, prior_en]
 	var authority: String = "Директората" if directorate else "Лиги"
 	var authority_en: String = "Directorate" if directorate else "League"
-	var trust_line: String = ("Доверие %s %+d." % [authority, trust_delta])
-	var trust_line_en: String = ("%s trust %+d." % [authority_en, trust_delta])
+	# The second audit weighs 1.5×, so its change can be fractional; whole numbers stay whole.
+	var delta_text: String = ("%+d" % int(trust_delta)) if is_equal_approx(trust_delta, roundf(trust_delta)) else ("%+.1f" % trust_delta)
+	var trust_line: String = "Доверие %s %s." % [authority, delta_text]
+	var trust_line_en: String = "%s trust %s." % [authority_en, delta_text]
 	var title: String = "Проверка Директората — Комиссар" if directorate else "Аудит Лиги — Инспектор Койл"
 	var title_en: String = "Directorate Inspection — the Commissar" if directorate else "League Audit — Inspector Coyle"
-	var comparison: String = "Для сравнения — район %s: %d, ваш: %d." % [
-		RivalManager.NAME, int(RivalManager.rival_score()), int(RivalManager.player_score())]
+	var comparison: String = "Для сравнения — район Мары Восс: %d, ваш: %d." % [
+		int(RivalManager.rival_score()), int(RivalManager.player_score())]
 	var comparison_en: String = "For comparison — %s's district: %d, yours: %d." % [
 		RivalManager.NAME_EN, int(RivalManager.rival_score()), int(RivalManager.player_score())]
 
 	return {
-		"runtime_id": "audit.result",
+		"runtime_id": "audit.result2" if second else "audit.result",
 		"title": title,
 		"title_en": title_en,
 		"body": "Проверка проведена.\n\n%s\n\n%s\n\n%s\n\n%s" % [checklist, comparison, verdict, trust_line],
@@ -129,3 +148,17 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 			{ "text": "Принять к сведению", "text_en": "Noted", "effects": {} }
 		],
 	}
+
+
+func next_audit_day() -> int:
+	var days: Array = ContentDB.get_audit_days()
+	var done: int = GameStateStore.mandate().get("audits_done", 0) as int
+	return int(days[done]) if done < days.size() else 0
+
+
+func food_preserved() -> bool:
+	var climate: Dictionary = GameStateStore.climate()
+	var start: float = climate.get("heat_food_start", 0.0) as float
+	var lost: float = climate.get("heat_food_spoiled", 0.0) as float
+	# An empty incoming reserve with no loss counts as no waste, not division by zero.
+	return lost < start * 0.25 if start > 0.0 else is_zero_approx(lost)

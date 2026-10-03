@@ -12,7 +12,6 @@ const THRESHOLD := 100.0
 const RESET_TO := 40.0          # partial reset after a crisis fires (§15.3)
 const GAIN_PER_TICK := 0.15     # at full risk a category fills in ~2 days, ~1.5 in Пыль (tuning)
 const DECAY_PER_TICK := 0.08    # drains once the risk is gone (tuning)
-const DUST_AMPLIFY := 1.5       # Пыль feeds food and water faster (§15.4)
 
 const FOOD_SAFE := 60.0         # reserves/levels below these start to build pressure
 const WATER_SAFE := 150.0
@@ -26,7 +25,7 @@ func process_tick() -> void:
 	var pressure_state: Dictionary = GameStateStore.pressure()
 	var cats: Dictionary = pressure_state.get("categories", {}) as Dictionary
 	pressure_state.categories = cats
-	var dust: bool = (GameStateStore.climate().get("season_id", "") as String) == "season_dust"
+	var amplify: Dictionary = ContentDB.get_season_def(GameStateStore.climate().get("season_id", "") as String).get("pressure_amplify", {})
 	var gov: float = _governance_factor()
 	var risks := {
 		"food": _below(GameStateStore.get_resource("res_food"), FOOD_SAFE),
@@ -43,8 +42,7 @@ func process_tick() -> void:
 		var risk: float = risks[cat] as float
 		if risk > 0.0:
 			var gain: float = GAIN_PER_TICK * risk * gov
-			if dust and (cat == "food" or cat == "water"):
-				gain *= DUST_AMPLIFY
+			gain *= amplify.get(cat, 1.0) as float
 			if cat == "water":
 				gain *= 1.0 + _water_queue()
 			value += gain

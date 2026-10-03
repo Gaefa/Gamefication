@@ -12,6 +12,7 @@ func _init(interactions: BuildingInteractions, resource_flow: ResourceFlow) -> v
 
 
 func process_tick() -> void:
+	_process_daily_spoilage()
 	var season_mods: Dictionary = GameStateStore.climate().get("modifiers", {})
 
 	var net_production: Dictionary = {}
@@ -163,3 +164,31 @@ func _governance_production_multiplier(res_id: String) -> float:
 func _production_bonus_from_effects(effects: Dictionary, res_id: String) -> float:
 	var prod_mult: Dictionary = effects.get("production_mult", {})
 	return prod_mult.get(res_id, 0.0) as float
+
+
+## Saved day marker prevents double spoilage on reload. Charge at the start of each
+## Heat day, before production; the first charge uses the actual incoming reserve.
+func _process_daily_spoilage() -> void:
+	var climate: Dictionary = GameStateStore.climate()
+	var day: int = climate.get("total_day", 1) as int
+	if day <= (climate.get("spoilage_day", 0) as int):
+		return
+	climate["spoilage_day"] = day
+	var loss: float = daily_spoilage()
+	GameStateStore.add_resource("res_food", -loss)
+	if (climate.get("season_id", "") as String) == "season_heat":
+		climate["heat_food_spoiled"] = (climate.get("heat_food_spoiled", 0.0) as float) + loss
+
+
+static func daily_spoilage() -> float:
+	var mods: Dictionary = GameStateStore.climate().get("modifiers", {})
+	var rate: float = mods.get("food_spoilage_per_day", 0.0) as float
+	var warehouses: int = 0
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		# Building levels are zero-based: displayed level 2 is index 1.
+		if bld.get("type", "") == "bld_warehouse" and (bld.get("level", 0) as int) >= 1 and not bld.get("damaged", false):
+			warehouses += 1
+	if (GameStateStore.mandate().get("flags", {}) as Dictionary).get("dried_rations", false):
+		rate *= 0.5
+	return GameStateStore.get_resource("res_food") * rate * maxf(0.25, 1.0 - 0.25 * warehouses)

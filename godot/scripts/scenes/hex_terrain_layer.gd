@@ -41,7 +41,9 @@ func _draw() -> void:
 		return
 
 	var hex_points := _hex_polygon()
-	var dusty: bool = GameStateStore.climate().get("season_id", "") == "season_dust"
+	var season: Dictionary = ContentDB.get_season_def(GameStateStore.climate().get("season_id", "") as String)
+	var variant: String = season.get("tile_variant", "") as String
+	var tint := Color(season.get("terrain_tint", "ffffff") as String)
 	var half_tile := Vector2(HexCoords.HEX_SIZE, HexCoords.HEX_SIZE * HexCoords.ISO_Y)
 	for coord: Vector2i in _hex_grid.all_coords():
 		var terrain_id: int = _hex_grid.get_terrain_at(coord)
@@ -49,11 +51,11 @@ func _draw() -> void:
 		var translated_pts: PackedVector2Array = PackedVector2Array()
 		for p: Vector2 in hex_points:
 			translated_pts.append(center + p)
-		var tile: Texture2D = _terrain_texture(terrain_id, dusty)
+		var tile: Texture2D = _terrain_texture(terrain_id, variant)
 		if tile != null:
-			draw_texture_rect(tile, Rect2(center - half_tile, half_tile * 2.0), false)
+			draw_texture_rect(tile, Rect2(center - half_tile, half_tile * 2.0), false, tint)
 		else:
-			draw_colored_polygon(translated_pts, _terrain_color(terrain_id))
+			draw_colored_polygon(translated_pts, _terrain_color(terrain_id) * tint)
 		# Outline — faint, warm, so the grid reads as cracked ground rather than a chessboard.
 		draw_polyline(translated_pts, Color(0.25, 0.18, 0.1, 0.22), 1.0)
 	_draw_old_pipes()
@@ -102,9 +104,9 @@ func _prop_texture_path(id: String) -> String:
 	return _prop_paths[id] as String
 
 
-func _terrain_texture(terrain_id: int, dusty: bool) -> Texture2D:
+func _terrain_texture(terrain_id: int, variant: String) -> Texture2D:
 	var def: Dictionary = ContentDB.get_terrain_def(terrain_id)
-	var key: String = "tile_dust" if dusty else "tile"
+	var key: String = "tile_" + variant if variant != "" else "tile"
 	var path: String = def.get(key, "") as String
 	if path.is_empty():
 		return null

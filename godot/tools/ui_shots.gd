@@ -6,10 +6,12 @@ extends Node
 
 var _dir: String = "user://"
 var _locale: String = "ru"
+var _failures: int = 0
 var _main: Node
 
 
 func _ready() -> void:
+	SaveService.set("_autosave_timer", -1.0e12)
 	for a: String in OS.get_cmdline_user_args():
 		if a.begins_with("out="):
 			_dir = a.trim_prefix("out=")
@@ -98,9 +100,38 @@ func _run() -> void:
 	EventBus.building_placed.emit(_first("bld_field_strip"), "bld_field_strip")
 	EventBus.selection_changed.emit(Vector2i(-9999, -9999))
 	await _shot("20_pins", 4)  # early, while the flashes are still on screen
+	# Same map before/after Heat, plus the day-32 goals and spoilage forecast.
+	TutorialManager.enabled_for_next_run = false
+	hud.call("_start_new_run", "appointed_administrator")
+	SimulationRunner.paused = true
+	OnboardingManager.suppressed = true
+	(OnboardingManager.get("_layer") as CanvasLayer).visible = false
+	await _shot("22_before_window")
+	var orch: GameOrchestrator = _main.call("get_orchestrator") as GameOrchestrator
+	SimulationRunner.day_count = 32
+	orch.season_sys.process_tick()
+	GameStateStore.mandate()["audits_done"] = 1
+	GameStateStore.mandate()["first_audit_score"] = 3
+	hud.call("_update_resource_bar")
+	hud.call("_update_goals")
+	await _shot("23_heat_map")
+	SeasonPanel.open()
+	await _shot("24_heat_season")
+	SeasonPanel.call("_toggle")
+	for id: String in ["patron.letter.welcome", "patron.letter.directorate_welcome", "patron.letter.audit_warning", "patron.letter.heat_warning", "patron.letter.heat_warning_directorate", "report.heat_stock", "petition.covenant_shade", "rival.voss_heat", "patron.letter.audit2_warning", "patron.letter.audit2_warning_directorate", "crisis.heat_collapse", "crisis.spoiled_stock"]:
+		var card: Dictionary = ContentDB.get_event_def(id).duplicate(true)
+		card["runtime_id"] = id
+		desk.call("_on_evening_started", [card])
+		await _shot("25_" + id.replace(".", "_"))
+	GameStateStore.climate()["total_day"] = 36
+	MandateManager.call("_run_audit")
+	await _shot("26_audit2")
+	desk.set("visible", false)
+	SimulationRunner.card_open = false
 	EndingManager.call("_show_finale", ContentDB.get_ending_def("ending.win.protector"), "ending.win.protector")
 	await _shot("21_ending")
-	get_tree().quit()
+	print("UI SHOTS: %d failures" % _failures)
+	get_tree().quit(1 if _failures > 0 else 0)
 
 
 func _first(type_id: String) -> Vector2i:
@@ -113,6 +144,16 @@ func _first(type_id: String) -> Vector2i:
 func _shot(shot_name: String, frames: int = 12) -> void:
 	for _i: int in frames:
 		await get_tree().process_frame
+	if shot_name.begins_with("25_") or shot_name == "26_audit2":
+		var desk: Node = _main.get_node("HUDCanvas/DeskUI")
+		var viewport_rect := Rect2(Vector2.ZERO, get_viewport().get_visible_rect().size)
+		var fits: bool = true
+		for key: String in ["_title_label", "_header_label", "_body_label", "_options_container"]:
+			fits = fits and viewport_rect.encloses((desk.get(key) as Control).get_global_rect())
+		var body: RichTextLabel = desk.get("_body_label") as RichTextLabel
+		fits = fits and body.get_content_height() <= body.size.y + 1.0
+		print("%s: %s %s fits 1280x720" % ["PASS" if fits else "FAIL", _locale, shot_name])
+		if not fits:
+			_failures += 1
 	RenderingServer.force_draw(true)
-	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(_dir.path_join("%s_%s.png" % [_locale, shot_name]))

@@ -11,8 +11,9 @@ extends Node
 ## Not shipped with the game — a dev tool for reading the economy at a glance.
 
 const TICKS_PER_DAY := 300   # matches SimulationRunner (day_duration 300s @ 1 tick/s)
-const DAYS := 31             # one full Окно(18) → Пыль(11) cycle + tail
+const DAYS := 40             # one full Окно(18) → Пыль(11) cycle + tail
 
+var _g_failures: int = 0
 var active_orch: GameOrchestrator  # exposed like main.gd so map-changing effects can find it
 
 
@@ -22,7 +23,7 @@ func get_orchestrator() -> GameOrchestrator:
 
 func _ready() -> void:
 	EventBus.audit_completed.connect(func(passed: bool, score: int) -> void:
-		print("      >> АУДИТ: score=%d/3 passed=%s → доверие=%.0f | Восс %.0f · вы %.0f" % [score, str(passed), GameStateStore.mandate().get("patron_trust", 0) as float, RivalManager.rival_score(), RivalManager.player_score()]))
+		print("      >> АУДИТ: score=%d/%d passed=%s → доверие=%.0f | Восс %.0f · вы %.0f" % [score, 4 if (GameStateStore.mandate().get("audits_done", 0) as int) > 1 else 3, str(passed), GameStateStore.mandate().get("patron_trust", 0) as float, RivalManager.rival_score(), RivalManager.player_score()]))
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
 		print("      >> ФИНАЛ [%s]: %s (день %d, нас %d, сч %.0f) | Восс %.0f · вы %.0f" % [
 			kind, eid,
@@ -31,8 +32,8 @@ func _ready() -> void:
 			GameStateStore.population().get("happiness", 0.0) as float,
 			RivalManager.rival_score(), RivalManager.player_score()]))
 	EventBus.season_day_advanced.connect(func(_sid: String, _d: int, _l: int) -> void:
-		if (GameStateStore.climate().get("total_day", 0) as int) == RivalManager.GRANT_DAY:
-			print("      >> ГРАНТ (день %d): Восс %.0f · вы %.0f → %s" % [RivalManager.GRANT_DAY, RivalManager.rival_score(), RivalManager.player_score(),
+		if (GameStateStore.climate().get("total_day", 0) as int) == ContentDB.get_grant_day():
+			print("      >> ГРАНТ (день %d): Восс %.0f · вы %.0f → %s" % [ContentDB.get_grant_day(), RivalManager.rival_score(), RivalManager.player_score(),
 				"Ржавой Норе" if RivalManager.player_score() >= RivalManager.rival_score() else "Восс"]))
 	EventBus.season_changed.connect(func(sid: String, _d: int, _l: int) -> void:
 		print("      >> СЕЗОН → %s" % sid))
@@ -53,7 +54,7 @@ func _ready() -> void:
 	print("\n=== D) DIRECTORATE win test ===")
 	var orch2 := GameOrchestrator.new()
 	orch2.new_game(12345, "directorate_administrator")
-	GameStateStore.climate()["total_day"] = 30
+	GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
 	GameStateStore.population()["happiness"] = 60.0
 	GameStateStore.mandate()["patron_trust"] = 60.0
 	GameStateStore.mandate()["support"] = 35.0
@@ -92,6 +93,9 @@ func _ready() -> void:
 	EventBus.desk_option_selected.emit("branch.old_tower", 1, restore.get("effects", {}), restore.get("cost", {}))
 	print("restore:  (2,1) = '%s', cell %s water-covered %s → %s" % [GameStateStore.get_building(Vector2i(2, 1)).get("type", "<none>"), str(probe), str(covered_before), str(active_orch.coverage.is_water_covered(probe))])
 
+	_run_heat_reserve(false)
+	_run_heat_reserve(true)
+
 	# Sanity-check the style-flag plumbing (events don't fire in this headless harness).
 	GameStateStore.style_flags().clear()
 	GameStateStore.add_style_flag("protector", 3)
@@ -99,7 +103,8 @@ func _ready() -> void:
 	print("\n=== style flags check: %s → dominant=%s ===" % [
 		str(GameStateStore.style_flags()), GameStateStore.dominant_style("")])
 
-	get_tree().quit()
+	print("G ACCEPTANCE: %s (%d unmet trajectories)" % ["PASS" if _g_failures == 0 else "NOT MET", _g_failures])
+	get_tree().quit(1 if _g_failures > 0 else 0)
 
 
 func _run(label: String, prepared: bool) -> void:
@@ -124,6 +129,7 @@ func _run(label: String, prepared: bool) -> void:
 			seen += 1
 	var raised: Array = EventManager.pending_events.map(func(e: Dictionary) -> String: return e.get("runtime_id", "") as String)
 	print("      >> КРИЗИСЫ НА СТОЛЕ: %s" % str(raised))
+	print("      >> HEAT FOOD SPOILED: %.3f / incoming %.3f" % [GameStateStore.climate().get("heat_food_spoiled", 0.0), GameStateStore.climate().get("heat_food_start", 0.0)])
 
 
 func _upgrade_water_infra(orch: GameOrchestrator) -> void:
@@ -171,3 +177,75 @@ func _log_day(day: int) -> void:
 		pw.get("demand", 0.0) as float,
 		pwr,
 	])
+
+
+## Scenario G: the Dust tests the reserve, the Heat tests the flow.
+## A district of four shelters, three plots and a generator on ONE level-3 pump gets through
+## the Window and the Dust with everyone still there, but the Dust drains its cistern. In the
+## Heat water demand doubles, the single pump cannot keep up, and the district empties.
+## The same district with one more basic pump lives to day 40. The administrator repairs
+## faults every morning in both runs; nothing else is subsidised.
+const G_ROADS := [Vector2i(-2, -1), Vector2i(-1, -2), Vector2i(0, -2), Vector2i(1, -2)]
+const G_SHELTERS := [Vector2i(-2, 0), Vector2i(-1, 2), Vector2i(-2, -2)]
+const G_PLOTS := [Vector2i(-1, -3), Vector2i(0, -3)]
+const G_GENERATOR := Vector2i(1, -3)
+const G_SECOND_PUMP := Vector2i(2, -2)
+
+
+func _run_heat_reserve(second_pump: bool) -> void:
+	print("\n=== G%s) ONE PUMP%s, FOUR SHELTERS, THREE PLOTS, GENERATOR ===" % ["2" if second_pump else "1", " + A SECOND PUMP" if second_pump else ""])
+	EventManager.clear_pending()
+	var orch := GameOrchestrator.new()
+	active_orch = orch
+	orch.new_game(12345, "appointed_administrator")
+	_upgrade_water_infra(orch)
+	for coord: Vector2i in G_ROADS:
+		GameStateStore.set_building(coord, {"type": "bld_road", "level": 0})
+	for coord: Vector2i in G_SHELTERS:
+		GameStateStore.set_building(coord, {"type": "bld_shelter", "level": 0, "damaged": false, "has_issue": false})
+	for coord: Vector2i in G_PLOTS:
+		GameStateStore.set_building(coord, {"type": "bld_field_strip", "level": 0, "damaged": false, "has_issue": false})
+	GameStateStore.set_building(G_GENERATOR, {"type": "bld_generator", "level": 0, "damaged": false, "has_issue": false})
+	if second_pump:
+		GameStateStore.set_building(G_SECOND_PUMP, {"type": "bld_well_pump", "level": 0, "damaged": false, "has_issue": false})
+	orch.spatial.rebuild_from_state()
+	orch.coverage.invalidate()
+	orch.road_graph.invalidate()
+	orch.aura_cache.invalidate()
+	orch.infrastructure_sys.process_tick()
+	GameStateStore.set_resource("res_water_stockpile", GameStateStore.get_cap("res_water_stockpile"))
+	GameStateStore.set_resource("res_food", GameStateStore.get_cap("res_food"))
+	GameStateStore.set_resource("res_money", 400.0)  # generator fuel for the whole run
+	var ending_day: int = 0
+	var people_after_dust: int = 0
+	var seen: Dictionary = {}  # a lambda cannot assign to an outer local; it can fill a dictionary
+	var on_ending := func(eid: String, _kind: String) -> void:
+		if not seen.has("id"):
+			seen["id"] = eid
+	EventBus.ending_triggered.connect(on_ending)
+	for day: int in range(1, DAYS + 1):
+		SimulationRunner.day_count = day
+		for coord: Vector2i in GameStateStore.get_all_building_coords():
+			var bld: Dictionary = GameStateStore.get_building(coord)
+			if bld.get("has_issue", false):
+				bld["has_issue"] = false
+				GameStateStore.set_building(coord, bld)
+		for _t: int in TICKS_PER_DAY:
+			orch.tick_scheduler.run_tick()
+			if ending_day == 0 and seen.has("id"):
+				ending_day = day
+		if day == 29:
+			people_after_dust = GameStateStore.population().get("total", 0) as int
+		if ending_day == 0 or day == ending_day:
+			_log_day(day)
+	EventBus.ending_triggered.disconnect(on_ending)
+	var ending_id: String = seen.get("id", "") as String
+	print("      >> G%s: after the Dust %d people; first ending %s on day %d" % ["2" if second_pump else "1", people_after_dust, ending_id, ending_day])
+	var heat_start: int = 30
+	var meets_target: bool
+	if second_pump:
+		meets_target = ending_day == ContentDB.get_win_day() and ending_id.begins_with("ending.win.")
+	else:
+		meets_target = people_after_dust >= 16 and ending_day >= heat_start and ending_day <= 38 and ending_id.begins_with("ending.lose.")
+	if not meets_target:
+		_g_failures += 1

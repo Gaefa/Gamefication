@@ -1,0 +1,25 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+OpenGL API 4.1 Metal - 91.7 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+PASS: both seasons load for type 0
+PASS: texture reused for type 0
+PASS: both seasons load for type 1
+PASS: texture reused for type 1
+PASS: both seasons load for type 2
+PASS: texture reused for type 2
+PASS: both seasons load for type 3
+PASS: texture reused for type 3
+PASS: both seasons load for type 4
+PASS: texture reused for type 4
+PASS: both seasons load for type 5
+PASS: texture reused for type 5
+PASS: 12 textures cached
+PASS: season signal triggers redraw without render_terrain
+PASS: dust changes rendered pixels
+PASS: return to Window restores exact pixels
+PASS: missing field renders configured color
+PASS: missing file renders same fallback
+PASS: missing resource is cached
+PASS: unknown terrain has no texture
+PASS: unknown terrain retains grey fallback
+TERRAIN SMOKE: 0 failures

@@ -447,6 +447,7 @@ func _default_mandate() -> Dictionary:
 		"legitimacy": 50,
 		"autonomy": 30,
 		"recall_risk": 0,
+		"audits_done": 0,
 		"support": 50,
 		"effects": {},
 	}
