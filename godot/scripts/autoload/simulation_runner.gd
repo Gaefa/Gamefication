@@ -91,6 +91,7 @@ func start_run(saved_day_timer: float = -1.0) -> void:
 	current_phase = Phase.DAY
 	day_timer = saved_day_timer if saved_day_timer > 0.0 else day_duration
 	_accumulator = 0.0
+	speed_scale = 1.0  # a new or loaded run never inherits ×3 from the previous one
 	paused = false
 	card_open = false
 	run_active = true

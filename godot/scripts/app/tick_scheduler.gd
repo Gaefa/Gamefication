@@ -8,7 +8,6 @@ var _economy: EconomySystem
 var _maintenance: MaintenanceSystem
 var _issue: IssueSystem
 var _progression: ProgressionSystem
-var _event: EventSystem
 var _pressure: PressureSystem
 
 
@@ -20,7 +19,6 @@ func _init(
 	maintenance: MaintenanceSystem,
 	issue: IssueSystem,
 	progression: ProgressionSystem,
-	event_sys: EventSystem,
 	pressure: PressureSystem,
 ) -> void:
 	_season = season
@@ -30,7 +28,6 @@ func _init(
 	_maintenance = maintenance
 	_issue = issue
 	_progression = progression
-	_event = event_sys
 	_pressure = pressure
 
 
@@ -64,10 +61,8 @@ func run_tick() -> void:
 	# Phase 6: Pressure director
 	_pressure.process_tick()
 
-	# Phase 7: Events
-	# DISABLED for MVP v0.2: events now go through EventManager autoload
-	# which accumulates them during the day and presents via DeskUI in the evening.
-	# _event.process_tick()
+	# Phase 7: Events live in the EventManager autoload: it collects them during the day
+	# and the Desk presents them in the evening.
 
 	# Phase 8: Update playtime
 	GameStateStore.save_meta().playtime_sec = (GameStateStore.save_meta().playtime_sec as float) + 1.0

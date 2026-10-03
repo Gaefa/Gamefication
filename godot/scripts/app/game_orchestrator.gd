@@ -26,7 +26,6 @@ var infrastructure_sys: InfrastructureSystem
 var maintenance_sys: MaintenanceSystem
 var issue_sys: IssueSystem
 var progression_sys: ProgressionSystem
-var event_sys: EventSystem
 var pressure_sys: PressureSystem
 
 
@@ -63,7 +62,6 @@ func build() -> void:
 	maintenance_sys = MaintenanceSystem.new()
 	issue_sys = IssueSystem.new(rng)
 	progression_sys = ProgressionSystem.new(aura_cache, coverage)
-	event_sys = EventSystem.new(rng)
 	pressure_sys = PressureSystem.new()
 
 	# Tick scheduler
@@ -75,7 +73,6 @@ func build() -> void:
 		maintenance_sys,
 		issue_sys,
 		progression_sys,
-		event_sys,
 		pressure_sys,
 	)
 
@@ -90,6 +87,7 @@ func build() -> void:
 func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator") -> void:
 	if seed_val == 0:
 		seed_val = randi()
+	EventBus.run_reset.emit()
 	GameStateStore.reset(profile_id)
 	GameStateStore.save_meta().rng_seed = seed_val
 	build()
@@ -110,6 +108,7 @@ func load_game() -> void:
 	# do NOT regenerate terrain (it is serialized in the save) and do NOT bootstrap
 	# the starter layout. State must already be in GameStateStore (SaveService loads
 	# it before emitting game_loaded), since build() reads world().map_radius.
+	EventBus.run_reset.emit()
 	build()
 	spatial.rebuild_from_state()
 	coverage.invalidate()
@@ -126,7 +125,6 @@ func _build_context() -> Dictionary:
 		"coverage": coverage,
 		"road_graph": road_graph,
 		"interactions": interactions,
-		"event_system": event_sys,
 	}
 
 

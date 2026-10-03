@@ -45,7 +45,6 @@ var _repair_button: Button
 var _bulldoze_button: Button
 const INFO_W := 380.0
 
-var _event_panel: PanelContainer
 var _toast_label: Label
 var _toast_panel: PanelContainer
 var _toast_timer: float = 0.0
@@ -86,7 +85,6 @@ func _ready() -> void:
 	_build_day_clock()
 	_build_build_panel()
 	_build_info_panel()
-	_build_event_panel()
 	_build_toast()
 	_build_start_panel()
 	_build_minimap()
@@ -131,8 +129,6 @@ func _connect_signals() -> void:
 	EventBus.resources_changed.connect(_on_resources_changed)
 	EventBus.toast_requested.connect(_on_toast)
 	EventBus.selection_changed.connect(_on_selection_changed)
-	# DISABLED for MVP v0.2: events now route through EventManager → DeskUI
-	# EventBus.game_event_spawned.connect(_on_event_spawned)
 	EventBus.new_game_started.connect(_on_new_game_started)
 	EventBus.tick_finished.connect(_on_tick_finished)
 	EventBus.coverage_recalculated.connect(_on_coverage_recalculated)
@@ -2629,87 +2625,6 @@ func _format_active_policies() -> String:
 		var def: Dictionary = ContentDB.get_policy_def(policy_id)
 		parts.append("%s=%s" % [category, Localization.content_text(def, "label", policy_id)])
 	return ", ".join(parts)
-
-
-# ===========================================================
-# EVENT POPUP (center)
-# ===========================================================
-
-func _build_event_panel() -> void:
-	_event_panel = PanelContainer.new()
-	_event_panel.set_anchors_preset(PRESET_CENTER)
-	_event_panel.size = Vector2(400, 260)
-	_event_panel.position = Vector2(-200, -130)
-	_event_panel.visible = false
-	_event_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(_event_panel)
-
-
-func _on_event_spawned(event_data: Dictionary) -> void:
-	_event_panel.visible = true
-	for c: Node in _event_panel.get_children():
-		c.queue_free()
-
-	var vbox := VBoxContainer.new()
-	_event_panel.add_child(vbox)
-
-	var title := Label.new()
-	title.text = Localization.content_text(event_data, "title", Localization.t("ui.event.title", "Event"))
-	title.add_theme_font_size_override("font_size", 16)
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vbox.add_child(title)
-
-	var body := Label.new()
-	body.text = Localization.content_text(event_data, "body", "")
-	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.add_theme_font_size_override("font_size", 12)
-	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vbox.add_child(body)
-
-	# Show accept cost
-	var cost_raw: Variant = event_data.get("accept_cost", null)
-	if cost_raw is Dictionary and not (cost_raw as Dictionary).is_empty():
-		var cost_label := Label.new()
-		var cp: Array[String] = []
-		for res_id: String in (cost_raw as Dictionary):
-			var rdef: Dictionary = ContentDB.get_resource_def(res_id)
-			cp.append("%s: %d" % [Localization.content_text(rdef, "label", res_id), int((cost_raw as Dictionary)[res_id] as float)])
-		cost_label.text = Localization.t("ui.meta.cost", "Cost") + ": " + ", ".join(cp)
-		cost_label.add_theme_font_size_override("font_size", 12)
-		cost_label.add_theme_color_override("font_color", Color(1.0, 0.7, 0.4))
-		cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		vbox.add_child(cost_label)
-
-	var btn_row := HBoxContainer.new()
-	vbox.add_child(btn_row)
-
-	var ev_id: String = event_data.get("id", "") as String
-
-	var accept_btn := Button.new()
-	accept_btn.text = Localization.content_text(event_data, "accept_label", Localization.t("ui.event.accept", "Accept"))
-	var accept_cost_raw: Variant = event_data.get("accept_cost", null)
-	if accept_cost_raw is Dictionary and not (accept_cost_raw as Dictionary).is_empty():
-		if not GameStateStore.can_afford(accept_cost_raw as Dictionary):
-			accept_btn.disabled = true
-			accept_btn.tooltip_text = Localization.t("ui.event.not_enough_resources", "Not enough resources")
-	accept_btn.pressed.connect(_resolve_event.bind(ev_id, true))
-	btn_row.add_child(accept_btn)
-
-	var decline_btn := Button.new()
-	decline_btn.text = Localization.content_text(event_data, "decline_label", Localization.t("ui.event.decline", "Decline"))
-	decline_btn.pressed.connect(_resolve_event.bind(ev_id, false))
-	btn_row.add_child(decline_btn)
-
-
-func _resolve_event(ev_id: String, accept: bool) -> void:
-	var main_node: Node = get_tree().current_scene
-	if main_node and main_node.has_method("get_orchestrator"):
-		var orch: GameOrchestrator = main_node.call("get_orchestrator") as GameOrchestrator
-		var cmd := ResolveEventCommand.new(ev_id, accept)
-		orch.command_bus.execute(cmd)
-		if not cmd.success:
-			return
-	_event_panel.visible = false
 
 
 # ===========================================================
