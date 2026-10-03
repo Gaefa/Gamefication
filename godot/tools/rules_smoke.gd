@@ -56,6 +56,14 @@ func _ready() -> void:
 	_place(_free_neighbour(home), "bld_shelter")
 	orch.command_bus.execute(BulldozeCommand.new(home))
 	_check(not GameStateStore.has_building(home), "with a second shelter the first can go")
+	# A damaged shelter has no beds, so it does not count as the second home.
+	_new_game("appointed_administrator")
+	_ticks(5)
+	home = _first("bld_shelter")
+	var broken_home: Vector2i = _free_neighbour(home)
+	GameStateStore.set_building(broken_home, { "type": "bld_shelter", "level": 0, "damaged": true, "has_issue": false })
+	orch.command_bus.execute(BulldozeCommand.new(home))
+	_check(GameStateStore.has_building(home), "a damaged second shelter does not unlock demolishing the last working one")
 
 	# Spare housing standing empty does not make people leave faster in a bad day.
 	_new_game("appointed_administrator")
@@ -125,6 +133,14 @@ func _ready() -> void:
 	_place(by_cistern, "bld_shelter")
 	_check(orch.coverage.is_water_covered(by_cistern) and is_equal_approx(orch.coverage.water_pressure(by_cistern), 1.0), "a shelter at the Cistern has full pressure")
 	_check(PressureSystem.new().call("_water_queue") > 0.0, "…and makes the water queue grow")
+	var cistern_shelter: Dictionary = GameStateStore.get_building(by_cistern)
+	cistern_shelter["damaged"] = true
+	GameStateStore.set_building(by_cistern, cistern_shelter)
+	_check(is_zero_approx(orch.adjacency.value_at(by_cistern, "bld_shelter", "water_queue")), "a damaged shelter at the Cistern adds no queue")
+	var quarry_bld: Dictionary = GameStateStore.get_building(quarry)
+	quarry_bld["damaged"] = true
+	GameStateStore.set_building(quarry, quarry_bld)
+	_check(is_zero_approx(orch.adjacency.value_at(quarry + Vector2i(1, 0), "bld_shelter", "mood")), "a damaged quarry no longer bothers its neighbours")
 
 	# A card's temporary effect raises output for its term and then expires.
 	_new_game("appointed_administrator")

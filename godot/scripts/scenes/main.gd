@@ -27,7 +27,7 @@ func _ready() -> void:
 ## 1280×720 design size, then ×2, ×3…
 func _apply_ui_scale() -> void:
 	var window: Window = get_window()
-	var size: Vector2i = window.size
+	var size: Vector2i = window.size.max(Vector2i.ONE)  # a minimised window may report 0×0
 	@warning_ignore("integer_division")
 	var factor: int = maxi(1, mini(size.x / 1280, size.y / 720))
 	var logical := Vector2(size) / float(factor)

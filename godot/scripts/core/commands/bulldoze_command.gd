@@ -18,12 +18,15 @@ static func is_protected(def: Dictionary) -> bool:
 	return not (def.get("player_buildable", true) as bool) and not def.has("salvage")
 
 
+## A damaged shelter has no beds (ProgressionSystem skips it), so it is not a home here either.
 func _is_last_home(bld: Dictionary, type_id: String) -> bool:
-	if (ContentDB.building_level_data(type_id, bld.get("level", 0) as int).get("population", 0) as int) <= 0:
+	if bld.get("damaged", false) as bool or (ContentDB.building_level_data(type_id, bld.get("level", 0) as int).get("population", 0) as int) <= 0:
 		return false
 	var homes: int = 0
 	for other: Vector2i in GameStateStore.get_all_building_coords():
 		var other_bld: Dictionary = GameStateStore.get_building(other)
+		if other_bld.get("damaged", false) as bool:
+			continue
 		if (ContentDB.building_level_data(other_bld.get("type", "") as String, other_bld.get("level", 0) as int).get("population", 0) as int) > 0:
 			homes += 1
 	return homes <= 1
