@@ -337,6 +337,7 @@ func start_new_run(profile_id: String) -> void:
 	EventBus.logistics_lens_changed.emit(_show_logistics)
 	_refresh_overlay_state()
 	SimulationRunner.start_run()
+	EventBus.run_started.emit(false)
 
 
 func _on_game_loaded(_slot: int) -> void:
@@ -358,6 +359,7 @@ func _on_game_loaded(_slot: int) -> void:
 	if overlay_layer and overlay_layer.has_method("set_hex_grid"):
 		overlay_layer.call("set_hex_grid", _orchestrator.hex_grid)
 	SimulationRunner.start_run(GameStateStore.climate().get("day_timer", -1.0) as float)
+	EventBus.run_started.emit(true)
 	EventBus.build_mode_changed.emit("")
 	EventBus.selection_changed.emit(_selected_coord)
 	EventBus.ranges_changed.emit(_show_ranges)

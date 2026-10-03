@@ -37,6 +37,7 @@ WaterPanel="*res://scripts/autoload/water_panel.gd"
 OnboardingManager="*res://scripts/autoload/onboarding_manager.gd"
 TutorialManager="*res://scripts/autoload/tutorial_manager.gd"
 SaveService="*res://scripts/autoload/save_service.gd"
+RunLog="*res://scripts/autoload/run_log.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
 Localization="*res://scripts/autoload/localization.gd"
 

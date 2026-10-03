@@ -56,6 +56,9 @@ signal new_game_started()
 ## rebuilt. Autoloads drop their per-run runtime state here (queues, timers), so nothing
 ## leaks from the throwaway menu map or the previous run.
 signal run_reset()
+## The player is now really playing: a new run left the start menu, or a save was continued.
+## (new_game_started also fires for the throwaway map behind the menu at boot.)
+signal run_started(continued: bool)
 
 # --- UI hints ---
 signal toast_requested(text: String, duration: float)
