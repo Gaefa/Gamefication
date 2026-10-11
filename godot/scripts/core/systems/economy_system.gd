@@ -187,8 +187,11 @@ static func daily_consumption(res_id: String) -> float:
 
 ## How many days the reserve lasts at today's draw; INF when nothing draws it.
 static func days_of(res_id: String) -> float:
+	var stock: float = GameStateStore.get_resource(res_id)
+	if stock <= 0.0:
+		return 0.0  # an empty store is empty whoever draws on it
 	var per_day: float = daily_consumption(res_id)
-	return INF if per_day <= 0.0 else GameStateStore.get_resource(res_id) / per_day
+	return INF if per_day <= 0.0 else stock / per_day
 
 
 ## Saved day marker prevents double spoilage on reload. Charge at the start of each

@@ -34,8 +34,8 @@
     "tags": ["patron", "letter", "directorate"],
     "title": "Директорат — предписание о назначении",
     "title_en": "Directorate — Order of Appointment",
-    "body": "Гражданский Директорат. Управление зон восстановления.\nПредписание № 114/Р\n\nЗона восстановления «Ржавая Нора» передаётся в ваше управление с сегодняшнего дня.\n\nТребования к началу Сезона Пыли (через 18 дней): запас воды и еды на сезон, учёт населения (не менее двенадцати жителей к концу срока), отсутствие беспорядков.\nОтчётность — по установленной форме. Плановые проверки — на 20-й и 36-й день, проводит комиссар Директората. Срок управления — 40 дней; с 30-го дня — Сезон Жары.\n\nКанцелярия Директората",
-    "body_en": "Civic Directorate. Office of Recovery Zones.\nOrder No. 114/R\n\nThe Rust Pit recovery zone is placed under your administration as of today.\n\nRequirements by the start of the Dust season (18 days from now): a seasonal reserve of water and food, a population register (no fewer than twelve residents by the end of the term), no disorder.\nReports are filed in the standard form. Scheduled inspections are on days 20 and 36 and are carried out by a Directorate commissar. The term of administration is 40 days; the Heat season begins on day 30.\n\nDirectorate Chancellery",
+    "body": "Гражданский Директорат. Управление зон восстановления.\nПредписание № 114/Р\n\nЗона восстановления «Ржавая Нора» передаётся в ваше управление с сегодняшнего дня.\n\nТребования к началу Сезона Пыли (через 18 дней): запас воды и еды на сезон, учёт населения (не менее двенадцати жителей к концу срока), отсутствие беспорядков.\nОтчётность — по установленной форме. Плановые проверки — на 20-й и 36-й день, проводит комиссар Директората; проверка засчитывается только при выполнении всех норм. Срок управления — 40 дней; с 30-го дня — Сезон Жары.\n\nКанцелярия Директората",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\nOrder No. 114/R\n\nThe Rust Pit recovery zone is placed under your administration as of today.\n\nRequirements by the start of the Dust season (18 days from now): a seasonal reserve of water and food, a population register (no fewer than twelve residents by the end of the term), no disorder.\nReports are filed in the standard form. Scheduled inspections are on days 20 and 36 and are carried out by a Directorate commissar; an inspection is credited only when every target is met. The term of administration is 40 days; the Heat season begins on day 30.\n\nDirectorate Chancellery",
     "options": [
       {
         "text": "Принять предписание",
@@ -1456,8 +1456,8 @@
     "tags": ["letter"],
     "title": "Письмо Лиги — повторный аудит",
     "title_en": "League Letter — Second Audit",
-    "body": "Администратору Ржавой Норы.\n\nПроверка — на 36-й день. Нормы прежние: вода не ниже 60, еда не ниже 30, счастье не ниже 40. Проверим также потери еды: испорчено должно быть меньше четверти запаса, с которым район вошёл в Жару.\n\nПервый результат остаётся в деле. Повторная проверка влияет на доверие в полтора раза сильнее.\n\nИнспектор Койл",
-    "body_en": "To the Administrator of the Rust Pit.\n\nInspection is on day 36. The targets remain: water at least 60, food at least 30, mood at least 40. We will also check food waste: spoilage must be below a quarter of the reserve held when the Heat began.\n\nThe first result stays on file. This inspection changes trust by one and a half times as much.\n\nInspector Coyle",
+    "body": "Администратору Ржавой Норы.\n\nПроверка — на 36-й день. Нормы те же, что в вашем списке целей: вода и еда не меньше дня расхода, счастье не ниже 40, жителей не меньше двенадцати. Проверим также потери еды: испорчено должно быть меньше четверти запаса, с которым район вошёл в Жару.\n\nПервый результат остаётся в деле. Повторная проверка влияет на доверие в полтора раза сильнее.\n\nИнспектор Койл",
+    "body_en": "To the Administrator of the Rust Pit.\n\nInspection is on day 36. The targets are the ones in your goals list: water and food of at least a day's draw, mood at least 40, at least twelve residents. We will also check food waste: spoilage must be below a quarter of the reserve held when the Heat began.\n\nThe first result stays on file. This inspection changes trust by one and a half times as much.\n\nInspector Coyle",
     "options": [
       {
         "text": "Подготовить ведомости",
@@ -1517,8 +1517,8 @@
     "tags": ["letter"],
     "title": "Письмо Директората — повторный аудит",
     "title_en": "Directorate Letter — Second Audit",
-    "body": "Администратору Ржавой Норы.\n\nПроверка — на 36-й день. Нормы прежние: вода не ниже 60, еда не ниже 30, счастье не ниже 40. Проверим также потери еды: испорчено должно быть меньше четверти запаса, с которым район вошёл в Жару.\n\nПервый результат остаётся в деле. Повторная проверка влияет на доверие в полтора раза сильнее.\n\nКанцелярия Директората",
-    "body_en": "To the Administrator of the Rust Pit.\n\nInspection is on day 36. The targets remain: water at least 60, food at least 30, mood at least 40. We will also check food waste: spoilage must be below a quarter of the reserve held when the Heat began.\n\nThe first result stays on file. This inspection changes trust by one and a half times as much.\n\nDirectorate Chancellery",
+    "body": "Администратору Ржавой Норы.\n\nПроверка — на 36-й день. Нормы те же, что в вашем списке целей: вода и еда не меньше дня расхода, счастье не ниже 40, жителей не меньше двенадцати. Проверим также потери еды: испорчено должно быть меньше четверти запаса, с которым район вошёл в Жару.\n\nПервый результат остаётся в деле. Повторная проверка влияет на доверие в полтора раза сильнее.\n\nКанцелярия Директората",
+    "body_en": "To the Administrator of the Rust Pit.\n\nInspection is on day 36. The targets are the ones in your goals list: water and food of at least a day's draw, mood at least 40, at least twelve residents. We will also check food waste: spoilage must be below a quarter of the reserve held when the Heat began.\n\nThe first result stays on file. This inspection changes trust by one and a half times as much.\n\nDirectorate Chancellery",
     "options": [
       {
         "text": "Подготовить ведомости",

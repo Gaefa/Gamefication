@@ -83,6 +83,7 @@ func _update_population() -> void:
 	var total: int = int(round(residents))
 	var prev: int = pop_state.total as int
 	pop_state.total = total
+	pop_state["peak"] = maxi(pop_state.get("peak", 0) as int, total)  # the audit's "lost a quarter" measures against this
 	if total != prev:
 		EventBus.population_changed.emit(total)
 
