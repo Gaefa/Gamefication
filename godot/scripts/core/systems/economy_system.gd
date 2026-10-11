@@ -42,12 +42,8 @@ func process_tick() -> void:
 			condition_efficiency *= 0.3
 
 		# Housing earns and eats by the people who actually live there, not by empty beds.
-		# (Before the first census, capacity is 0: treat the housing as full.)
 		if (ldata.get("population", 0) as int) > 0:
-			var pop_state: Dictionary = GameStateStore.population()
-			var capacity: float = float(pop_state.get("capacity", 0))
-			if capacity > 0.0:
-				input_efficiency *= clampf(float(pop_state.get("total", 0)) / capacity, 0.0, 1.0)
+			input_efficiency *= housing_occupancy()
 
 		# Get multipliers
 		var mults: Dictionary = _interactions.get_total_multipliers(coord)
@@ -172,16 +168,29 @@ func _production_bonus_from_effects(effects: Dictionary, res_id: String) -> floa
 	return prod_mult.get(res_id, 0.0) as float
 
 
+## Lived-in share of the housing; 1.0 before the first census, when capacity is still 0.
+static func housing_occupancy() -> float:
+	var pop_state: Dictionary = GameStateStore.population()
+	var capacity: float = float(pop_state.get("capacity", 0))
+	if capacity <= 0.0:
+		return 1.0
+	return clampf(float(pop_state.get("total", 0)) / capacity, 0.0, 1.0)
+
+
 ## What the district draws per day at today's season rates; damaged buildings draw nothing.
 static func daily_consumption(res_id: String) -> float:
 	var season_mods: Dictionary = GameStateStore.climate().get("modifiers", {})
+	var occupancy: float = housing_occupancy()
 	var per_tick: float = 0.0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if bld.get("damaged", false) as bool:
 			continue
-		var consumes: Dictionary = ContentDB.building_level_data(bld.get("type", "") as String, bld.get("level", 0) as int).get("consumes", {})
-		per_tick += consumes.get(res_id, 0.0) as float
+		var ldata: Dictionary = ContentDB.building_level_data(bld.get("type", "") as String, bld.get("level", 0) as int)
+		var consumes: Dictionary = ldata.get("consumes", {})
+		# Empty beds draw nothing, in the ledger as in the simulation.
+		var share: float = occupancy if (ldata.get("population", 0) as int) > 0 else 1.0
+		per_tick += (consumes.get(res_id, 0.0) as float) * share
 	return per_tick * _season_consumption_mult(res_id, season_mods) * float(SimulationRunner.TICKS_PER_DAY)
 
 

@@ -104,7 +104,9 @@ func _evaluate() -> void:
 			_trigger(_patron_win_ending(protector_side))
 		elif has_patron:
 			# The term is over and the district is not what the mandate asked for: no extension.
-			_trigger("ending.lose.not_renewed")
+			# Two stories: a district that never grew, and one that grew and then bled people.
+			var bled: bool = _peak_pop >= WIN_PEOPLE and pop < int(float(_peak_pop) * WIN_PEAK_KEEP)
+			_trigger("ending.lose.not_renewed_losses" if bled else "ending.lose.not_renewed")
 		# A founder answers to no one: a thin district simply plays on.
 
 

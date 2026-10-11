@@ -46,12 +46,13 @@ func _run_audit() -> void:
 	var spoilage_ok: bool = food_preserved()
 	if second:
 		score += 1 if spoilage_ok else 0
-	# The Directorate pays better for a clean sheet and forgives nothing short of it.
+	# The Directorate pays better for a clean sheet and forgives nothing short of it:
+	# a missed norm is a failed inspection and costs trust, where the League still nods.
 	var directorate: bool = (mandate.get("patron_id", "") as String) == "civic_directorate"
 	match score - (1 if second else 0):
 		3: trust_delta = 15 if directorate else 12
-		2: trust_delta = 4 if directorate else 5
-		1: trust_delta = -8 if directorate else -6
+		2: trust_delta = -8 if directorate else 5
+		1: trust_delta = -12 if directorate else -6
 		_: trust_delta = -20 if directorate else -15
 	# The patron measures against the neighbour (RivalManager): a clear gap moves trust too.
 	var gap: float = RivalManager.player_score() - RivalManager.rival_score()

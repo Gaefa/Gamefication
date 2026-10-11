@@ -28,7 +28,7 @@ The stressor is climate. In 18 days the Dust season arrives: water drains faster
 
 ## Goal
 
-- **Win:** reach day 40 with a city that hasn't emptied (resident mood at 40 or higher). The flavor of the ending depends on how you ruled: loyal administrator, city protector, pragmatist, or future autonomist.
+- **Win:** reach day 40 with a city that hasn't emptied (resident mood at 40 or higher, at least 12 residents, and no more than a quarter of the people lost). The flavor of the ending depends on how you ruled: loyal administrator, city protector, pragmatist, or future autonomist.
 - **Lose:** League trust drops to 0 — recall of the mandate; city support drops to 0 — riot; residents leave — exodus.
 
 The ending screen explains why things ended the way they did: the two masters, the Cistern, what broke first, how many people stayed.
