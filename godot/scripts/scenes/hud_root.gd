@@ -200,6 +200,7 @@ func _build_resource_bar() -> void:
 	var water_box: HBoxContainer = _chip(bottom)
 	_chip_icon(water_box, "water")
 	_utility_label = _chip_text(water_box, 14, Color(0.65, 0.85, 1.0))
+	_utility_label.custom_minimum_size.x = 168.0  # the text changes state; the chips to its right must not jump
 	_utility_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_utility_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_utility_label.gui_input.connect(_on_utility_gui_input)
@@ -473,6 +474,14 @@ func _goal_row(parent: Control) -> Dictionary:
 	return { "row": row, "mark": mark, "name": title, "value": value }
 
 
+## "2.4 дн. / 1 дн." for the reserve goals; an endless reserve shows as a dash.
+func _days_text(days: float) -> String:
+	var norm: String = Localization.ru_en("норма %s", "need %s") % _num(MandateManager.RESERVE_DAYS_OK)
+	if is_inf(days):
+		return "∞ (%s)" % norm
+	return "%.1f %s (%s)" % [days, Localization.ru_en("дн.", "days"), norm]
+
+
 ## One line of the goals list. `done` picks the mark; a heading row has no mark and no value.
 func _set_goal(id: String, shown: bool, done: bool = false, title: String = "", value: String = "", heading: bool = false) -> void:
 	var row: Dictionary = _goal_rows[id] as Dictionary
@@ -522,12 +531,17 @@ func _update_goals() -> void:
 	_set_goal("audit", has_patron, audit_done,
 		Localization.ru_en("Аудиты пройдены", "Audits done") if audit_done else Localization.ru_en("Аудит · день %d", "Audit · day %d") % MandateManager.next_audit_day(),
 		"", not audit_done)
-	var water: float = GameStateStore.get_resource("res_water_stockpile")
-	var food: float = GameStateStore.get_resource("res_food")
+	var water_days: float = EconomySystem.days_of("res_water_stockpile")
+	var food_days: float = EconomySystem.days_of("res_food")
+	var second: bool = (mandate.get("audits_done", 0) as int) >= 1
+	var pop: int = GameStateStore.population().get("total", 0) as int
+	_set_goal("water", checking, water_days >= MandateManager.RESERVE_DAYS_OK, Localization.ru_en("Вода", "Water"), _days_text(water_days))
+	_set_goal("food", checking, food_days >= MandateManager.RESERVE_DAYS_OK, Localization.ru_en("Еда", "Food"), _days_text(food_days))
 	var mood: float = GameStateStore.population().get("happiness", 50.0) as float
-	_set_goal("water", checking, water >= MandateManager.WATER_OK, Localization.ru_en("Вода", "Water"), "%d / %d" % [int(water), int(MandateManager.WATER_OK)])
-	_set_goal("food", checking, food >= MandateManager.FOOD_OK, Localization.ru_en("Еда", "Food"), "%d / %d" % [int(food), int(MandateManager.FOOD_OK)])
-	_set_goal("mood", checking, mood >= MandateManager.HAPPINESS_OK, Localization.ru_en("Счастье", "Mood"), "%d%% / %d%%" % [int(mood), int(MandateManager.HAPPINESS_OK)])
+	var people_value: String = "%d / %d" % [pop, MandateManager.PEOPLE_MIN_SECOND if second else MandateManager.PEOPLE_MIN]
+	if mood < MandateManager.HAPPINESS_OK:
+		people_value += " · %s %d%%" % [Localization.ru_en("счастье", "mood"), int(mood)]
+	_set_goal("mood", checking, MandateManager.people_staying(second), Localization.ru_en("Жители", "Residents"), people_value)
 
 	var climate: Dictionary = GameStateStore.climate()
 	var incoming: float = climate.get("heat_food_start", 0.0) as float
@@ -582,7 +596,7 @@ func _update_resource_bar() -> void:
 	for res_id: String in _res_chips:
 		var chip: Dictionary = _res_chips[res_id] as Dictionary
 		var val: float = GameStateStore.get_resource(res_id)
-		var per_day: float = (production.get(res_id, 0.0) as float) * float(WaterPanel.TICKS_PER_DAY)
+		var per_day: float = (production.get(res_id, 0.0) as float) * float(SimulationRunner.TICKS_PER_DAY)
 		var value_label: Label = chip["value"] as Label
 		value_label.text = str(int(val))
 		value_label.add_theme_color_override("font_color", Color(0.95, 0.4, 0.35) if val <= 0.0 else Color(0.97, 0.95, 0.88))
@@ -626,13 +640,23 @@ func _update_resource_bar() -> void:
 	# The chip answers "when does the water run out at today's balance": while the reserve
 	# grows it says so; once it drains it counts the days left.
 	var reserve: float = _resource_value("res_water_stockpile", "water_res")
-	var water_per_day: float = (production.get("res_water_stockpile", 0.0) as float) * float(WaterPanel.TICKS_PER_DAY)
+	var water_per_day: float = (production.get("res_water_stockpile", 0.0) as float) * float(SimulationRunner.TICKS_PER_DAY)
 	var days_color := Color(0.65, 0.85, 1.0)
-	if water_per_day >= -0.5:
-		_utility_label.text = Localization.ru_en("Вода: запас держится", "Water: reserve holds")
-		if reserve <= 0.0:
-			_utility_label.text = Localization.ru_en("Воды нет", "No water")
-			days_color = Color(0.95, 0.35, 0.3)
+	var share: float = reserve / maxf(GameStateStore.get_cap("res_water_stockpile"), 1.0)
+	var heat: bool = (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("heat_stress", false) as bool
+	if reserve <= 0.0:
+		_utility_label.text = Localization.ru_en("Воды нет", "No water")
+		days_color = UiStyle.BAD
+	elif water_per_day >= 0.5:
+		_utility_label.text = Localization.ru_en("Вода: запас растёт", "Water: reserve growing")
+	elif water_per_day >= -0.5 and (share >= 0.3 or not heat):
+		# Flat balance: fine with a reserve behind it; outside the Heat a low tank is only a figure.
+		_utility_label.text = Localization.ru_en("Вода: запас держится", "Water: reserve holds") if share >= 0.3 \
+			else Localization.ru_en("Вода: запас %d%%", "Water: reserve %d%%") % int(share * 100.0)
+	elif water_per_day >= -0.5:
+		# The Heat: living off the pumps with a near-empty tank costs mood, and one failure is a dry day.
+		_utility_label.text = Localization.ru_en("Цистерна почти пуста", "Cistern nearly empty")
+		days_color = UiStyle.WARN
 	else:
 		var days: float = reserve / absf(water_per_day)
 		_utility_label.text = "%s %.1f %s" % [
@@ -1196,15 +1220,16 @@ func _res_bb(res_id: String, amount: String) -> String:
 	return "%s %s" % [amount, Localization.content_text(ContentDB.get_resource_def(res_id), "label", res_id)]
 
 
-## What a building does, with resource icons: income green, upkeep amber.
+## What a building does per day, with resource icons: income green, upkeep amber.
 func _effects_bb(ldata: Dictionary) -> String:
 	var parts: Array[String] = []
+	var per_day: float = float(SimulationRunner.TICKS_PER_DAY)
 	var produces: Dictionary = ldata.get("produces", {})
 	for r: String in produces:
-		parts.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD), _res_bb(r, "+" + _num(produces[r] as float))])
+		parts.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD), _res_bb(r, "+" + _num((produces[r] as float) * per_day))])
 	var consumes: Dictionary = ldata.get("consumes", {})
 	for r: String in consumes:
-		parts.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), _res_bb(r, "−" + _num(consumes[r] as float))])
+		parts.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), _res_bb(r, "−" + _num((consumes[r] as float) * per_day))])
 	var bld_pop: int = ldata.get("population", 0) as int
 	if bld_pop > 0:
 		parts.append("%s\u00a0+%d" % [_icon_bb("people"), bld_pop])

@@ -327,28 +327,28 @@
     "sprites_by_level": ["res://assets/buildings/tiers/field_strip_t1_hex.png", "res://assets/buildings/tiers/field_strip_t2_hex.png", "res://assets/buildings/tiers/field_strip_t3_hex.png"],
     "cost_build": {"res_wood": 10},
     "outputs": {"res_food": 3},
-    "consumes": {"res_water_stockpile": 1},
-    "cycle_time": 20.0,
+    "consumes": {"res_water_stockpile": 0.5},
+    "cycle_time": 10.0,
     "levels": [
       {
         "stage": "Ручная грядка",
         "stage_en": "Hand-tilled plot",
         "produces": {"res_food": 3},
-        "consumes": {"res_water_stockpile": 1}
+        "consumes": {"res_water_stockpile": 0.5}
       },
       {
         "stage": "Орошенная грядка",
         "stage_en": "Irrigated plot",
         "cost": {"res_wood": 15, "res_stone": 8},
         "produces": {"res_food": 5},
-        "consumes": {"res_water_stockpile": 1.5}
+        "consumes": {"res_water_stockpile": 0.75}
       },
       {
         "stage": "Пылевая ферма",
         "stage_en": "Dust farm",
         "cost": {"res_wood": 25, "res_stone": 15, "res_tools": 1},
         "produces": {"res_food": 8},
-        "consumes": {"res_water_stockpile": 2.5}
+        "consumes": {"res_water_stockpile": 1.25}
       }
     ],
     "tags": ["food_source", "needs_road"]

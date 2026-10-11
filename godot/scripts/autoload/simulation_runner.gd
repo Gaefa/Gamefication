@@ -21,7 +21,8 @@ var tick_callback: Callable = Callable()
 # --- Фазовая система ---
 enum Phase { DAY, EVENING, MORNING }
 var current_phase: Phase = Phase.DAY
-var day_duration: float = 300.0  # секунд реального времени на один игровой день (5 мин)
+const TICKS_PER_DAY := 300  # game ticks in a day; HUD trends and reserve-in-days use it
+var day_duration: float = float(TICKS_PER_DAY) * TICK_INTERVAL  # секунд реального времени на один игровой день (5 мин)
 var day_timer: float = 300.0
 ## 1-based game day counter. Advanced at the start of each new day.
 ## SeasonSystem reads this to know when a day has elapsed.

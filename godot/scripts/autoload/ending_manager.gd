@@ -9,6 +9,8 @@ extends Node
 
 # --- Tuning thresholds ---
 const WIN_HAPPINESS := 40.0         # ...and the city is actually stable, not in ruins
+const WIN_PEOPLE := 12              # ...and it is a district, not a hut by a pump
+const WIN_PEAK_KEEP := 0.75         # ...that kept most of the people it had
 const EXODUS_PEAK_MIN := 12         # only call it an exodus if the city was sizeable
 const EXODUS_FRACTION := 0.4        # ...and shrank to ≤40% of its peak
 
@@ -89,15 +91,23 @@ func _evaluate() -> void:
 	elif _peak_pop >= 4 and pop <= 0:
 		# Total desertion — even a small district emptying out is an exodus.
 		_trigger("ending.lose.exodus")
-	elif day >= ContentDB.get_win_day() and happiness >= WIN_HAPPINESS:
-		# Survived to the end AND the city is stable — a real win, not a hollow one.
-		# A devastated city (low happiness) simply doesn't win yet; it must recover.
+	elif day >= ContentDB.get_win_day():
+		# Survived to the end AND the city is stable and populated — a real win, not a hollow one.
 		# Which win shade depends on how the player governed (style flags), with the
 		# trust-vs-support balance as a fallback when no strong style emerged.
-		var style: String = GameStateStore.dominant_style("")
-		var protector_side: bool = style == "protector" or style == "autonomist" \
-			or (style == "" and support > trust)
-		_trigger(_patron_win_ending(protector_side))
+		var settled: bool = happiness >= WIN_HAPPINESS and pop >= WIN_PEOPLE \
+			and pop >= int(float(_peak_pop) * WIN_PEAK_KEEP)
+		if settled:
+			var style: String = GameStateStore.dominant_style("")
+			var protector_side: bool = style == "protector" or style == "autonomist" \
+				or (style == "" and support > trust)
+			_trigger(_patron_win_ending(protector_side))
+		elif has_patron:
+			# The term is over and the district is not what the mandate asked for: no extension.
+			# Two stories: a district that never grew, and one that grew and then bled people.
+			var bled: bool = _peak_pop >= WIN_PEOPLE and pop < int(float(_peak_pop) * WIN_PEAK_KEEP)
+			_trigger("ending.lose.not_renewed_losses" if bled else "ending.lose.not_renewed")
+		# A founder answers to no one: a thin district simply plays on.
 
 
 func _patron_win_ending(protector_side: bool) -> String:

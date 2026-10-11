@@ -33,7 +33,7 @@
       "production_mult": {
         "water_res": 0.1
       },
-      "pressure_delta": -2
+      "pressure_delta": -10
     },
     "label_key": "technology.water_surveying.label",
     "description_key": "technology.water_surveying.description"
@@ -52,7 +52,7 @@
       "basic_logistics"
     ],
     "effects": {
-      "pressure_delta": -4,
+      "pressure_delta": -15,
       "happiness_add": 2
     },
     "label_key": "technology.civic_planning.label",

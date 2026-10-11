@@ -126,6 +126,7 @@ func _normalize_building_defs() -> void:
 						level_data["consumes"] = _with_resource_aliases(level_data.get("consumes", {}) as Dictionary)
 					normalized_levels.append(level_data)
 			def["levels"] = normalized_levels
+		_scale_flows_per_cycle(def)
 
 
 func _normalize_start_profiles() -> void:
@@ -175,6 +176,22 @@ func _level_from_top_level_def(def: Dictionary) -> Dictionary:
 	if def.has("water_radius"):
 		level_data["synergy"] = {"water_radius": def["water_radius"]}
 	return level_data
+
+
+## Content lists what a building makes and eats per production cycle (cycle_time ticks);
+## the simulation applies flows every tick, so they are divided once here.
+func _scale_flows_per_cycle(def: Dictionary) -> void:
+	var cycle: float = def.get("cycle_time", 0.0) as float
+	if cycle <= 1.0:
+		return
+	var flow_sets: Array = [def]
+	flow_sets.append_array(def.get("levels", []) as Array)
+	for holder_var: Variant in flow_sets:
+		var holder: Dictionary = holder_var as Dictionary
+		for key: String in ["produces", "consumes"]:
+			var flows: Dictionary = holder.get(key, {}) as Dictionary
+			for res_id: String in flows:
+				flows[res_id] = (flows[res_id] as float) / cycle
 
 
 func _derive_building_category(type_id: String, def: Dictionary) -> String:

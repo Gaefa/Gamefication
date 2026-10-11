@@ -32,6 +32,7 @@ func _ready() -> void:
 		_ending = "%s (%s)" % [eid, kind])
 	EventBus.evening_started.connect(func(events: Array) -> void:
 		_evenings += 1
+		_repair_issues()  # a player presses R on the "!" pins before the Desk
 		print("  вечер, день %d: %d карт." % [SimulationRunner.day_count, events.size()]))
 	EventBus.critical_event_started.connect(func(data: Dictionary) -> void:
 		print("  СРОЧНО, день %d: %s" % [SimulationRunner.day_count, data.get("runtime_id", "?") as String]))
@@ -47,7 +48,15 @@ func _attach() -> void:
 	seed(12345)  # compare speed runs against the same city and issue sequence
 	_main.get_node("HUDCanvas/HUD").call("_start_new_run", "appointed_administrator")
 	if _prepared:
+		# The prepared district of balance_sim's stand B: roads, two more barracks, a second
+		# plot, a generator, and the water infrastructure at L2. Twelve people, a win path.
 		var orch: GameOrchestrator = _main.call("get_orchestrator") as GameOrchestrator
+		for coord: Vector2i in [Vector2i(-2, -1), Vector2i(-1, -2), Vector2i(0, -2), Vector2i(1, -2)]:
+			GameStateStore.set_building(coord, {"type": "bld_road", "level": 0})
+		for coord: Vector2i in [Vector2i(-2, 0), Vector2i(-1, 2)]:
+			GameStateStore.set_building(coord, {"type": "bld_shelter", "level": 0, "damaged": false, "has_issue": false})
+		GameStateStore.set_building(Vector2i(-1, -3), {"type": "bld_field_strip", "level": 0, "damaged": false, "has_issue": false})
+		GameStateStore.set_building(Vector2i(1, -3), {"type": "bld_generator", "level": 0, "damaged": false, "has_issue": false})
 		for coord: Vector2i in GameStateStore.get_all_building_coords():
 			var bld: Dictionary = GameStateStore.get_building(coord)
 			if bld.get("type", "") in ["bld_well_pump", "bld_main_cistern"]:
@@ -116,3 +125,13 @@ func _finish(result: String) -> void:
 	print("соперник: Восс %.0f · вы %.0f; грант решён: %s" % [RivalManager.rival_score(), RivalManager.player_score(), str(GameStateStore.rival().get("grant_decided", false))])
 	set_physics_process(false)
 	get_tree().quit()
+
+
+## What any player does once a day: repair whatever broke, as long as the treasury allows.
+func _repair_issues() -> void:
+	var orch: GameOrchestrator = _main.call("get_orchestrator") as GameOrchestrator
+	if orch == null:
+		return
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		if GameStateStore.get_building(coord).get("has_issue", false) as bool:
+			orch.command_bus.execute(RepairBuildingCommand.new(coord))
