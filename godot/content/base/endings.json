@@ -71,6 +71,14 @@
       "title_en": "Civil Riot",
       "body": "Жители сами пришли к посту администрации. Вода слишком долго шла по часам, заявления оставались без ответа, а на недовольство вы отвечали запретами.\n\nТребований уже не выдвигали. Печать и мандат вас не защитили.",
       "body_en": "The residents came to the administration post themselves. The water had run by the hour for too long, petitions had gone unanswered, and you had met discontent with bans.\n\nThey were no longer making demands. The seal and the mandate did not protect you."
+    },
+    {
+      "id": "ending.lose.not_renewed",
+      "kind": "lose",
+      "title": "Мандат не продлён",
+      "title_en": "Mandate Not Renewed",
+      "body": "Срок вышел. Район пережил сезоны, но остался тем же, чем был в день назначения: несколько бараков у одного насоса. Покровителю нужен был район, а не пост с цистерной.\n\nПродление не подписано. Печать и ключи вы сдали тому, кто приехал следующим.",
+      "body_en": "The term is over. The district outlived the seasons but stayed what it was on the day of your appointment: a few barracks by a single pump. Your patron needed a district, not a post with a cistern.\n\nThe extension was not signed. You handed the seal and the keys to whoever came next."
     }
   ]
 }

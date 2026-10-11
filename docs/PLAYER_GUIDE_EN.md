@@ -4,7 +4,7 @@
 
 Version 0.1.8 — "Rust Pit" test build (October 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
-Window: days 1–18. Dust: 19–29. Heat: 30–38. Window returns on day 39; win on day 40 with mood ≥40. Audits: days 20 and 36. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, an empty cistern 15; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
+Window: days 1–18. Dust: 19–29. Heat: 30–38. Window returns on day 39; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
 
 ## How to run
@@ -41,7 +41,7 @@ The ending screen explains why things ended the way they did: the two masters, t
 
 ## Goals and panels
 
-Under the minimap on the left is your list of **goals**: days until the next season, the audit targets with check marks (water, food, mood), the grant contest with the neighboring district, and the day you must reach. Below it are the panel buttons: Water (Q), Season (E), Log (T), Diary (Y), Help (H). Coloured badges over buildings show what each is for: a drop for water, a bolt for power, a crate for storage, a sprout for food.
+Under the minimap on the left is your list of **goals**: days until the next season, the audit targets with check marks (water and food in days of draw, people staying), the grant contest with the neighboring district, and the day you must reach. Below it are the panel buttons: Water (Q), Season (E), Log (T), Diary (Y), Help (H). Coloured badges over buildings show what each is for: a drop for water, a bolt for power, a crate for storage, a sprout for food.
 
 ## What you see at the top
 
@@ -115,7 +115,7 @@ Saving: autosave to a single slot; "Continue" in the main menu.
 ## Tips for your first run
 
 1. First 5 minutes: road → second pump → shelter inside the water zone. The game walks you through this step by step.
-2. Watch "water for N days." By day 18 you need 10+ days of reserve and two pumps.
+2. Watch "water for N days." By day 18 you need a full cistern, a second pump and a generator: solar panels weaken in the Dust. Figures on building cards are per day.
 3. Don't say "yes" to the League on everything — city support will drain away. And vice versa.
 4. An icon over a building — click it. The game explains, but it won't fix things for you.
 5. Lost? Read "SUMMARY" on the ending screen and try a different style: runs are short.

@@ -167,6 +167,7 @@ func _ready() -> void:
 		longest_gap = maxi(longest_gap, quiet)
 	_check(longest_gap <= 2, "no more than two quiet evenings in a row (longest: %d)" % longest_gap)
 
+	_economy_rules()
 	_heat_rules()
 
 	# 4/5. Content references resolve.
@@ -273,6 +274,8 @@ func _heat_rules() -> void:
 	_new_game("appointed_administrator")
 	GameStateStore.mandate()["patron_trust"] = 20.0
 	GameStateStore.rival()["score"] = 0.0
+	GameStateStore.population()["total"] = 12  # the people norm counts heads
+	GameStateStore.population()["peak"] = 12
 	GameStateStore.climate()["total_day"] = 20
 	MandateManager.call("_on_tick_finished", 0)
 	MandateManager.call("_on_tick_finished", 0)
@@ -293,3 +296,67 @@ func _heat_rules() -> void:
 	SimulationRunner.day_count = 39
 	orch.season_sys.process_tick()
 	_check(GameStateStore.climate()["season_id"] == "season_window", "Window returns on day 39")
+
+
+func _economy_rules() -> void:
+	# Flows in content are per cycle: a barrack (cycle 10) draws 0.1 water a tick, 30 a day.
+	_new_game("appointed_administrator")
+	var shelter: Dictionary = ContentDB.building_level_data("bld_shelter", 0)
+	_check(is_equal_approx(shelter.get("consumes", {}).get("res_water_stockpile", 0.0), 0.1), "a barrack draws 0.1 water per tick (1 per 10-tick cycle)")
+	_check(is_equal_approx(ContentDB.building_level_data("bld_well_pump", 0).get("produces", {}).get("res_water_stockpile", 0.0), 5.0 / 15.0), "a pump gives 5 water per 15-tick cycle")
+	# The start layout: one barrack and one plot, 0.15 a tick, 45 a day.
+	_check(is_equal_approx(EconomySystem.daily_consumption("res_water_stockpile"), 45.0), "the starting district draws 45 water a day (%.1f)" % EconomySystem.daily_consumption("res_water_stockpile"))
+	GameStateStore.set_resource("res_water_stockpile", 90.0)
+	_check(is_equal_approx(EconomySystem.days_of("res_water_stockpile"), 2.0), "90 water is two days of that draw")
+
+	# Housing earns by occupancy: half the beds empty, half the income.
+	_ticks(2)
+	var upkeep: float = orch.economy_sys.call("_maintenance_cost") as float
+	var full_money: float = (GameStateStore.economy().production.get("res_money", 0.0) as float) + upkeep
+	GameStateStore.population()["total"] = 2
+	orch.economy_sys.process_tick()
+	upkeep = orch.economy_sys.call("_maintenance_cost") as float  # two fewer heads, a little less upkeep
+	var half_money: float = (GameStateStore.economy().production.get("res_money", 0.0) as float) + upkeep
+	_check(full_money > 0.0 and is_equal_approx(half_money / full_money, 0.5), "a half-empty barrack earns half (%.3f vs %.3f per tick)" % [full_money, half_money])
+
+	# The people norm counts heads, not only mood.
+	var pop_state: Dictionary = GameStateStore.population()
+	pop_state["happiness"] = 60.0
+	pop_state["total"] = 4
+	pop_state["peak"] = 4
+	_check(not MandateManager.people_staying(false), "four people do not pass the people norm")
+	pop_state["total"] = 8
+	pop_state["peak"] = 8
+	_check(MandateManager.people_staying(false), "eight people with steady mood do")
+	pop_state["peak"] = 12
+	_check(not MandateManager.people_staying(false), "…unless the district lost a third of them")
+	pop_state["total"] = 12
+	pop_state["peak"] = 12
+	_check(MandateManager.people_staying(true), "the second audit asks for twelve")
+	pop_state["peak"] = 20
+	_check(not MandateManager.people_staying(true), "…who are not the remains of twenty")
+
+	# The term ends on day 40 for everyone: a hut by a pump is not renewed.
+	pop_state["total"] = 4
+	pop_state["peak"] = 4
+	GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
+	EndingManager.call("_evaluate")
+	_check(_ended == "ending.lose.not_renewed", "four happy people on day 40 lose the mandate (ended: '%s')" % _ended)
+
+	# Two of three norms pass the League and fail the Directorate.
+	for profile: String in ["appointed_administrator", "directorate_administrator"]:
+		_new_game(profile)
+		var result: Array = []
+		var on_audit := func(passed: bool, score: int) -> void: result.append([passed, score])
+		EventBus.audit_completed.connect(on_audit)
+		GameStateStore.set_resource("res_water_stockpile", 500.0)
+		GameStateStore.set_resource("res_food", 300.0)
+		GameStateStore.population()["happiness"] = 60.0  # four people: the people norm fails
+		MandateManager.call("_run_audit")
+		EventBus.audit_completed.disconnect(on_audit)
+		var passed: bool = result.size() == 1 and (result[0][0] as bool)
+		var score: int = (result[0][1] as int) if result.size() == 1 else -1
+		if profile == "appointed_administrator":
+			_check(score == 2 and passed, "the League passes a 2 of 3 audit (score %d, passed %s)" % [score, str(passed)])
+		else:
+			_check(score == 2 and not passed, "the Directorate does not (score %d, passed %s)" % [score, str(passed)])

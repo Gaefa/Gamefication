@@ -54,6 +54,7 @@ func _ready() -> void:
 	print("\n=== D) DIRECTORATE win test ===")
 	var orch2 := GameOrchestrator.new()
 	orch2.new_game(12345, "directorate_administrator")
+	_place_district(orch2)  # a district, not a hut: the win asks for twelve people
 	GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
 	GameStateStore.population()["happiness"] = 60.0
 	GameStateStore.mandate()["patron_trust"] = 60.0
@@ -112,6 +113,9 @@ func _run(label: String, prepared: bool) -> void:
 	var orch := GameOrchestrator.new()
 	orch.new_game(12345, "appointed_administrator")
 	if prepared:
+		# A player who invested: a real district with power, water infrastructure at L2,
+		# and repairs every morning.
+		_place_district(orch)
 		_upgrade_water_infra(orch)
 
 	print("=== %s ===" % label)
@@ -121,6 +125,8 @@ func _run(label: String, prepared: bool) -> void:
 	for day: int in range(1, DAYS + 1):
 		if day > 1:
 			SimulationRunner.day_count += 1
+		if prepared:
+			_repair_all()
 		for _t: int in range(TICKS_PER_DAY):
 			orch.tick_scheduler.run_tick()
 		_log_day(day)
@@ -130,6 +136,29 @@ func _run(label: String, prepared: bool) -> void:
 	var raised: Array = EventManager.pending_events.map(func(e: Dictionary) -> String: return e.get("runtime_id", "") as String)
 	print("      >> КРИЗИСЫ НА СТОЛЕ: %s" % str(raised))
 	print("      >> HEAT FOOD SPOILED: %.3f / incoming %.3f" % [GameStateStore.climate().get("heat_food_spoiled", 0.0), GameStateStore.climate().get("heat_food_start", 0.0)])
+
+
+## Two more barracks, a second plot, a generator and the roads to reach them: twelve people.
+func _place_district(orch: GameOrchestrator) -> void:
+	for coord: Vector2i in G_ROADS:
+		GameStateStore.set_building(coord, {"type": "bld_road", "level": 0})
+	for coord: Vector2i in [G_SHELTERS[0], G_SHELTERS[1]]:
+		GameStateStore.set_building(coord, {"type": "bld_shelter", "level": 0, "damaged": false, "has_issue": false})
+	GameStateStore.set_building(G_PLOTS[0], {"type": "bld_field_strip", "level": 0, "damaged": false, "has_issue": false})
+	GameStateStore.set_building(G_GENERATOR, {"type": "bld_generator", "level": 0, "damaged": false, "has_issue": false})
+	orch.spatial.rebuild_from_state()
+	orch.coverage.invalidate()
+	orch.road_graph.invalidate()
+	orch.aura_cache.invalidate()
+	orch.infrastructure_sys.process_tick()
+
+
+func _repair_all() -> void:
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		if bld.get("has_issue", false):
+			bld["has_issue"] = false
+			GameStateStore.set_building(coord, bld)
 
 
 func _upgrade_water_infra(orch: GameOrchestrator) -> void:
@@ -225,11 +254,7 @@ func _run_heat_reserve(second_pump: bool) -> void:
 	EventBus.ending_triggered.connect(on_ending)
 	for day: int in range(1, DAYS + 1):
 		SimulationRunner.day_count = day
-		for coord: Vector2i in GameStateStore.get_all_building_coords():
-			var bld: Dictionary = GameStateStore.get_building(coord)
-			if bld.get("has_issue", false):
-				bld["has_issue"] = false
-				GameStateStore.set_building(coord, bld)
+		_repair_all()
 		for _t: int in TICKS_PER_DAY:
 			orch.tick_scheduler.run_tick()
 			if ending_day == 0 and seen.has("id"):
@@ -246,6 +271,7 @@ func _run_heat_reserve(second_pump: bool) -> void:
 	if second_pump:
 		meets_target = ending_day == ContentDB.get_win_day() and ending_id.begins_with("ending.win.")
 	else:
-		meets_target = people_after_dust >= 16 and ending_day >= heat_start and ending_day <= 38 and ending_id.begins_with("ending.lose.")
+		# One pump: the Dust is survived in full, the Heat is not — a losing ending by the end of the term.
+		meets_target = people_after_dust >= 16 and ending_day >= heat_start and ending_day <= ContentDB.get_win_day() and ending_id.begins_with("ending.lose.")
 	if not meets_target:
 		_g_failures += 1

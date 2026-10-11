@@ -8,7 +8,6 @@ extends Node
 ##
 ## Self-contained: владеет своей панелью, читает состояние при каждом открытии.
 
-const TICKS_PER_DAY := 300  # matches SimulationRunner (day_duration 300s @ 1 tick/s)
 const WEAK_PRESSURE := 0.8  # below this a consumer sits on a weak branch
 
 var _visible: bool = false
@@ -139,16 +138,7 @@ func water_days() -> float:
 
 
 func _gross_daily_consumption() -> float:
-	var water_mult: float = (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("water_mult", 1.0) as float
-	var per_tick: float = 0.0
-	for coord: Vector2i in GameStateStore.get_all_building_coords():
-		var bld: Dictionary = GameStateStore.get_building(coord)
-		if bld.get("damaged", false) as bool:
-			continue
-		var ldata: Dictionary = ContentDB.building_level_data(bld.get("type", "") as String, bld.get("level", 0) as int)
-		var consumes: Dictionary = ldata.get("consumes", {})
-		per_tick += consumes.get("res_water_stockpile", 0.0) as float
-	return per_tick * water_mult * float(TICKS_PER_DAY)
+	return EconomySystem.daily_consumption("res_water_stockpile")
 
 
 func _coverage() -> Dictionary:

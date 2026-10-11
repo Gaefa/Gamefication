@@ -23,7 +23,7 @@
     },
     "effects": {
       "production_mult": {
-        "coins": -0.1
+        "coins": -0.3
       },
       "happiness_add": 4,
       "pressure_delta": -2
@@ -46,7 +46,7 @@
       "production_mult": {
         "coins": -0.05
       },
-      "pressure_delta": -6
+      "pressure_delta": -25
     },
     "label_key": "policy.emergency_reserves.label",
     "description_key": "policy.emergency_reserves.description"
@@ -67,8 +67,8 @@
         "wood": 0.1,
         "stone": 0.1
       },
-      "happiness_add": -3,
-      "pressure_delta": 3
+      "happiness_add": -2,
+      "pressure_delta": 0
     },
     "label_key": "policy.labor_mobilization.label",
     "description_key": "policy.labor_mobilization.description"

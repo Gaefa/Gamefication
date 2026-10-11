@@ -164,7 +164,9 @@ func _supply_happiness_term() -> float:
 	if water <= 1.0:
 		term -= 30.0
 	elif water_net < 0.0:
-		term -= 12.0
+		# Draining hurts in proportion to how fast: pumps covering most of the draw cost
+		# a point or two, dead pumps the full twelve. A cliff here made the mood jitter.
+		term -= 12.0 * _drain_share("res_water_stockpile", water_net)
 	elif water >= 0.5 * water_cap:
 		term += 6.0
 
@@ -174,7 +176,7 @@ func _supply_happiness_term() -> float:
 	if food <= 1.0:
 		term -= 30.0
 	elif food_net < 0.0:
-		term -= 10.0
+		term -= 10.0 * _drain_share("res_food", food_net)
 	elif food >= 0.5 * food_cap:
 		term += 6.0
 
@@ -183,6 +185,13 @@ func _supply_happiness_term() -> float:
 		term += 12.0
 
 	return term
+
+
+## How much of today's draw the reserve is covering out of its own stock: 0 when the
+## producers nearly keep up, 1 when nothing comes in and the stockpile carries it all.
+static func _drain_share(res_id: String, net_per_tick: float) -> float:
+	var draw_per_tick: float = EconomySystem.daily_consumption(res_id) / float(SimulationRunner.TICKS_PER_DAY)
+	return clampf(-net_per_tick / maxf(draw_per_tick, 0.0001), 0.0, 1.0)
 
 
 func _update_support() -> void:

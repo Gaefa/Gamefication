@@ -41,6 +41,14 @@ func process_tick() -> void:
 		if not (bld.get("powered", true) as bool):
 			condition_efficiency *= 0.3
 
+		# Housing earns and eats by the people who actually live there, not by empty beds.
+		# (Before the first census, capacity is 0: treat the housing as full.)
+		if (ldata.get("population", 0) as int) > 0:
+			var pop_state: Dictionary = GameStateStore.population()
+			var capacity: float = float(pop_state.get("capacity", 0))
+			if capacity > 0.0:
+				input_efficiency *= clampf(float(pop_state.get("total", 0)) / capacity, 0.0, 1.0)
+
 		# Get multipliers
 		var mults: Dictionary = _interactions.get_total_multipliers(coord)
 
@@ -119,8 +127,8 @@ func _maintenance_cost() -> float:
 	if bld_count == 0:
 		return 0.0  # No buildings = no maintenance
 	var pop: int = GameStateStore.population().total as int
-	# Scaling: pop*0.01 + buildings*0.02 coins/tick (no base cost)
-	return pop * 0.01 + bld_count * 0.02
+	# Scaling: pop*0.001 + buildings*0.002 coins/tick (no base cost); a barrack brings in 0.1/tick.
+	return pop * 0.001 + bld_count * 0.002
 
 
 func _season_production_mult(res_id: String, season_mods: Dictionary) -> float:
@@ -136,7 +144,7 @@ func _season_production_mult(res_id: String, season_mods: Dictionary) -> float:
 	return 1.0
 
 
-func _season_consumption_mult(res_id: String, season_mods: Dictionary) -> float:
+static func _season_consumption_mult(res_id: String, season_mods: Dictionary) -> float:
 	## Пыль/Жара поднимают расход воды: water_mult применяется к потреблению воды.
 	if season_mods.is_empty():
 		return 1.0
@@ -162,6 +170,25 @@ func _governance_production_multiplier(res_id: String) -> float:
 func _production_bonus_from_effects(effects: Dictionary, res_id: String) -> float:
 	var prod_mult: Dictionary = effects.get("production_mult", {})
 	return prod_mult.get(res_id, 0.0) as float
+
+
+## What the district draws per day at today's season rates; damaged buildings draw nothing.
+static func daily_consumption(res_id: String) -> float:
+	var season_mods: Dictionary = GameStateStore.climate().get("modifiers", {})
+	var per_tick: float = 0.0
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		if bld.get("damaged", false) as bool:
+			continue
+		var consumes: Dictionary = ContentDB.building_level_data(bld.get("type", "") as String, bld.get("level", 0) as int).get("consumes", {})
+		per_tick += consumes.get(res_id, 0.0) as float
+	return per_tick * _season_consumption_mult(res_id, season_mods) * float(SimulationRunner.TICKS_PER_DAY)
+
+
+## How many days the reserve lasts at today's draw; INF when nothing draws it.
+static func days_of(res_id: String) -> float:
+	var per_day: float = daily_consumption(res_id)
+	return INF if per_day <= 0.0 else GameStateStore.get_resource(res_id) / per_day
 
 
 ## Saved day marker prevents double spoilage on reload. Charge at the start of each

@@ -19,7 +19,8 @@ const DISTRICT_EN := "Dry Gully"
 const DRIFT_PER_DAY := 1.5
 const GRANT_MONEY := 150.0
 const AUDIT_EDGE := 5.0             # a gap the patron actually notices (HUD colour + audit)
-const WATER_DAYS_FULL := 10.0       # water autonomy counted as fully ready
+const WATER_DAYS_FULL := 5.0        # water autonomy counted as fully ready
+const PEOPLE_FULL := 20.0           # a district this size counts as fully settled
 
 
 func _ready() -> void:
@@ -50,9 +51,10 @@ func rival_score() -> float:
 func player_score() -> float:
 	var happiness: float = GameStateStore.population().get("happiness", 50.0) as float
 	var support: float = GameStateStore.mandate().get("support", 50.0) as float
-	var days: float = WaterPanel.water_days()
+	var days: float = EconomySystem.days_of("res_water_stockpile")
 	var water: float = 100.0 if is_inf(days) else clampf(days / WATER_DAYS_FULL, 0.0, 1.0) * 100.0
-	return (happiness + support + water) / 3.0
+	var people: float = clampf(float(GameStateStore.population().get("total", 0)) / PEOPLE_FULL, 0.0, 1.0) * 100.0
+	return (happiness + support + water + people) / 4.0
 
 
 func _raise_grant_card() -> void:

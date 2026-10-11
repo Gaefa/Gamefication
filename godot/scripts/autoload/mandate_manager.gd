@@ -9,9 +9,11 @@ extends Node
 ## Presented as a dynamic result card via the critical-card path (DeskUI critical mode).
 ## Self-contained autoload — no orchestrator/tick-pipeline changes.
 
-const WATER_OK := 60.0              # reserve considered "ready" (tuning)
-const FOOD_OK := 30.0
+const RESERVE_DAYS_OK := 1.0        # a reserve that covers a day of today's draw
 const HAPPINESS_OK := 40.0          # people are staying, not fleeing
+const PEOPLE_MIN := 8               # ...and there is a district to speak of (second audit: 12)
+const PEOPLE_MIN_SECOND := 12
+const PEAK_KEEP := 0.75             # ...that has not lost a quarter of its people
 
 
 func _ready() -> void:
@@ -35,24 +37,22 @@ func _run_audit() -> void:
 	var second: bool = (mandate.get("audits_done", 0) as int) == 1
 	mandate["audits_done"] = (mandate.get("audits_done", 0) as int) + 1
 
-	var water: float = GameStateStore.get_resource("res_water_stockpile")
-	var food: float = GameStateStore.get_resource("res_food")
-	var happiness: float = GameStateStore.population().get("happiness", 50.0) as float
-
-	var water_ok: bool = water >= WATER_OK
-	var food_ok: bool = food >= FOOD_OK
-	var people_ok: bool = happiness >= HAPPINESS_OK
+	var water_ok: bool = EconomySystem.days_of("res_water_stockpile") >= RESERVE_DAYS_OK
+	var food_ok: bool = EconomySystem.days_of("res_food") >= RESERVE_DAYS_OK
+	var people_ok: bool = people_staying(second)
 	var score: int = (1 if water_ok else 0) + (1 if food_ok else 0) + (1 if people_ok else 0)
 
 	var trust_delta: float
 	var spoilage_ok: bool = food_preserved()
 	if second:
 		score += 1 if spoilage_ok else 0
+	# The Directorate pays better for a clean sheet and forgives nothing short of it.
+	var directorate: bool = (mandate.get("patron_id", "") as String) == "civic_directorate"
 	match score - (1 if second else 0):
-		3: trust_delta = 12
-		2: trust_delta = 5
-		1: trust_delta = -6
-		_: trust_delta = -15
+		3: trust_delta = 15 if directorate else 12
+		2: trust_delta = 4 if directorate else 5
+		1: trust_delta = -8 if directorate else -6
+		_: trust_delta = -20 if directorate else -15
 	# The patron measures against the neighbour (RivalManager): a clear gap moves trust too.
 	var gap: float = RivalManager.player_score() - RivalManager.rival_score()
 	if gap <= -RivalManager.AUDIT_EDGE:
@@ -65,12 +65,33 @@ func _run_audit() -> void:
 		mandate["first_audit_score"] = score
 	mandate["patron_trust"] = clampf((mandate.get("patron_trust", 50) as float) + float(trust_delta), 0.0, 100.0)
 
-	var passed: bool = score >= (3 if second else 2)
+	var passed: bool = score >= (4 if second else 3) if directorate else score >= (3 if second else 2)
 	EventBus.audit_completed.emit(passed, score)
 
 	# Pause and show the dynamic result card through the critical-card path.
 	SimulationRunner.paused = true
 	EventBus.critical_event_started.emit(_build_card(score, water_ok, food_ok, people_ok, trust_delta))
+
+
+## The people norm: morale holds, the district is of some size and has not lost a quarter of its people.
+func people_staying(second: bool) -> bool:
+	var pop_state: Dictionary = GameStateStore.population()
+	var pop: int = pop_state.get("total", 0) as int
+	var peak: int = pop_state.get("peak", pop) as int
+	return (pop_state.get("happiness", 50.0) as float) >= HAPPINESS_OK \
+		and pop >= (PEOPLE_MIN_SECOND if second else PEOPLE_MIN) \
+		and pop >= int(float(peak) * PEAK_KEEP)
+
+
+func _people_verdict(second: bool, en: bool) -> String:
+	var pop_state: Dictionary = GameStateStore.population()
+	var pop: int = pop_state.get("total", 0) as int
+	var need: int = PEOPLE_MIN_SECOND if second else PEOPLE_MIN
+	if (pop_state.get("happiness", 50.0) as float) < HAPPINESS_OK:
+		return "no, morale is low" if en else "нет, настроение низкое"
+	if pop < need:
+		return "no, %d residents of the %d required" % [pop, need] if en else "нет, жителей %d при норме %d" % [pop, need]
+	return "no, the district lost people" if en else "нет, район потерял людей"
 
 
 func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, trust_delta: float) -> Dictionary:
@@ -83,8 +104,8 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 				verdict = "Заключение комиссара: нормы выполнены, замечаний нет."
 				verdict_en = "Commissar's conclusion: the targets are met, no remarks."
 			2:
-				verdict = "Заключение комиссара: приемлемо. Одна норма не выполнена и внесена в дело."
-				verdict_en = "Commissar's conclusion: acceptable. One target was missed and entered in the file."
+				verdict = "Заключение комиссара: одна норма не выполнена. Проверка не зачтена, запись внесена в дело."
+				verdict_en = "Commissar's conclusion: one target was missed. The inspection is not credited; a note goes in the file."
 			1:
 				verdict = "Заключение комиссара: показатели ниже нормы. Объяснения к делу не приобщаются."
 				verdict_en = "Commissar's conclusion: figures below standard. Explanations are not added to the file."
@@ -106,17 +127,17 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 				verdict = "Заключение Койл: ни одна норма не выполнена. Защищать ваш мандат наверху ей нечем."
 				verdict_en = "Coyle's conclusion: none of the targets is met. She has nothing to defend your mandate with."
 
+	var second: bool = (GameStateStore.mandate().get("audits_done", 0) as int) >= 2
 	var checklist: String = "\n".join([
-		"— Запас воды: %s" % ("в порядке" if water_ok else "недостаточно"),
-		"— Запас еды: %s" % ("в порядке" if food_ok else "недостаточно"),
-		"— Люди остаются: %s" % ("да" if people_ok else "нет, настроение низкое"),
+		"— Запас воды: %s" % ("в порядке" if water_ok else "меньше дня расхода"),
+		"— Запас еды: %s" % ("в порядке" if food_ok else "меньше дня расхода"),
+		"— Люди остаются: %s" % ("да" if people_ok else _people_verdict(second, false)),
 	])
 	var checklist_en: String = "\n".join([
-		"— Water reserve: %s" % ("OK" if water_ok else "insufficient"),
-		"— Food reserve: %s" % ("OK" if food_ok else "insufficient"),
-		"— People are staying: %s" % ("yes" if people_ok else "no, morale is low"),
+		"— Water reserve: %s" % ("OK" if water_ok else "under a day's draw"),
+		"— Food reserve: %s" % ("OK" if food_ok else "under a day's draw"),
+		"— People are staying: %s" % ("yes" if people_ok else _people_verdict(second, true)),
 	])
-	var second: bool = (GameStateStore.mandate().get("audits_done", 0) as int) >= 2
 	if second:
 		checklist += "\n— Потери еды <25%% начального запаса: %s" % ("да" if food_preserved() else "нет")
 		checklist_en += "\n— Food lost <25%% of starting reserve: %s" % ("yes" if food_preserved() else "no")
