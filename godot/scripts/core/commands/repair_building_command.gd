@@ -3,7 +3,7 @@ class_name RepairBuildingCommand extends CommandBase
 
 var coord: Vector2i
 
-const REPAIR_COST_COINS := 20.0
+const REPAIR_COST_COINS := 10.0  # cheap on purpose: the treasury is for technologies
 
 
 func _init(p_coord: Vector2i) -> void:

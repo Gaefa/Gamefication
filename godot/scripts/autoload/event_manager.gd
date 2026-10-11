@@ -260,6 +260,15 @@ func _on_option_selected(event_id: String, option_index: int, effects: Dictionar
 		_mark_fired(event_id)
 
 
+## People brought in by a card move into whatever served housing is free; the rest go on.
+func _add_residents(count: int) -> void:
+	var pop_state: Dictionary = GameStateStore.population()
+	var residents: float = pop_state.get("residents", float(pop_state.get("total", 0))) as float
+	var room: float = float(pop_state.get("served", pop_state.get("capacity", 0)))
+	pop_state["residents"] = clampf(residents + float(count), 0.0, maxf(room, residents))
+	pop_state["total"] = int(round(pop_state["residents"] as float))
+
+
 func _apply_effects(effects: Dictionary) -> void:
 	if effects.is_empty():
 		return
@@ -274,6 +283,8 @@ func _apply_effects(effects: Dictionary) -> void:
 					GameStateStore.add_buff(buff)
 			"add_resources":
 				_apply_resource_delta(effects[key], 1.0)
+			"add_residents":
+				_add_residents(effects[key] as int)
 			"remove_resources":
 				_apply_resource_delta(effects[key], -1.0)
 			"force_issues":

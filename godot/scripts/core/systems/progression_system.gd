@@ -9,9 +9,9 @@ var _adjacency := AdjacencyCalculator.new()
 
 # --- Population retention (tuning) ---
 const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick under duress
-const INFLOW_RATE := 0.0006     # fraction of the empty gap that fills per tick when content
+const INFLOW_RATE := 0.0015     # fraction of the empty gap that fills per tick when content: a barrack in ~4 days
 const MISERY_HAPPINESS := 25.0  # below this people start leaving even if fed
-const CONTENT_HAPPINESS := 55.0 # at/above this newcomers arrive to fill housing
+const CONTENT_HAPPINESS := 50.0 # at/above this newcomers arrive to fill housing (the starting mood)
 const HAPPINESS_SMOOTH := 0.04  # per-tick easing toward target; damps scarcity jitter
 const SUPPORT_DRIFT := 0.0015   # city backing drifts toward mood; decisions leave lasting marks
 const WEAK_PRESSURE := 0.8      # housing below this напор gets water, but not enough

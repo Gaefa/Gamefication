@@ -183,12 +183,14 @@ func _build_resource_bar() -> void:
 		var value: Label = _chip_text(box, 15, Color(0.97, 0.95, 0.88))
 		var delta: Label = _chip_text(box, 11, Color(0.6, 0.6, 0.6))
 		_res_chips[res_id] = { "value": value, "delta": delta, "panel": box.get_parent() }
-	var pop_box: HBoxContainer = _chip(top)
+	var pop_box: HBoxContainer = _chip(top, func() -> String: return Localization.ru_en(
+		"Жители. Новые приезжают в свободные бараки при счастье от %d%%; уезжают при голоде, жажде или счастье ниже %d%%. Людей можно и позвать: письма на Столе.",
+		"Residents. Newcomers move into free barracks at %d%% mood or more; people leave when hungry, thirsty or below %d%% mood. People can also be invited: letters at the Desk.") % [int(ProgressionSystem.CONTENT_HAPPINESS), int(ProgressionSystem.MISERY_HAPPINESS)])
 	_chip_icon(pop_box, "people")
 	_pop_label = _chip_text(pop_box, 14, Color(0.97, 0.95, 0.88))
 	_happy_label = _chip_text(_chip(top, func() -> String: return Localization.ru_en(
-		"Счастье жителей: вода, еда, жильё. Аудит требует не ниже %d%%.",
-		"Residents' happiness: water, food, housing. The audit requires at least %d%%.") % int(MandateManager.HAPPINESS_OK)), 14, Color(0.97, 0.95, 0.88))
+		"Счастье жителей: вода, еда, жильё. От %d%% приезжают новые жители; аудит требует не ниже %d%%.",
+		"Residents' happiness: water, food, housing. From %d%% newcomers arrive; the audit requires at least %d%%.") % [int(ProgressionSystem.CONTENT_HAPPINESS), int(MandateManager.HAPPINESS_OK)]), 14, Color(0.97, 0.95, 0.88))
 	_level_label = _chip_text(_chip(top, func() -> String: return Localization.ru_en(
 		"Уровень поселения. Условия следующего уровня — кнопка «Город».",
 		"Settlement level. The next level's requirements are under the City button.")), 12, Color(0.9, 0.85, 0.6))
@@ -617,7 +619,9 @@ func _update_resource_bar() -> void:
 	# --- People and level ---
 	var pop: int = GameStateStore.population().total as int
 	var happiness: float = GameStateStore.population().happiness as float
-	_pop_label.text = "%s %d" % [Localization.t("ui.resource.population", "Pop"), pop]
+	var beds: int = GameStateStore.population().get("capacity", 0) as int
+	_pop_label.text = "%s %d / %d" % [Localization.t("ui.resource.population", "Pop"), pop, beds] if beds > pop \
+		else "%s %d" % [Localization.t("ui.resource.population", "Pop"), pop]
 	_happy_label.text = "%s %d%%" % [Localization.t("ui.resource.happiness", "Happy"), int(happiness)]
 	_happy_label.add_theme_color_override("font_color", _level_color(happiness, 40.0, 55.0))
 	var city_lv: int = GameStateStore.progression().city_level as int
