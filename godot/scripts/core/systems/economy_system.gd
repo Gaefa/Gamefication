@@ -63,15 +63,15 @@ func process_tick() -> void:
 	# Bank interest (special mechanic)
 	_process_bank_interest(net_production)
 
+	# Upkeep is part of the money flow, so the HUD trend and the depletion warning see it.
+	net_production["res_money"] = (net_production.get("res_money", 0.0) as float) - _maintenance_cost()
+
 	# Apply net production
 	for res_id: String in net_production:
 		var net: float = net_production[res_id] as float
 		if net != 0.0:
 			GameStateStore.add_resource(res_id, net)
 		GameStateStore.economy().production[res_id] = net
-
-	# Maintenance cost (only if there are buildings)
-	_apply_maintenance()
 
 	EventBus.production_tick_done.emit()
 	EventBus.resources_changed.emit(GameStateStore.economy().resources)
@@ -111,18 +111,16 @@ func _process_bank_interest(net: Dictionary) -> void:
 			net["res_money"] = (net.get("res_money", 0.0) as float) + interest
 
 
-func _apply_maintenance() -> void:
+func _maintenance_cost() -> float:
 	var bld_count: int = 0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		if not ContentDB.is_inert_landmark(GameStateStore.get_building(coord).get("type", "") as String):
 			bld_count += 1
 	if bld_count == 0:
-		return  # No buildings = no maintenance
+		return 0.0  # No buildings = no maintenance
 	var pop: int = GameStateStore.population().total as int
 	# Scaling: pop*0.01 + buildings*0.02 coins/tick (no base cost)
-	var cost: float = pop * 0.01 + bld_count * 0.02
-	if cost > 0.0:
-		GameStateStore.add_resource("res_money", -cost)
+	return pop * 0.01 + bld_count * 0.02
 
 
 func _season_production_mult(res_id: String, season_mods: Dictionary) -> float:

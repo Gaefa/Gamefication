@@ -301,9 +301,11 @@ func _build_button(type_id: String) -> Control:
 	if list == null:
 		return null
 	for child: Node in list.get_children():
-		if child is Button and child.has_meta("type_id") and (child.get_meta("type_id") as String) == type_id:
+		if child is Control and child.has_meta("type_id") and (child.get_meta("type_id") as String) == type_id:
 			return child as Control
-	return null
+	# The card lives in another tab: point at that tab, so the player finds the way back.
+	var category: String = ContentDB.get_building_def(type_id).get("category", "") as String
+	return (_hud().get("_category_buttons") as Dictionary).get(category) as Control
 
 
 func _coords_of(type_id: String) -> Array:
