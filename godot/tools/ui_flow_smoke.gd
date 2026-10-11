@@ -144,6 +144,8 @@ func _test_tutorial_steps() -> void:
 		await _settle()
 		var bubble: Control = TutorialManager.get("_bubble")
 		_check(view.grow(1.0).encloses(bubble.get_global_rect()), "step %d: the bubble is inside the window" % (i + 1))
+		if (steps[i] as Dictionary).has("target"):
+			_check(TutorialManager.get("_has_target") as bool, "step %d: the step finds its target" % (i + 1))
 		if TutorialManager.get("_has_target") as bool:
 			var target: Rect2 = TutorialManager.get("_target_rect")
 			_check(target.has_area() and view.intersects(target), "step %d: the highlighted target is on screen" % (i + 1))

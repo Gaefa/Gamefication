@@ -430,7 +430,7 @@ func _rng_chance(probability: float) -> bool:
 
 func _rng_index(size: int) -> int:
 	var orch: GameOrchestrator = _orchestrator()
-	return orch.rng.range_int(0, size - 1) if orch != null else randi() % size
+	return orch.rng.range_int(0, size) if orch != null else randi() % size
 
 
 func _event_cooldowns() -> Dictionary:

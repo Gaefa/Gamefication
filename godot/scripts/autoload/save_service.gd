@@ -46,12 +46,17 @@ func save_game(slot: int, silent: bool = false) -> bool:
 	# Keep key order (systems iterate buildings in insertion order) and full float
 	# precision, so a load resumes the simulation tick-for-tick.
 	var json_str := JSON.stringify(data, "\t", false, true)
-	var file := FileAccess.open(path, FileAccess.WRITE)
+	# Write beside the slot and swap in, so a crash mid-write leaves the old save intact.
+	var tmp_path := path + ".tmp"
+	var file := FileAccess.open(tmp_path, FileAccess.WRITE)
 	if file == null:
-		push_error("SaveService: cannot write to %s" % path)
+		push_error("SaveService: cannot write to %s" % tmp_path)
 		return false
 	file.store_string(json_str)
 	file.close()
+	if DirAccess.rename_absolute(tmp_path, path) != OK:
+		push_error("SaveService: cannot replace %s" % path)
+		return false
 	EventBus.game_saved.emit(slot)
 	if not silent:
 		EventBus.toast_requested.emit(Localization.t("ui.save.saved", "Game saved (slot %d)") % slot, 2.0)
