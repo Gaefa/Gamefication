@@ -32,23 +32,24 @@ func _physics_process(delta: float) -> void:
 	if not is_running() or tick_callback.is_null():
 		return
 	
-	# Фазовый таймер (только в фазе ДНЯ)
-	if current_phase == Phase.DAY:
-		day_timer -= delta * speed_scale
-		EventBus.day_timer_updated.emit(day_timer)
-		if day_timer <= 0.0:
-			_transition_to_evening()
-			return
-	
+	# A day is 300 simulation ticks at every speed. Advancing the day from a second
+	# floating wall clock used to lose boundary ticks differently at ×1 and ×5.
+	if current_phase == Phase.DAY and day_timer <= 0.0:
+		_transition_to_evening()
+		return
 	_accumulator += delta * speed_scale
-	# Prevent spiral-of-death: cap at 5 ticks per frame
 	var ticks_this_frame: int = 0
 	while _accumulator >= TICK_INTERVAL and ticks_this_frame < 5:
 		_accumulator -= TICK_INTERVAL
 		ticks_this_frame += 1
-		tick_callback.call()
+		day_timer = maxf(0.0, day_timer - TICK_INTERVAL)
+		tick_callback.call()  # ends with tick_finished, which drives the EventManager
+		EventBus.day_timer_updated.emit(day_timer)
 		if not is_running():
-			break  # an audit card or a finale paused the run mid-frame
+			break
+		if current_phase == Phase.DAY and day_timer <= 0.0:
+			_transition_to_evening()
+			break
 
 
 func _transition_to_evening() -> void:

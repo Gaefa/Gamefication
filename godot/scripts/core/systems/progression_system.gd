@@ -126,6 +126,9 @@ func _update_happiness() -> void:
 	var supply_term: float = _supply_happiness_term()
 	var power_term: float = float(dark_housing) * -6.0
 	var pressure_term: float = float(weak_water_housing) * -3.0
+	if (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("heat_stress", false):
+		pressure_term *= 2.0
+		supply_term += heat_stress_term()
 	GameStateStore.population()["low_pressure_housing"] = weak_water_housing
 	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term + pressure_term + neighbour_mood, 0.0, 100.0)
 	# Ease happiness toward the target instead of snapping. At the scarcity boundary the
@@ -136,6 +139,17 @@ func _update_happiness() -> void:
 	GameStateStore.population().happiness = happiness
 	if int(happiness) != int(prev):
 		EventBus.happiness_changed.emit(happiness)
+
+
+static func heat_stress_term() -> float:
+	if not (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("heat_stress", false):
+		return 0.0
+	# "Empty" is a cistern scraping the bottom, not an exact zero: a district living off what
+	# the pumps bring each tick keeps a few units in the tank and is just as dry.
+	var share: float = GameStateStore.get_resource("res_water_stockpile") / maxf(GameStateStore.get_cap("res_water_stockpile"), 1.0)
+	if share < 0.05:
+		return -20.0
+	return -8.0 if share < 0.3 else 0.0
 
 
 func _supply_happiness_term() -> float:

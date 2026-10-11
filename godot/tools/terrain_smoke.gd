@@ -33,10 +33,10 @@ func _ready() -> void:
 
 func _run() -> void:
 	for terrain_id: int in 6:
-		var normal: Texture2D = _layer.call("_terrain_texture", terrain_id, false) as Texture2D
-		var dust: Texture2D = _layer.call("_terrain_texture", terrain_id, true) as Texture2D
+		var normal: Texture2D = _layer.call("_terrain_texture", terrain_id, "") as Texture2D
+		var dust: Texture2D = _layer.call("_terrain_texture", terrain_id, "dust") as Texture2D
 		_check(normal != null and dust != null and normal != dust, "both seasons load for type %d" % terrain_id)
-		_check(normal == _layer.call("_terrain_texture", terrain_id, false), "texture reused for type %d" % terrain_id)
+		_check(normal == _layer.call("_terrain_texture", terrain_id, ""), "texture reused for type %d" % terrain_id)
 	_check((_layer.get("_tile_cache") as Dictionary).size() == 12, "12 textures cached")
 	var normal_image: Image = await _capture()
 	var previous_draws: int = _draws
@@ -63,7 +63,7 @@ func _run() -> void:
 	_check(fallback_image.get_data() == missing_image.get_data(), "missing file renders same fallback")
 	_check((_layer.get("_tile_cache") as Dictionary).has(definition["tile"]), "missing resource is cached")
 	definition["tile"] = original
-	_check(_layer.call("_terrain_texture", 9999, false) == null, "unknown terrain has no texture")
+	_check(_layer.call("_terrain_texture", 9999, "") == null, "unknown terrain has no texture")
 	_check(_layer.call("_terrain_color", 9999) == Color.GRAY, "unknown terrain retains grey fallback")
 	print("TERRAIN SMOKE: %d failures" % _failures)
 	get_tree().quit(0 if _failures == 0 else 1)
@@ -71,7 +71,6 @@ func _run() -> void:
 
 func _capture() -> Image:
 	await get_tree().process_frame
-	await RenderingServer.frame_post_draw
 	return _viewport.get_texture().get_image()
 
 

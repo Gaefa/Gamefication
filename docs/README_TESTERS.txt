@@ -21,4 +21,8 @@ CRASHED? / УПАЛА?
   macOS:   ~/Library/Application Support/Godot/app_userdata/Mandate Cities/logs
 
 Guide: PLAYER_GUIDE_EN.md (English) / PLAYER_GUIDE.md (русский).
-A run takes 20–40 minutes. Press H in game for help.
+40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk. Press H in game for help.
+
+Окно: дни 1–18; Пыль: 19–29; Жара: 30–38; аудиты: 20 и 36; победа: день 40 при счастье ≥40.
+40 дней — 200 минут на ×1 или около 1 ч 7 мин на ×3, плюс время за Столом. H — справка.
+Window: days 1–18; Dust: 19–29; Heat: 30–38; audits: 20 and 36; win: day 40 with mood ≥40.

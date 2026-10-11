@@ -171,7 +171,6 @@ func _settle() -> void:
 	for frame: int in 12:
 		await get_tree().process_frame
 	RenderingServer.force_draw(true)
-	await RenderingServer.frame_post_draw
 
 
 func _click_at(at: Vector2) -> void:
@@ -191,7 +190,6 @@ func _click_at(at: Vector2) -> void:
 
 func _save(filename: String) -> void:
 	RenderingServer.force_draw(true)
-	await RenderingServer.frame_post_draw
 	_check(get_viewport().get_texture().get_image().save_png(_dir.path_join(filename)) == OK, "screenshot " + filename)
 
 

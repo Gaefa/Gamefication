@@ -1,0 +1,7 @@
+{
+  "id": "rust_pit_chapter",
+  "season_order": ["season_window", "season_dust", "season_heat"],
+  "win_day": 40,
+  "audit_days": [20, 36],
+  "grant_day": 14
+}

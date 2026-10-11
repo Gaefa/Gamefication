@@ -35,6 +35,17 @@
       "body": "Если это читает новый администратор, значит, меня уже увезли. У Лиги это делают белые машины: приезжают днём, вежливо, с актом о «переводе на восстановление». Никто не кричит, соседи молчат. Берегите воду. И помните, что забота Лиги — тоже способ управлять.",
       "body_en": "If a new administrator is reading this, I have already been taken away. With the League it is the white vans: they come in daylight, politely, with an order for \"transfer for recovery.\" Nobody shouts, the neighbors keep quiet. Look after the water. And remember that the League's care is also a way of governing.",
       "unlock": { "metric": "stat_league_trust", "op": "<=", "value": 30 }
+    },
+    {
+      "id": "diary.05.heat",
+      "order": 5,
+      "title": "Дневник прежнего администратора — V",
+      "title_en": "Previous Administrator’s Diary — V",
+      "body": "После Пыли я решил, что худшее позади. Запасы были полные. Потом пришла Жара: мешки грелись, цистерна пустела, у дальних бараков падал напор. Я копил воду, когда надо было чинить насосы. Полный склад — это ещё не снабжение.",
+      "body_en": "After the Dust I thought the worst was over. The stores were full. Then the Heat came: sacks warmed, the cistern drained, pressure fell at the distant Shelters. I had stockpiled water when I should have repaired the pumps. A full warehouse is not yet a supply system.",
+      "unlock": {
+        "season": "season_heat"
+      }
     }
   ]
 }

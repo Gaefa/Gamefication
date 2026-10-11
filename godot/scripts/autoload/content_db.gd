@@ -15,6 +15,7 @@ var policies: Dictionary = {}
 var start_profiles: Dictionary = {}
 var seasons: Dictionary = {}
 var season_order: Array = []
+var scenario: Dictionary = {}
 var endings: Dictionary = {}
 var diary_fragments: Array = []   # ordered fragment defs
 
@@ -64,6 +65,7 @@ func _ready() -> void:
 	technologies = _load_keyed_array(CONTENT_ROOT + "technologies.json", "id")
 	policies = _load_keyed_array(CONTENT_ROOT + "policies.json", "id")
 	start_profiles = _load_keyed_array(CONTENT_ROOT + "start_profiles.json", "id")
+	scenario = _load_json(CONTENT_ROOT + "scenario.json")
 	_load_seasons()
 	_load_endings()
 	_load_diary()
@@ -321,7 +323,19 @@ func get_season_ids() -> Array:
 
 
 func get_season_order() -> Array:
-	return season_order.duplicate()
+	return (scenario.get("season_order", season_order) as Array).duplicate()
+
+
+func get_win_day() -> int:
+	return scenario.get("win_day", 30) as int
+
+
+func get_audit_days() -> Array:
+	return (scenario.get("audit_days", [20]) as Array).duplicate()
+
+
+func get_grant_day() -> int:
+	return scenario.get("grant_day", 14) as int
 
 
 func get_ending_def(ending_id: String) -> Dictionary:

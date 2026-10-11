@@ -62,6 +62,9 @@ func _advance_one_day() -> void:
 		idx = (idx + 1) % _order.size()
 		climate["season_index"] = idx
 		climate["day_in_season"] = 1
+		if (_order[idx] as String) == "season_heat":
+			climate["heat_food_start"] = GameStateStore.get_resource("res_food")
+			climate["heat_food_spoiled"] = 0.0
 		_apply_current(true)
 	else:
 		climate["day_in_season"] = next_day_in_season

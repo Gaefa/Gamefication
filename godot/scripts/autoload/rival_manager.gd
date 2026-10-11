@@ -16,9 +16,7 @@ const DISTRICT := "Сухой Лог"
 const NAME_EN := "Mara Voss"
 const DISTRICT_EN := "Dry Gully"
 ## Tuned so preparation wins the grant (prepared ≈58 vs 56 on day 14) and neglect loses it.
-const TARGETS := { "season_window": 56.0, "season_dust": 50.0 }
 const DRIFT_PER_DAY := 1.5
-const GRANT_DAY := 14               # end of the Window: the grant that pays for the Dust
 const GRANT_MONEY := 150.0
 const AUDIT_EDGE := 5.0             # a gap the patron actually notices (HUD colour + audit)
 const WATER_DAYS_FULL := 10.0       # water autonomy counted as fully ready
@@ -37,9 +35,9 @@ func _on_day_advanced(season_id: String, _day_in_season: int, _length: int) -> v
 	if day <= (rival.get("last_day", 0) as int):
 		return
 	rival["last_day"] = day
-	var target: float = TARGETS.get(season_id, 58.0) as float
+	var target: float = ContentDB.get_season_def(season_id).get("rival_target", 58.0) as float
 	rival["score"] = move_toward(rival.get("score", 55.0) as float, target, DRIFT_PER_DAY)
-	if day >= GRANT_DAY and not (rival.get("grant_decided", false) as bool):
+	if day >= ContentDB.get_grant_day() and not (rival.get("grant_decided", false) as bool):
 		rival["grant_decided"] = true
 		_raise_grant_card()
 

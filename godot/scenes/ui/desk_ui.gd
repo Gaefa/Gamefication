@@ -260,6 +260,9 @@ func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
 				parts.append(Localization.ru_en("снос: %s", "demolition: %s") % _building_name(value as String))
 			"replace_building":
 				parts.append(Localization.ru_en("перестройка: %s", "rebuild: %s") % _building_name((value as Dictionary).get("to", "") as String))
+			"set_flag":
+				if value == "dried_rations":
+					parts.append(Localization.ru_en("потери еды от порчи −50%", "food spoilage losses −50%"))
 			"add_buff":
 				parts.append(_buff_text(value as Dictionary))
 			"force_issues":
@@ -283,8 +286,10 @@ func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
 ## A temporary effect: what it changes, by how much and for how many days.
 func _buff_text(buff: Dictionary) -> String:
 	var days: int = maxi(1, roundi((buff.get("remaining", 0.0) as float) / SimulationRunner.day_duration))
+	if buff.has("until_season_end"):
+		days = maxi(1, (ContentDB.get_season_def(buff["until_season_end"] as String).get("length_days", 1) as int) - (GameStateStore.climate().get("day_in_season", 1) as int) + 1)
 	var term: String = Localization.ru_en("%d дн.", "%d d") % days
-	if buff.has("happiness_add"):
+	if not is_zero_approx(buff.get("happiness_add", 0.0) as float):
 		return Localization.ru_en("счастье %s на %s", "happiness %s for %s") % [_signed(buff["happiness_add"] as float), term]
 	var target: String = buff.get("target", "") as String
 	var who: String = _building_name(target) if target != "" else Localization.ru_en("все здания", "all buildings")

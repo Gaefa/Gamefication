@@ -2,7 +2,10 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.1.8 — "Rust Pit" test build (October 2026). A run takes 20–40 minutes.
+Version 0.1.8 — "Rust Pit" test build (October 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+
+Window: days 1–18. Dust: 19–29. Heat: 30–38. Window returns on day 39; win on day 40 with mood ≥40. Audits: days 20 and 36. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, an empty cistern 15; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
+
 
 ## How to run
 
@@ -25,7 +28,7 @@ The stressor is climate. In 18 days the Dust season arrives: water drains faster
 
 ## Goal
 
-- **Win:** reach day 30 with a city that hasn't emptied (resident mood at 40 or higher). The flavor of the ending depends on how you ruled: loyal administrator, city protector, pragmatist, or future autonomist.
+- **Win:** reach day 40 with a city that hasn't emptied (resident mood at 40 or higher). The flavor of the ending depends on how you ruled: loyal administrator, city protector, pragmatist, or future autonomist.
 - **Lose:** League trust drops to 0 — recall of the mandate; city support drops to 0 — riot; residents leave — exodus.
 
 The ending screen explains why things ended the way they did: the two masters, the Cistern, what broke first, how many people stayed.
@@ -38,7 +41,7 @@ The ending screen explains why things ended the way they did: the two masters, t
 
 ## Goals and panels
 
-Under the minimap on the left is your list of **goals**: days until the Dust, the audit targets with check marks (water, food, mood), the grant contest with the neighboring district, and the day you must reach. Below it are the panel buttons: Water (Q), Season (E), Log (T), Diary (Y), Help (H). Coloured badges over buildings show what each is for: a drop for water, a bolt for power, a crate for storage, a sprout for food.
+Under the minimap on the left is your list of **goals**: days until the next season, the audit targets with check marks (water, food, mood), the grant contest with the neighboring district, and the day you must reach. Below it are the panel buttons: Water (Q), Season (E), Log (T), Diary (Y), Help (H). Coloured badges over buildings show what each is for: a drop for water, a bolt for power, a crate for storage, a sprout for food.
 
 ## What you see at the top
 
@@ -133,7 +136,7 @@ Also: a screenshot of the ending screen ("SUMMARY") and the `analytics` folder �
 
 ## Known limitations of the test build
 
-- One region, two patrons (the League and the Directorate), 30 in-game days.
+- One region, two patrons (the League and the Directorate), 40 in-game days.
 - Art is being replaced: some buildings and all decoration are still placeholder.
 - The English localization is new: please report any untranslated or awkward text.
 - No mobile versions and no gamepad.

@@ -6,5 +6,7 @@ func process_tick() -> void:
 	for buff: Dictionary in buffs:
 		var remaining: float = buff.get("remaining", 0.0) as float
 		remaining -= 1.0
+		if buff.has("until_season_end") and buff["until_season_end"] != GameStateStore.climate().get("season_id", ""):
+			remaining = 0.0
 		buff["remaining"] = remaining
 	GameStateStore.clear_expired_buffs()
