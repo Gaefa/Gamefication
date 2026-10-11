@@ -1254,12 +1254,13 @@
     "body_en": "To the Administrator. From settlers of the camp beyond the eastern boundary.\n\nWe are three families, eleven people, four of them children. The camp is tents, and the Dust cannot be survived in tents. We ask to be let into the district until the season ends. We can work: two masons and a fitter.\n\nWe have no food of our own. We will take water at the common ration.\n\nYour residents told us the decision is yours.",
     "options": [
       {
-        "text": "Пустить всех и поставить на паёк (30 еды)",
-        "text_en": "Let them all in and put them on rations (30 food)",
+        "text": "Пустить всех и поставить на паёк (30 еды, +11 жителей, если есть места)",
+        "text_en": "Let them all in and put them on rations (30 food, +11 residents if there is room)",
         "cost": {
           "res_food": 30
         },
         "effects": {
+          "add_residents": 11,
           "add_buff": {
             "id": "camp_workers",
             "name": "Работники из лагеря",
@@ -1274,9 +1275,10 @@
         }
       },
       {
-        "text": "Пустить только работников",
-        "text_en": "Let in the workers only",
+        "text": "Пустить только работников (+3 жителя, если есть места)",
+        "text_en": "Let in the workers only (+3 residents if there is room)",
         "effects": {
+          "add_residents": 3,
           "add_buff": {
             "id": "camp_workers",
             "name": "Работники из лагеря",
@@ -1944,6 +1946,94 @@
           "style": "pragmatist",
           "message": "Половина ушла. Объяснительная подшита без комментариев.",
           "message_en": "Half went. The explanation was filed without comment."
+        }
+      }
+    ]
+  },
+  {
+    "id": "petition.settlers_road",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 6,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "families"],
+    "title": "Заявление — люди с восточной дороги",
+    "title_en": "Petition — People from the East Road",
+    "body": "Администратору. Передано через пост у дороги.\n\nНас пятеро, пришли с восточной дороги: две семьи. Двое работали на насосах Компании, пока её не стало. Просим место в бараке и работу.\n\nЕды с собой на день. Если места нет, пойдём дальше, к Сухому Логу.",
+    "body_en": "To the Administrator. Handed in at the road post.\n\nFive of us came up the east road: two families. Two of us worked the Company's pumps until it folded. We ask for a place in the barracks and for work.\n\nWe have food for a day. If there is no room we go on, to Dry Gully.",
+    "options": [
+      {
+        "text": "Принять всех (20 еды, +5 жителей, если есть места)",
+        "text_en": "Take them all (20 food, +5 residents if there is room)",
+        "cost": {
+          "res_food": 20
+        },
+        "effects": {
+          "add_residents": 5,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Семьи разместили. Двое с утра вышли к насосу.",
+          "message_en": "The families were housed. Two of them were at the pump by morning."
+        }
+      },
+      {
+        "text": "Принять только насосников (+2 жителя)",
+        "text_en": "Take the pump hands only (+2 residents)",
+        "effects": {
+          "add_residents": 2,
+          "stat_unrest_pressure": 2,
+          "style": "pragmatist",
+          "message": "Двое остались, семьи ушли к Сухому Логу. В бараках об этом говорят.",
+          "message_en": "Two stayed; the families went on to Dry Gully. The barracks talk about it."
+        }
+      },
+      {
+        "text": "Отказать: мест нет",
+        "text_en": "Refuse: no room",
+        "effects": {
+          "stat_city_trust": -2,
+          "message": "Люди ушли по дороге. К вечеру о них забыли.",
+          "message_en": "They went on down the road. By evening they were forgotten."
+        }
+      }
+    ]
+  },
+  {
+    "id": "petition.grach_people",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 11,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "shadow"],
+    "title": "Записка — Грач нашёл людей",
+    "title_en": "Note — Rook Found People",
+    "body": "Записка через секретаря, тот же почерк.\n\n«администратору. есть четверо, хотят в район, работящие, без бумаг. приведу ночью, лига не узнает. с вас 40 денег на дорогу и чтобы в бараке было место. нет места, не обижусь.»",
+    "body_en": "A note through the secretary, the same handwriting.\n\n\"to the administrator. i have four who want in, hard workers, no papers. i bring them at night, the league will not know. 40 money for the road, and a place in the barracks. no place, no offence.\"",
+    "options": [
+      {
+        "text": "Заплатить Грачу (40 денег, +4 жителя, если есть места)",
+        "text_en": "Pay Rook (40 money, +4 residents if there is room)",
+        "cost": {
+          "res_money": 40
+        },
+        "effects": {
+          "add_residents": 4,
+          "stat_league_trust": -3,
+          "style": "pragmatist",
+          "message": "Четверо пришли ночью. Утром о них знал весь район; Лига узнала позже.",
+          "message_en": "Four came in the night. By morning the whole district knew; the League found out later."
+        }
+      },
+      {
+        "text": "Отказать: людей без бумаг не берём",
+        "text_en": "Refuse: no one without papers",
+        "effects": {
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Грач пожал плечами и увёл их к Сухому Логу.",
+          "message_en": "Rook shrugged and took them on to Dry Gully."
         }
       }
     ]

@@ -336,6 +336,27 @@ func _economy_rules() -> void:
 	pop_state["peak"] = 20
 	_check(not MandateManager.people_staying(true), "…who are not the remains of twenty")
 
+	# Growth: at the starting mood newcomers fill an empty barrack within days, and a card can bring people in.
+	_new_game("appointed_administrator")
+	_ticks(1)  # the first census settles the starting district; a barrack built later starts empty
+	_place(Vector2i(-1, 2), "bld_shelter")  # by the starter road, inside the pump's radius
+	orch.road_graph.invalidate()
+	orch.infrastructure_sys.process_tick()
+	_ticks(1)
+	var before_growth: int = GameStateStore.population().get("total", 0) as int
+	GameStateStore.population()["happiness"] = ProgressionSystem.CONTENT_HAPPINESS
+	for _d: int in 4:
+		GameStateStore.population()["happiness"] = ProgressionSystem.CONTENT_HAPPINESS
+		GameStateStore.set_resource("res_food", 200.0)
+		GameStateStore.set_resource("res_water_stockpile", 400.0)
+		_ticks(300)
+	var after_growth: int = GameStateStore.population().get("total", 0) as int
+	_check(after_growth >= before_growth + 3, "at the starting mood a second barrack fills within four days (%d → %d)" % [before_growth, after_growth])
+	EventManager.call("_apply_effects", {"add_residents": 50})
+	_check((GameStateStore.population().get("total", 0) as int) == (GameStateStore.population().get("capacity", 0) as int), "people brought by a card fill the free beds and no more (%d of %d)" % [GameStateStore.population().get("total", 0) as int, GameStateStore.population().get("capacity", 0) as int])
+	_check(is_equal_approx(RepairBuildingCommand.REPAIR_COST_COINS, 10.0), "a repair costs 10")
+	pop_state = GameStateStore.population()
+
 	# The term ends on day 40 for everyone: a hut by a pump is not renewed.
 	pop_state["total"] = 4
 	pop_state["peak"] = 4
