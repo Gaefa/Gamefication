@@ -79,6 +79,9 @@ func _run() -> void:
 	hud.call("toggle_settings")
 	await _shot("16_settings")
 	hud.call("toggle_settings")
+	hud.call("toggle_pause_menu")
+	await _shot("16_pause")
+	hud.call("toggle_pause_menu")
 	EventBus.toast_requested.emit(Localization.ru_en("Недостаточно ресурсов", "Not enough resources"), 4.0)
 	await _shot("17_toast")
 	TutorialManager.enabled_for_next_run = true

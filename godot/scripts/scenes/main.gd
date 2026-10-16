@@ -14,6 +14,7 @@ var _cursor_kind: String = ""
 
 
 func _ready() -> void:
+	_apply_saved_window_mode()
 	get_window().size_changed.connect(_apply_ui_scale)
 	_apply_ui_scale()
 	_orchestrator = GameOrchestrator.new()
@@ -127,13 +128,6 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		var ke := event as InputEventKey
-		if ke.pressed and not ke.echo:
-			_handle_key(ke)
-
-
 func _is_global_hotkey(ke: InputEventKey) -> bool:
 	return _matches_key(ke, KEY_ESCAPE) \
 		or _matches_key(ke, KEY_V) \
@@ -191,20 +185,26 @@ func _handle_click() -> void:
 
 func _handle_key(ke: InputEventKey) -> void:
 	if _matches_key(ke, KEY_ESCAPE):
-		_build_mode = ""
-		EventBus.build_mode_changed.emit("")
+		# Escape, in order: the open panel, the build mode, then the pause menu.
+		if UiModals.close_current():
+			pass
+		elif _build_mode != "":
+			_build_mode = ""
+			EventBus.build_mode_changed.emit("")
+		elif _world_actions_allowed() and _hud and _hud.has_method("toggle_pause_menu"):
+			_hud.call("toggle_pause_menu")
 	elif _matches_key(ke, KEY_V) or Input.is_action_just_pressed("toggle_ranges"):
 		toggle_ranges()
 	elif _matches_key(ke, KEY_L):
 		toggle_logistics_lens()
 	elif _matches_key(ke, KEY_H):
-		if _hud and _hud.has_method("toggle_help"):
+		if _hud and _hud.has_method("toggle_help") and not _under_the_desk("help"):
 			_hud.call("toggle_help")
 	elif _matches_key(ke, KEY_G) or Input.is_action_just_pressed("toggle_governance"):
-		if _hud and _hud.has_method("toggle_governance"):
+		if _hud and _hud.has_method("toggle_governance") and not _under_the_desk("governance"):
 			_hud.call("toggle_governance")
 	elif _matches_key(ke, KEY_O) or Input.is_action_just_pressed("toggle_settings"):
-		if _hud and _hud.has_method("toggle_settings"):
+		if _hud and _hud.has_method("toggle_settings") and not _under_the_desk("settings"):
 			_hud.call("toggle_settings")
 	elif _matches_key(ke, KEY_U) or Input.is_action_just_pressed("upgrade_building"):
 		if _world_actions_allowed() and _selected_coord != Vector2i(-9999, -9999):
@@ -228,9 +228,37 @@ func _handle_key(ke: InputEventKey) -> void:
 
 
 ## Upgrade / repair / bulldoze act on the world, so they work only while the day is running:
-## not under the Desk, an urgent card, the start menu or the finale.
+## not under the Desk, an urgent card, the start menu, the finale or an open panel.
 func _world_actions_allowed() -> bool:
-	return SimulationRunner.run_active and SimulationRunner.current_phase == SimulationRunner.Phase.DAY and not SimulationRunner.card_open
+	return SimulationRunner.run_active and SimulationRunner.current_phase == SimulationRunner.Phase.DAY \
+		and not SimulationRunner.card_open and not UiModals.is_open()
+
+
+## HUD panels sit below the Desk: a hotkey must not open one invisibly under a letter.
+func _under_the_desk(panel_id: String) -> bool:
+	if UiModals.is_open(panel_id):
+		return false  # closing is always allowed
+	return SimulationRunner.card_open or (SimulationRunner.run_active and SimulationRunner.current_phase == SimulationRunner.Phase.EVENING)
+
+
+const SETTINGS_PATH := "user://settings.cfg"
+
+
+## The player's window choice survives restarts, next to the saved language.
+func _apply_saved_window_mode() -> void:
+	var config := ConfigFile.new()
+	if config.load(SETTINGS_PATH) != OK:
+		return
+	if config.get_value("display", "fullscreen", false) as bool:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
+
+static func set_fullscreen(on: bool) -> void:
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if on else DisplayServer.WINDOW_MODE_WINDOWED)
+	var config := ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	config.set_value("display", "fullscreen", on)
+	config.save(SETTINGS_PATH)
 
 
 var _bulldoze_armed: Vector2i = Vector2i(-9999, -9999)

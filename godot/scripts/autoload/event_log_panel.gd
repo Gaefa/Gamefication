@@ -10,6 +10,7 @@ var _panel_visible: bool = false
 
 # UI
 var _layer: CanvasLayer
+var _root: Control
 var _list: VBoxContainer
 var _title: Label
 var _close_btn: Button
@@ -49,7 +50,8 @@ func _build_ui() -> void:
 	_layer.visible = false
 	add_child(_layer)
 
-	var root := Control.new()
+	_root = Control.new()
+	var root: Control = _root
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	_layer.add_child(root)
@@ -104,6 +106,11 @@ func _toggle() -> void:
 	if _panel_visible:
 		_rebuild_list()
 	_layer.visible = _panel_visible
+	if _panel_visible:
+		UiModals.opened("log", _toggle)
+		UiModals.reveal(_root)
+	else:
+		UiModals.closed("log")
 
 
 func _rebuild_list() -> void:
