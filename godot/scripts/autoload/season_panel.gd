@@ -36,8 +36,8 @@ func _on_locale_changed(_locale: String) -> void:
 
 
 func _apply_static_text() -> void:
-	_title.text = Localization.ru_en("СЕЗОН И ПРОГНОЗ", "SEASON AND FORECAST")
-	_close_btn.text = Localization.ru_en("Закрыть (E)", "Close (E)")
+	_title.text = Localization.ru_en("Сезон и прогноз", "Season and forecast")
+	_close_btn.tooltip_text = Localization.ru_en("Закрыть (E или Esc)", "Close (E or Esc)")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -129,7 +129,7 @@ func _compose() -> String:
 	lines.append(Localization.ru_en("— Запас воды: %d  (%s)", "— Water reserve: %d  (%s)") % [water, _net_text(water_net)])
 	lines.append(Localization.ru_en("— Запас еды: %d  (%s)", "— Food reserve: %d  (%s)") % [food, _net_text(food_net)])
 	if water_net < 0.0 or food_net < 0.0:
-		lines.append(Localization.ru_en("[color=#d98c66]Запас тает — в Пыль расход растёт. Готовьтесь в Окно.[/color]", "[color=#d98c66]Reserves are shrinking; use rises in the Dust. Prepare during the Window.[/color]"))
+		lines.append(Localization.ru_en("[color=#e6902b]Запас тает — в Пыль расход растёт. Готовьтесь в Окно.[/color]", "[color=#e6902b]Reserves are shrinking; use rises in the Dust. Prepare during the Window.[/color]"))
 
 	return "\n".join(lines)
 
@@ -171,9 +171,9 @@ func _intensity_word(intensity: String) -> String:
 
 func _net_text(net: float) -> String:
 	if net > 0.05:
-		return Localization.ru_en("[color=#7fbf7f]+%.1f/день[/color]", "[color=#7fbf7f]+%.1f/day[/color]") % net
+		return Localization.ru_en("[color=#86c45a]+%.1f/день[/color]", "[color=#86c45a]+%.1f/day[/color]") % net
 	if net < -0.05:
-		return Localization.ru_en("[color=#d98c66]%.1f/день[/color]", "[color=#d98c66]%.1f/day[/color]") % net
+		return Localization.ru_en("[color=#e6902b]%.1f/день[/color]", "[color=#e6902b]%.1f/day[/color]") % net
 	return Localization.ru_en("ровно", "steady")
 
 
@@ -188,47 +188,20 @@ func _build_ui() -> void:
 	_root.mouse_filter = Control.MOUSE_FILTER_STOP
 	_layer.add_child(_root)
 
-	var bg := ColorRect.new()
-	bg.color = Color(0.04, 0.03, 0.025, 0.9)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_STOP
-	_root.add_child(bg)
-
-	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(640, 500)
-	panel.position = Vector2(-320, -250)
-	bg.add_child(panel)
-
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_top", 22)
-	margin.add_theme_constant_override("margin_bottom", 22)
-	panel.add_child(margin)
-
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 12)
-	margin.add_child(vbox)
-
-	_title = Label.new()
-	var title := _title
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	UiStyle.title(title, 22, UiStyle.ACCENT)
-	vbox.add_child(title)
-
-	vbox.add_child(HSeparator.new())
+	var frame: Dictionary = UiStyle.modal(_root)
+	(frame["dim"] as Control).visible = true
+	_title = frame["title"] as Label
+	_close_btn = frame["close"] as Button
+	_close_btn.pressed.connect(_toggle)
+	var vbox: VBoxContainer = frame["body"] as VBoxContainer
 
 	_body = RichTextLabel.new()
 	_body.bbcode_enabled = true
 	_body.fit_content = false
 	_body.scroll_active = true
 	_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_body.custom_minimum_size = Vector2(580, 360)
+	_body.custom_minimum_size = Vector2(592, 360)
 	_body.add_theme_font_size_override("normal_font_size", 14)
 	vbox.add_child(_body)
 
-	_close_btn = Button.new()
-	_close_btn.pressed.connect(_toggle)
-	vbox.add_child(_close_btn)
 	_apply_static_text()

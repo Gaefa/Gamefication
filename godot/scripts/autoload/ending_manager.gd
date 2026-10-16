@@ -228,7 +228,7 @@ func _show_finale(def: Dictionary, ending_id: String) -> void:
 	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
 	_title_label.add_theme_color_override(
 		"font_color",
-		Color(0.6, 0.9, 0.6) if kind == "win" else Color(0.9, 0.55, 0.5)
+		UiStyle.GOOD if kind == "win" else UiStyle.BAD
 	)
 	_body_label.text = Localization.content_text(def, "body", "") + _replacement_epilogue(ending_id) + _style_epilogue()
 	_theses_label.text = _theses()
@@ -266,7 +266,7 @@ func _theses() -> String:
 			first.get("day", 0) as int])
 
 	var pop: int = GameStateStore.population().get("total", 0) as int
-	lines.append(Localization.ru_en("• [b]Жители:[/b] было до %d, осталось %d", "• [b]Residents:[/b] peak %d, remaining %d") % [maxi(_peak_pop, pop), pop])
+	lines.append(Localization.ru_en("• [b]Жители:[/b] %d на пике, %d к концу срока", "• [b]Residents:[/b] %d at the peak, %d at the end of the term") % [maxi(_peak_pop, pop), pop])
 	return "\n\n".join(lines)
 
 

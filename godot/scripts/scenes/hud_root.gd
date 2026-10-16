@@ -43,7 +43,7 @@ var _info_actions: HBoxContainer
 var _upgrade_button: Button
 var _repair_button: Button
 var _bulldoze_button: Button
-const INFO_W := 380.0
+const INFO_W := 260.0  # same as LEFT_W: the left edge is one column
 
 var _toast_label: Label
 var _toast_panel: PanelContainer
@@ -51,16 +51,18 @@ var _toast_timer: float = 0.0
 
 var _start_panel: PanelContainer
 var _start_visible: bool = true
-var _help_panel: PanelContainer
+var _help_panel: Control  # the modal frame (its dim); see UiStyle.modal
 var _help_label: Label
 var _help_visible: bool = false
-var _governance_panel: PanelContainer
+var _governance_panel: Control  # the modal frame (its dim); see UiStyle.modal
 var _governance_visible: bool = false
 var _governance_tabs: TabContainer
-var _city_panel: PanelContainer
+var _city_panel: Control  # the modal frame (its dim); see UiStyle.modal
 var _city_visible: bool = false
-var _settings_panel: PanelContainer
-var _pause_panel: PanelContainer
+var _settings_panel: Control  # the modal frame (its dim); see UiStyle.modal
+var _settings_body: VBoxContainer
+var _city_body: VBoxContainer
+var _pause_panel: Control  # the modal frame (its dim); see UiStyle.modal
 var _pause_visible: bool = false
 var _speed_buttons: Array[Button] = []
 var _settings_visible: bool = false
@@ -429,7 +431,7 @@ func _position_below_resource_bar() -> void:
 
 var _left_column: VBoxContainer
 var _goal_rows: Dictionary = {}  # id → {"row": Control, "mark": Label, "name": Label, "value": Label}
-const LEFT_W := 236.0
+const LEFT_W := 260.0
 const GOAL_ROWS := ["dust", "audit", "water", "food", "mood", "spoilage", "grant", "finish"]
 
 ## Panels in the order of their keys: Q E T Y sit in one row next to WASD (W and R are taken).
@@ -513,11 +515,11 @@ func _set_goal(id: String, shown: bool, done: bool = false, title: String = "", 
 		return
 	var mark: Label = row["mark"] as Label
 	mark.text = "" if heading else ("✔" if done else "○")
-	mark.add_theme_color_override("font_color", UiStyle.GOOD if done else UiStyle.WARN)
+	mark.add_theme_color_override("font_color", UiStyle.GOOD if done else UiStyle.TEXT_MUTE)
 	(row["name"] as Label).text = title
 	(row["name"] as Label).add_theme_color_override("font_color", UiStyle.TEXT_DIM if heading else UiStyle.TEXT)
 	(row["value"] as Label).text = value
-	(row["value"] as Label).add_theme_color_override("font_color", UiStyle.GOOD if done else UiStyle.WARN)
+	(row["value"] as Label).add_theme_color_override("font_color", UiStyle.GOOD if done else UiStyle.TEXT_DIM)
 
 
 func _open_panel(panel_id: String) -> void:
@@ -622,7 +624,7 @@ func _update_resource_bar() -> void:
 		var per_day: float = (production.get(res_id, 0.0) as float) * float(SimulationRunner.TICKS_PER_DAY)
 		var value_label: Label = chip["value"] as Label
 		value_label.text = str(int(val))
-		value_label.add_theme_color_override("font_color", Color(0.95, 0.4, 0.35) if val <= 0.0 else Color(0.97, 0.95, 0.88))
+		value_label.add_theme_color_override("font_color", UiStyle.BAD if val <= 0.0 else UiStyle.TEXT)
 		var delta_label: Label = chip["delta"] as Label
 		if per_day > 0.0 and val >= GameStateStore.get_cap(res_id) - 0.5:
 			# Full store: the surplus is lost, so a big "+N" would be a lie.
@@ -632,7 +634,7 @@ func _update_resource_bar() -> void:
 			delta_label.text = ""
 		else:
 			delta_label.text = "%+d" % int(round(per_day))
-			delta_label.add_theme_color_override("font_color", Color(0.55, 0.85, 0.55) if per_day > 0.0 else Color(0.95, 0.5, 0.4))
+			delta_label.add_theme_color_override("font_color", UiStyle.GOOD if per_day > 0.0 else UiStyle.BAD)
 		var res_name: String = Localization.content_text(ContentDB.get_resource_def(res_id), "label", res_id)
 		(chip["panel"] as Control).tooltip_text = "%s: %d · %s %+d" % [
 			res_name, int(val), Localization.ru_en("в день", "per day"), int(round(per_day))]
@@ -750,7 +752,7 @@ func _rival_bb() -> String:
 	if ours <= theirs - RivalManager.AUDIT_EDGE:
 		color = "#e6902b"
 	elif ours >= theirs + RivalManager.AUDIT_EDGE:
-		color = "#7fbf7f"
+		color = UiStyle.hex(UiStyle.GOOD)
 	return "%s %.0f · [color=%s]%s %.0f[/color]" % [
 		Localization.ru_en("Восс", "Voss"), theirs, color, Localization.ru_en("вы", "you"), ours]
 
@@ -1457,10 +1459,7 @@ func _cost_bb(cost: Dictionary) -> String:
 
 
 func _get_welcome_text() -> String:
-	return "%s\n%s" % [
-		_heading_bb(Localization.ru_en("Управление", "Controls")),
-		_dim_bb(Localization.t("ui.welcome.text", "Осмотр: клик по клетке\nКамера: WASD · Зум: колесо\nПауза: Пробел · H — справка")),
-	]
+	return _dim_bb(Localization.ru_en("Нажмите на клетку, чтобы осмотреть здание. Управление: H.", "Click a tile to inspect a building. Controls: H."))
 
 
 func _on_selection_changed(coord: Vector2i) -> void:
@@ -1654,44 +1653,19 @@ func _blocked_outputs(coord: Vector2i, type_id: String, produces: Dictionary, fl
 # ===========================================================
 
 func _build_help_panel() -> void:
-	_help_panel = PanelContainer.new()
-	_help_panel.set_anchors_preset(PRESET_CENTER)
-	_help_panel.size = Vector2(560, 420)
-	_help_panel.position = Vector2(-280, -210)
-	_help_panel.visible = false
-	_help_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(_help_panel)
-
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 12)
-	margin.add_theme_constant_override("margin_top", 12)
-	margin.add_theme_constant_override("margin_right", 12)
-	margin.add_theme_constant_override("margin_bottom", 12)
-	_help_panel.add_child(margin)
-
-	var help_box := VBoxContainer.new()
-	help_box.add_theme_constant_override("separation", 8)
-	margin.add_child(help_box)
-	var help_head := HBoxContainer.new()
-	help_box.add_child(help_head)
-	var help_title := Label.new()
-	_loc(help_title, func() -> String: return Localization.ru_en("Справка", "Help"))
-	UiStyle.title(help_title, 22, UiStyle.ACCENT)
-	help_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	help_head.add_child(help_title)
-	var help_close := Button.new()
-	help_close.text = "✕"
-	_loc(help_close, func() -> String: return Localization.ru_en("Закрыть (H)", "Close (H)"), "tooltip_text")
-	help_close.custom_minimum_size = Vector2(34, 30)
-	help_close.pressed.connect(toggle_help)
-	help_head.add_child(help_close)
+	var frame: Dictionary = UiStyle.modal(self)
+	_help_panel = frame["dim"] as Control
+	_loc(frame["title"] as Label, func() -> String: return Localization.ru_en("Справка", "Help"))
+	_loc(frame["close"] as Button, func() -> String: return Localization.ru_en("Закрыть (H или Esc)", "Close (H or Esc)"), "tooltip_text")
+	(frame["close"] as Button).pressed.connect(toggle_help)
+	var help_box: VBoxContainer = frame["body"] as VBoxContainer
 
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(530, 350)
+	scroll.custom_minimum_size = Vector2(592, 380)
 	help_box.add_child(scroll)
 
 	_help_label = Label.new()
-	_help_label.custom_minimum_size.x = 510
+	_help_label.custom_minimum_size.x = 560
 	_help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_help_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_help_label.add_theme_font_size_override("font_size", 13)
@@ -1714,6 +1688,7 @@ func _set_help(on: bool) -> void:
 	_help_visible = on
 	_help_panel.visible = on
 	if on:
+		_help_panel.move_to_front()  # above the title screen, where H works too
 		UiModals.opened("help", func() -> void: _set_help(false))
 		UiModals.reveal(_help_panel)
 	else:
@@ -1732,6 +1707,7 @@ func _build_start_panel() -> void:
 	_start_dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_start_dim)
 	OnboardingManager.suppressed = true
+	_set_chrome_visible(false)
 
 	_start_panel = PanelContainer.new()
 	_start_panel.set_anchors_preset(PRESET_CENTER)
@@ -1885,16 +1861,12 @@ func _build_main_menu_options(container: Control) -> void:
 	container.add_child(btn_continue)
 
 	var tutorial_text: String = Localization.ru_en("Обучение: первые пять минут под руководством", "Tutorial: a guided first five minutes")
-	var tutorial_box := Button.new()
-	tutorial_box.toggle_mode = true
-	tutorial_box.flat = true
+	var tutorial_box := CheckBox.new()
 	tutorial_box.button_pressed = TutorialManager.enabled_for_next_run
-	tutorial_box.text = ("✔  " if tutorial_box.button_pressed else "○  ") + tutorial_text
+	tutorial_box.text = tutorial_text
 	tutorial_box.add_theme_font_size_override("font_size", 13)
 	tutorial_box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	tutorial_box.toggled.connect(func(on: bool) -> void:
-		TutorialManager.enabled_for_next_run = on
-		tutorial_box.text = ("✔  " if on else "○  ") + tutorial_text)
+	tutorial_box.toggled.connect(func(on: bool) -> void: TutorialManager.enabled_for_next_run = on)
 	container.add_child(tutorial_box)
 
 	var spacer := Control.new()
@@ -2101,6 +2073,15 @@ func _close_start_panel() -> void:
 	_start_panel.visible = false
 	_start_dim.visible = false
 	OnboardingManager.suppressed = false
+	_set_chrome_visible(true)
+
+
+## The in-game chrome (top bar, build menu, goals, info card) has nothing to say under
+## the title screen; a menu over a bare map reads as a menu.
+func _set_chrome_visible(on: bool) -> void:
+	for node: Control in [_resource_bar, _build_panel, _left_column, _info_panel, _minimap_panel]:
+		if node != null:
+			node.visible = on
 
 
 func _on_new_game_started() -> void:
@@ -2115,13 +2096,12 @@ func _on_new_game_started() -> void:
 # ===========================================================
 
 func _build_city_panel() -> void:
-	_city_panel = PanelContainer.new()
-	_city_panel.set_anchors_preset(PRESET_CENTER)
-	_city_panel.size = Vector2(560, 500)
-	_city_panel.position = Vector2(-280, -240)
-	_city_panel.visible = false
-	_city_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(_city_panel)
+	var frame: Dictionary = UiStyle.modal(self)
+	_city_panel = frame["dim"] as Control
+	_city_body = frame["body"] as VBoxContainer
+	_loc(frame["title"] as Label, func() -> String: return Localization.t("ui.city.title", "City Level"))
+	_loc(frame["close"] as Button, func() -> String: return Localization.ru_en("Закрыть (Esc)", "Close (Esc)"), "tooltip_text")
+	(frame["close"] as Button).pressed.connect(toggle_city_panel)
 	_rebuild_city_panel()
 
 
@@ -2134,6 +2114,7 @@ func _set_city_panel(on: bool) -> void:
 	_city_panel.visible = on
 	if on:
 		_rebuild_city_panel()
+		_city_panel.move_to_front()
 		UiModals.opened("city", func() -> void: _set_city_panel(false))
 		UiModals.reveal(_city_panel)
 	else:
@@ -2141,42 +2122,22 @@ func _set_city_panel(on: bool) -> void:
 
 
 func _rebuild_city_panel() -> void:
-	if _city_panel == null:
+	if _city_body == null:
 		return
-	for c: Node in _city_panel.get_children():
+	for c: Node in _city_body.get_children():
+		_city_body.remove_child(c)
 		c.queue_free()
 
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 14)
-	margin.add_theme_constant_override("margin_top", 14)
-	margin.add_theme_constant_override("margin_right", 14)
-	margin.add_theme_constant_override("margin_bottom", 14)
-	_city_panel.add_child(margin)
-
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(532, 512)
+	scroll.custom_minimum_size = Vector2(592, 420)
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	margin.add_child(scroll)
+	_city_body.add_child(scroll)
 
 	var root := VBoxContainer.new()
-	root.custom_minimum_size.x = 520
+	root.custom_minimum_size.x = 576
 	root.add_theme_constant_override("separation", 10)
 	scroll.add_child(root)
-
-	var header := HBoxContainer.new()
-	root.add_child(header)
-
-	var title := Label.new()
-	title.text = Localization.t("ui.city.title", "City Level")
-	UiStyle.title(title, 22, UiStyle.ACCENT)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title)
-
-	var close_btn := Button.new()
-	close_btn.text = Localization.t("ui.common.close", "Close")
-	close_btn.pressed.connect(toggle_city_panel)
-	header.add_child(close_btn)
 
 	var current_level: int = GameStateStore.progression().city_level as int
 	var current_def: Dictionary = ContentDB.get_level_def(current_level)
@@ -2225,7 +2186,7 @@ func _rebuild_city_panel() -> void:
 		var line := Label.new()
 		line.text = "%s: %d/%d" % [Localization.content_text(rdef, "label", res_id), int(have), int(needed)]
 		line.add_theme_font_size_override("font_size", 12)
-		line.add_theme_color_override("font_color", Color(0.55, 1.0, 0.55) if have >= needed else Color(1.0, 0.55, 0.45))
+		line.add_theme_color_override("font_color", UiStyle.GOOD if have >= needed else UiStyle.BAD)
 		root.add_child(line)
 		if have < needed:
 			can_upgrade = false
@@ -2253,15 +2214,23 @@ func _rebuild_city_panel() -> void:
 	var sep := HSeparator.new()
 	root.add_child(sep)
 
-	var diag_title := Label.new()
-	diag_title.text = Localization.t("ui.city.diagnostics", "City Diagnostics")
-	diag_title.add_theme_font_size_override("font_size", 14)
+	# Raw utility figures for testers' bug reports, folded away from players.
+	var diag_title := Button.new()
+	diag_title.flat = true
+	diag_title.text = "▸ " + Localization.t("ui.city.diagnostics", "City Diagnostics")
+	diag_title.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	diag_title.add_theme_font_size_override("font_size", 12)
+	diag_title.add_theme_color_override("font_color", UiStyle.TEXT_MUTE)
 	root.add_child(diag_title)
 
 	var diag := Label.new()
+	diag.visible = false
+	diag_title.pressed.connect(func() -> void:
+		diag.visible = not diag.visible
+		diag_title.text = ("▾ " if diag.visible else "▸ ") + Localization.t("ui.city.diagnostics", "City Diagnostics"))
 	diag.text = _build_city_diagnostics_text()
 	diag.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	diag.custom_minimum_size.x = 520
+	diag.custom_minimum_size.x = 560
 	diag.add_theme_font_size_override("font_size", 12)
 	diag.add_theme_constant_override("line_spacing", 3)
 	diag.add_theme_color_override("font_color", Color(0.9, 0.95, 0.85))
@@ -2350,13 +2319,12 @@ func _status_word(ok: bool) -> String:
 # ===========================================================
 
 func _build_settings_panel() -> void:
-	_settings_panel = PanelContainer.new()
-	_settings_panel.set_anchors_preset(PRESET_CENTER)
-	_settings_panel.size = Vector2(420, 220)
-	_settings_panel.position = Vector2(-210, -110)
-	_settings_panel.visible = false
-	_settings_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(_settings_panel)
+	var frame: Dictionary = UiStyle.modal(self, 480.0)
+	_settings_panel = frame["dim"] as Control
+	_settings_body = frame["body"] as VBoxContainer
+	_loc(frame["title"] as Label, func() -> String: return Localization.t("ui.settings.title", "Options"))
+	_loc(frame["close"] as Button, func() -> String: return Localization.ru_en("Закрыть (O или Esc)", "Close (O or Esc)"), "tooltip_text")
+	(frame["close"] as Button).pressed.connect(toggle_settings)
 	_rebuild_settings_panel()
 
 
@@ -2369,6 +2337,7 @@ func _set_settings(on: bool) -> void:
 	_settings_panel.visible = on
 	if on:
 		_rebuild_settings_panel()
+		_settings_panel.move_to_front()  # above the title screen, where O works too
 		UiModals.opened("settings", func() -> void: _set_settings(false))
 		UiModals.reveal(_settings_panel)
 	else:
@@ -2376,35 +2345,15 @@ func _set_settings(on: bool) -> void:
 
 
 func _rebuild_settings_panel() -> void:
-	if _settings_panel == null:
+	if _settings_body == null:
 		return
-	for c: Node in _settings_panel.get_children():
+	for c: Node in _settings_body.get_children():
+		_settings_body.remove_child(c)
 		c.queue_free()
-
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 14)
-	margin.add_theme_constant_override("margin_top", 14)
-	margin.add_theme_constant_override("margin_right", 14)
-	margin.add_theme_constant_override("margin_bottom", 14)
-	_settings_panel.add_child(margin)
 
 	var root := VBoxContainer.new()
 	root.add_theme_constant_override("separation", 12)
-	margin.add_child(root)
-
-	var header := HBoxContainer.new()
-	root.add_child(header)
-
-	var title := Label.new()
-	title.text = Localization.t("ui.settings.title", "Options")
-	UiStyle.title(title, 22, UiStyle.ACCENT)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title)
-
-	var close_btn := Button.new()
-	close_btn.text = Localization.t("ui.common.close", "Close")
-	close_btn.pressed.connect(toggle_settings)
-	header.add_child(close_btn)
+	_settings_body.add_child(root)
 
 	var language_row := HBoxContainer.new()
 	language_row.add_theme_constant_override("separation", 10)
@@ -2475,27 +2424,12 @@ func _on_settings_language_selected(index: int) -> void:
 # ===========================================================
 
 func _build_pause_menu() -> void:
-	_pause_panel = PanelContainer.new()
-	_pause_panel.set_anchors_preset(PRESET_CENTER)
-	_pause_panel.size = Vector2(320, 260)
-	_pause_panel.position = Vector2(-160, -130)
-	_pause_panel.visible = false
-	_pause_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(_pause_panel)
-
-	var margin := MarginContainer.new()
-	for side: String in ["left", "top", "right", "bottom"]:
-		margin.add_theme_constant_override("margin_" + side, 18)
-	_pause_panel.add_child(margin)
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 10)
-	margin.add_child(column)
-
-	var title := Label.new()
-	_loc(title, func() -> String: return Localization.ru_en("Пауза", "Paused"))
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	UiStyle.title(title, 22, UiStyle.ACCENT)
-	column.add_child(title)
+	var frame: Dictionary = UiStyle.modal(self, 340.0)
+	_pause_panel = frame["dim"] as Control
+	_loc(frame["title"] as Label, func() -> String: return Localization.ru_en("Пауза", "Paused"))
+	_loc(frame["close"] as Button, func() -> String: return Localization.ru_en("Продолжить (Esc)", "Resume (Esc)"), "tooltip_text")
+	(frame["close"] as Button).pressed.connect(func() -> void: _set_pause_menu(false))
+	var column: VBoxContainer = frame["body"] as VBoxContainer
 
 	var resume := Button.new()
 	_loc(resume, func() -> String: return Localization.ru_en("Продолжить", "Resume"))
@@ -2534,6 +2468,7 @@ func _set_pause_menu(on: bool) -> void:
 	_pause_visible = on
 	_pause_panel.visible = on
 	if on:
+		_pause_panel.move_to_front()
 		UiModals.opened("pause", func() -> void: _set_pause_menu(false))
 		UiModals.reveal(_pause_panel)
 	else:
@@ -2559,43 +2494,17 @@ func _exit_to_menu() -> void:
 # ===========================================================
 
 func _build_governance_panel() -> void:
-	_governance_panel = PanelContainer.new()
-	_governance_panel.set_anchors_preset(PRESET_CENTER)
-	_governance_panel.size = Vector2(620, 500)
-	_governance_panel.position = Vector2(-310, -250)
-	_governance_panel.visible = false
-	_governance_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(_governance_panel)
-
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_top", 10)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_bottom", 10)
-	_governance_panel.add_child(margin)
-
-	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 8)
-	margin.add_child(root)
-
-	var header := HBoxContainer.new()
-	root.add_child(header)
-
-	var title := Label.new()
-	_loc(title, func() -> String: return Localization.t("ui.governance.title", "Governance"))
-	UiStyle.title(title, 22, UiStyle.ACCENT)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title)
-
-	var close_btn := Button.new()
-	_loc(close_btn, func() -> String: return Localization.t("ui.common.close", "Close"))
-	close_btn.pressed.connect(toggle_governance)
-	header.add_child(close_btn)
+	var frame: Dictionary = UiStyle.modal(self)
+	_governance_panel = frame["dim"] as Control
+	_loc(frame["title"] as Label, func() -> String: return Localization.t("ui.governance.title", "Governance"))
+	_loc(frame["close"] as Button, func() -> String: return Localization.ru_en("Закрыть (G или Esc)", "Close (G or Esc)"), "tooltip_text")
+	(frame["close"] as Button).pressed.connect(toggle_governance)
 
 	_governance_tabs = TabContainer.new()
+	_governance_tabs.custom_minimum_size = Vector2(592, 420)
 	_governance_tabs.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_governance_tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	root.add_child(_governance_tabs)
+	(frame["body"] as VBoxContainer).add_child(_governance_tabs)
 
 	_rebuild_governance_panel()
 
@@ -2609,6 +2518,7 @@ func _set_governance(on: bool) -> void:
 	_governance_panel.visible = on
 	if on:
 		_rebuild_governance_panel()
+		_governance_panel.move_to_front()
 		UiModals.opened("governance", func() -> void: _set_governance(false))
 		UiModals.reveal(_governance_panel)
 	else:
