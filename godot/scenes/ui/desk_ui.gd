@@ -158,6 +158,7 @@ func _on_critical_event_started(event_data: Dictionary) -> void:
 	_title_label.text = Localization.ru_en("СРОЧНО", "URGENT")
 	_show_event(0)
 	visible = true
+	UiModals.reveal(self, 0.18, 0.0)
 	EventBus.desk_opened.emit(_events)
 
 
@@ -175,6 +176,7 @@ func _on_evening_started(events: Array) -> void:
 		_show_event(_current_index)
 	
 	visible = true
+	UiModals.reveal(self, 0.18, 0.0)
 	EventBus.desk_opened.emit(_events)
 
 

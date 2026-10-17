@@ -60,6 +60,9 @@ var _governance_tabs: TabContainer
 var _city_panel: PanelContainer
 var _city_visible: bool = false
 var _settings_panel: PanelContainer
+var _pause_panel: PanelContainer
+var _pause_visible: bool = false
+var _speed_buttons: Array[Button] = []
 var _settings_visible: bool = false
 var _settings_language_select: OptionButton
 
@@ -93,6 +96,7 @@ func _ready() -> void:
 	_build_city_panel()
 	_build_governance_panel()
 	_build_settings_panel()
+	_build_pause_menu()
 	_connect_signals()
 	_set_active_category("Infrastructure")
 	_position_below_resource_bar.call_deferred()
@@ -329,7 +333,10 @@ func _build_day_clock() -> void:
 	_clock_panel.offset_left = -190
 	_clock_panel.offset_right = 190
 	_clock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	_loc(_clock_panel, func() -> String: return Localization.ru_en("Пробел — пауза · 1 / 2 / 3 — скорость", "Space — pause · 1 / 2 / 3 — speed"), "tooltip_text")
+	_loc(_clock_panel, func() -> String: return Localization.ru_en("Клик или Пробел — пауза · 1 / 2 / 3 — скорость · Esc — меню", "Click or Space — pause · 1 / 2 / 3 — speed · Esc — menu"), "tooltip_text")
+	_clock_panel.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+			SimulationRunner.toggle_pause())
 	var style: StyleBoxFlat = UiStyle.panel_box(6)
 	style.border_color = UiStyle.ACCENT_DIM
 	style.content_margin_left = 12
@@ -361,6 +368,18 @@ func _build_day_clock() -> void:
 	_clock_left.add_theme_font_size_override("font_size", 12)
 	_clock_left.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(_clock_left)
+	# ×1 ×2 ×3 under the mouse, not only under the keyboard.
+	_speed_buttons.clear()
+	for speed: int in [1, 2, 3]:
+		var btn := Button.new()
+		btn.text = "×%d" % speed
+		btn.toggle_mode = true
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.custom_minimum_size = Vector2(32, 22)
+		btn.add_theme_font_size_override("font_size", 11)
+		btn.pressed.connect(func() -> void: SimulationRunner.set_speed(float(speed)))
+		row.add_child(btn)
+		_speed_buttons.append(btn)
 	_update_day_clock()
 
 
@@ -387,6 +406,8 @@ func _update_day_clock() -> void:
 			color = Color(0.95, 0.65, 0.35)
 	_clock_left.text = text
 	_clock_left.add_theme_color_override("font_color", color)
+	for i: int in _speed_buttons.size():
+		_speed_buttons[i].set_pressed_no_signal(int(SimulationRunner.speed_scale) == i + 1)
 
 
 func _position_below_resource_bar() -> void:
@@ -1686,8 +1707,17 @@ func _get_help_text() -> String:
 
 
 func toggle_help() -> void:
-	_help_visible = not _help_visible
-	_help_panel.visible = _help_visible
+	_set_help(not _help_visible)
+
+
+func _set_help(on: bool) -> void:
+	_help_visible = on
+	_help_panel.visible = on
+	if on:
+		UiModals.opened("help", func() -> void: _set_help(false))
+		UiModals.reveal(_help_panel)
+	else:
+		UiModals.closed("help")
 
 
 # ===========================================================
@@ -2096,10 +2126,18 @@ func _build_city_panel() -> void:
 
 
 func toggle_city_panel() -> void:
-	_city_visible = not _city_visible
-	_city_panel.visible = _city_visible
-	if _city_visible:
+	_set_city_panel(not _city_visible)
+
+
+func _set_city_panel(on: bool) -> void:
+	_city_visible = on
+	_city_panel.visible = on
+	if on:
 		_rebuild_city_panel()
+		UiModals.opened("city", func() -> void: _set_city_panel(false))
+		UiModals.reveal(_city_panel)
+	else:
+		UiModals.closed("city")
 
 
 func _rebuild_city_panel() -> void:
@@ -2323,10 +2361,18 @@ func _build_settings_panel() -> void:
 
 
 func toggle_settings() -> void:
-	_settings_visible = not _settings_visible
-	_settings_panel.visible = _settings_visible
-	if _settings_visible:
+	_set_settings(not _settings_visible)
+
+
+func _set_settings(on: bool) -> void:
+	_settings_visible = on
+	_settings_panel.visible = on
+	if on:
 		_rebuild_settings_panel()
+		UiModals.opened("settings", func() -> void: _set_settings(false))
+		UiModals.reveal(_settings_panel)
+	else:
+		UiModals.closed("settings")
 
 
 func _rebuild_settings_panel() -> void:
@@ -2379,6 +2425,19 @@ func _rebuild_settings_panel() -> void:
 	_settings_language_select.item_selected.connect(_on_settings_language_selected)
 	language_row.add_child(_settings_language_select)
 
+	var screen_row := HBoxContainer.new()
+	screen_row.add_theme_constant_override("separation", 10)
+	root.add_child(screen_row)
+	var screen_label := Label.new()
+	screen_label.text = Localization.ru_en("Экран", "Screen")
+	screen_label.custom_minimum_size.x = 120
+	screen_row.add_child(screen_label)
+	var fullscreen := CheckButton.new()
+	fullscreen.text = Localization.ru_en("Полный экран", "Fullscreen")
+	fullscreen.button_pressed = DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
+	fullscreen.toggled.connect(func(on: bool) -> void: get_tree().current_scene.call("set_fullscreen", on))
+	screen_row.add_child(fullscreen)
+
 	var note := Label.new()
 	note.text = Localization.t("ui.settings.language_note", "Language is saved automatically.")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -2409,6 +2468,90 @@ func _on_settings_language_selected(index: int) -> void:
 		return
 	var locale := _settings_language_select.get_item_metadata(index) as String
 	Localization.set_locale(locale)
+
+
+# ===========================================================
+# PAUSE MENU (center) — Escape with nothing else open
+# ===========================================================
+
+func _build_pause_menu() -> void:
+	_pause_panel = PanelContainer.new()
+	_pause_panel.set_anchors_preset(PRESET_CENTER)
+	_pause_panel.size = Vector2(320, 260)
+	_pause_panel.position = Vector2(-160, -130)
+	_pause_panel.visible = false
+	_pause_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_pause_panel)
+
+	var margin := MarginContainer.new()
+	for side: String in ["left", "top", "right", "bottom"]:
+		margin.add_theme_constant_override("margin_" + side, 18)
+	_pause_panel.add_child(margin)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 10)
+	margin.add_child(column)
+
+	var title := Label.new()
+	_loc(title, func() -> String: return Localization.ru_en("Пауза", "Paused"))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	UiStyle.title(title, 22, UiStyle.ACCENT)
+	column.add_child(title)
+
+	var resume := Button.new()
+	_loc(resume, func() -> String: return Localization.ru_en("Продолжить", "Resume"))
+	UiStyle.primary(resume)
+	resume.custom_minimum_size.y = 40
+	resume.pressed.connect(func() -> void: _set_pause_menu(false))
+	column.add_child(resume)
+
+	var settings := Button.new()
+	_loc(settings, func() -> String: return Localization.ru_en("Настройки", "Options"))
+	settings.custom_minimum_size.y = 36
+	settings.pressed.connect(func() -> void: _set_settings(true))
+	column.add_child(settings)
+
+	var to_menu := Button.new()
+	_loc(to_menu, func() -> String: return Localization.ru_en("В главное меню", "Main menu"))
+	_loc(to_menu, func() -> String: return Localization.ru_en("Партия сохраняется; «Продолжить» в меню вернёт её.", "The run is saved; Continue on the menu brings it back."), "tooltip_text")
+	to_menu.custom_minimum_size.y = 36
+	to_menu.pressed.connect(_exit_to_menu)
+	column.add_child(to_menu)
+
+	var quit := Button.new()
+	_loc(quit, func() -> String: return Localization.ru_en("Выйти из игры", "Quit"))
+	quit.custom_minimum_size.y = 36
+	quit.pressed.connect(func() -> void:
+		_save_run_quietly()
+		get_tree().quit())
+	column.add_child(quit)
+
+
+func toggle_pause_menu() -> void:
+	_set_pause_menu(not _pause_visible)
+
+
+func _set_pause_menu(on: bool) -> void:
+	_pause_visible = on
+	_pause_panel.visible = on
+	if on:
+		UiModals.opened("pause", func() -> void: _set_pause_menu(false))
+		UiModals.reveal(_pause_panel)
+	else:
+		UiModals.closed("pause")
+
+
+## The run is kept the way the autosave keeps it: mid-day only, never at the Desk.
+func _save_run_quietly() -> void:
+	if SimulationRunner.run_active and SimulationRunner.current_phase == SimulationRunner.Phase.DAY and not SimulationRunner.card_open:
+		SaveService.save_game(0, true)
+
+
+func _exit_to_menu() -> void:
+	_set_pause_menu(false)
+	_save_run_quietly()
+	SimulationRunner.run_active = false
+	# Fresh scene → main._ready() boots the throwaway map behind the start menu.
+	get_tree().reload_current_scene()
 
 
 # ===========================================================
@@ -2458,10 +2601,18 @@ func _build_governance_panel() -> void:
 
 
 func toggle_governance() -> void:
-	_governance_visible = not _governance_visible
-	_governance_panel.visible = _governance_visible
-	if _governance_visible:
+	_set_governance(not _governance_visible)
+
+
+func _set_governance(on: bool) -> void:
+	_governance_visible = on
+	_governance_panel.visible = on
+	if on:
 		_rebuild_governance_panel()
+		UiModals.opened("governance", func() -> void: _set_governance(false))
+		UiModals.reveal(_governance_panel)
+	else:
+		UiModals.closed("governance")
 
 
 func _rebuild_governance_panel() -> void:
@@ -2716,7 +2867,7 @@ func _build_toast() -> void:
 
 func _on_toast(text: String, duration: float) -> void:
 	_toast_label.text = text
-	_toast_panel.modulate.a = 1.0
+	UiModals.reveal(_toast_panel, 0.15, 0.0)
 	_toast_timer = duration
 
 

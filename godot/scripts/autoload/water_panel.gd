@@ -45,10 +45,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _toggle() -> void:
-	_visible = not _visible
 	if _visible:
-		_body.text = _compose()
-	_layer.visible = _visible
+		close()
+	else:
+		open()
 
 
 ## Public entry point (e.g. clicking the water block in the HUD).
@@ -56,6 +56,14 @@ func open() -> void:
 	_visible = true
 	_body.text = _compose()
 	_layer.visible = true
+	UiModals.opened("water", close)
+	UiModals.reveal(_root)
+
+
+func close() -> void:
+	_visible = false
+	_layer.visible = false
+	UiModals.closed("water")
 
 
 func _compose() -> String:

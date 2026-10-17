@@ -164,6 +164,11 @@ func _toggle() -> void:
 	if _panel_visible:
 		_rebuild_list()
 	_layer.visible = _panel_visible
+	if _panel_visible:
+		UiModals.opened("diary", _toggle)
+		UiModals.reveal(_root)
+	else:
+		UiModals.closed("diary")
 
 
 func _rebuild_list() -> void:

@@ -41,6 +41,7 @@ func _run() -> void:
 	await _test_new_run()
 	await _test_founder()
 	await _test_windows()
+	await _test_panels()
 
 	print("UI FLOW SMOKE: %d failures" % _failures)
 	get_tree().quit(0 if _failures == 0 else 1)
@@ -287,6 +288,37 @@ func _test_windows() -> void:
 
 
 # --- helpers ---
+
+# --- 9. Panels: one at a time, Escape closes, the day waits, hotkeys stay out ---
+
+func _test_panels() -> void:
+	_start("appointed_administrator")
+	SimulationRunner.paused = false
+	WaterPanel.call("_toggle")
+	await _settle()
+	_check(UiModals.is_open("water") and SimulationRunner.paused, "opening the water panel pauses the day")
+	SeasonPanel.call("_toggle")
+	await _settle()
+	_check(UiModals.is_open("season") and not (WaterPanel.get("_visible") as bool), "opening the season panel closes the water panel")
+	var plot: Vector2i = _first("bld_field_strip")
+	await _select(plot)
+	_key(KEY_B)
+	_key(KEY_B)
+	_check(GameStateStore.has_building(plot), "B under an open panel does not demolish")
+	_key(KEY_ESCAPE)
+	await _settle()
+	_check(not UiModals.is_open() and not SimulationRunner.paused, "Escape closes the panel and the day resumes")
+	_key(KEY_ESCAPE)
+	await _settle()
+	_check(UiModals.is_open("pause") and SimulationRunner.paused, "Escape with nothing open is the pause menu")
+	_hud.call("toggle_settings")
+	await _settle()
+	_check(UiModals.is_open("settings") and not (_hud.get("_pause_visible") as bool), "Options from the pause menu replaces it")
+	_key(KEY_ESCAPE)
+	await _settle()
+	_check(not UiModals.is_open() and not SimulationRunner.paused, "…and Escape closes it")
+	SimulationRunner.paused = true
+
 
 func _first(type_id: String) -> Vector2i:
 	for coord: Vector2i in GameStateStore.get_all_building_coords():

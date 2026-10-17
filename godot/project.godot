@@ -22,6 +22,7 @@ config/features=PackedStringArray("4.6", "GL Compatibility")
 [autoload]
 
 UiStyle="*res://scripts/autoload/ui_style.gd"
+UiModals="*res://scripts/autoload/ui_modals.gd"
 EventBus="*res://scripts/autoload/event_bus.gd"
 ContentDB="*res://scripts/autoload/content_db.gd"
 GameStateStore="*res://scripts/autoload/game_state_store.gd"
