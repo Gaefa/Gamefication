@@ -129,6 +129,54 @@ func paper_button(button: Button) -> void:
 	button.add_theme_color_override("font_disabled_color", Color("9c917c"))
 
 
+## One frame for every centred panel: a dim over the screen, a sheet with a left-aligned
+## serif title, a "✕" at the right, a rule, then the body the caller fills. Returns
+## {"dim", "panel", "title", "close", "body"}; the caller shows and hides the dim.
+func modal(parent: Node, width: float = 640.0) -> Dictionary:
+	var dim := ColorRect.new()
+	dim.color = Color(0.03, 0.025, 0.02, 0.6)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	dim.visible = false
+	parent.add_child(dim)
+
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", panel_box(24))
+	panel.custom_minimum_size = Vector2(width, 220.0)
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	dim.add_child(panel)
+
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 10)
+	panel.add_child(column)
+
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 10)
+	column.add_child(header)
+	var title_label := Label.new()
+	title(title_label, 22, ACCENT)
+	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(title_label)
+	var close := Button.new()
+	close.text = "✕"
+	close.custom_minimum_size = Vector2(32, 32)
+	close.focus_mode = Control.FOCUS_NONE
+	header.add_child(close)
+
+	column.add_child(HSeparator.new())
+
+	var body := VBoxContainer.new()
+	body.add_theme_constant_override("separation", 10)
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.add_child(body)
+
+	return { "dim": dim, "panel": panel, "title": title_label, "close": close, "body": body }
+
+
 func hex(color: Color) -> String:
 	return "#" + color.to_html(false)
 

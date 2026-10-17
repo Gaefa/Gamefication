@@ -108,39 +108,16 @@ func _build_ui() -> void:
 	_root.mouse_filter = Control.MOUSE_FILTER_STOP
 	_layer.add_child(_root)
 
-	var bg := ColorRect.new()
-	bg.color = Color(0.04, 0.03, 0.025, 0.9)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_STOP
-	_root.add_child(bg)
-
-	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(680, 520)
-	panel.position = Vector2(-340, -260)
-	bg.add_child(panel)
-
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_top", 22)
-	margin.add_theme_constant_override("margin_bottom", 22)
-	panel.add_child(margin)
-
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 14)
-	margin.add_child(vbox)
-
-	_title = Label.new()
-	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	UiStyle.title(_title, 22, UiStyle.ACCENT)
-	vbox.add_child(_title)
-
-	vbox.add_child(HSeparator.new())
+	var frame: Dictionary = UiStyle.modal(_root)
+	(frame["dim"] as Control).visible = true
+	_title = frame["title"] as Label
+	_close_btn = frame["close"] as Button
+	_close_btn.pressed.connect(_toggle)
+	var vbox: VBoxContainer = frame["body"] as VBoxContainer
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.custom_minimum_size = Vector2(620, 380)
+	scroll.custom_minimum_size = Vector2(592, 320)
 	vbox.add_child(scroll)
 
 	_list = VBoxContainer.new()
@@ -151,12 +128,9 @@ func _build_ui() -> void:
 	_empty_label = Label.new()
 	_empty_label.text = _empty_text()
 	_empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_empty_label.add_theme_color_override("font_color", Color(0.7, 0.68, 0.6))
+	_empty_label.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	_list.add_child(_empty_label)
 
-	_close_btn = Button.new()
-	_close_btn.pressed.connect(_toggle)
-	vbox.add_child(_close_btn)
 
 
 func _toggle() -> void:
@@ -174,8 +148,8 @@ func _toggle() -> void:
 func _rebuild_list() -> void:
 	for child: Node in _list.get_children():
 		child.queue_free()
-	_title.text = Localization.ru_en("ДНЕВНИК ПРЕЖНЕГО АДМИНИСТРАТОРА", "THE PREVIOUS ADMINISTRATOR'S DIARY")
-	_close_btn.text = Localization.ru_en("Закрыть (Y)", "Close (Y)")
+	_title.text = Localization.ru_en("Дневник прежнего администратора", "The previous administrator's diary")
+	_close_btn.tooltip_text = Localization.ru_en("Закрыть (Y или Esc)", "Close (Y or Esc)")
 	var discovered: Array = GameStateStore.diary().get("discovered", []) as Array
 	if discovered.is_empty():
 		var empty := Label.new()

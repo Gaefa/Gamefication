@@ -56,39 +56,16 @@ func _build_ui() -> void:
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	_layer.add_child(root)
 
-	var bg := ColorRect.new()
-	bg.color = Color(0.04, 0.03, 0.025, 0.9)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_STOP
-	root.add_child(bg)
-
-	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(680, 520)
-	panel.position = Vector2(-340, -260)
-	bg.add_child(panel)
-
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_top", 22)
-	margin.add_theme_constant_override("margin_bottom", 22)
-	panel.add_child(margin)
-
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 14)
-	margin.add_child(vbox)
-
-	_title = Label.new()
-	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	UiStyle.title(_title, 22, UiStyle.ACCENT)
-	vbox.add_child(_title)
-
-	vbox.add_child(HSeparator.new())
+	var frame: Dictionary = UiStyle.modal(root)
+	(frame["dim"] as Control).visible = true
+	_title = frame["title"] as Label
+	_close_btn = frame["close"] as Button
+	_close_btn.pressed.connect(_toggle)
+	var vbox: VBoxContainer = frame["body"] as VBoxContainer
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.custom_minimum_size = Vector2(620, 380)
+	scroll.custom_minimum_size = Vector2(592, 320)
 	vbox.add_child(scroll)
 
 	_list = VBoxContainer.new()
@@ -96,9 +73,6 @@ func _build_ui() -> void:
 	_list.add_theme_constant_override("separation", 14)
 	scroll.add_child(_list)
 
-	_close_btn = Button.new()
-	_close_btn.pressed.connect(_toggle)
-	vbox.add_child(_close_btn)
 
 
 func _toggle() -> void:
@@ -116,8 +90,8 @@ func _toggle() -> void:
 func _rebuild_list() -> void:
 	for child: Node in _list.get_children():
 		child.queue_free()
-	_title.text = Localization.ru_en("ЖУРНАЛ СОБЫТИЙ", "EVENT LOG")
-	_close_btn.text = Localization.ru_en("Закрыть (T)", "Close (T)")
+	_title.text = Localization.ru_en("Журнал событий", "Event log")
+	_close_btn.tooltip_text = Localization.ru_en("Закрыть (T или Esc)", "Close (T or Esc)")
 	var entries: Array = GameStateStore.events().get("log", []) as Array
 	if entries.is_empty():
 		var empty := Label.new()

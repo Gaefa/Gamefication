@@ -30,8 +30,8 @@ func _on_locale_changed(_locale: String) -> void:
 
 
 func _apply_static_text() -> void:
-	_title.text = Localization.ru_en("ВОДА — ЗАПАС · ПОКРЫТИЕ · ДАВЛЕНИЕ", "WATER: RESERVE · COVERAGE · PRESSURE")
-	_close_btn.text = Localization.ru_en("Закрыть (Q)", "Close (Q)")
+	_title.text = Localization.ru_en("Вода — запас · покрытие · давление", "Water: reserve · coverage · pressure")
+	_close_btn.tooltip_text = Localization.ru_en("Закрыть (Q или Esc)", "Close (Q or Esc)")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -79,7 +79,7 @@ func _compose() -> String:
 	if gross_day > 0.0:
 		var days: float = reserve / gross_day
 		# How long the tanks alone would last. A warning only when the reserve is actually draining.
-		var color: String = "#d98c66" if days < 3.0 and net < 0.0 else "#aaa08c"
+		var color: String = "#e6902b" if days < 3.0 and net < 0.0 else "#aaa08c"
 		lines.append(Localization.ru_en("— Если насосы встанут, запаса хватит на [color=%s]%.1f дн.[/color] (расход %.0f/день)", "— If the pumps stop, the reserve lasts [color=%s]%.1f days[/color] (use %.0f/day)") % [color, days, gross_day])
 	lines.append(Localization.ru_en("— Баланс: %s", "— Balance: %s") % _net_text(net))
 	lines.append("")
@@ -93,7 +93,7 @@ func _compose() -> String:
 		var covered: int = cov.get("covered", 0) as int
 		var total: int = cov.get("total", 0) as int
 		var pct: int = int(round(100.0 * float(covered) / float(total)))
-		var color: String = "#7fbf7f" if pct >= 90 else "#d98c66"
+		var color: String = "#86c45a" if pct >= 90 else "#e6902b"
 		lines.append(Localization.ru_en("— Подключено жилья: [color=%s]%d из %d (%d%%)[/color]", "— Housing connected: [color=%s]%d of %d (%d%%)[/color]") % [color, covered, total, pct])
 		if covered < total:
 			lines.append(Localization.ru_en("— Часть домов вне радиуса насоса/башни. Запас может быть большим, а до дальних не доходит.", "— Some homes are outside pump/tower range. The reserve can be large and still not reach the far ones."))
@@ -107,7 +107,7 @@ func _compose() -> String:
 	else:
 		var weak: int = pr.get("weak", 0) as int
 		var worst: int = int(round(100.0 * (pr.get("worst", 1.0) as float)))
-		var pcolor: String = "#7fbf7f" if weak == 0 else "#d98c66"
+		var pcolor: String = "#86c45a" if weak == 0 else "#e6902b"
 		lines.append(Localization.ru_en("— Слабый напор: [color=%s]%d из %d потребителей[/color], худший — %d%%", "— Weak pressure: [color=%s]%d of %d consumers[/color], worst: %d%%") % [pcolor, weak, pr.get("count", 0) as int, worst])
 		if weak > 0:
 			lines.append(Localization.ru_en("— Напор падает к краю радиуса насоса и когда на один источник висит слишком много домов. Помогает насос ближе к дальним домам или второй источник — запас и радиус тут не спасут.", "— Pressure drops toward the edge of pump range and when too many homes hang on one source. A pump closer to the far homes or a second source helps; reserve and range won't."))
@@ -177,9 +177,9 @@ func _orchestrator() -> Object:
 
 func _net_text(net: float) -> String:
 	if net > 0.05:
-		return Localization.ru_en("[color=#7fbf7f]пополняется (+%.1f/день)[/color]", "[color=#7fbf7f]filling (+%.1f/day)[/color]") % net
+		return Localization.ru_en("[color=#86c45a]пополняется (+%.1f/день)[/color]", "[color=#86c45a]filling (+%.1f/day)[/color]") % net
 	if net < -0.05:
-		return Localization.ru_en("[color=#d98c66]тает (%.1f/день)[/color]", "[color=#d98c66]draining (%.1f/day)[/color]") % net
+		return Localization.ru_en("[color=#e6902b]тает (%.1f/день)[/color]", "[color=#e6902b]draining (%.1f/day)[/color]") % net
 	return Localization.ru_en("ровно", "steady")
 
 
@@ -194,47 +194,20 @@ func _build_ui() -> void:
 	_root.mouse_filter = Control.MOUSE_FILTER_STOP
 	_layer.add_child(_root)
 
-	var bg := ColorRect.new()
-	bg.color = Color(0.04, 0.03, 0.025, 0.9)
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.mouse_filter = Control.MOUSE_FILTER_STOP
-	_root.add_child(bg)
-
-	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(640, 480)
-	panel.position = Vector2(-320, -240)
-	bg.add_child(panel)
-
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 28)
-	margin.add_theme_constant_override("margin_right", 28)
-	margin.add_theme_constant_override("margin_top", 22)
-	margin.add_theme_constant_override("margin_bottom", 22)
-	panel.add_child(margin)
-
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 12)
-	margin.add_child(vbox)
-
-	_title = Label.new()
-	var title := _title
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	UiStyle.title(title, 22, UiStyle.ACCENT)
-	vbox.add_child(title)
-
-	vbox.add_child(HSeparator.new())
+	var frame: Dictionary = UiStyle.modal(_root)
+	(frame["dim"] as Control).visible = true
+	_title = frame["title"] as Label
+	_close_btn = frame["close"] as Button
+	_close_btn.pressed.connect(_toggle)
+	var vbox: VBoxContainer = frame["body"] as VBoxContainer
 
 	_body = RichTextLabel.new()
 	_body.bbcode_enabled = true
 	_body.fit_content = true
 	_body.scroll_active = true
 	_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_body.custom_minimum_size = Vector2(580, 340)
+	_body.custom_minimum_size = Vector2(592, 200)
 	_body.add_theme_font_size_override("normal_font_size", 14)
 	vbox.add_child(_body)
 
-	_close_btn = Button.new()
-	_close_btn.pressed.connect(_toggle)
-	vbox.add_child(_close_btn)
 	_apply_static_text()
