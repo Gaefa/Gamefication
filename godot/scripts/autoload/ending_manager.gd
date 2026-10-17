@@ -22,6 +22,7 @@ var _peak_pop: int = 0
 var _layer: CanvasLayer
 var _root: Control
 var _title_label: Label
+var _outcome_label: Label
 var _body_label: RichTextLabel
 var _theses_label: RichTextLabel
 var _menu_btn: Button
@@ -156,37 +157,48 @@ func _build_ui() -> void:
 	_root.mouse_filter = Control.MOUSE_FILTER_STOP
 	_layer.add_child(_root)
 
+	# The last document of the term is a document: the room goes dark, a sheet lies on the desk.
 	var bg := ColorRect.new()
-	bg.color = Color(0.04, 0.04, 0.06, 0.97)
+	bg.color = Color(0.03, 0.025, 0.02, 0.95)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	_root.add_child(bg)
 
 	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", UiStyle.paper_box(8))
 	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(1000, 460)
-	panel.position = Vector2(-500, -230)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	panel.custom_minimum_size = Vector2(900, 0)
 	bg.add_child(panel)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 36)
-	margin.add_theme_constant_override("margin_right", 36)
-	margin.add_theme_constant_override("margin_top", 28)
+	margin.add_theme_constant_override("margin_left", 32)
+	margin.add_theme_constant_override("margin_right", 32)
+	margin.add_theme_constant_override("margin_top", 24)
 	margin.add_theme_constant_override("margin_bottom", 28)
 	panel.add_child(margin)
 
 	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 18)
+	vbox.add_theme_constant_override("separation", 16)
 	margin.add_child(vbox)
+
+	_outcome_label = Label.new()
+	_outcome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	UiStyle.caption(_outcome_label)
+	vbox.add_child(_outcome_label)
 
 	_title_label = Label.new()
 	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_title_label.add_theme_font_override("font", UiStyle.font_title)
-	_title_label.add_theme_font_size_override("font_size", 28)
+	UiStyle.title(_title_label, 28, UiStyle.INK)
 	vbox.add_child(_title_label)
 
 	var sep := HSeparator.new()
+	var ink_line := StyleBoxLine.new()
+	ink_line.color = UiStyle.PAPER_EDGE
+	ink_line.thickness = 1
+	sep.add_theme_stylebox_override("separator", ink_line)
 	vbox.add_child(sep)
 
 	# Ending Card (UX_BIBLE §7.1): verdict on the left, consequence bullets on the right.
@@ -201,17 +213,29 @@ func _build_ui() -> void:
 	_body_label.custom_minimum_size = Vector2(0, 240)
 	_body_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_body_label.add_theme_font_override("normal_font", UiStyle.font_doc)
+	_body_label.add_theme_font_override("italics_font", UiStyle.font_doc_italic)
 	_body_label.add_theme_font_size_override("normal_font_size", 16)
+	_body_label.add_theme_color_override("default_color", UiStyle.INK)
+	_body_label.add_theme_constant_override("line_separation", 3)
 	columns.add_child(_body_label)
 
-	columns.add_child(VSeparator.new())
+	var rule := VSeparator.new()
+	var ink_rule := StyleBoxLine.new()
+	ink_rule.color = UiStyle.PAPER_EDGE
+	ink_rule.thickness = 1
+	ink_rule.vertical = true
+	rule.add_theme_stylebox_override("separator", ink_rule)
+	columns.add_child(rule)
 
 	_theses_label = RichTextLabel.new()
 	_theses_label.bbcode_enabled = true
 	_theses_label.fit_content = true
 	_theses_label.scroll_active = false
-	_theses_label.custom_minimum_size = Vector2(320, 240)
+	_theses_label.custom_minimum_size = Vector2(300, 240)
+	_theses_label.add_theme_font_override("normal_font", UiStyle.font_doc)
+	_theses_label.add_theme_font_override("bold_font", UiStyle.font_title)
 	_theses_label.add_theme_font_size_override("normal_font_size", 14)
+	_theses_label.add_theme_color_override("default_color", UiStyle.INK_DIM)
 	columns.add_child(_theses_label)
 
 	_menu_btn = Button.new()
@@ -226,10 +250,8 @@ func _show_finale(def: Dictionary, ending_id: String) -> void:
 	var kind: String = def.get("kind", "") as String
 	_title_label.text = Localization.content_text(def, "title", Localization.ru_en("Финал", "Finale"))
 	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
-	_title_label.add_theme_color_override(
-		"font_color",
-		UiStyle.GOOD if kind == "win" else UiStyle.BAD
-	)
+	_outcome_label.text = Localization.ru_en("МАНДАТ ПРОДЛЁН", "MANDATE EXTENDED") if kind == "win" else Localization.ru_en("МАНДАТ ПРЕКРАЩЁН", "MANDATE ENDED")
+	_outcome_label.add_theme_color_override("font_color", Color("3f6b2a") if kind == "win" else Color("8a3a2e"))
 	_body_label.text = Localization.content_text(def, "body", "") + _replacement_epilogue(ending_id) + _style_epilogue()
 	_theses_label.text = _theses()
 	_layer.visible = true
