@@ -13,6 +13,8 @@ var _critical_mode: bool = false
 # UI nodes (создаются динамически)
 var _bg: ColorRect
 var _title_label: Label
+var _stamp_label: Label
+var _reply_label: RichTextLabel
 var _header_label: Label
 var _body_label: RichTextLabel
 var _options_container: VBoxContainer
@@ -37,16 +39,32 @@ func _build_ui() -> void:
 	_bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_bg)
 
-	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg.add_child(center)
+	# The sheet hangs from a fixed line near the top and grows downward, so the title
+	# stays put from letter to letter instead of jumping with the length of the text.
+	var frame := MarginContainer.new()
+	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
+	frame.add_theme_constant_override("margin_top", 48)
+	frame.add_theme_constant_override("margin_bottom", 24)
+	_bg.add_child(frame)
 
 	var column := VBoxContainer.new()
 	column.custom_minimum_size.x = 740
+	column.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	column.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	column.add_theme_constant_override("separation", 10)
-	center.add_child(column)
+	frame.add_child(column)
 
-	# Above the sheet: where we are and which letter this is.
+	# Above the sheet: an URGENT stamp for a card in the middle of the day, where we are,
+	# and which letter this is.
+	_stamp_label = Label.new()
+	_stamp_label.text = Localization.ru_en("СРОЧНО", "URGENT")
+	_stamp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	UiStyle.caption(_stamp_label)
+	_stamp_label.add_theme_color_override("font_color", UiStyle.BAD)
+	_stamp_label.custom_minimum_size.y = 16  # the line is always there, so the title never moves
+	_stamp_label.text = ""
+	column.add_child(_stamp_label)
+
 	_title_label = Label.new()
 	_title_label.text = Localization.ru_en("СТОЛ АДМИНИСТРАТОРА", "THE ADMINISTRATOR'S DESK")
 	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -97,6 +115,17 @@ func _build_ui() -> void:
 	_options_container.add_theme_constant_override("separation", 2)
 	vbox.add_child(_options_container)
 
+	# What came of the answer, written on the same sheet (a notice under the Desk is unseen).
+	_reply_label = RichTextLabel.new()
+	_reply_label.bbcode_enabled = true
+	_reply_label.fit_content = true
+	_reply_label.scroll_active = false
+	_reply_label.visible = false
+	_reply_label.add_theme_font_override("normal_font", UiStyle.font_doc_italic)
+	_reply_label.add_theme_font_size_override("normal_font_size", 14)
+	_reply_label.add_theme_color_override("default_color", UiStyle.INK_DIM)
+	vbox.add_child(_reply_label)
+
 	# Under the sheet: move on.
 	_next_btn = Button.new()
 	_next_btn.text = Localization.ru_en("Следующее письмо →", "Next letter →")
@@ -116,8 +145,23 @@ func _build_ui() -> void:
 
 
 ## A letter's paragraphs sit half a line apart, as on paper, instead of a full blank line.
+## A short closing line without a full stop or figures is a signature: it is set in italics.
 func _paragraphs(text: String) -> String:
-	return text.replace("\n\n", "\n")
+	var parts: PackedStringArray = text.split("\n\n")
+	if parts.size() > 1:
+		var last: String = parts[parts.size() - 1].strip_edges()
+		var looks_signed: bool = last.length() <= 48 and not last.ends_with(".") and not last.ends_with("?") \
+			and last.find("\n") == -1 and not _has_digit(last)
+		if looks_signed:
+			parts[parts.size() - 1] = "[i]" + last + "[/i]"
+	return "\n".join(parts)
+
+
+func _has_digit(text: String) -> bool:
+	for ch: String in text:
+		if ch >= "0" and ch <= "9":
+			return true
+	return false
 
 
 ## One answer on the sheet: the resolution and, right under it, what it will cost and change.
@@ -134,10 +178,7 @@ func _add_option(text: String, effects: Dictionary, cost: Dictionary, on_pressed
 	_options_container.add_child(btn)
 	var consequences: String = _consequences_text(effects, cost).replace("\n", " · ")
 	if consequences == "":
-		var gap := Control.new()
-		gap.custom_minimum_size.y = 6
-		_options_container.add_child(gap)
-		return
+		consequences = Localization.ru_en("Без прямых последствий", "No direct consequences")
 	var note := Label.new()
 	note.text = consequences
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -155,7 +196,8 @@ func _on_critical_event_started(event_data: Dictionary) -> void:
 	_events = [event_data]
 	_current_index = 0
 	_resolved_count = 0
-	_title_label.text = Localization.ru_en("СРОЧНО", "URGENT")
+	_title_label.text = Localization.ru_en("СТОЛ АДМИНИСТРАТОРА", "THE ADMINISTRATOR'S DESK")
+	_stamp_label.text = Localization.ru_en("СРОЧНО", "URGENT")
 	_show_event(0)
 	visible = true
 	UiModals.reveal(self, 0.18, 0.0)
@@ -165,6 +207,7 @@ func _on_critical_event_started(event_data: Dictionary) -> void:
 func _on_evening_started(events: Array) -> void:
 	_critical_mode = false
 	_title_label.text = Localization.ru_en("СТОЛ АДМИНИСТРАТОРА", "THE ADMINISTRATOR'S DESK")
+	_stamp_label.text = ""
 	_events = events
 	_current_index = 0
 	_resolved_count = 0
@@ -189,6 +232,8 @@ func _show_event(index: int) -> void:
 	_counter_label.text = Localization.ru_en("Письмо %d из %d", "Letter %d of %d") % [index + 1, _events.size()]
 	_header_label.text = Localization.content_text(evt, "title", evt.get("runtime_id", Localization.ru_en("Событие", "Event")) as String)
 	_body_label.text = _paragraphs(Localization.content_text(evt, "body", Localization.content_text(evt, "text", "")))
+	_body_label.custom_minimum_size.y = 90
+	_reply_label.visible = false
 	_next_btn.text = Localization.ru_en("Следующее письмо →", "Next letter →")
 	
 	# Очищаем старые кнопки
@@ -316,6 +361,10 @@ func _select_option(event_id: String, option_index: int, effects: Dictionary, co
 	EventBus.desk_option_selected.emit(event_id, option_index, effects, cost)
 	_log_answer(option_index, effects)
 	_resolved_count += 1
+	var reply: String = Localization.content_text(effects, "message", "")
+	if reply != "":
+		_reply_label.text = reply
+		_reply_label.visible = true
 
 	if _current_index < _events.size() - 1:
 		_next_btn.visible = true
@@ -373,6 +422,8 @@ func _show_all_resolved() -> void:
 func _show_empty_desk() -> void:
 	_header_label.text = Localization.ru_en("Тихий вечер", "A quiet evening")
 	_body_label.text = Localization.ru_en("Сегодня почты нет. Секретарь говорит, что жители довольны... пока что.", "No mail today. The secretary says the residents are content... for now.")
+	_body_label.custom_minimum_size.y = 160  # a sheet, not a slip
+	_reply_label.visible = false
 	_finish_btn.text = Localization.ru_en("Завершить вечер — начать новый день", "End the evening — start a new day")
 	_counter_label.text = ""
 	for child: Node in _options_container.get_children():
