@@ -65,6 +65,8 @@ var _city_body: VBoxContainer
 var _pause_panel: Control  # the modal frame (its dim); see UiStyle.modal
 var _pause_visible: bool = false
 var _speed_buttons: Array[Button] = []
+var _last_pop: int = -1
+var _leave_notice_day: int = -1
 var _settings_visible: bool = false
 var _settings_language_select: OptionButton
 
@@ -137,6 +139,7 @@ func _connect_signals() -> void:
 	EventBus.selection_changed.connect(_on_selection_changed)
 	EventBus.new_game_started.connect(_on_new_game_started)
 	EventBus.tick_finished.connect(_on_tick_finished)
+	EventBus.population_changed.connect(_on_population_changed)
 	EventBus.coverage_recalculated.connect(_on_coverage_recalculated)
 	EventBus.city_level_changed.connect(func(_lv: int) -> void:
 		_rebuild_building_list()
@@ -239,8 +242,8 @@ func _build_resource_bar() -> void:
 	_rival_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_rival_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_chip(bottom, func() -> String: return Localization.ru_en(
-		"Сводный показатель района Мары Восс и ваш. По нему делят грант на %d-й день.",
-		"The combined score of Mara Voss's district and yours. It decides the grant on day %d.") % ContentDB.get_grant_day()).add_child(_rival_label)
+		"Показатель района Мары Восс и ваш: среднее из счастья, поддержки города, запаса воды в днях (%d дн. = 100) и населения (%d чел. = 100). По нему делят грант на %d-й день; на аудите разрыв от %d меняет доверие.",
+		"Mara Voss's district score and yours: the average of mood, city support, water in days (%d d = 100) and population (%d people = 100). It decides the grant on day %d; at the audit a gap of %d or more moves trust.") % [int(RivalManager.WATER_DAYS_FULL), int(RivalManager.PEOPLE_FULL), ContentDB.get_grant_day(), int(RivalManager.AUDIT_EDGE)]).add_child(_rival_label)
 
 	# Pressure director: four gauges filling toward a crisis at 100.
 	var pressure: HBoxContainer = _chip(bottom, func() -> String: return Localization.ru_en(
@@ -580,7 +583,7 @@ func _update_goals() -> void:
 	var theirs: int = int(RivalManager.rival_score())
 	_set_goal("grant", has_patron and not (GameStateStore.rival().get("grant_decided", false) as bool), ours >= theirs,
 		Localization.ru_en("Грант · день %d", "Grant · day %d") % ContentDB.get_grant_day(),
-		Localization.ru_en("вы %d : %d Восс", "you %d : %d Voss") % [ours, theirs])
+		Localization.ru_en("вы %d : %d Восс", "you %d : %d Voss") % [int(RivalManager.player_score()), int(RivalManager.rival_score())])
 
 	# 4. The finish line.
 	_set_goal("finish", true, false, Localization.ru_en("Дожить до дня %d", "Reach day %d") % ContentDB.get_win_day(),
@@ -646,6 +649,7 @@ func _update_resource_bar() -> void:
 	_pop_label.text = "%s %d / %d" % [Localization.t("ui.resource.population", "Pop"), pop, beds] if beds > pop \
 		else "%s %d" % [Localization.t("ui.resource.population", "Pop"), pop]
 	_happy_label.text = "%s %d%%" % [Localization.t("ui.resource.happiness", "Happy"), int(happiness)]
+	(_happy_label.get_parent().get_parent() as Control).tooltip_text = _mood_tooltip(happiness)
 	_happy_label.add_theme_color_override("font_color", _level_color(happiness, 40.0, 55.0))
 	var city_lv: int = GameStateStore.progression().city_level as int
 	var lv_name: String = Localization.content_text(ContentDB.get_level_def(city_lv), "name", "?")
@@ -748,13 +752,16 @@ func _rival_bb() -> String:
 	# The neighbour the patron measures you against (RivalManager): orange when behind, green when ahead.
 	var theirs: float = RivalManager.rival_score()
 	var ours: float = RivalManager.player_score()
-	var color: String = "#8a8a99"
+	var color: String = UiStyle.hex(UiStyle.TEXT_DIM)
+	var sign: String = "="
 	if ours <= theirs - RivalManager.AUDIT_EDGE:
-		color = "#e6902b"
+		color = UiStyle.hex(UiStyle.WARN)
+		sign = "▼"
 	elif ours >= theirs + RivalManager.AUDIT_EDGE:
 		color = UiStyle.hex(UiStyle.GOOD)
-	return "%s %.0f · [color=%s]%s %.0f[/color]" % [
-		Localization.ru_en("Восс", "Voss"), theirs, color, Localization.ru_en("вы", "you"), ours]
+		sign = "▲"
+	return "%s %d · [color=%s]%s %s %d[/color]" % [
+		Localization.ru_en("Восс", "Voss"), int(theirs), color, sign, Localization.ru_en("вы", "you"), int(ours)]
 
 
 func _on_utility_gui_input(event: InputEvent) -> void:
@@ -1286,14 +1293,22 @@ func _update_build_list_affordability() -> void:
 
 func _on_build_button(type_id: String) -> void:
 	_active_build_type = type_id
+	_drop_selection()
 	EventBus.build_mode_changed.emit(type_id)
 	_show_info(_build_build_mode_info_text(type_id))
 	_refresh_build_cards()
 
 
+func _drop_selection() -> void:
+	var main_node: Node = get_tree().current_scene
+	if main_node and main_node.has_method("clear_selection"):
+		main_node.call("clear_selection")
+
+
 func _on_build_mode_changed(type_id: String) -> void:
 	_active_build_type = type_id
 	if _info_label and type_id != "":
+		_drop_selection()
 		_show_info(_build_build_mode_info_text(type_id))
 	# Update the highlight when build mode changes externally (e.g. RMB cancel)
 	_refresh_build_cards()
@@ -1539,6 +1554,10 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	var status: String = _status_bb(coord, type_id, def, ldata, bld)
 	if status != "":
 		lines.append(status)
+	if (ldata.get("population", 0) as int) > 0:
+		var housing: String = _housing_state_text()
+		if housing != "":
+			lines.append(housing)
 	var orch_adj := _get_orchestrator()
 	if orch_adj != null:
 		for entry: Dictionary in orch_adj.adjacency.active_rules(coord, type_id):
@@ -1546,7 +1565,11 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	if bld.get("damaged", false) as bool:
 		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), Localization.ru_en("Повреждено: не работает, пока не починят.", "Damaged: out of action until repaired.")])
 	elif bld.get("has_issue", false) as bool:
-		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.ru_en("Неполадка: работает вполсилы.", "Fault: running at half strength.")])
+		var wear: float = (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("wear_mult", 1.0) as float
+		var fault: String = Localization.ru_en("Неполадка (износ): работает вполсилы. Починить за %d монет (R).", "Fault (wear): running at half strength. Repair for %d coins (R).") % int(RepairBuildingCommand.REPAIR_COST_COINS)
+		if wear > 1.0:
+			fault += Localization.ru_en(" Сезон ускоряет износ.", " The season speeds up wear.")
+		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), fault])
 
 	# --- What comes next ---
 	if level + 1 < max_level:
@@ -1557,6 +1580,66 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	elif max_level > 1:
 		lines.append(_dim_bb(Localization.t("ui.building.max_level", "MAX LEVEL")))
 	return "\n".join(lines)
+
+
+## The happiness number with its reasons: base 50 and every term that moves it.
+func _mood_tooltip(happiness: float) -> String:
+	var terms: Dictionary = GameStateStore.population().get("mood_terms", {}) as Dictionary
+	var names := {
+		"supply": Localization.ru_en("снабжение", "supply"), "power": Localization.ru_en("тёмные бараки", "dark barracks"),
+		"pressure": Localization.ru_en("слабый напор", "weak pressure"), "buildings": Localization.ru_en("здания", "buildings"),
+		"buffs": Localization.ru_en("решения", "decisions"), "governance": Localization.ru_en("политики", "policies"),
+		"neighbours": Localization.ru_en("соседство", "neighbours"),
+	}
+	var parts: Array[String] = []
+	for key: String in ["supply", "power", "pressure", "buildings", "buffs", "governance", "neighbours"]:
+		var value: float = terms.get(key, 0.0) as float
+		if absf(value) >= 0.5:
+			parts.append("%s %+d" % [names[key], roundi(value)])
+	var line: String = Localization.ru_en("Счастье %d%%", "Mood %d%%") % int(happiness)
+	if not terms.is_empty():
+		line += Localization.ru_en(" (идёт к %d%%): база 50", " (heading to %d%%): base 50") % int(terms.get("target", 50.0) as float)
+		if not parts.is_empty():
+			line += ", " + ", ".join(parts)
+	return line + "\n" + Localization.ru_en("От %d%% приезжают новые жители; ниже %d%% уезжают; аудит требует не ниже %d%%.",
+		"From %d%% newcomers arrive; below %d%% people leave; the audit requires at least %d%%.") % [int(ProgressionSystem.CONTENT_HAPPINESS), int(ProgressionSystem.MISERY_HAPPINESS), int(MandateManager.HAPPINESS_OK)]
+
+
+## The first time people leave on a day, say why, once.
+func _on_population_changed(total: int) -> void:
+	var day: int = SimulationRunner.day_count
+	if _last_pop >= 0 and total < _last_pop and day != _leave_notice_day and SimulationRunner.run_active:
+		var reason: String = _housing_state_text()
+		if reason != "":
+			_leave_notice_day = day
+			var plain := RegEx.new()
+			plain.compile("\\[/?[^\\]]*\\]")
+			EventBus.toast_requested.emit(plain.sub(reason, "", true), 5.0)
+	_last_pop = total
+
+
+## A barrack's people: arriving, staying, or leaving, and the reason, in the card.
+func _housing_state_text() -> String:
+	var pop_state: Dictionary = GameStateStore.population()
+	var leaving: String = pop_state.get("leaving", "") as String
+	var mood: int = int(pop_state.get("happiness", 50.0) as float)
+	var arrive_at: int = int(ProgressionSystem.CONTENT_HAPPINESS)
+	match leaving:
+		"water":
+			return "[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), Localization.ru_en("Люди уезжают: воды нет.", "People are leaving: no water.")]
+		"food":
+			return "[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), Localization.ru_en("Люди уезжают: еды нет.", "People are leaving: no food.")]
+		"mood":
+			return "[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), Localization.ru_en("Люди уезжают: счастье ниже %d%%.", "People are leaving: mood below %d%%.") % int(ProgressionSystem.MISERY_HAPPINESS)]
+		"unserved":
+			return "[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.ru_en("Люди съезжают: жильё без воды или дороги.", "People are moving out: housing without water or a road.")]
+	var total: int = pop_state.get("total", 0) as int
+	var capacity: int = pop_state.get("capacity", 0) as int
+	if total < capacity:
+		if mood >= arrive_at:
+			return _dim_bb(Localization.ru_en("Заселяется: при счастье от %d%% люди приезжают сами.", "Filling up: at %d%% mood or more people arrive on their own.") % arrive_at)
+		return "[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.ru_en("Пустует: люди приезжают при счастье от %d%%, сейчас %d%%.", "Standing empty: people arrive at %d%% mood or more, now %d%%.") % [arrive_at, mood]]
+	return ""
 
 
 ## Supply marks in one line: road, water, power, inputs, outputs — and the resulting efficiency.
@@ -2085,6 +2168,8 @@ func _set_chrome_visible(on: bool) -> void:
 
 
 func _on_new_game_started() -> void:
+	_last_pop = -1
+	_leave_notice_day = -1
 	_update_resource_bar()
 	_rebuild_building_list()
 	if _city_visible:

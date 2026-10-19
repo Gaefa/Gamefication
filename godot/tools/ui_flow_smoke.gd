@@ -317,6 +317,13 @@ func _test_panels() -> void:
 	_key(KEY_ESCAPE)
 	await _settle()
 	_check(not UiModals.is_open() and not SimulationRunner.paused, "…and Escape closes it")
+	# Picking a build card drops the selection: no brackets on a building beside a build card.
+	await _select(_first("bld_well_pump"))
+	_hud.call("_on_build_button", "bld_road")
+	await _settle()
+	_check(_main.get("_selected_coord") == Vector2i(-9999, -9999), "entering the build mode drops the selection")
+	_key(KEY_ESCAPE)
+	await _settle()
 	SimulationRunner.paused = true
 
 

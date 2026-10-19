@@ -38,7 +38,7 @@ func execute(ctx: Dictionary) -> void:
 		adjusted_cost[res_id] = (cost[res_id] as float) * maxf(1.0 - discount, 0.5)
 
 	if not GameStateStore.can_afford(adjusted_cost):
-		message = Localization.t("ui.command.not_enough_resources", "Not enough resources")
+		message = "%s: %s" % [Localization.t("ui.command.not_enough_resources", "Not enough resources"), PlacementRules.missing_cost_text(adjusted_cost)]
 		return
 
 	GameStateStore.spend(adjusted_cost)
