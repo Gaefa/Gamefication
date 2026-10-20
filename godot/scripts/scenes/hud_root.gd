@@ -2545,6 +2545,7 @@ func _build_pause_menu() -> void:
 	quit.custom_minimum_size.y = 36
 	quit.pressed.connect(func() -> void:
 		_save_run_quietly()
+		RunLog.note_exit("quit")
 		get_tree().quit())
 	column.add_child(quit)
 
@@ -2573,6 +2574,7 @@ func _save_run_quietly() -> void:
 func _exit_to_menu() -> void:
 	_set_pause_menu(false)
 	_save_run_quietly()
+	RunLog.note_exit("to_menu")
 	SimulationRunner.run_active = false
 	# Fresh scene → main._ready() boots the throwaway map behind the start menu.
 	get_tree().reload_current_scene()

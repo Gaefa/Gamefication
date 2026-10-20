@@ -52,10 +52,11 @@ func close_current() -> bool:
 ## A short fade and a small rise instead of popping into place. Safe to call again
 ## while a previous reveal is still running.
 func reveal(control: Control, duration: float = 0.12, rise: float = 6.0) -> void:
-	var previous: Tween = control.get_meta("ui_reveal", null) as Tween
-	if previous != null and previous.is_valid():
-		previous.kill()
-		control.position = control.get_meta("ui_rest", control.position) as Vector2
+	if control.has_meta("ui_reveal"):
+		var previous: Tween = control.get_meta("ui_reveal") as Tween
+		if previous != null and previous.is_valid():
+			previous.kill()
+			control.position = control.get_meta("ui_rest") as Vector2
 	var rest: Vector2 = control.position
 	control.set_meta("ui_rest", rest)
 	control.modulate.a = 0.0
