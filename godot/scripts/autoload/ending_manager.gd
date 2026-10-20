@@ -279,7 +279,7 @@ func _theses() -> String:
 	lines.append(Localization.ru_en("• [b]Два хозяина:[/b] доверие %d · поддержка %d — %s", "• [b]Two masters:[/b] trust %d · support %d — %s") % [int(trust), int(support), masters])
 
 	var reserve: int = int(GameStateStore.get_resource("res_water_stockpile"))
-	var days: float = WaterPanel.water_days()
+	var days: float = EconomySystem.days_of("res_water_stockpile")
 	var cistern := Localization.ru_en("пуста", "empty")
 	if reserve > 0 and (is_inf(days) or days >= 0.1):
 		cistern = Localization.ru_en("%d воды", "%d water") % reserve if is_inf(days) else Localization.ru_en("%d воды — на %.1f дн.", "%d water — %.1f days' worth") % [reserve, days]

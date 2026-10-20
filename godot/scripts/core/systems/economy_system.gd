@@ -36,7 +36,8 @@ func process_tick() -> void:
 		var produces: Dictionary = ldata.get("produces", {})
 		var consumes: Dictionary = ldata.get("consumes", {})
 		var delivery_efficiency: float = _resource_flow.input_efficiency_for(coord, consumes)
-		var stock_efficiency: float = _input_stock_efficiency_for(consumes, delivery_efficiency, available_inputs)
+		var occupancy: float = housing_occupancy() if (ldata.get("population", 0) as int) > 0 else 1.0
+		var stock_efficiency: float = _input_stock_efficiency_for(consumes, delivery_efficiency * occupancy, available_inputs, season_mods)
 		var input_efficiency: float = delivery_efficiency * stock_efficiency
 		var condition_efficiency := 0.5 if (bld.get("has_issue", false) as bool) else 1.0
 		# Unpowered producers limp (electricity, GDD §6.2). PowerSystem set this flag.
@@ -44,7 +45,6 @@ func process_tick() -> void:
 			condition_efficiency *= 0.3
 
 		# Housing earns and eats by the people who actually live there, not by empty beds.
-		var occupancy: float = housing_occupancy() if (ldata.get("population", 0) as int) > 0 else 1.0
 		input_efficiency *= occupancy
 		for res_id: String in consumes:
 			demand[res_id] = (demand[res_id] as float) + (consumes[res_id] as float) * occupancy * _season_consumption_mult(res_id, season_mods)
@@ -92,14 +92,17 @@ func process_tick() -> void:
 			EventBus.resource_depleted.emit(res_id)
 
 
-func _input_stock_efficiency_for(consumes: Dictionary, delivery_efficiency: float, available_inputs: Dictionary) -> float:
+## How much of what the building needs this tick is actually in stock. `delivery` already
+## carries the delivery efficiency and the occupancy; the season raises the draw the same
+## way the ledger does, so a dry cistern in the Heat stalls a barrack instead of feeding it.
+static func _input_stock_efficiency_for(consumes: Dictionary, delivery: float, available_inputs: Dictionary, season_mods: Dictionary) -> float:
 	if consumes.is_empty():
 		return 1.0
-	if delivery_efficiency <= 0.0:
+	if delivery <= 0.0:
 		return 0.0
 	var efficiency := 1.0
 	for res_id: String in consumes:
-		var required: float = (consumes[res_id] as float) * delivery_efficiency
+		var required: float = (consumes[res_id] as float) * delivery * _season_consumption_mult(res_id, season_mods)
 		if required <= 0.0:
 			continue
 		var available: float = available_inputs.get(res_id, 0.0) as float

@@ -297,6 +297,8 @@ func _test_panels() -> void:
 	WaterPanel.call("_toggle")
 	await _settle()
 	_check(UiModals.is_open("water") and SimulationRunner.paused, "opening the water panel pauses the day")
+	_key(KEY_SPACE)
+	_check(SimulationRunner.paused, "Space under an open panel does not restart the day")
 	SeasonPanel.call("_toggle")
 	await _settle()
 	_check(UiModals.is_open("season") and not (WaterPanel.get("_visible") as bool), "opening the season panel closes the water panel")

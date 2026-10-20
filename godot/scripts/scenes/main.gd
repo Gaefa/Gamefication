@@ -218,7 +218,8 @@ func _handle_key(ke: InputEventKey) -> void:
 		if _world_actions_allowed() and _selected_coord != Vector2i(-9999, -9999):
 			_request_bulldoze()
 	elif _matches_key(ke, KEY_SPACE):
-		SimulationRunner.toggle_pause()
+		if not UiModals.is_open():  # the day waits under a panel; Space must not restart it
+			SimulationRunner.toggle_pause()
 	elif _matches_key(ke, KEY_1):
 		SimulationRunner.set_speed(1.0)
 	elif _matches_key(ke, KEY_2):

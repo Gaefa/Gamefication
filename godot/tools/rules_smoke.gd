@@ -368,6 +368,17 @@ func _economy_rules() -> void:
 	_check((GameStateStore.population().get("total", 0) as int) == (GameStateStore.population().get("capacity", 0) as int), "people brought by a card fill the free beds and no more (%d of %d)" % [GameStateStore.population().get("total", 0) as int, GameStateStore.population().get("capacity", 0) as int])
 	_check(is_equal_approx(RepairBuildingCommand.REPAIR_COST_COINS, 10.0), "a repair costs 10")
 
+	# A dry cistern in the Heat stalls a barrack: the stock check uses the Heat draw.
+	_check(is_equal_approx(EconomySystem._input_stock_efficiency_for({"res_water_stockpile": 0.1}, 1.0, {"res_water_stockpile": 0.1}, {"water_mult": 2.0}), 0.5),
+		"the stock check doubles the draw in the Heat")
+	# Breakdowns from a card never land on ruins.
+	EventManager.call("_apply_effects", {"force_issues": 30})
+	var broken_landmark: bool = false
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		if ContentDB.is_inert_landmark(bld.get("type", "") as String) and (bld.get("has_issue", false) as bool):
+			broken_landmark = true
+	_check(not broken_landmark, "force_issues leaves the landmarks alone")
 	# The ledger: after a tick, days-of-reserve come from what the economy wrote, not a walk.
 	_check(GameStateStore.economy().has("demand"), "the economy writes the demand ledger")
 	# Saves: garbage types are refused before they touch the game; a finished .tmp is recovered.

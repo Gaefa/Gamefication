@@ -90,6 +90,12 @@ func load_game(slot: int) -> bool:
 		EventBus.toast_requested.emit(Localization.t("ui.save.invalid", "Save file invalid (slot %d)") % slot, 4.0)
 		return false
 
+	for section: String in ["meta", "mandate"]:
+		if (data as Dictionary).has(section) and not (data as Dictionary)[section] is Dictionary:
+			push_warning("SaveService: slot %d: '%s' is not a dictionary" % [slot, section])
+			EventBus.toast_requested.emit(Localization.t("ui.save.invalid", "Save file invalid (slot %d)") % slot, 4.0)
+			return false
+
 	# Migrate old format saves to current schema
 	var migrated: Dictionary = SaveMigrator.migrate(data as Dictionary)
 
