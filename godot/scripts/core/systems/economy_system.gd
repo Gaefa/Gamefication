@@ -17,9 +17,11 @@ func process_tick() -> void:
 
 	var net_production: Dictionary = {}
 	var available_inputs: Dictionary = {}
+	var demand: Dictionary = {}  # what the district would draw with every input delivered
 	for res_id: String in ContentDB.get_resource_ids():
 		net_production[res_id] = 0.0
 		available_inputs[res_id] = GameStateStore.get_resource(res_id)
+		demand[res_id] = 0.0
 
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
@@ -42,8 +44,10 @@ func process_tick() -> void:
 			condition_efficiency *= 0.3
 
 		# Housing earns and eats by the people who actually live there, not by empty beds.
-		if (ldata.get("population", 0) as int) > 0:
-			input_efficiency *= housing_occupancy()
+		var occupancy: float = housing_occupancy() if (ldata.get("population", 0) as int) > 0 else 1.0
+		input_efficiency *= occupancy
+		for res_id: String in consumes:
+			demand[res_id] = (demand[res_id] as float) + (consumes[res_id] as float) * occupancy * _season_consumption_mult(res_id, season_mods)
 
 		# Get multipliers
 		var mults: Dictionary = _interactions.get_total_multipliers(coord)
@@ -69,6 +73,8 @@ func process_tick() -> void:
 
 	# Upkeep is part of the money flow, so the HUD trend and the depletion warning see it.
 	net_production["res_money"] = (net_production.get("res_money", 0.0) as float) - _maintenance_cost()
+
+	GameStateStore.economy()["demand"] = demand
 
 	# Apply net production
 	for res_id: String in net_production:
@@ -178,7 +184,11 @@ static func housing_occupancy() -> float:
 
 
 ## What the district draws per day at today's season rates; damaged buildings draw nothing.
+## Read from the ledger the last tick wrote; walked only before the first tick of a run.
 static func daily_consumption(res_id: String) -> float:
+	var ledger: Dictionary = GameStateStore.economy().get("demand", {}) as Dictionary
+	if ledger.has(res_id):
+		return (ledger[res_id] as float) * float(SimulationRunner.TICKS_PER_DAY)
 	var season_mods: Dictionary = GameStateStore.climate().get("modifiers", {})
 	var occupancy: float = housing_occupancy()
 	var per_tick: float = 0.0

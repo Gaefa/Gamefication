@@ -340,13 +340,15 @@ func to_save_dict() -> Dictionary:
 	return save_data
 
 func load_from_dict(data: Dictionary) -> void:
+	# Everything is converted on a copy first; the live state is swapped in last, so a
+	# save that fails halfway through leaves the current run untouched.
+	var incoming: Dictionary = data.duplicate(true)
+	incoming.erase("tick")
+	incoming.world.terrain = _dict_str_to_v2i(incoming.world.terrain)
+	incoming.world.buildings = _dict_str_to_v2i(incoming.world.buildings)
 	_tick = data.get("tick", 0) as int
-	_state = data.duplicate(true)
-	_state.erase("tick")
+	_state = incoming
 	_ensure_runtime_defaults()
-	# Restore Vector2i keys
-	_state.world.terrain = _dict_str_to_v2i(_state.world.terrain)
-	_state.world.buildings = _dict_str_to_v2i(_state.world.buildings)
 
 
 func _ensure_runtime_defaults() -> void:

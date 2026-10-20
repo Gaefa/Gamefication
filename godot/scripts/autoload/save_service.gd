@@ -43,6 +43,7 @@ func save_game(slot: int, silent: bool = false) -> bool:
 	GameStateStore.climate()["day_timer"] = SimulationRunner.day_timer
 	var data: Dictionary = GameStateStore.to_save_dict()
 	data["save_time"] = Time.get_datetime_string_from_system()
+	(data["meta"] as Dictionary)["game_version"] = ProjectSettings.get_setting("application/config/version", "")
 	# Keep key order (systems iterate buildings in insertion order) and full float
 	# precision, so a load resumes the simulation tick-for-tick.
 	var json_str := JSON.stringify(data, "\t", false, true)
@@ -65,6 +66,7 @@ func save_game(slot: int, silent: bool = false) -> bool:
 
 func load_game(slot: int) -> bool:
 	var path := _slot_path(slot)
+	_recover_tmp(path)
 	if not FileAccess.file_exists(path):
 		push_warning("SaveService: no save at slot %d" % slot)
 		EventBus.toast_requested.emit(Localization.t("ui.save.no_save", "No save in slot %d") % slot, 3.0)
@@ -107,13 +109,34 @@ func load_game(slot: int) -> bool:
 
 
 func has_save(slot: int) -> bool:
-	return FileAccess.file_exists(_slot_path(slot))
+	var path := _slot_path(slot)
+	_recover_tmp(path)
+	return FileAccess.file_exists(path)
 
 
 func delete_save(slot: int) -> void:
 	var path := _slot_path(slot)
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(path)
+	if FileAccess.file_exists(path + ".tmp"):
+		DirAccess.remove_absolute(path + ".tmp")
+
+
+## On Windows the swap in save_game() is remove-then-rename: a crash between the two
+## leaves only the finished .tmp. A complete .tmp with no slot beside it becomes the slot.
+func _recover_tmp(path: String) -> void:
+	var tmp_path := path + ".tmp"
+	if FileAccess.file_exists(path) or not FileAccess.file_exists(tmp_path):
+		return
+	var file := FileAccess.open(tmp_path, FileAccess.READ)
+	if file == null:
+		return
+	var text := file.get_as_text()
+	file.close()
+	if JSON.new().parse(text) == OK:
+		DirAccess.rename_absolute(tmp_path, path)
+	else:
+		DirAccess.remove_absolute(tmp_path)
 
 
 func _slot_path(slot: int) -> String:

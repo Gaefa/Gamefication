@@ -436,12 +436,20 @@ func _pick_unique_coords(candidates: Array, count: int) -> Array:
 ## Event randomness draws from the run's seeded generator, so a load replays it exactly.
 func _rng_chance(probability: float) -> bool:
 	var orch: GameOrchestrator = _orchestrator()
-	return orch.rng.chance(probability) if orch != null else randf() < probability
+	if orch == null:
+		return randf() < probability
+	var hit: bool = orch.rng.chance(probability)
+	GameStateStore.save_meta().rng_state = orch.rng.get_state()  # a save between draws replays the same cards
+	return hit
 
 
 func _rng_index(size: int) -> int:
 	var orch: GameOrchestrator = _orchestrator()
-	return orch.rng.range_int(0, size) if orch != null else randi() % size
+	if orch == null:
+		return randi() % size
+	var index: int = orch.rng.range_int(0, size)
+	GameStateStore.save_meta().rng_state = orch.rng.get_state()
+	return index
 
 
 func _event_cooldowns() -> Dictionary:

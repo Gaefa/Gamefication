@@ -10,8 +10,8 @@ extends Node
 
 const HINTS := {
 	# --- First-session chain: one step at a time, the next unlocks when the previous is done ---
-	"welcome": ["Вы — администратор Ржавой Норы. Цель: пережить Пыль (дни 19–29), Жару (30–38) и аудиты на 20-й и 36-й. Продержитесь до дня 40 со счастьем не ниже 40 и не меньше чем 12 жителями. Первый шаг — вода: дорога → колодец-насос → барак. Пробел — пауза, H — справка.",
-		"You are the administrator of the Rust Pit. Goal: survive Dust (days 19–29), Heat (30–38), and audits on days 20 and 36. Reach day 40 with mood at least 40 and at least 12 residents. First step is water: road → well pump → shelter. Space pauses, H opens help."],
+	"welcome": ["Вы — администратор Ржавой Норы. Цель: пережить Пыль (дни 19–29), Жару (30–40) и аудиты на 20-й и 36-й. Продержитесь до дня 40 со счастьем не ниже 40 и не меньше чем 12 жителями. Первый шаг — вода: дорога → колодец-насос → барак. Пробел — пауза, H — справка.",
+		"You are the administrator of the Rust Pit. Goal: survive Dust (days 19–29), Heat (30–40), and audits on days 20 and 36. Reach day 40 with mood at least 40 and at least 12 residents. First step is water: road → well pump → shelter. Space pauses, H opens help."],
 	"build_road": ["Справа «Инфраструктура» → «Дорога». Кликайте по клеткам от поста администрации. Здания работают только рядом с дорогой.",
 		"On the right, \"Infrastructure\" → \"Road\". Click tiles outward from the administration post. Buildings only work next to a road."],
 	"build_pump": ["Теперь «Колодец-насос» у дороги — он даёт воду в радиусе 4 клеток (V покажет радиус). Второй насос — второй запас на Пыль.",
