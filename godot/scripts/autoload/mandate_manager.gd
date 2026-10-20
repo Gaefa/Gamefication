@@ -27,8 +27,9 @@ func _on_tick_finished(_tick: int) -> void:
 		return
 	if (mandate.get("patron_id", "") as String) == "":
 		return  # a founder has no patron to audit them
-	if (GameStateStore.climate().get("total_day", 1) as int) < next_day:
-		return
+	var day: int = GameStateStore.climate().get("total_day", 1) as int
+	if day < next_day or (day == next_day and not SimulationRunner.is_day_ending()):
+		return  # the inspector comes at the end of the day, after the player has played it
 	_run_audit()
 
 

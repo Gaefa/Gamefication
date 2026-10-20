@@ -92,7 +92,7 @@ func _evaluate() -> void:
 	elif _peak_pop >= 4 and pop <= 0:
 		# Total desertion — even a small district emptying out is an exodus.
 		_trigger("ending.lose.exodus")
-	elif day >= ContentDB.get_win_day():
+	elif day > ContentDB.get_win_day() or (day == ContentDB.get_win_day() and SimulationRunner.is_day_ending()):
 		# Survived to the end AND the city is stable and populated — a real win, not a hollow one.
 		# Which win shade depends on how the player governed (style flags), with the
 		# trust-vs-support balance as a fallback when no strong style emerged.

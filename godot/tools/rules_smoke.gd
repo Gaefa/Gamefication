@@ -266,7 +266,7 @@ func _heat_rules() -> void:
 	_check(EventManager.pending_events.any(func(e: Dictionary) -> bool: return e.get("runtime_id", "") == "crisis.heat_collapse"), "Heat crisis takes priority during Heat")
 	var shade: Dictionary = ContentDB.get_event_def("petition.covenant_shade")["options"][0]["effects"]
 	EventManager.call("_apply_effects", shade)
-	SimulationRunner.day_count = 39
+	SimulationRunner.day_count = 41  # the Heat runs to the end of the term; the Window returns after it
 	orch.season_sys.process_tick()
 	orch.maintenance_sys.process_tick()
 	_check(GameStateStore.get_buffs().is_empty(), "shade expires at Heat end even when accepted late")
@@ -277,9 +277,13 @@ func _heat_rules() -> void:
 	GameStateStore.population()["total"] = 12  # the people norm counts heads
 	GameStateStore.population()["peak"] = 12
 	GameStateStore.climate()["total_day"] = 20
+	SimulationRunner.day_timer = 100.0
+	MandateManager.call("_on_tick_finished", 0)
+	_check(GameStateStore.mandate().get("audits_done", 0) == 0, "the inspector waits for the end of day 20")
+	SimulationRunner.day_timer = 0.0
 	MandateManager.call("_on_tick_finished", 0)
 	MandateManager.call("_on_tick_finished", 0)
-	_check(GameStateStore.mandate().get("audits_done", 0) == 1, "first audit fires once on day 20")
+	_check(GameStateStore.mandate().get("audits_done", 0) == 1, "first audit fires once at the end of day 20")
 	GameStateStore.climate()["total_day"] = 36
 	MandateManager.call("_on_tick_finished", 0)
 	_check(GameStateStore.mandate().get("audits_done", 0) == 2 and MandateManager.next_audit_day() == 0, "both audits complete after day 36")
@@ -355,14 +359,32 @@ func _economy_rules() -> void:
 	EventManager.call("_apply_effects", {"add_residents": 50})
 	_check((GameStateStore.population().get("total", 0) as int) == (GameStateStore.population().get("capacity", 0) as int), "people brought by a card fill the free beds and no more (%d of %d)" % [GameStateStore.population().get("total", 0) as int, GameStateStore.population().get("capacity", 0) as int])
 	_check(is_equal_approx(RepairBuildingCommand.REPAIR_COST_COINS, 10.0), "a repair costs 10")
+
+	# The ledger: after a tick, days-of-reserve come from what the economy wrote, not a walk.
+	_check(GameStateStore.economy().has("demand"), "the economy writes the demand ledger")
+	# Saves: garbage types are refused before they touch the game; a finished .tmp is recovered.
+	var garbage: Dictionary = {"meta": {"schema_version": 1}, "world": {"map_radius": 30, "terrain": "x", "buildings": {}},
+		"economy": {"resources": {}, "caps": {}, "production": {}, "buffs": {}}, "population": {}, "progression": {}, "pressure": {}, "events": {"active": {}, "cooldowns": {}}}
+	_check(SaveValidator.validate(garbage).size() >= 3, "a save with the wrong types is refused (%d errors)" % SaveValidator.validate(garbage).size())
+	var slot_path: String = SaveService.call("_slot_path", 8) as String
+	SaveService.delete_save(8)
+	SaveService.save_game(8, true)
+	DirAccess.rename_absolute(slot_path, slot_path + ".tmp")  # as a crash between remove and rename leaves it
+	_check(SaveService.has_save(8) and FileAccess.file_exists(slot_path), "a finished .tmp beside a missing slot is recovered")
+	SaveService.delete_save(8)
+	_check(not FileAccess.file_exists(slot_path + ".tmp"), "deleting a slot removes its .tmp too")
 	pop_state = GameStateStore.population()
 
 	# The term ends on day 40 for everyone: a hut by a pump is not renewed.
 	pop_state["total"] = 4
 	pop_state["peak"] = 4
 	GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
+	SimulationRunner.day_timer = 100.0
 	EndingManager.call("_evaluate")
-	_check(_ended == "ending.lose.not_renewed", "four happy people on day 40 lose the mandate (ended: '%s')" % _ended)
+	_check(_ended == "", "day 40 is played before the term ends (ended: '%s')" % _ended)
+	SimulationRunner.day_timer = 0.0
+	EndingManager.call("_evaluate")
+	_check(_ended == "ending.lose.not_renewed", "four happy people at the end of day 40 lose the mandate (ended: '%s')" % _ended)
 
 	# Two of three norms pass the League and fail the Directorate.
 	for profile: String in ["appointed_administrator", "directorate_administrator"]:

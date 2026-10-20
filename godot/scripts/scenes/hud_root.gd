@@ -66,6 +66,7 @@ var _pause_panel: Control  # the modal frame (its dim); see UiStyle.modal
 var _pause_visible: bool = false
 var _speed_buttons: Array[Button] = []
 var _last_pop: int = -1
+var _bar_dirty: bool = false  # three signals a tick ask for the top bar; it is drawn once
 var _leave_notice_day: int = -1
 var _settings_visible: bool = false
 var _settings_language_select: OptionButton
@@ -110,6 +111,9 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _bar_dirty:
+		_bar_dirty = false
+		_update_resource_bar()
 	_update_day_clock()  # also reflects pause and speed, which emit no signal
 	_update_minimap_camera()
 	_update_toast_fade(delta)
@@ -613,7 +617,7 @@ func _resource_value(preferred_id: String, fallback_id: String) -> float:
 
 
 func _on_resources_changed(_resources: Dictionary) -> void:
-	_update_resource_bar()
+	_bar_dirty = true
 	_update_build_list_affordability()
 
 
@@ -2876,15 +2880,11 @@ func _update_toast_fade(delta: float) -> void:
 
 
 func _on_tick_finished(_tick: int) -> void:
-	_update_resource_bar()
+	_bar_dirty = true
 	_update_info()
 	if _city_visible:
 		_rebuild_city_panel()
 
 
 func _on_coverage_recalculated() -> void:
-	_update_resource_bar()
-	if _selected_coord != Vector2i(-9999, -9999):
-		_update_info()
-	if _city_visible:
-		_rebuild_city_panel()
+	_bar_dirty = true

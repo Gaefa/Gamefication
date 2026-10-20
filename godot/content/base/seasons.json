@@ -52,7 +52,7 @@
       "label_key": "season.heat.label",
       "description": "Жара. Воды нужно больше, продукты портятся. Склад и устойчивое снабжение важнее полного запаса.",
       "description_en": "Heat. Water use rises and food spoils. Warehouses and steady supply matter more than a full reserve.",
-      "length_days": 9,
+      "length_days": 11,
       "expert_faction": "green_covenant",
       "enabled_in_mvp": true,
       "forecast_intensity": "harsh",

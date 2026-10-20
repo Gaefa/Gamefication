@@ -48,6 +48,7 @@ func _ready() -> void:
 	orch.new_game(12345, "directorate_administrator")
 	print("patron_id = %s (ожидается civic_directorate)" % (GameStateStore.mandate().get("patron_id", "") as String))
 	GameStateStore.mandate()["patron_trust"] = 0.0
+	SimulationRunner.day_timer = 0.0  # the last tick of the day
 	orch.tick_scheduler.run_tick()  # EndingManager evaluates on tick_finished
 
 	# Scenario D: second patron WIN — should be told in the Directorate's voice.
@@ -59,6 +60,7 @@ func _ready() -> void:
 	GameStateStore.population()["happiness"] = 60.0
 	GameStateStore.mandate()["patron_trust"] = 60.0
 	GameStateStore.mandate()["support"] = 35.0
+	SimulationRunner.day_timer = 0.0
 	orch2.tick_scheduler.run_tick()
 
 	# Scenario E: напор — pressure fades at the radius edge and under load; a second pump
@@ -128,6 +130,7 @@ func _run(label: String, prepared: bool) -> void:
 		if prepared:
 			_repair_all()
 		for _t: int in range(TICKS_PER_DAY):
+			SimulationRunner.day_timer = SimulationRunner.day_duration - float(_t + 1) * SimulationRunner.TICK_INTERVAL
 			orch.tick_scheduler.run_tick()
 		_log_day(day)
 		while seen < EventManager.pending_events.size():
@@ -256,6 +259,7 @@ func _run_heat_reserve(second_pump: bool) -> void:
 		SimulationRunner.day_count = day
 		_repair_all()
 		for _t: int in TICKS_PER_DAY:
+			SimulationRunner.day_timer = SimulationRunner.day_duration - float(_t + 1) * SimulationRunner.TICK_INTERVAL
 			orch.tick_scheduler.run_tick()
 			if ending_day == 0 and seen.has("id"):
 				ending_day = day

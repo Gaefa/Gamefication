@@ -79,6 +79,12 @@ func _start_new_day() -> void:
 
 ## Side panels stay closed only under a modal: the evening Desk, an urgent card, or when no
 ## run is going (start menu, finale). A manual pause must not lock them.
+## True during the last tick of the day (the timer is drawn down before the tick runs):
+## the finale and the audit land here, after the player has played the day.
+func is_day_ending() -> bool:
+	return current_phase == Phase.DAY and day_timer <= 0.0
+
+
 func blocks_panels() -> bool:
 	return not run_active or current_phase == Phase.EVENING or card_open
 
