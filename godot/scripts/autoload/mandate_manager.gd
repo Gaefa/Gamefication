@@ -95,6 +95,11 @@ func _people_verdict(second: bool, en: bool) -> String:
 	return "no, the district lost people" if en else "нет, район потерял людей"
 
 
+## A tick in ink, a cross in red ink: the sheet shows at a glance what was missed.
+func _mark(ok: bool) -> String:
+	return "✔" if ok else "[color=#8a3a2e][b]✘[/b][/color]"
+
+
 func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, trust_delta: float) -> Dictionary:
 	var directorate: bool = (GameStateStore.mandate().get("patron_id", "") as String) == "civic_directorate"
 	var verdict: String
@@ -130,18 +135,18 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 
 	var second: bool = (GameStateStore.mandate().get("audits_done", 0) as int) >= 2
 	var checklist: String = "\n".join([
-		"— Запас воды: %s" % ("в порядке" if water_ok else "меньше дня расхода"),
-		"— Запас еды: %s" % ("в порядке" if food_ok else "меньше дня расхода"),
-		"— Люди остаются: %s" % ("да" if people_ok else _people_verdict(second, false)),
+		"%s Запас воды: %s" % [_mark(water_ok), "в порядке" if water_ok else "меньше дня расхода"],
+		"%s Запас еды: %s" % [_mark(food_ok), "в порядке" if food_ok else "меньше дня расхода"],
+		"%s Люди остаются: %s" % [_mark(people_ok), "да" if people_ok else _people_verdict(second, false)],
 	])
 	var checklist_en: String = "\n".join([
-		"— Water reserve: %s" % ("OK" if water_ok else "under a day's draw"),
-		"— Food reserve: %s" % ("OK" if food_ok else "under a day's draw"),
-		"— People are staying: %s" % ("yes" if people_ok else _people_verdict(second, true)),
+		"%s Water reserve: %s" % [_mark(water_ok), "OK" if water_ok else "under a day's draw"],
+		"%s Food reserve: %s" % [_mark(food_ok), "OK" if food_ok else "under a day's draw"],
+		"%s People are staying: %s" % [_mark(people_ok), "yes" if people_ok else _people_verdict(second, true)],
 	])
 	if second:
-		checklist += "\n— Потери еды <25%% начального запаса: %s" % ("да" if food_preserved() else "нет")
-		checklist_en += "\n— Food lost <25%% of starting reserve: %s" % ("yes" if food_preserved() else "no")
+		checklist += "\n%s Потери еды <25%% начального запаса: %s" % [_mark(food_preserved()), "да" if food_preserved() else "нет"]
+		checklist_en += "\n%s Food lost <25%% of starting reserve: %s" % [_mark(food_preserved()), "yes" if food_preserved() else "no"]
 		var first: Variant = GameStateStore.mandate().get("first_audit_score", null)
 		var prior: String = "%d/3" % int(first) if first != null else "результат в прежнем деле"
 		var prior_en: String = "%d/3" % int(first) if first != null else "result in the previous file"
