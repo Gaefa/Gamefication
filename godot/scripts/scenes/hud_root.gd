@@ -344,7 +344,7 @@ func _build_day_clock() -> void:
 	_clock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	_loc(_clock_panel, func() -> String: return Localization.ru_en("Клик или Пробел — пауза · 1 / 2 / 3 — скорость · Esc — меню", "Click or Space — pause · 1 / 2 / 3 — speed · Esc — menu"), "tooltip_text")
 	_clock_panel.gui_input.connect(func(event: InputEvent) -> void:
-		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT and not UiModals.is_open():
 			SimulationRunner.toggle_pause())
 	var style: StyleBoxFlat = UiStyle.panel_box(6)
 	style.border_color = UiStyle.ACCENT_DIM
@@ -1872,7 +1872,6 @@ func _teleport_camera_to_minimap_pos(click_pos: Vector2) -> void:
 	if main_cam:
 		# Use global_position as target
 		main_cam.global_position = world_pos
-		EventBus.toast_requested.emit("Jump to position", 0.5)
 
 
 func _rebuild_start_panel() -> void:

@@ -413,8 +413,8 @@ func _candidate_problem_coords(skip_damaged: bool, skip_issues: bool) -> Array:
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		var type_id: String = bld.get("type", "") as String
-		if type_id == "road" or type_id == "bld_road":
-			continue
+		if type_id == "road" or type_id == "bld_road" or ContentDB.is_inert_landmark(type_id):
+			continue  # a ruin cannot "run at half strength"; IssueSystem skips them too
 		if skip_damaged and (bld.get("damaged", false) as bool):
 			continue
 		if skip_issues and (bld.get("has_issue", false) as bool):
