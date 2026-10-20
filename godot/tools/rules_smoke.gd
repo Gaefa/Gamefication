@@ -386,6 +386,23 @@ func _economy_rules() -> void:
 	EndingManager.call("_evaluate")
 	_check(_ended == "ending.lose.not_renewed", "four happy people at the end of day 40 lose the mandate (ended: '%s')" % _ended)
 
+	# A founder's self-set term ends on day 40 as well: a hut disperses, a district holds.
+	_new_game("founder_rebel")
+	_ticks(1)
+	GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
+	SimulationRunner.day_timer = 0.0
+	EndingManager.call("_evaluate")
+	_check(_ended == "ending.lose.founder_dispersed", "a founder's hut disperses at the end of the term (ended: '%s')" % _ended)
+	_new_game("founder_rebel")
+	_ticks(1)
+	GameStateStore.population()["total"] = 12
+	GameStateStore.population()["peak"] = 12
+	GameStateStore.population()["happiness"] = 60.0
+	GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
+	SimulationRunner.day_timer = 0.0
+	EndingManager.call("_evaluate")
+	_check(_ended == "ending.win.founder", "a founder's district of twelve holds (ended: '%s')" % _ended)
+
 	# Two of three norms pass the League and fail the Directorate.
 	for profile: String in ["appointed_administrator", "directorate_administrator"]:
 		_new_game(profile)

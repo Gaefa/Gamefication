@@ -31,13 +31,15 @@ func invalidate() -> void:
 	_dirty = true
 
 
-func ensure_fresh() -> void:
+## True when the cache was actually rebuilt.
+func ensure_fresh() -> bool:
 	if not _dirty:
-		return
+		return false
 	_dirty = false
 	_rebuild_road_coverage()
 	_rebuild_water_coverage()
 	_rebuild_power_coverage()
+	return true
 
 
 func is_road_connected(coord: Vector2i) -> bool:
