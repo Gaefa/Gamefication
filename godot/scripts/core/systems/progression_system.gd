@@ -77,6 +77,14 @@ func _update_population() -> void:
 		residents += (float(served) - residents) * INFLOW_RATE
 	residents = clampf(residents, 0.0, float(capacity))
 
+	# Why people are leaving, for the HUD: thirst, hunger, misery, or housing cut off.
+	var leaving: String = ""
+	if under_duress:
+		leaving = "water" if water <= 0.0 else ("food" if food <= 0.0 else "mood")
+	elif residents > float(served) + 0.01:
+		leaving = "unserved"
+	pop_state["leaving"] = leaving
+
 	pop_state["residents"] = residents
 	pop_state["capacity"] = capacity
 	pop_state["served"] = served
@@ -132,6 +140,11 @@ func _update_happiness() -> void:
 		supply_term += heat_stress_term()
 	GameStateStore.population()["low_pressure_housing"] = weak_water_housing
 	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term + pressure_term + neighbour_mood, 0.0, 100.0)
+	# The breakdown the HUD shows on the happiness chip, so the number has reasons.
+	GameStateStore.population()["mood_terms"] = {
+		"target": target, "buildings": total_happiness * 0.1, "buffs": buff_happiness, "governance": governance_happiness,
+		"supply": supply_term, "power": power_term, "pressure": pressure_term, "neighbours": neighbour_mood,
+	}
 	# Ease happiness toward the target instead of snapping. At the scarcity boundary the
 	# instantaneous supply term jitters tick-to-tick (food produced then eaten); a mood
 	# is slow-moving, so this low-pass filter turns that jitter into a steady slide.

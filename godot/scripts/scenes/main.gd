@@ -415,6 +415,16 @@ func toggle_logistics_lens() -> void:
 	)
 
 
+## Entering the build mode drops the selection: the brackets on a building and a build
+## card side by side left the player guessing what the next click would do.
+func clear_selection() -> void:
+	if _selected_coord == Vector2i(-9999, -9999):
+		return
+	_selected_coord = Vector2i(-9999, -9999)
+	EventBus.selection_changed.emit(_selected_coord)
+	_refresh_overlay_state()
+
+
 func _refresh_overlay_state() -> void:
 	var overlay: Node = get_node_or_null("World/OverlayLayer")
 	if overlay and overlay.has_method("set_show_ranges"):
