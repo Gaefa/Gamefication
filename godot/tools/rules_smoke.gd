@@ -297,9 +297,17 @@ func _heat_rules() -> void:
 	GameStateStore.load_from_dict(migrated)
 	orch.load_game()
 	_check(MandateManager.next_audit_day() == 36, "old save loads with second audit still due")
-	SimulationRunner.day_count = 39
-	orch.season_sys.process_tick()
-	_check(GameStateStore.climate()["season_id"] == "season_window", "Window returns on day 39")
+	# The calendar, walked a day at a time from a fresh run: the term ends inside the Heat.
+	_new_game("appointed_administrator")
+	var seen_seasons: Dictionary = {}
+	for d: int in range(1, 42):
+		SimulationRunner.day_count = d
+		orch.season_sys.process_tick()
+		seen_seasons[d] = GameStateStore.climate()["season_id"]
+	_check(seen_seasons[18] == "season_window" and seen_seasons[19] == "season_dust", "the Dust starts on day 19")
+	_check(seen_seasons[29] == "season_dust" and seen_seasons[30] == "season_heat", "the Heat starts on day 30")
+	_check(seen_seasons[40] == "season_heat", "day 40 is still the Heat")
+	_check(seen_seasons[41] == "season_window", "the Window returns on day 41, after the term")
 
 
 func _economy_rules() -> void:

@@ -10,7 +10,7 @@ Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; wi
 ## How to run
 
 - **Windows:** run `MandateCities.exe`. No install; the file can live anywhere. If SmartScreen says "Windows protected your PC" — More info → Run anyway: the build is not code-signed yet.
-- **macOS:** open the `.dmg` (or unzip the `.zip`), move "Mandate Cities.app" to Applications. First launch: right-click → Open → Open. If macOS says the app is damaged, in Terminal: `xattr -dr com.apple.quarantine "/Applications/Mandate Cities.app"`.
+- **macOS:** open the `.dmg` (or unzip the `.zip`), move `MandateCities.app` to Applications. The app is not notarized yet. On macOS 15 the first launch is blocked: System Settings → Privacy & Security → scroll down → "Open Anyway", then launch again. On macOS 14 and older: right-click → Open → Open. If macOS says the app is damaged, in Terminal: `xattr -dr com.apple.quarantine "/Applications/MandateCities.app"`. There is no sound yet.
 - **Language:** English / Русский buttons on the main menu (also in Options, O).
 - **Save:** one slot, automatic — "Continue" in the menu. Start over with "New game". Files live in `%APPDATA%\Godot\app_userdata\Mandate Cities\saves` (Windows) or `~/Library/Application Support/Godot/app_userdata/Mandate Cities/saves` (macOS).
 - **If the game crashes:** send the newest file from the `logs` folder next to `saves` and tell us what you were doing.

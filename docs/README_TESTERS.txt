@@ -6,11 +6,19 @@ WINDOWS
   Запустите MandateCities.exe. Если SmartScreen предупреждает: «Подробнее» -> «Выполнить в любом случае».
 
 macOS
-  Open the .dmg (or unzip the .zip) and move "Mandate Cities.app" to Applications.
-  First launch: right-click the app -> Open -> Open (it is not notarized yet).
+  Open the .dmg (or unzip the .zip) and move "MandateCities.app" to Applications.
+  The app is not notarized yet. On macOS 15 (Sequoia) the first launch is blocked: open
+  System Settings -> Privacy & Security, scroll down, press "Open Anyway", then launch again.
+  On macOS 14 and older: right-click the app -> Open -> Open.
   If macOS says the app is damaged, run in Terminal:
-    xattr -dr com.apple.quarantine "/Applications/Mandate Cities.app"
-  Откройте .dmg (или распакуйте .zip), первый запуск — правый клик по приложению -> «Открыть».
+    xattr -dr com.apple.quarantine "/Applications/MandateCities.app"
+  Откройте .dmg (или распакуйте .zip), перенесите MandateCities.app в Программы. На macOS 15
+  первый запуск блокируется: Системные настройки -> Конфиденциальность и безопасность ->
+  внизу «Открыть всё равно», затем запустите снова. На macOS 14 и старше: правый клик -> «Открыть».
+
+KNOWN / ИЗВЕСТНО
+  There is no sound yet. One autosave slot, written during the day (not at the Desk).
+  Звука пока нет. Один автосейв, пишется днём (не за Столом).
 
 LANGUAGE / ЯЗЫК
   English / Русский buttons on the main menu (also in Options, O).

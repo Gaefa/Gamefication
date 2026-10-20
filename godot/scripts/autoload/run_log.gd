@@ -49,6 +49,12 @@ func _notification(what: int) -> void:
 		_log("quit", _snapshot())
 
 
+## The pause menu's two exits are drop-off points too; the report must not count them as crashes.
+func note_exit(kind: String) -> void:
+	if SimulationRunner.run_active:
+		_log(kind, _snapshot())
+
+
 ## The folder testers send back; created on first use.
 func folder() -> String:
 	DirAccess.make_dir_recursive_absolute(_dir)
@@ -83,6 +89,7 @@ func _snapshot() -> Dictionary:
 		"season": GameStateStore.climate().get("season_id", "") as String,
 		"playtime": int(GameStateStore.save_meta().get("playtime_sec", 0.0) as float),  # game seconds
 		"session_sec": int((Time.get_ticks_msec() - _session_start_ms) / 1000.0),  # real seconds since start/continue
+		"speed": SimulationRunner.speed_scale,  # "long" and "boring" look the same without it
 		"buildings": GameStateStore.get_all_building_coords().size(),
 		"population": population.get("total", 0) as int,
 		"happiness": snappedf(population.get("happiness", 0.0) as float, 0.1),
