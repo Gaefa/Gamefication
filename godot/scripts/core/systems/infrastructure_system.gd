@@ -13,11 +13,14 @@ func _init(coverage: CoverageMap, road_graph: TransportGraph, aura_cache: AuraCa
 
 
 func process_tick() -> void:
-	_coverage.ensure_fresh()
-	_road_graph.ensure_fresh()
-	_aura_cache.ensure_fresh()
+	# Each cache reports whether it rebuilt; the signal fires only then (listeners used to
+	# redraw the whole top bar every tick on it).
+	var rebuilt: bool = _coverage.ensure_fresh()
+	rebuilt = _road_graph.ensure_fresh() or rebuilt
+	rebuilt = _aura_cache.ensure_fresh() or rebuilt
 	_recalculate_storage_caps()
-	EventBus.coverage_recalculated.emit()
+	if rebuilt:
+		EventBus.coverage_recalculated.emit()
 
 
 func _recalculate_storage_caps() -> void:

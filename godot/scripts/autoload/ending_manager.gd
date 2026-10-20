@@ -108,7 +108,9 @@ func _evaluate() -> void:
 			# Two stories: a district that never grew, and one that grew and then bled people.
 			var bled: bool = _peak_pop >= WIN_PEOPLE and pop < int(float(_peak_pop) * WIN_PEAK_KEEP)
 			_trigger("ending.lose.not_renewed_losses" if bled else "ending.lose.not_renewed")
-		# A founder answers to no one: a thin district simply plays on.
+		else:
+			# A founder answers to no one, but the term they set themselves still ends.
+			_trigger("ending.lose.founder_dispersed")
 
 
 func _patron_win_ending(protector_side: bool) -> String:
@@ -117,6 +119,8 @@ func _patron_win_ending(protector_side: bool) -> String:
 	match GameStateStore.mandate().get("patron_id", "restoration_league") as String:
 		"civic_directorate":
 			return "ending.win.directorate_defiant" if protector_side else "ending.win.directorate_order"
+		"":
+			return "ending.win.founder"
 		_:
 			return "ending.win.protector" if protector_side else "ending.win.loyal"
 
@@ -250,7 +254,10 @@ func _show_finale(def: Dictionary, ending_id: String) -> void:
 	var kind: String = def.get("kind", "") as String
 	_title_label.text = Localization.content_text(def, "title", Localization.ru_en("Финал", "Finale"))
 	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
-	_outcome_label.text = Localization.ru_en("МАНДАТ ПРОДЛЁН", "MANDATE EXTENDED") if kind == "win" else Localization.ru_en("МАНДАТ ПРЕКРАЩЁН", "MANDATE ENDED")
+	if (GameStateStore.mandate().get("patron_id", "") as String) == "":
+		_outcome_label.text = Localization.ru_en("РАЙОН УСТОЯЛ", "THE DISTRICT HELD") if kind == "win" else Localization.ru_en("РАЙОН РАСПАЛСЯ", "THE DISTRICT FELL APART")
+	else:
+		_outcome_label.text = Localization.ru_en("МАНДАТ ПРОДЛЁН", "MANDATE EXTENDED") if kind == "win" else Localization.ru_en("МАНДАТ ПРЕКРАЩЁН", "MANDATE ENDED")
 	_outcome_label.add_theme_color_override("font_color", Color("3f6b2a") if kind == "win" else Color("8a3a2e"))
 	_body_label.text = Localization.content_text(def, "body", "") + _replacement_epilogue(ending_id) + _style_epilogue()
 	_theses_label.text = _theses()

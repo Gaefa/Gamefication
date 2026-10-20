@@ -8,7 +8,8 @@ var _sprite_cache: Dictionary = {}
 var _selected: Vector2i = Vector2i(-9999, -9999)
 
 const SELECT_EDGE := Color(1.0, 0.95, 0.75, 0.95)
-const SELECT_SCALE := 1.08  # just outside the sprite's ground, so the frame stays visible
+const SELECT_FILL := Color(1.0, 0.95, 0.75, 0.10)
+const SELECT_PULSE_SEC := 1.2
 
 
 func _ready() -> void:
@@ -17,15 +18,31 @@ func _ready() -> void:
 		queue_redraw())
 
 
-## The frame of a selected building is split in two: the far edges are drawn before the
-## sprite (the building hides them where it stands), the near edges after it.
-func _draw_select_half(center: Vector2, far: bool) -> void:
-	var ring: PackedVector2Array = _hex_polygon(HexCoords.HEX_SIZE * SELECT_SCALE)
+## A selected building sits on a lit hex: a soft fill under the sprite, the ground ring
+## over it, breathing slowly so the eye finds it. (Two bracket halves used to peek out
+## beside the sprite and read as a cursor, not a footprint.)
+func _draw_select_ground(center: Vector2) -> void:
+	var ring: PackedVector2Array = _hex_polygon(HexCoords.HEX_SIZE)
 	var pts := PackedVector2Array()
-	for i: int in ([3, 4, 5, 0] if far else [0, 1, 2, 3]):
-		pts.append(center + ring[i])
-	draw_polyline(pts, Color(0.1, 0.08, 0.06, 0.55), 4.0)
-	draw_polyline(pts, SELECT_EDGE, 2.0)
+	for p: Vector2 in ring:
+		pts.append(center + p)
+	draw_colored_polygon(pts, SELECT_FILL)
+
+
+func _draw_select_ring(center: Vector2) -> void:
+	var ring: PackedVector2Array = _hex_polygon(HexCoords.HEX_SIZE)
+	var pts := PackedVector2Array()
+	for p: Vector2 in ring:
+		pts.append(center + p)
+	pts.append(center + ring[0])
+	var pulse: float = 0.75 + 0.25 * (0.5 + 0.5 * sin(TAU * Time.get_ticks_msec() / 1000.0 / SELECT_PULSE_SEC))
+	draw_polyline(pts, Color(0.1, 0.08, 0.06, 0.5 * pulse), 4.0)
+	draw_polyline(pts, Color(SELECT_EDGE, SELECT_EDGE.a * pulse), 2.0)
+
+
+func _process(_delta: float) -> void:
+	if _selected != Vector2i(-9999, -9999):
+		queue_redraw()  # the ring breathes
 
 # Category colors for base hex fill
 const CAT_COLORS: Dictionary = {
@@ -92,10 +109,10 @@ func _draw() -> void:
 		# Real sprite: no coloured hex under it — just a ground shadow, the sprite, and pins.
 		var is_selected: bool = coord == _selected
 		if is_selected and _get_building_sprite(type_id, level) != null:
-			_draw_select_half(center, true)
+			_draw_select_ground(center)
 		if _draw_building_sprite(center, type_id, level, damaged, is_selected):
 			if is_selected:
-				_draw_select_half(center, false)
+				_draw_select_ring(center)
 			if def.has("badge"):
 				badges.append([marker_anchor(coord), def.get("badge", "") as String])
 			# A damaged sprite is tinted red and carries the repair pin; no cross drawn over the art.

@@ -87,6 +87,22 @@
       "title_en": "Mandate Not Renewed",
       "body": "Срок вышел. Район рос, пока хватало воды, а потом терял людей быстрее, чем вы успевали их удержать: к концу срока разъехалась четверть тех, кто здесь жил. Покровителю нужен был район, который стоит, а не район, который сокращается.\n\nПродление не подписано. Печать и ключи вы сдали тому, кто приехал следующим.",
       "body_en": "The term is over. The district grew while the water lasted, then lost people faster than you could hold them: by the end a quarter of those who lived here had gone. Your patron needed a district that stands, not one that shrinks.\n\nThe extension was not signed. You handed the seal and the keys to whoever came next."
+    },
+    {
+      "id": "ending.win.founder",
+      "kind": "win",
+      "title": "Район устоял сам",
+      "title_en": "The District Held on Its Own",
+      "body": "Срок, который вы себе назначили, вышел. Ржавая Нора пережила Пыль и Жару без мандата и без покровителя: вода доходит до бараков, склады не пусты, люди остались и привели других.\n\nНикто не продлевал вам полномочий, потому что никто их не выдавал. Район просто стоит, и в нём живут.",
+      "body_en": "The term you set yourself is over. The Rust Pit came through the Dust and the Heat with no mandate and no patron: water reaches the barracks, the stores are not empty, the people stayed and brought others.\n\nNobody extended your powers, because nobody had granted them. The district simply stands, and people live in it."
+    },
+    {
+      "id": "ending.lose.founder_dispersed",
+      "kind": "lose",
+      "title": "Район не состоялся",
+      "title_en": "The District Did Not Take",
+      "body": "Срок, который вы себе назначили, вышел. Ржавая Нора осталась несколькими бараками у насоса: люди не приехали или не задержались. Без покровителя некому было ни требовать, ни помогать, и район так и не стал районом.\n\nВы остались здесь. Те, кто ещё живёт рядом, зовут вас по имени, а не по должности.",
+      "body_en": "The term you set yourself is over. The Rust Pit stayed a few barracks by a pump: people did not come, or did not stay. With no patron there was no one to demand and no one to help, and the district never became one.\n\nYou stayed. Those still living nearby call you by your name, not by a title."
     }
   ]
 }
