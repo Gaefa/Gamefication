@@ -92,6 +92,18 @@ func _rebuild_list() -> void:
 		child.queue_free()
 	_title.text = Localization.ru_en("Журнал событий", "Event log")
 	_close_btn.tooltip_text = Localization.ru_en("Закрыть (T или Esc)", "Close (T or Esc)")
+	# What the district says about you, once a style has shown itself.
+	var style: String = GameStateStore.dominant_style("")
+	if style != "" and (GameStateStore.style_flags().get(style, 0) as int) >= 3:
+		var names := {
+			"loyal": Localization.ru_en("человек Лиги", "the patron's man"), "protector": Localization.ru_en("защитник города", "the city's protector"),
+			"pragmatist": Localization.ru_en("прагматик", "a pragmatist"), "autonomist": Localization.ru_en("будущий автономист", "a future autonomist"),
+		}
+		var said := Label.new()
+		said.text = Localization.ru_en("О вас говорят: %s.", "They say of you: %s.") % (names.get(style, style) as String)
+		said.add_theme_font_size_override("font_size", 13)
+		said.add_theme_color_override("font_color", UiStyle.ACCENT)
+		_list.add_child(said)
 	var entries: Array = GameStateStore.events().get("log", []) as Array
 	if entries.is_empty():
 		var empty := Label.new()

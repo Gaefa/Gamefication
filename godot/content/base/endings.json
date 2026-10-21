@@ -103,6 +103,14 @@
       "title_en": "The District Did Not Take",
       "body": "Срок, который вы себе назначили, вышел. Ржавая Нора осталась несколькими бараками у насоса: люди не приехали или не задержались. Без покровителя некому было ни требовать, ни помогать, и район так и не стал районом.\n\nВы остались здесь. Те, кто ещё живёт рядом, зовут вас по имени, а не по должности.",
       "body_en": "The term you set yourself is over. The Rust Pit stayed a few barracks by a pump: people did not come, or did not stay. With no patron there was no one to demand and no one to help, and the district never became one.\n\nYou stayed. Those still living nearby call you by your name, not by a title."
+    },
+    {
+      "id": "ending.win.autonomy",
+      "kind": "win",
+      "title": "Район объявил автономию",
+      "title_en": "The District Declared Autonomy",
+      "body": "Срок вышел, и мандат продлён, но это уже не важно. На собрании в канале район решил, что будет вести дела сам: вода по своему расписанию, переписка с покровителем через совет, а не через администратора. Вас оставили, потому что вы были на их стороне чаще, чем на чужой.\n\nПокровитель получил уведомление. Ответа пока нет. Это первая глава.",
+      "body_en": "The term is over and the mandate is extended, but that no longer matters. At the meeting in the channel the district decided it would run its own affairs: water on its own schedule, letters to the patron through a council rather than an administrator. They kept you, because you were on their side more often than on the other.\n\nThe patron has been notified. There is no answer yet. This is the first chapter."
     }
   ]
 }

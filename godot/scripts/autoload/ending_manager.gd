@@ -116,6 +116,9 @@ func _evaluate() -> void:
 func _patron_win_ending(protector_side: bool) -> String:
 	# The win shade (loyal-to-patron vs the city's protector) is told in the patron's
 	# own voice, so a Directorate victory doesn't read as if Coyle signed it.
+	# A district that backs an autonomist administrator walks out of the vice altogether.
+	if GameStateStore.dominant_style("") == "autonomist" and (GameStateStore.mandate().get("support", 50) as float) > 70.0:
+		return "ending.win.autonomy"
 	match GameStateStore.mandate().get("patron_id", "restoration_league") as String:
 		"civic_directorate":
 			return "ending.win.directorate_defiant" if protector_side else "ending.win.directorate_order"
@@ -259,7 +262,7 @@ func _show_finale(def: Dictionary, ending_id: String) -> void:
 	else:
 		_outcome_label.text = Localization.ru_en("МАНДАТ ПРОДЛЁН", "MANDATE EXTENDED") if kind == "win" else Localization.ru_en("МАНДАТ ПРЕКРАЩЁН", "MANDATE ENDED")
 	_outcome_label.add_theme_color_override("font_color", Color("3f6b2a") if kind == "win" else Color("8a3a2e"))
-	_body_label.text = Localization.content_text(def, "body", "") + _replacement_epilogue(ending_id) + _style_epilogue()
+	_body_label.text = Localization.content_text(def, "body", "") + _replacement_epilogue(ending_id) + _style_epilogue() + _chronicle()
 	_theses_label.text = _theses()
 	_layer.visible = true
 
@@ -323,6 +326,28 @@ func _style_epilogue() -> String:
 	if style == "" or not labels.has(style):
 		return ""
 	return Localization.ru_en("\n\n[i]Оттенок: %s.[/i]", "\n\n[i]Shade: %s.[/i]") % labels[style]
+
+
+## Six lines the player will retell: the answers that left a mark, with their days.
+func _chronicle() -> String:
+	var entries: Array = GameStateStore.events().get("log", []) as Array
+	var marked: Array = []
+	for e: Variant in entries:
+		if Localization.content_text(e as Dictionary, "reply", "") != "":
+			marked.append(e)
+	if marked.is_empty():
+		return ""
+	var picks: Array = marked
+	if marked.size() > 6:
+		picks = []
+		for i: int in 6:
+			picks.append(marked[int(round(float(i) * float(marked.size() - 1) / 5.0))])
+	var lines: Array[String] = ["", Localization.ru_en("[b]ХРОНИКА[/b]", "[b]CHRONICLE[/b]")]
+	for e: Variant in picks:
+		var entry: Dictionary = e as Dictionary
+		lines.append(Localization.ru_en("День %d. %s: %s", "Day %d. %s: %s") % [entry.get("day", 0) as int,
+			Localization.content_text(entry, "title", ""), Localization.content_text(entry, "choice", "")])
+	return "\n".join(lines)
 
 
 func _on_menu_pressed() -> void:
