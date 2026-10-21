@@ -51,6 +51,9 @@ jobs:
           GODOT="./Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64"
           "$GODOT" --headless --path "${PROJECT_DIR}" res://tools/content_check.tscn
           "$GODOT" --headless --path "${PROJECT_DIR}" res://tools/rules_smoke.tscn
+          "$GODOT" --headless --fixed-fps 60 --path "${PROJECT_DIR}" res://tools/save_roundtrip.tscn
+          "$GODOT" --headless --fixed-fps 60 --path "${PROJECT_DIR}" res://tools/run_state_smoke.tscn
+          "$GODOT" --headless --fixed-fps 60 --path "${PROJECT_DIR}" --quit-after 400000 res://tools/fuzz_smoke.tscn -- seed=1
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4

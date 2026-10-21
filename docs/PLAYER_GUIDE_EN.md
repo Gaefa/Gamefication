@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.1.8 — "Rust Pit" test build (October 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.2.0 — "Rust Pit" test build (October 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
