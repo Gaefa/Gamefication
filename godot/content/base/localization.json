@@ -1003,6 +1003,30 @@
     "en": "Default fiscal posture. No strong bonuses or penalties.",
     "ru": "Базовая финансовая политика без сильных бонусов и штрафов."
   },
+  "policy.water_free.label": {
+    "en": "Free distribution",
+    "ru": "Свободная выдача"
+  },
+  "policy.water_free.description": {
+    "en": "Water is drawn as needed. The default.",
+    "ru": "Воду берут по потребности. По умолчанию."
+  },
+  "policy.water_hours.label": {
+    "en": "Water by the hour",
+    "ru": "Вода по часам"
+  },
+  "policy.water_hours.description": {
+    "en": "The cistern opens on a schedule: a fifth less drawn, the mood a little worse.",
+    "ru": "Цистерна открыта по расписанию: расход меньше на пятую часть, настроение немного хуже."
+  },
+  "policy.water_strict.label": {
+    "en": "Strict rations",
+    "ru": "Жёсткие нормы"
+  },
+  "policy.water_strict.description": {
+    "en": "A fixed ration per head: a third less drawn, the mood much worse, tempers rise.",
+    "ru": "Норма на человека: расход меньше на треть, настроение заметно хуже, напряжение растёт."
+  },
   "policy.low_taxes.label": {
     "en": "Low Taxes",
     "ru": "Низкие налоги"

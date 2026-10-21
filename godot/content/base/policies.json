@@ -97,5 +97,57 @@
     },
     "label_key": "policy.green_zoning.label",
     "description_key": "policy.green_zoning.description"
+  },
+  {
+    "id": "water_free",
+    "category": "water",
+    "label": "Free distribution",
+    "description": "Water is drawn as needed. The default.",
+    "requirements": {},
+    "switch_cost": {},
+    "effects": {},
+    "label_key": "policy.water_free.label",
+    "description_key": "policy.water_free.description"
+  },
+  {
+    "id": "water_hours",
+    "category": "water",
+    "label": "Water by the hour",
+    "description": "The cistern opens on a schedule: a fifth less drawn, the mood a little worse.",
+    "requirements": {
+      "city_level": 1
+    },
+    "switch_cost": {
+      "coins": 10
+    },
+    "effects": {
+      "consumption_mult": {
+        "res_water_stockpile": -0.2
+      },
+      "happiness_add": -4
+    },
+    "label_key": "policy.water_hours.label",
+    "description_key": "policy.water_hours.description"
+  },
+  {
+    "id": "water_strict",
+    "category": "water",
+    "label": "Strict rations",
+    "description": "A fixed ration per head: a third less drawn, the mood much worse, tempers rise.",
+    "requirements": {
+      "city_level": 1
+    },
+    "switch_cost": {
+      "coins": 10
+    },
+    "effects": {
+      "consumption_mult": {
+        "res_water_stockpile": -0.35
+      },
+      "happiness_add": -9,
+      "pressure_delta": 10
+    },
+    "label_key": "policy.water_strict.label",
+    "description_key": "policy.water_strict.description"
   }
 ]

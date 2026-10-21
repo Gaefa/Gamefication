@@ -8,8 +8,17 @@
     "start_path": "appointed",
     "founder_archetype": "",
     "patron_id": "restoration_league",
-    "starting_resources": { "res_money": 250, "res_food": 80, "res_wood": 110, "res_stone": 70, "res_tools": 10 },
-    "default_policies": ["balanced_budget"],
+    "starting_resources": {
+      "res_money": 250,
+      "res_food": 80,
+      "res_wood": 110,
+      "res_stone": 70,
+      "res_tools": 10
+    },
+    "default_policies": [
+      "balanced_budget",
+      "water_free"
+    ],
     "mandate": {
       "patron_trust": 70,
       "legitimacy": 45,
@@ -19,7 +28,9 @@
     },
     "effects": {
       "pressure_delta": -2.0,
-      "production_mult": { "res_money": 0.05 }
+      "production_mult": {
+        "res_money": 0.05
+      }
     }
   },
   {
@@ -31,8 +42,17 @@
     "start_path": "appointed",
     "founder_archetype": "",
     "patron_id": "civic_directorate",
-    "starting_resources": { "res_money": 320, "res_food": 70, "res_wood": 100, "res_stone": 90, "res_tools": 12 },
-    "default_policies": ["balanced_budget"],
+    "starting_resources": {
+      "res_money": 320,
+      "res_food": 70,
+      "res_wood": 100,
+      "res_stone": 90,
+      "res_tools": 12
+    },
+    "default_policies": [
+      "balanced_budget",
+      "water_free"
+    ],
     "mandate": {
       "patron_trust": 60,
       "legitimacy": 55,
@@ -42,7 +62,9 @@
     },
     "effects": {
       "pressure_delta": -1.0,
-      "production_mult": { "res_money": 0.10 }
+      "production_mult": {
+        "res_money": 0.1
+      }
     }
   },
   {
@@ -54,8 +76,17 @@
     "start_path": "independent_founder",
     "founder_archetype": "the_rebel",
     "patron_id": "",
-    "starting_resources": { "res_money": 85, "res_food": 45, "res_wood": 75, "res_stone": 35, "res_tools": 5 },
-    "default_policies": ["labor_mobilization"],
+    "starting_resources": {
+      "res_money": 85,
+      "res_food": 45,
+      "res_wood": 75,
+      "res_stone": 35,
+      "res_tools": 5
+    },
+    "default_policies": [
+      "labor_mobilization",
+      "water_free"
+    ],
     "mandate": {
       "patron_trust": 0,
       "legitimacy": 35,
@@ -65,7 +96,10 @@
     },
     "effects": {
       "pressure_delta": 4.0,
-      "production_mult": { "res_wood": 0.08, "res_stone": 0.08 }
+      "production_mult": {
+        "res_wood": 0.08,
+        "res_stone": 0.08
+      }
     }
   },
   {
@@ -77,8 +111,16 @@
     "start_path": "independent_founder",
     "founder_archetype": "the_peoples_choice",
     "patron_id": "",
-    "starting_resources": { "res_money": 120, "res_food": 70, "res_wood": 70, "res_stone": 35 },
-    "default_policies": ["low_taxes"],
+    "starting_resources": {
+      "res_money": 120,
+      "res_food": 70,
+      "res_wood": 70,
+      "res_stone": 35
+    },
+    "default_policies": [
+      "low_taxes",
+      "water_free"
+    ],
     "mandate": {
       "patron_trust": 0,
       "legitimacy": 60,
@@ -88,7 +130,9 @@
     },
     "effects": {
       "happiness_add": 5.0,
-      "production_mult": { "res_money": -0.05 }
+      "production_mult": {
+        "res_money": -0.05
+      }
     }
   },
   {
@@ -100,8 +144,16 @@
     "start_path": "independent_founder",
     "founder_archetype": "the_outcasts",
     "patron_id": "",
-    "starting_resources": { "res_money": 55, "res_food": 90, "res_wood": 95, "res_stone": 25, "res_tools": 15 },
-    "default_policies": [],
+    "starting_resources": {
+      "res_money": 55,
+      "res_food": 90,
+      "res_wood": 95,
+      "res_stone": 25,
+      "res_tools": 15
+    },
+    "default_policies": [
+      "water_free"
+    ],
     "mandate": {
       "patron_trust": 0,
       "legitimacy": 25,
@@ -111,7 +163,11 @@
     },
     "effects": {
       "pressure_delta": 2.0,
-      "production_mult": { "res_food": 0.05, "res_wood": 0.05, "res_money": -0.10 }
+      "production_mult": {
+        "res_food": 0.05,
+        "res_wood": 0.05,
+        "res_money": -0.1
+      }
     }
   }
 ]

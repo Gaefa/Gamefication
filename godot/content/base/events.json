@@ -125,12 +125,20 @@
     "body_en": "To the Administrator. A petition from the residents of the lower barracks.\n\nOur water is given out by the hour, and the hours change every day. Yesterday it came at noon, when everyone was at work. Only those who were at home managed to fill up.\n\nWe ask for a fixed schedule, or to be told how long this will last.\n\n14 signatures.",
     "options": [
       {
-        "text": "Пообещать починить за три дня",
-        "text_en": "Promise a fix within three days",
+        "text": "Пообещать починить за три дня (квартал спросит)",
+        "text_en": "Promise to fix it in three days (the quarter will ask)",
         "effects": {
           "stat_city_trust": 5,
           "message": "Вы назвали срок — три дня. Его запомнили.",
-          "message_en": "You named a deadline: three days. It has been remembered."
+          "message_en": "You named a deadline: three days. It has been remembered.",
+          "add_buff": {
+            "id": "promise_pressure",
+            "name": "Обещание кварталу",
+            "name_en": "A promise to the quarter",
+            "production_mult": 0.0,
+            "remaining": 900,
+            "on_expire_flag": "promise_due"
+          }
         }
       },
       {
@@ -223,7 +231,8 @@
           "stat_league_trust": -8,
           "style": "pragmatist",
           "message": "Цистерны пришли к ночи. За вами долг Рубену; Лига о сделке узнала.",
-          "message_en": "The tankers arrived by nightfall. You owe Ruben a favor, and the League has heard of the deal."
+          "message_en": "The tankers arrived by nightfall. You owe Ruben a favor, and the League has heard of the deal.",
+          "set_flag": "ruben_debt"
         }
       },
       {
@@ -248,7 +257,8 @@
           "message_en": "Rook bargained for 80 units on easier terms. The League heard about this as well."
         }
       }
-    ]
+    ],
+    "excludes_flag": "ruben_burned"
   },
   {
     "id": "petition.debt_lists",
@@ -521,7 +531,8 @@
           },
           "stat_league_trust": -6,
           "message": "Рубен привёз 90 единиц. Лига узнала о поставке.",
-          "message_en": "Ruben delivered 90 units. The League has heard of the delivery."
+          "message_en": "Ruben delivered 90 units. The League has heard of the delivery.",
+          "set_flag": "ruben_debt"
         }
       }
     ]
@@ -1059,7 +1070,9 @@
           },
           "style": "autonomist",
           "message": "Обоз прошёл ночью. С инструментами пришла записка от Восс: «Сочтёмся».",
-          "message_en": "The carts crossed at night. A note from Voss came with the tools: \"We will settle up.\""
+          "message_en": "The carts crossed at night. A note from Voss came with the tools: \"We will settle up.\"",
+          "set_flag": "voss_deal",
+          "stat_rival_score": -2
         }
       },
       {
@@ -1077,7 +1090,9 @@
           "stat_league_trust": 6,
           "style": "loyal",
           "message": "Письмо ушло наверх. Восс получила замечание и больше вам не пишет.",
-          "message_en": "The letter went higher up. Voss was reprimanded and does not write to you again."
+          "message_en": "The letter went higher up. Voss was reprimanded and does not write to you again.",
+          "set_flag": "voss_reported",
+          "stat_rival_score": -4
         }
       }
     ]
@@ -1298,7 +1313,9 @@
         "effects": {
           "stat_unrest_pressure": 3,
           "message": "Вы отказали. Семьи ушли обратно в лагерь.",
-          "message_en": "You refused. The families went back to the camp."
+          "message_en": "You refused. The families went back to the camp.",
+          "stat_rival_score": 3,
+          "set_flag": "camp_refused"
         }
       }
     ]
@@ -1660,7 +1677,8 @@
           "stat_city_trust": 3,
           "style": "protector",
           "message": "Вода отправлена в Сухой Лог. Восс подтвердила получение.",
-          "message_en": "Water sent to Dry Gully. Voss confirmed receipt."
+          "message_en": "Water sent to Dry Gully. Voss confirmed receipt.",
+          "set_flag": "voss_water"
         },
         "cost": {
           "res_water_stockpile": 50
@@ -1682,7 +1700,8 @@
           "stat_league_trust": 3,
           "style": "loyal",
           "message": "Просьба ушла наверх вместе с данными о поломке.",
-          "message_en": "The request went higher up with the failure report."
+          "message_en": "The request went higher up with the failure report.",
+          "stat_rival_score": -3
         }
       }
     ]
@@ -1994,7 +2013,8 @@
         "effects": {
           "stat_city_trust": -2,
           "message": "Люди ушли по дороге. К вечеру о них забыли.",
-          "message_en": "They went on down the road. By evening they were forgotten."
+          "message_en": "They went on down the road. By evening they were forgotten.",
+          "stat_rival_score": 3
         }
       }
     ]
@@ -2023,7 +2043,8 @@
           "stat_league_trust": -3,
           "style": "pragmatist",
           "message": "Четверо пришли ночью. Утром о них знал весь район; Лига узнала позже.",
-          "message_en": "Four came in the night. By morning the whole district knew; the League found out later."
+          "message_en": "Four came in the night. By morning the whole district knew; the League found out later.",
+          "set_flag": "unregistered_people"
         }
       },
       {
@@ -2034,6 +2055,673 @@
           "style": "loyal",
           "message": "Грач пожал плечами и увёл их к Сухому Логу.",
           "message_en": "Rook shrugged and took them on to Dry Gully."
+        }
+      }
+    ]
+  },
+  {
+    "id": "report.promise_kept",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "promise_due",
+    "trigger_condition": "stat_low_pressure_housing <= 0",
+    "cooldown_sec": 999999,
+    "tags": ["report", "workers"],
+    "title": "Записка — напор пришёл",
+    "title_en": "Note — The Pressure Came",
+    "body": "Администратору. От старосты дальнего квартала.\n\nТри дня, как вы обещали. Ведро набирается, пока читаешь это письмо. Мы помним, кто сказал «починю» и починил.\n\nСтароста квартала",
+    "body_en": "To the Administrator. From the elder of the far quarter.\n\nThree days, as you promised. A bucket fills in the time it takes to read this. We remember who said \"I will fix it\" and fixed it.\n\nThe quarter's elder",
+    "options": [
+      {
+        "text": "Принять благодарность",
+        "text_en": "Accept the thanks",
+        "effects": {
+          "stat_city_trust": 4,
+          "clear_flag": "promise_due",
+          "style": "protector",
+          "message": "Записку вывесили у цистерны: «Слово держит».",
+          "message_en": "The note went up by the cistern: \"Keeps his word.\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "petition.promise_broken",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "promise_due",
+    "trigger_condition": "stat_low_pressure_housing >= 1",
+    "cooldown_sec": 999999,
+    "tags": ["petition", "workers"],
+    "title": "Заявление — три дня прошли",
+    "title_en": "Petition — Three Days Have Passed",
+    "body": "Администратору. От жильцов дальнего квартала.\n\nВы обещали починить за три дня. Прошло три дня. Ведро набирается, как и раньше, четверть часа. Мы не просим невозможного, мы просим то, что вы сами сказали.\n\nСтароста квартала",
+    "body_en": "To the Administrator. From the residents of the far quarter.\n\nYou promised to fix it in three days. Three days have passed. A bucket still takes a quarter of an hour. We are not asking for the impossible; we are asking for what you yourself said.\n\nThe quarter's elder",
+    "options": [
+      {
+        "text": "Извиниться и выделить материалы на насос",
+        "text_en": "Apologise and set aside materials for a pump",
+        "cost": {
+          "res_stone": 20,
+          "res_wood": 10
+        },
+        "effects": {
+          "stat_city_trust": 2,
+          "stat_unrest_pressure": -6,
+          "clear_flag": "promise_due",
+          "style": "protector",
+          "message": "Материалы выделены. Квартал ждёт насос рядом с домами.",
+          "message_en": "The materials are set aside. The quarter is waiting for a pump by its houses."
+        }
+      },
+      {
+        "text": "Попросить ещё три дня",
+        "text_en": "Ask for three more days",
+        "effects": {
+          "stat_city_trust": -4,
+          "clear_flag": "promise_due",
+          "add_buff": {
+            "id": "promise_pressure",
+            "name": "Обещание кварталу",
+            "name_en": "A promise to the quarter",
+            "production_mult": 0.0,
+            "remaining": 900,
+            "on_expire_flag": "promise_due"
+          },
+          "message": "Квартал дал ещё три дня. Второй раз просить будет нечем.",
+          "message_en": "The quarter gave three more days. There will be nothing to ask with a second time."
+        }
+      },
+      {
+        "text": "Не отвечать",
+        "text_en": "Do not reply",
+        "effects": {
+          "stat_city_trust": -8,
+          "stat_unrest_pressure": 10,
+          "clear_flag": "promise_due",
+          "message": "Заявление осталось без ответа. В квартале теперь говорят: «он обещал».",
+          "message_en": "The petition went unanswered. In the quarter they now say: \"he promised.\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "petition.ruben_debt",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "ruben_debt",
+    "trigger_day": 24,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "shadow"],
+    "title": "Записка — Рубен пришёл за долгом",
+    "title_en": "Note — Ruben Calls In the Debt",
+    "body": "Администратору, лично.\n\nЯ говорил: сочтёмся услугой. Сегодня ночью через ваш район пройдёт обоз, двадцать цистерн чужой воды на юг. Мне нужно, чтобы пост у дороги смотрел в другую сторону. Лига о таких обозах знает, но ей не обязательно знать, где он прошёл.\n\nЕсли не хотите услугой, возьму деньгами. Если никак, значит никак, но воды от меня больше не ждите.\n\nРубен Каст",
+    "body_en": "To the Administrator, personally.\n\nI said we would settle with a favour. Tonight a convoy comes through your district, twenty tankers of someone else's water going south. I need the road post to look the other way. The League knows about such convoys, but it need not know where this one passed.\n\nIf not a favour, I will take money. If neither, so be it, but expect no more water from me.\n\nRuben Kast",
+    "options": [
+      {
+        "text": "Пропустить обоз ночью",
+        "text_en": "Let the convoy through at night",
+        "effects": {
+          "stat_league_trust": -8,
+          "clear_flag": "ruben_debt",
+          "style": "pragmatist",
+          "message": "Обоз прошёл. Утром пост доложил о «тумане». Лига узнала через неделю.",
+          "message_en": "The convoy passed. In the morning the post reported \"fog\". The League found out a week later."
+        }
+      },
+      {
+        "text": "Заплатить деньгами (80)",
+        "text_en": "Pay in money (80)",
+        "cost": {
+          "res_money": 80
+        },
+        "effects": {
+          "clear_flag": "ruben_debt",
+          "message": "Рубен взял деньги и кивнул. Обоз пошёл другой дорогой.",
+          "message_en": "Ruben took the money and nodded. The convoy went another way."
+        }
+      },
+      {
+        "text": "Отказать: долг долгом, обоз не пущу",
+        "text_en": "Refuse: a debt is a debt, the convoy stays out",
+        "effects": {
+          "clear_flag": "ruben_debt",
+          "set_flag": "ruben_burned",
+          "stat_unrest_pressure": 4,
+          "style": "protector",
+          "message": "Рубен ушёл молча. Его цистерн район больше не увидит.",
+          "message_en": "Ruben left without a word. The district will not see his tankers again."
+        }
+      }
+    ]
+  },
+  {
+    "id": "report.camp_at_voss",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "camp_refused",
+    "trigger_day": 27,
+    "cooldown_sec": 999999,
+    "tags": ["report", "rival"],
+    "title": "Сводка — семьи ушли в Сухой Лог",
+    "title_en": "Report — The Families Went to Dry Gully",
+    "body": "Сводка поста у дороги.\n\nТри семьи из лагеря, которым вы отказали, ушли к Маре Восс. Её район принял одиннадцать человек; в сводке покровителя это засчитано ей.\n\nСтароста лагеря просил передать: если позовёте, вернутся.",
+    "body_en": "Road post report.\n\nThe three camp families you turned away went to Mara Voss. Her district took in eleven people; the patron's summary credits her for it.\n\nThe camp elder asked to pass on: if you call, they will come back.",
+    "options": [
+      {
+        "text": "Принять к сведению",
+        "text_en": "Noted",
+        "effects": {
+          "clear_flag": "camp_refused",
+          "message": "Сводка подшита. Одиннадцать человек теперь считают у Восс.",
+          "message_en": "The report was filed. Eleven people now count for Voss."
+        }
+      },
+      {
+        "text": "Позвать обратно (40 еды, +6 жителей, если есть места)",
+        "text_en": "Call them back (40 food, +6 residents if there is room)",
+        "cost": {
+          "res_food": 40
+        },
+        "effects": {
+          "add_residents": 6,
+          "stat_city_trust": 3,
+          "stat_rival_score": -3,
+          "clear_flag": "camp_refused",
+          "style": "protector",
+          "message": "Двое семей вернулись. Восс написала одну строку: «Ладно».",
+          "message_en": "Two of the families came back. Voss wrote one line: \"Fine.\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "patron.letter.census_question",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "requires_flag": "unregistered_people",
+    "trigger_day": 19,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter"],
+    "title": "Письмо Лиги — вопрос по переписи",
+    "title_en": "League Letter — A Question on the Census",
+    "body": "Администратору Ржавой Норы.\n\nВ переписи района четверо, которых нет ни в одном списке переселенцев. Мне нужно знать до проверки, откуда они и кто их привёл.\n\nЕсли вы оформите их как принятых районом, вопрос закрыт. Если нет, я не смогу не внести это в доклад.\n\nИнспектор Койл",
+    "body_en": "To the Administrator of the Rust Pit.\n\nThe district census has four people who appear on no settlers' list. I need to know before the inspection where they came from and who brought them.\n\nIf you register them as taken in by the district, the matter is closed. If not, I cannot leave it out of the report.\n\nInspector Coyle",
+    "options": [
+      {
+        "text": "Оформить их задним числом (40 денег)",
+        "text_en": "Register them after the fact (40 money)",
+        "cost": {
+          "res_money": 40
+        },
+        "effects": {
+          "stat_league_trust": 4,
+          "clear_flag": "unregistered_people",
+          "style": "loyal",
+          "message": "Бумаги оформлены. Койл подшила их без вопросов.",
+          "message_en": "The papers were drawn up. Coyle filed them without questions."
+        }
+      },
+      {
+        "text": "Не отвечать на вопрос",
+        "text_en": "Leave the question unanswered",
+        "effects": {
+          "stat_league_trust": -5,
+          "clear_flag": "unregistered_people",
+          "style": "pragmatist",
+          "message": "Вопрос остался без ответа. В докладе появилась строка про «неучтённых».",
+          "message_en": "The question went unanswered. The report gained a line about \"the unregistered\"."
+        }
+      },
+      {
+        "text": "Выслать четверых из района",
+        "text_en": "Send the four out of the district",
+        "effects": {
+          "add_residents": -4,
+          "stat_city_trust": -6,
+          "stat_league_trust": 2,
+          "clear_flag": "unregistered_people",
+          "message": "Четверо ушли по дороге. Грач больше не пишет.",
+          "message_en": "The four went down the road. Rook does not write any more."
+        }
+      }
+    ]
+  },
+  {
+    "id": "patron.letter.census_question_directorate",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "civic_directorate",
+    "requires_flag": "unregistered_people",
+    "trigger_day": 19,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "directorate"],
+    "title": "Директорат — расхождение в учёте",
+    "title_en": "Directorate — A Discrepancy in the Register",
+    "body": "Гражданский Директорат. Управление зон восстановления.\nАдминистратору зоны «Ржавая Нора».\n\nВ учёте населения зоны четверо без документов о переселении. До проверки расхождение должно быть устранено: оформлено или удалено из учёта.\n\nКанцелярия Директората",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\nTo the Administrator of the Rust Pit zone.\n\nThe zone's population register lists four persons without resettlement papers. The discrepancy must be removed before the inspection: registered, or struck from the register.\n\nDirectorate Chancellery",
+    "options": [
+      {
+        "text": "Оформить их задним числом (40 денег)",
+        "text_en": "Register them after the fact (40 money)",
+        "cost": {
+          "res_money": 40
+        },
+        "effects": {
+          "stat_league_trust": 4,
+          "clear_flag": "unregistered_people",
+          "style": "loyal",
+          "message": "Учёт приведён в порядок. В деле пометки нет.",
+          "message_en": "The register is in order. No note in the file."
+        }
+      },
+      {
+        "text": "Оставить как есть",
+        "text_en": "Leave it as it is",
+        "effects": {
+          "stat_league_trust": -6,
+          "clear_flag": "unregistered_people",
+          "style": "pragmatist",
+          "message": "Расхождение внесено в дело.",
+          "message_en": "The discrepancy went in the file."
+        }
+      },
+      {
+        "text": "Выслать четверых из зоны",
+        "text_en": "Send the four out of the zone",
+        "effects": {
+          "add_residents": -4,
+          "stat_city_trust": -6,
+          "stat_league_trust": 2,
+          "clear_flag": "unregistered_people",
+          "message": "Четверо ушли по дороге. Грач больше не пишет.",
+          "message_en": "The four went down the road. Rook does not write any more."
+        }
+      }
+    ]
+  },
+  {
+    "id": "rival.voss_grudge",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "voss_reported",
+    "trigger_day": 25,
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter"],
+    "title": "Письмо — от Мары Восс, коротко",
+    "title_en": "Letter — From Mara Voss, Briefly",
+    "body": "Администратору Ржавой Норы.\n\nМне показали ваше сопроводительное к моему письму. Теперь я знаю, с кем соседствую.\n\nПисать больше не буду. Сводки покровителя нам обоим хватит.\n\nМ. Восс",
+    "body_en": "To the Administrator of the Rust Pit.\n\nI was shown your cover note to my letter. Now I know who my neighbour is.\n\nI will not write again. The patron's summaries will do for both of us.\n\nM. Voss",
+    "options": [
+      {
+        "text": "Написать ей напрямую",
+        "text_en": "Write to her directly",
+        "effects": {
+          "stat_rival_score": 2,
+          "clear_flag": "voss_reported",
+          "style": "protector",
+          "message": "Ответа не было. Но её посыльный взял письмо.",
+          "message_en": "There was no reply. But her messenger took the letter."
+        }
+      },
+      {
+        "text": "Не отвечать",
+        "text_en": "Do not reply",
+        "effects": {
+          "clear_flag": "voss_reported",
+          "message": "Письмо легло в журнал. Соседи больше не переписываются.",
+          "message_en": "The letter went in the log. The neighbours no longer write."
+        }
+      }
+    ]
+  },
+  {
+    "id": "rival.voss_tools",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "voss_water",
+    "trigger_day": 37,
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter"],
+    "title": "Обоз — от Мары Восс",
+    "title_en": "A Cart — From Mara Voss",
+    "body": "Администратору Ржавой Норы.\n\nНасос починили. Ваша вода нас вытянула, и я это помню. С обозом пятнадцать инструментов из моей мастерской; если у вас стоит что-то своё, пригодятся.\n\nДолгов между нами нет. Соседство есть.\n\nМ. Восс",
+    "body_en": "To the Administrator of the Rust Pit.\n\nThe pump is fixed. Your water pulled us through, and I remember it. With the cart, fifteen tools from my workshop; if something of yours is standing idle, they will help.\n\nThere are no debts between us. There is a neighbourhood.\n\nM. Voss",
+    "options": [
+      {
+        "text": "Принять обоз (+15 инструментов)",
+        "text_en": "Accept the cart (+15 tools)",
+        "effects": {
+          "add_resources": {
+            "res_tools": 15
+          },
+          "stat_rival_score": 2,
+          "clear_flag": "voss_water",
+          "message": "Инструменты на складе. Посыльный передал: «Она сказала, что вы бы сделали так же».",
+          "message_en": "The tools are in the warehouse. The messenger said: \"She said you would have done the same.\""
+        }
+      },
+      {
+        "text": "Отправить обратно",
+        "text_en": "Send it back",
+        "effects": {
+          "clear_flag": "voss_water",
+          "style": "pragmatist",
+          "message": "Обоз развернулся. Восс не ответила.",
+          "message_en": "The cart turned back. Voss did not reply."
+        }
+      }
+    ]
+  },
+  {
+    "id": "rival.voss_buyout",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 10,
+    "trigger_condition": "stat_rival_gap < -10",
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter", "branch"],
+    "title": "Письмо — от Мары Восс, о гранте",
+    "title_en": "Letter — From Mara Voss, on the Grant",
+    "body": "Администратору Ржавой Норы. Не для отчёта.\n\nСводку вы видите так же, как я: грант на Пыль уйдёт Сухому Логу. Я не злорадствую. Предлагаю уступить вам шестьдесят из него сейчас, пока он не распределён, за одну услугу потом, когда попрошу.\n\nЕсли нет, забудьте это письмо.\n\nМ. Восс",
+    "body_en": "To the Administrator of the Rust Pit. Not for the record.\n\nYou see the summary as I do: the Dust grant will go to Dry Gully. I am not gloating. I offer to pass you sixty of it now, before it is awarded, for one favour later, when I ask.\n\nIf not, forget this letter.\n\nM. Voss",
+    "options": [
+      {
+        "text": "Принять (+60 денег, услуга потом)",
+        "text_en": "Accept (+60 money, a favour later)",
+        "effects": {
+          "add_resources": {
+            "res_money": 60
+          },
+          "set_flag": "voss_favor",
+          "stat_league_trust": -4,
+          "style": "pragmatist",
+          "message": "Деньги пришли ночью. Лига узнала, что соседи договариваются мимо неё.",
+          "message_en": "The money came at night. The League learned the neighbours deal around it."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "style": "loyal",
+          "message": "Вы не ответили. Восс не напомнила.",
+          "message_en": "You did not reply. Voss did not remind you."
+        }
+      }
+    ]
+  },
+  {
+    "id": "rival.voss_favor",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "voss_favor",
+    "trigger_day": 30,
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter"],
+    "title": "Письмо — Мара Восс просит услугу",
+    "title_en": "Letter — Mara Voss Asks the Favour",
+    "body": "Администратору Ржавой Норы.\n\nВы помните, за что были те шестьдесят. Жара, у меня встала цистерна. Прошу шестьдесят воды, сегодня.\n\nМ. Восс",
+    "body_en": "To the Administrator of the Rust Pit.\n\nYou remember what the sixty were for. It is the Heat, and my cistern has failed. I ask for sixty water, today.\n\nM. Voss",
+    "options": [
+      {
+        "text": "Отдать 60 воды",
+        "text_en": "Give 60 water",
+        "cost": {
+          "res_water_stockpile": 60
+        },
+        "effects": {
+          "clear_flag": "voss_favor",
+          "style": "protector",
+          "message": "Вода ушла в Сухой Лог. Долг закрыт.",
+          "message_en": "The water went to Dry Gully. The debt is settled."
+        }
+      },
+      {
+        "text": "Отказать: нам самим не хватает",
+        "text_en": "Refuse: we are short ourselves",
+        "effects": {
+          "clear_flag": "voss_favor",
+          "stat_rival_score": 4,
+          "stat_city_trust": -3,
+          "message": "Восс написала покровителю, как район держит слово. Её сводка выросла, ваша репутация нет.",
+          "message_en": "Voss wrote to the patron about how the district keeps its word. Her summary rose; your reputation did not."
+        }
+      }
+    ]
+  },
+  {
+    "id": "patron.letter.league_tanker",
+    "category": "mandate",
+    "min_level": 1,
+    "patron": "restoration_league",
+    "trigger_day": 8,
+    "trigger_condition": "stat_league_trust >= 75",
+    "cooldown_sec": 2400,
+    "tags": ["patron", "letter"],
+    "title": "Письмо Лиги — что вам нужно",
+    "title_en": "League Letter — What You Need",
+    "body": "Администратору Ржавой Норы.\n\nДоклады о вас хорошие, и я могу распорядиться этим. У Лиги есть цистерна-прицеп на двести пятьдесят единиц и бригада медиков на сезон. Одно из двух, за счёт вашего кредита доверия наверху.\n\nИнспектор Койл",
+    "body_en": "To the Administrator of the Rust Pit.\n\nThe reports on you are good, and I can make use of that. The League has a tanker trailer of two hundred and fifty units and a team of medics for the season. One of the two, charged to your credit of trust upstairs.\n\nInspector Coyle",
+    "options": [
+      {
+        "text": "Цистерна-прицеп (+250 воды)",
+        "text_en": "The tanker trailer (+250 water)",
+        "effects": {
+          "add_resources": {
+            "res_water_stockpile": 250
+          },
+          "stat_league_trust": -12,
+          "style": "loyal",
+          "message": "Прицеп пришёл к вечеру. Наверху сделали пометку: «просил».",
+          "message_en": "The trailer arrived by evening. Upstairs they made a note: \"asked\"."
+        }
+      },
+      {
+        "text": "Медики на пять дней (счастье +4)",
+        "text_en": "Medics for five days (mood +4)",
+        "effects": {
+          "add_buff": {
+            "id": "league_medics",
+            "name": "Медики Лиги",
+            "name_en": "League medics",
+            "happiness_add": 4,
+            "remaining": 1500
+          },
+          "stat_league_trust": -8,
+          "style": "loyal",
+          "message": "Медики развернулись у поста администрации.",
+          "message_en": "The medics set up by the administration post."
+        }
+      },
+      {
+        "text": "Не просить ничего",
+        "text_en": "Ask for nothing",
+        "effects": {
+          "message": "Вы ответили, что справитесь. Койл это запомнила.",
+          "message_en": "You replied that you would manage. Coyle took note."
+        }
+      }
+    ]
+  },
+  {
+    "id": "patron.letter.directorate_reserve",
+    "category": "mandate",
+    "min_level": 1,
+    "patron": "civic_directorate",
+    "trigger_day": 8,
+    "trigger_condition": "stat_league_trust >= 75",
+    "cooldown_sec": 2400,
+    "tags": ["patron", "letter", "directorate"],
+    "title": "Директорат — резерв зоны под отчёт",
+    "title_en": "Directorate — Zone Reserve on Account",
+    "body": "Гражданский Директорат. Финансовое управление.\nАдминистратору зоны «Ржавая Нора».\n\nПоказатели зоны позволяют выделить средства из резерва под отчёт: сто пятьдесят единиц либо охрана у цистерны на сезон. Выделение уменьшает кредит доверия зоны до следующей проверки.\n\nКанцелярия Директората",
+    "body_en": "Civic Directorate. Finance Office.\nTo the Administrator of the Rust Pit zone.\n\nThe zone's figures allow an advance from the reserve on account: one hundred and fifty units, or a guard at the cistern for the season. The advance reduces the zone's credit of trust until the next inspection.\n\nDirectorate Chancellery",
+    "options": [
+      {
+        "text": "Средства (+150 денег)",
+        "text_en": "The funds (+150 money)",
+        "effects": {
+          "add_resources": {
+            "res_money": 150
+          },
+          "stat_league_trust": -10,
+          "style": "loyal",
+          "message": "Средства зачислены. В деле появилась строка «под отчёт».",
+          "message_en": "The funds were credited. The file gained a line: \"on account\"."
+        }
+      },
+      {
+        "text": "Охрана у цистерны (давление «люди» −10)",
+        "text_en": "A guard at the cistern (\"people\" pressure −10)",
+        "effects": {
+          "stat_unrest_pressure": -10,
+          "stat_league_trust": -6,
+          "style": "loyal",
+          "message": "Охрана заступила. Очереди стали тише.",
+          "message_en": "The guard took up its post. The queues went quieter."
+        }
+      },
+      {
+        "text": "Отказаться",
+        "text_en": "Decline",
+        "effects": {
+          "message": "Вы ответили, что резерв не нужен. Директорат принял к сведению.",
+          "message_en": "You replied that no reserve was needed. The Directorate took note."
+        }
+      }
+    ]
+  },
+  {
+    "id": "petition.subbotnik",
+    "category": "happiness",
+    "min_level": 1,
+    "trigger_day": 6,
+    "trigger_condition": "stat_city_trust >= 70",
+    "cooldown_sec": 2400,
+    "tags": ["petition", "positive"],
+    "title": "Письмо — жители предлагают",
+    "title_en": "Letter — The Residents Offer",
+    "body": "Администратору. От жильцов всех бараков.\n\nМы видим, что район держится, и хотим помочь не словами. Можем выйти всем районом на три дня: расчистить дороги и склады. Можем поставить дежурных у цистерны, чтобы очередь не превращалась в драку. Скажите, что нужнее.",
+    "body_en": "To the Administrator. From the residents of every barracks.\n\nWe see the district is holding and want to help with more than words. We can turn out for three days, the whole district: clear the roads and the stores. We can post watchmen at the cistern so the queue does not turn into a fight. Tell us which is needed more.",
+    "options": [
+      {
+        "text": "Субботник: три дня всё работает на +10%",
+        "text_en": "A work day: everything at +10% for three days",
+        "effects": {
+          "add_buff": {
+            "id": "subbotnik",
+            "name": "Субботник",
+            "name_en": "Work days",
+            "production_mult": 0.1,
+            "remaining": 900
+          },
+          "style": "protector",
+          "message": "Район вышел на работы. Три дня склады полнее обычного.",
+          "message_en": "The district turned out. For three days the stores fill faster than usual."
+        }
+      },
+      {
+        "text": "Дежурные у цистерны (давление «люди» −8)",
+        "text_en": "Watchmen at the cistern (\"people\" pressure −8)",
+        "effects": {
+          "stat_unrest_pressure": -8,
+          "message": "У цистерны дежурят свои. Очередь спокойнее.",
+          "message_en": "The district's own people keep watch at the cistern. The queue is calmer."
+        }
+      },
+      {
+        "text": "Поблагодарить и отпустить",
+        "text_en": "Thank them and let them be",
+        "effects": {
+          "stat_city_trust": 2,
+          "message": "Вы поблагодарили. Люди разошлись по домам.",
+          "message_en": "You thanked them. People went home."
+        }
+      }
+    ]
+  },
+  {
+    "id": "patron.letter.water_order",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "civic_directorate",
+    "trigger_day": 10,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "directorate"],
+    "title": "Директорат — предписание о нормах воды",
+    "title_en": "Directorate — Order on Water Rations",
+    "body": "Гражданский Директорат. Управление зон восстановления.\nПредписание № 127/Р\n\nДо начала Сезона Пыли в зоне вводится выдача воды по часам. Срок действия: пять дней с момента исполнения, после чего администратор вправе изменить режим.\n\nКанцелярия Директората",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\nOrder No. 127/R\n\nBefore the Dust season the zone introduces water by the hour. In force for five days from execution, after which the administrator may change the regime.\n\nDirectorate Chancellery",
+    "options": [
+      {
+        "text": "Исполнить: вода по часам на пять дней",
+        "text_en": "Execute: water by the hour for five days",
+        "effects": {
+          "set_policy": "water_hours",
+          "lock_policy_days": 5,
+          "stat_league_trust": 4,
+          "style": "loyal",
+          "message": "Расписание вывешено у цистерны. Пять дней его нельзя снять.",
+          "message_en": "The schedule is posted at the cistern. For five days it cannot be taken down."
+        }
+      },
+      {
+        "text": "Отказать: район сам решит, как выдавать воду",
+        "text_en": "Refuse: the district decides how to give out water",
+        "effects": {
+          "stat_league_trust": -8,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Отказ внесён в дело. Жители узнали, что расписания не будет.",
+          "message_en": "The refusal went in the file. The residents learned there would be no schedule."
+        }
+      }
+    ]
+  },
+  {
+    "id": "patron.letter.water_advice",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 17,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter"],
+    "title": "Письмо Лиги — о нормах перед Пылью",
+    "title_en": "League Letter — On Rations Before the Dust",
+    "body": "Администратору Ржавой Норы.\n\nЗавтра последний день Окна. В других районах перед Пылью вводят выдачу по часам: расход меньше на пятую часть, настроение хуже на столько же. Я не приказываю, я советую. Решать вам.\n\nИнспектор Койл",
+    "body_en": "To the Administrator of the Rust Pit.\n\nTomorrow is the last day of the Window. Other districts go to water by the hour before the Dust: a fifth less drawn, the mood a fifth worse. I am not ordering, I am advising. Your call.\n\nInspector Coyle",
+    "options": [
+      {
+        "text": "Ввести выдачу по часам",
+        "text_en": "Go to water by the hour",
+        "effects": {
+          "set_policy": "water_hours",
+          "stat_league_trust": 3,
+          "style": "loyal",
+          "message": "Расписание вывешено у цистерны. Снять его можно в «Управлении».",
+          "message_en": "The schedule is posted at the cistern. It can be lifted under Governance."
+        }
+      },
+      {
+        "text": "Сами решим",
+        "text_en": "We will decide ourselves",
+        "effects": {
+          "message": "Вы поблагодарили за совет. Расписания нет.",
+          "message_en": "You thanked her for the advice. There is no schedule."
         }
       }
     ]

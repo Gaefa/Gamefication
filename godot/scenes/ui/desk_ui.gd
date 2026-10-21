@@ -299,6 +299,12 @@ func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
 				parts.append(Localization.ru_en("поддержка города %s", "city support %s") % _signed(value as float))
 			"stat_unrest_pressure":
 				parts.append(Localization.ru_en("давление «люди» %s", "\"people\" pressure %s") % _signed(value as float))
+			"stat_rival_score":
+				parts.append(Localization.ru_en("показатель Восс %s", "Voss's score %s") % _signed(value as float))
+			"add_residents":
+				parts.append(Localization.ru_en("жителей %s", "residents %s") % _signed(value as float))
+			"set_policy":
+				parts.append(Localization.ru_en("политика: %s", "policy: %s") % Localization.content_text(ContentDB.get_policy_def(value as String), "label", value as String))
 			"add_resources", "remove_resources":
 				var mult: float = 1.0 if key == "add_resources" else -1.0
 				for res_id: String in value as Dictionary:
