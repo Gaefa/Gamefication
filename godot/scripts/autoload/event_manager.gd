@@ -60,8 +60,9 @@ func _check_triggers() -> void:
 			continue
 		if _patronless_skip(def):
 			continue
-		# Pressure-driven crises are raised by the pressure director, not polled (GDD §15).
-		if (def.get("driver", "") as String) == "pressure":
+		# Pressure-driven crises are raised by the pressure director, not polled (GDD §15);
+		# replies and debts ("callback" cards) come only when another card or a timer calls them.
+		if (def.get("driver", "") as String) == "pressure" or (def.get("callback", false) as bool):
 			continue
 		if _trigger_met(def):
 			_raise(event_id, def)
@@ -109,7 +110,7 @@ func _on_pressure_threshold(category: String) -> void:
 		var event_patron: String = def.get("patron", "") as String
 		if event_patron != "" and event_patron != (GameStateStore.mandate().get("patron_id", "") as String):
 			continue
-		if not _season_met(def):
+		if not _season_met(def) or not _flags_met(def):
 			continue
 		_raise(event_id, def)
 		# The crisis landed: drop the category back only partway — the cause keeps pushing (§15.3).
@@ -126,8 +127,41 @@ func _season_met(def: Dictionary) -> bool:
 	return not def.has("season") or def["season"] == GameStateStore.climate().get("season_id", "")
 
 
+## A card can wait for an earlier decision (requires_flag), stay away after one
+## (excludes_flag) or come only to a player of a certain style (requires_style).
+func _flags_met(def: Dictionary) -> bool:
+	var flags: Dictionary = GameStateStore.mandate().get("flags", {}) as Dictionary
+	for flag: String in _as_list(def.get("requires_flag", [])):
+		if not (flags.get(flag, false) as bool):
+			return false
+	for flag: String in _as_list(def.get("excludes_flag", [])):
+		if flags.get(flag, false) as bool:
+			return false
+	if def.has("requires_style") and GameStateStore.dominant_style("") != (def.get("requires_style", "") as String):
+		return false
+	return true
+
+
+func _as_list(value: Variant) -> Array:
+	if value is Array:
+		return value as Array
+	if value is String and (value as String) != "":
+		return [value]
+	return []
+
+
+## Another card wants this one raised now (a reply to an answer, a debt called in).
+func raise_event(event_id: String) -> void:
+	var def: Dictionary = ContentDB.get_event_def(event_id)
+	if def.is_empty() or _is_already_pending(event_id):
+		return
+	if (def.get("once", false) as bool) and _has_fired(event_id):
+		return
+	_raise(event_id, def)
+
+
 func _trigger_met(def: Dictionary) -> bool:
-	if not _season_met(def):
+	if not _season_met(def) or not _flags_met(def):
 		return false
 	# Пока упрощённая проверка: min_level и условие по ресурсам
 	var min_level: int = def.get("min_level", 1) as int
@@ -182,6 +216,15 @@ func _evaluate_trigger(trigger: String) -> bool:
 			var val: float = _get_stat_value(parts[0].strip_edges())
 			var threshold: float = parts[1].strip_edges().to_float()
 			return val <= threshold
+	elif ">" in trigger:
+		var parts: PackedStringArray = trigger.split(">")
+		if parts.size() == 2:
+			return _get_stat_value(parts[0].strip_edges()) > parts[1].strip_edges().to_float()
+	elif "<" in trigger:
+		var parts: PackedStringArray = trigger.split("<")
+		if parts.size() == 2:
+			return _get_stat_value(parts[0].strip_edges()) < parts[1].strip_edges().to_float()
+	push_warning("EventManager: cannot read trigger '%s'" % trigger)
 	return false
 
 
@@ -203,6 +246,16 @@ func _get_stat_value(stat_name: String) -> float:
 			return float(GameStateStore.population().get("total", 0) as int)
 		"stat_low_pressure_housing":
 			return float(GameStateStore.population().get("low_pressure_housing", 0) as int)
+		"stat_rival_score":
+			return RivalManager.rival_score()
+		"stat_rival_gap":
+			return RivalManager.player_score() - RivalManager.rival_score()  # negative: behind the neighbour
+		"stat_water_days":
+			var days: float = EconomySystem.days_of("res_water_stockpile")
+			return 999.0 if is_inf(days) else days
+		"stat_day":
+			return float(GameStateStore.climate().get("total_day", 1) as int)
+	push_warning("EventManager: unknown stat '%s' in a trigger" % stat_name)
 	return 0.0
 
 
@@ -220,16 +273,18 @@ func _on_phase_changed(new_phase: String) -> void:
 
 
 const MAX_CARDS_PER_EVENING := 3
+const MAX_CARDS_HARD_SEASON := 4  # the Dust and the Heat bring replies and debts on top of the mail
 
 
-## Tonight's mail: at most three cards, crises first, then the patron's letters, then
-## petitions. Whatever does not fit stays in the queue for tomorrow, so a bad day never
-## buries the player under a stack of paper.
+## Tonight's mail: at most three cards (four in a hard season), crises first, then the
+## patron's letters, then petitions. Whatever does not fit stays in the queue for tomorrow,
+## so a bad day never buries the player under a stack of paper.
 func _evening_mail() -> Array:
 	var mail: Array = pending_events.duplicate()
 	mail.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return _mail_rank(a) < _mail_rank(b))  # stable enough: ranks differ by kind only
-	return mail.slice(0, MAX_CARDS_PER_EVENING)
+	var limit: int = MAX_CARDS_PER_EVENING if (GameStateStore.climate().get("season_id", "") as String) == "season_window" else MAX_CARDS_HARD_SEASON
+	return mail.slice(0, limit)
 
 
 func _mail_rank(evt: Dictionary) -> int:
@@ -295,6 +350,21 @@ func _apply_effects(effects: Dictionary) -> void:
 				EventBus.toast_requested.emit(Localization.content_text(effects, "message", effects[key] as String), 5.0)
 			"set_flag":
 				_set_mandate_flag(effects[key] as String)
+			"clear_flag":
+				(GameStateStore.mandate().get("flags", {}) as Dictionary).erase(effects[key] as String)
+			"set_policy":
+				# A card can impose a policy outright (a patron's order); the lock below keeps it.
+				var policy_def: Dictionary = ContentDB.get_policy_def(effects[key] as String)
+				if not policy_def.is_empty():
+					GameStateStore.set_active_policy(policy_def.get("category", "general") as String, effects[key] as String)
+			"lock_policy_days":
+				var locked_policy: Dictionary = ContentDB.get_policy_def(effects.get("set_policy", "") as String)
+				if not locked_policy.is_empty():
+					var locks: Dictionary = GameStateStore.governance().get("policy_locks", {}) as Dictionary
+					locks[locked_policy.get("category", "general") as String] = (GameStateStore.climate().get("total_day", 1) as int) + (effects[key] as int)
+					GameStateStore.governance()["policy_locks"] = locks
+			"raise_event":
+				raise_event(effects[key] as String)
 			"style":
 				GameStateStore.add_style_flag(effects[key] as String)
 			"demolish_building":
@@ -377,6 +447,9 @@ func _apply_stat_delta(stat_id: String, amount: float) -> void:
 		"stat_league_trust":
 			var mandate_state: Dictionary = GameStateStore.mandate()
 			mandate_state["patron_trust"] = clampf((mandate_state.get("patron_trust", 50) as float) + amount, 0.0, 100.0)
+		"stat_rival_score":
+			var rival_state: Dictionary = GameStateStore.rival()
+			rival_state["score"] = clampf((rival_state.get("score", 55.0) as float) + amount, 0.0, 100.0)
 		"stat_unrest_pressure":
 			# Unrest effects (suppression +, relief −) now land in the persistent people
 			# accumulator; before, the per-tick index recompute silently erased them.
