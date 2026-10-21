@@ -117,9 +117,10 @@ Saving: autosave to a single slot; "Continue" in the main menu.
 1. First 5 minutes: road → second pump → shelter inside the water zone. The game walks you through this step by step.
 2. Watch "water for N days." By day 18 you need a full cistern, a second pump and a generator: solar panels weaken in the Dust. Figures on building cards are per day.
 3. The district must grow: at least 12 residents by the end of the term. People move into free barracks on their own while mood is 50 or higher (a barrack fills in about four days); letters at the Desk sometimes offer settlers for food or money. A repair costs 10 money; put the rest of the treasury into technologies.
-4. Don't say "yes" to the League on everything — city support will drain away. And vice versa.
-5. An icon over a building — click it. The game explains, but it won't fix things for you.
-6. Lost? Read "SUMMARY" on the ending screen and try a different style: runs are short.
+4. Mind the ground: a pump on a clay hill gives +20%, on a salt flat −20%; a field on clay +15%; a quarry on rock +25%; a lumber yard in dry scrub +25%. A shelter by a quarry or a workshop loses mood; by the administration post or the Company office it gains a little.
+5. Don't say "yes" to the League on everything — city support will drain away. And vice versa.
+6. An icon over a building — click it. The game explains, but it won't fix things for you.
+7. Lost? Read "SUMMARY" on the ending screen and try a different style: runs are short.
 
 ## For testers: what we need from you
 

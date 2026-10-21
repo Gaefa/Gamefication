@@ -292,6 +292,7 @@
     "water_radius": 4,
     "power_need": 3,
     "cycle_time": 15.0,
+    "terrain_bonus": {"3": 0.2, "2": -0.2, "5": -0.1},
     "levels": [
       {
         "stage": "Ручной насос",
@@ -329,6 +330,7 @@
     "outputs": {"res_food": 3},
     "consumes": {"res_water_stockpile": 0.5},
     "cycle_time": 10.0,
+    "terrain_bonus": {"3": 0.15, "4": 0.1, "2": -0.25},
     "levels": [
       {
         "stage": "Ручная грядка",
@@ -366,6 +368,7 @@
     "outputs": {"res_wood": 5},
     "consumes": {"res_food": 1},
     "cycle_time": 12.0,
+    "terrain_bonus": {"4": 0.25},
     "levels": [
       {
         "stage": "Разборный лесной двор",
@@ -403,6 +406,7 @@
     "outputs": {"res_stone": 5},
     "consumes": {"res_food": 1},
     "cycle_time": 15.0,
+    "terrain_bonus": {"5": 0.25, "3": 0.1},
     "levels": [
       {
         "stage": "Открытая выработка",

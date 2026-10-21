@@ -442,6 +442,27 @@ func _economy_rules() -> void:
 		if ContentDB.is_inert_landmark(bld.get("type", "") as String) and (bld.get("has_issue", false) as bool):
 			broken_landmark = true
 	_check(not broken_landmark, "force_issues leaves the landmarks alone")
+	# The ground matters: a pump on a clay hill gives a fifth more than one on dusty ground.
+	var on_hill: Vector2i = Vector2i(-9999, -9999)
+	var on_grass: Vector2i = Vector2i(-9999, -9999)
+	for q: int in range(-12, 13):
+		for r: int in range(-12, 13):
+			var c := Vector2i(q, r)
+			if GameStateStore.has_building(c):
+				continue
+			if on_hill == Vector2i(-9999, -9999) and GameStateStore.get_terrain(c) == 3:
+				on_hill = c
+			elif on_grass == Vector2i(-9999, -9999) and GameStateStore.get_terrain(c) == 0:
+				on_grass = c
+	if on_hill != Vector2i(-9999, -9999) and on_grass != Vector2i(-9999, -9999):
+		_place(on_hill, "bld_well_pump")
+		_place(on_grass, "bld_well_pump")
+		var hill_out: float = orch.production_mult.compute(on_hill).get("res_water_stockpile", 0.0) as float
+		var grass_out: float = orch.production_mult.compute(on_grass).get("res_water_stockpile", 0.0) as float
+		_check(grass_out > 0.0 and is_equal_approx(hill_out / grass_out, 1.2), "a pump on a clay hill gives +20%% (%.3f vs %.3f)" % [hill_out, grass_out])
+	else:
+		print("SKIP: no clay hill and dusty ground pair within radius 12 on this map")
+
 	# The ledger: after a tick, days-of-reserve come from what the economy wrote, not a walk.
 	_check(GameStateStore.economy().has("demand"), "the economy writes the demand ledger")
 	# Saves: garbage types are refused before they touch the game; a finished .tmp is recovered.
