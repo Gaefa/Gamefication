@@ -47,7 +47,7 @@ func process_tick() -> void:
 		# Housing earns and eats by the people who actually live there, not by empty beds.
 		input_efficiency *= occupancy
 		for res_id: String in consumes:
-			demand[res_id] = (demand[res_id] as float) + (consumes[res_id] as float) * occupancy * _season_consumption_mult(res_id, season_mods)
+			demand[res_id] = (demand[res_id] as float) + (consumes[res_id] as float) * occupancy * draw_multiplier(res_id, season_mods)
 
 		# Get multipliers
 		var mults: Dictionary = _interactions.get_total_multipliers(coord)
@@ -64,7 +64,7 @@ func process_tick() -> void:
 
 		# If inputs cannot be delivered, the building stalls instead of silently draining stockpiles.
 		for res_id: String in consumes:
-			var amount: float = (consumes[res_id] as float) * input_efficiency * _season_consumption_mult(res_id, season_mods)
+			var amount: float = (consumes[res_id] as float) * input_efficiency * draw_multiplier(res_id, season_mods)
 			net_production[res_id] = (net_production[res_id] as float) - amount
 			available_inputs[res_id] = maxf((available_inputs.get(res_id, 0.0) as float) - amount, 0.0)
 
@@ -102,7 +102,7 @@ static func _input_stock_efficiency_for(consumes: Dictionary, delivery: float, a
 		return 0.0
 	var efficiency := 1.0
 	for res_id: String in consumes:
-		var required: float = (consumes[res_id] as float) * delivery * _season_consumption_mult(res_id, season_mods)
+		var required: float = (consumes[res_id] as float) * delivery * draw_multiplier(res_id, season_mods)
 		if required <= 0.0:
 			continue
 		var available: float = available_inputs.get(res_id, 0.0) as float
@@ -147,6 +147,23 @@ func _season_production_mult(res_id: String, season_mods: Dictionary) -> float:
 	if res_id == "res_water_stockpile":
 		return season_mods.get("water_supply_mult", 1.0) as float
 	return 1.0
+
+
+## What a unit of need costs today: the season's thirst times the district's rationing.
+static func draw_multiplier(res_id: String, season_mods: Dictionary) -> float:
+	return _season_consumption_mult(res_id, season_mods) * consumption_multiplier(res_id)
+
+
+## Policies and technologies can cut (or raise) the draw of a resource: water by the hour.
+static func consumption_multiplier(res_id: String) -> float:
+	var total: float = 0.0
+	for policy_var: Variant in GameStateStore.get_active_policies().values():
+		var effects: Dictionary = ContentDB.get_policy_def(policy_var as String).get("effects", {}) as Dictionary
+		total += (effects.get("consumption_mult", {}) as Dictionary).get(res_id, 0.0) as float
+	for tech_var: Variant in GameStateStore.get_technologies():
+		var effects: Dictionary = ContentDB.get_technology_def(tech_var as String).get("effects", {}) as Dictionary
+		total += (effects.get("consumption_mult", {}) as Dictionary).get(res_id, 0.0) as float
+	return maxf(1.0 + total, 0.1)
 
 
 static func _season_consumption_mult(res_id: String, season_mods: Dictionary) -> float:
@@ -204,7 +221,7 @@ static func daily_consumption(res_id: String) -> float:
 		# Empty beds draw nothing, in the ledger as in the simulation.
 		var share: float = occupancy if (ldata.get("population", 0) as int) > 0 else 1.0
 		per_tick += (consumes.get(res_id, 0.0) as float) * share
-	return per_tick * _season_consumption_mult(res_id, season_mods) * float(SimulationRunner.TICKS_PER_DAY)
+	return per_tick * draw_multiplier(res_id, season_mods) * float(SimulationRunner.TICKS_PER_DAY)
 
 
 ## How many days the reserve lasts at today's draw; INF when nothing draws it.

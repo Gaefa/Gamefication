@@ -278,6 +278,12 @@ func _validate_content() -> void:
 			targets.append(swap.get("from", ""))
 			targets.append(swap.get("to", ""))
 			targets.append((effects.get("add_buff", {}) as Dictionary).get("target", ""))
+			var set_policy: String = effects.get("set_policy", "") as String
+			if set_policy != "" and get_policy_def(set_policy).is_empty():
+				content_warnings.append("event %s sets unknown policy %s" % [event_id, set_policy])
+			for follow_up: String in [effects.get("raise_event", "") as String, (effects.get("add_buff", {}) as Dictionary).get("on_expire_event", "") as String]:
+				if follow_up != "" and not events.has(follow_up):
+					content_warnings.append("event %s raises unknown event %s" % [event_id, follow_up])
 			for target: Variant in targets:
 				if (target as String) != "" and not buildings.has(target as String):
 					content_warnings.append("event %s names unknown building %s" % [event_id, target])

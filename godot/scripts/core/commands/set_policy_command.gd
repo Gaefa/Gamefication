@@ -21,8 +21,13 @@ func execute(_ctx: Dictionary) -> void:
 	if not GameStateStore.can_afford(switch_cost):
 		message = Localization.t("ui.command.not_enough_resources", "Not enough resources")
 		return
-	GameStateStore.spend(switch_cost)
 	var category: String = def.get("category", "general") as String
+	var locks: Dictionary = GameStateStore.governance().get("policy_locks", {}) as Dictionary
+	var locked_until: int = locks.get(category, 0) as int
+	if locked_until > (GameStateStore.climate().get("total_day", 1) as int):
+		message = Localization.ru_en("Закреплено предписанием до дня %d", "Fixed by order until day %d") % locked_until
+		return
+	GameStateStore.spend(switch_cost)
 	GameStateStore.set_active_policy(category, policy_id)
 	success = true
 	message = Localization.t("ui.command.policy_set", "Policy set: %s") % Localization.content_text(def, "label", policy_id)

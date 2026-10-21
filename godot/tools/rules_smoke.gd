@@ -168,6 +168,7 @@ func _ready() -> void:
 	_check(longest_gap <= 2, "no more than two quiet evenings in a row (longest: %d)" % longest_gap)
 
 	_economy_rules()
+	_primitive_rules()
 	_heat_rules()
 
 	# 4/5. Content references resolve.
@@ -215,6 +216,68 @@ func _check(ok: bool, what: String) -> void:
 	if not ok:
 		_failures += 1
 	print(("PASS: " if ok else "FAIL: ") + what)
+
+
+## The Desk's memory: flags gate cards, styles pick them, a buff can leave a card behind,
+## a card can impose and lock a policy, policies cut the draw, the neighbour reacts.
+func _primitive_rules() -> void:
+	_new_game("appointed_administrator")
+	_ticks(1)
+	var gated: Dictionary = {"requires_flag": "ruben_debt", "trigger_day": 1}
+	_check(not EventManager.call("_trigger_met", gated), "a card that requires a flag waits for it")
+	EventManager.call("_apply_effects", {"set_flag": "ruben_debt"})
+	_check(EventManager.call("_trigger_met", gated), "…and comes once the flag is set")
+	_check(not EventManager.call("_trigger_met", {"excludes_flag": "ruben_debt", "trigger_day": 1}), "a card excluded by a flag stays away")
+	EventManager.call("_apply_effects", {"clear_flag": "ruben_debt"})
+	_check(not EventManager.call("_trigger_met", gated), "a cleared flag closes the card again")
+	GameStateStore.style_flags().clear()
+	GameStateStore.add_style_flag("protector", 2)
+	_check(EventManager.call("_trigger_met", {"requires_style": "protector", "trigger_day": 1}) and not EventManager.call("_trigger_met", {"requires_style": "loyal", "trigger_day": 1}), "a card can ask for the player's style")
+	GameStateStore.climate()["total_day"] = 10
+	_check(EventManager.call("_evaluate_trigger", "stat_day > 5") and not EventManager.call("_evaluate_trigger", "stat_day < 5"), "triggers read > and <")
+	var gap_before: float = RivalManager.player_score() - RivalManager.rival_score()
+	EventManager.call("_apply_effects", {"stat_rival_score": -5})
+	_check(is_equal_approx(RivalManager.player_score() - RivalManager.rival_score(), gap_before + 5.0), "a card can move the neighbour's score")
+	_check(EventManager.call("_evaluate_trigger", "stat_rival_gap < 0"), "stat_rival_gap reads the gap to the neighbour")
+
+	# A promise with a deadline: the buff runs out and the card it names is raised.
+	EventManager.clear_pending()
+	EventManager.call("_apply_effects", {"add_buff": {"id": "promise", "name": "Обещание", "name_en": "A promise", "production_mult": 0.0, "remaining": 1, "on_expire_event": "petition.thanks"}})
+	orch.maintenance_sys.process_tick()
+	_check(EventManager.pending_events.any(func(e: Dictionary) -> bool: return e.get("runtime_id", "") == "petition.thanks"), "an expired promise raises its card")
+	_check(GameStateStore.get_buffs().is_empty(), "…and the timer itself is gone")
+	EventManager.call("_apply_effects", {"add_buff": {"id": "promise2", "name": "Срок", "name_en": "A deadline", "production_mult": 0.0, "remaining": 1, "on_expire_flag": "promise_due"}})
+	orch.maintenance_sys.process_tick()
+	_check((GameStateStore.mandate().get("flags", {}) as Dictionary).get("promise_due", false), "an expired deadline can raise a flag instead")
+
+	# An order imposes a policy and locks it; the player cannot switch until the day passes.
+	EventManager.call("_apply_effects", {"set_policy": "low_taxes", "lock_policy_days": 5})
+	_check(GameStateStore.get_active_policy("taxation") == "low_taxes", "a card can impose a policy")
+	GameStateStore.set_resource("res_money", 500.0)
+	var back: SetPolicyCommand = orch.command_bus.execute(SetPolicyCommand.new("balanced_budget")) as SetPolicyCommand
+	_check(not back.success and GameStateStore.get_active_policy("taxation") == "low_taxes", "…and the player cannot switch it while the order stands (%s)" % back.message)
+	GameStateStore.climate()["total_day"] = 16
+	back = orch.command_bus.execute(SetPolicyCommand.new("balanced_budget")) as SetPolicyCommand
+	_check(back.success, "…until the order expires")
+
+	# Rationing: a policy's consumption_mult cuts the draw everywhere the draw is read.
+	var taxes: Dictionary = ContentDB.get_policy_def("low_taxes")
+	(taxes["effects"] as Dictionary)["consumption_mult"] = {"res_water_stockpile": -0.5}
+	GameStateStore.set_active_policy("taxation", "low_taxes")
+	_check(is_equal_approx(EconomySystem.consumption_multiplier("res_water_stockpile"), 0.5), "a policy halves the water draw")
+	_check(is_equal_approx(EconomySystem.draw_multiplier("res_water_stockpile", {"water_mult": 2.0}), 1.0), "…and the Heat's thirst and the rationing multiply")
+	(taxes["effects"] as Dictionary).erase("consumption_mult")
+	GameStateStore.set_active_policy("taxation", "balanced_budget")
+
+	# Hard seasons carry four cards an evening, the Window three.
+	EventManager.clear_pending()
+	for i: int in 5:
+		EventManager.pending_events.append({"runtime_id": "petition.fake_%d" % i, "options": []})
+	GameStateStore.climate()["season_id"] = "season_window"
+	_check((EventManager.call("_evening_mail") as Array).size() == 3, "the Window brings three cards an evening")
+	GameStateStore.climate()["season_id"] = "season_dust"
+	_check((EventManager.call("_evening_mail") as Array).size() == 4, "the Dust brings four")
+	EventManager.clear_pending()
 
 
 func _heat_rules() -> void:
