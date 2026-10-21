@@ -2498,6 +2498,11 @@ func _rebuild_settings_panel() -> void:
 	logs_btn.text = Localization.ru_en("Открыть папку", "Open folder")
 	logs_btn.pressed.connect(func() -> void: OS.shell_open(RunLog.folder()))
 	logs_row.add_child(logs_btn)
+	# The engine's own log folder, for a crash report: the whole folder, not the newest file.
+	var crash_btn := Button.new()
+	crash_btn.text = Localization.ru_en("Открыть папку логов", "Open logs folder")
+	crash_btn.pressed.connect(func() -> void: OS.shell_open(ProjectSettings.globalize_path("user://logs")))
+	logs_row.add_child(crash_btn)
 
 
 func _on_settings_language_selected(index: int) -> void:
