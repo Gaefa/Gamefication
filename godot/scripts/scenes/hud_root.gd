@@ -1522,8 +1522,8 @@ func _build_tile_info_text(coord: Vector2i) -> String:
 			var tb: Dictionary = bdef.get("terrain_bonus", {})
 			if tb.has(str(terrain_id)):
 				var bonus: float = tb[str(terrain_id)] as float
-				if bonus > 0:
-					bonuses.append("[color=%s]+%d%%[/color] %s" % [UiStyle.hex(UiStyle.GOOD), int(bonus * 100), Localization.content_text(bdef, "label", btype_id)])
+				if not is_zero_approx(bonus):
+					bonuses.append("[color=%s]%+d%%[/color] %s" % [UiStyle.hex(UiStyle.GOOD if bonus > 0.0 else UiStyle.BAD), int(round(bonus * 100.0)), Localization.content_text(bdef, "label", btype_id)])
 		if bonuses.is_empty():
 			lines.append(_dim_bb(Localization.ru_en("Обычная земля: можно строить.", "Plain ground: you can build here.")))
 		else:
