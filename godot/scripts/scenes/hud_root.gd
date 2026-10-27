@@ -1502,7 +1502,7 @@ func _update_info() -> void:
 	var has_next: bool = level + 1 < ContentDB.max_building_level(type_id)
 	var next_cost: Variant = ContentDB.building_level_data(type_id, level + 1).get("cost", null) if has_next else null
 	_upgrade_button.visible = has_next
-	_upgrade_button.disabled = not (next_cost is Dictionary) or not GameStateStore.can_afford(next_cost as Dictionary)
+	_upgrade_button.disabled = not (next_cost is Dictionary) or not GameStateStore.can_afford(_upgrade_price(_selected_coord, next_cost as Dictionary))
 	_repair_button.visible = broken
 	_bulldoze_button.visible = not BulldozeCommand.is_protected(ContentDB.get_building_def(type_id))
 	_info_actions.visible = _upgrade_button.visible or _repair_button.visible or _bulldoze_button.visible
@@ -1580,7 +1580,7 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 		var next_ldata: Dictionary = ContentDB.building_level_data(type_id, level + 1)
 		var cost_raw: Variant = next_ldata.get("cost", null)
 		if cost_raw is Dictionary and not (cost_raw as Dictionary).is_empty():
-			lines.append("%s «%s»:  %s" % [_dim_bb(Localization.ru_en("Улучшение до", "Upgrade to")), Localization.content_text(next_ldata, "stage", "?"), _cost_bb(cost_raw as Dictionary)])
+			lines.append("%s «%s»:  %s" % [_dim_bb(Localization.ru_en("Улучшение до", "Upgrade to")), Localization.content_text(next_ldata, "stage", "?"), _cost_bb(_upgrade_price(coord, cost_raw as Dictionary))])
 	elif max_level > 1:
 		lines.append(_dim_bb(Localization.t("ui.building.max_level", "MAX LEVEL")))
 	return "\n".join(lines)
@@ -1674,6 +1674,12 @@ func _status_bb(coord: Vector2i, type_id: String, def: Dictionary, ldata: Dictio
 	if efficiency < 1.0:
 		marks.append("[color=%s]%s %d%%[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.t("ui.flow.efficiency", "Efficiency"), int(efficiency * 100.0)])
 	return "   ".join(marks)
+
+
+## The upgrade price with the workshop discount, the same one the command charges.
+func _upgrade_price(coord: Vector2i, cost: Dictionary) -> Dictionary:
+	var orch := _get_orchestrator()
+	return UpgradeBuildingCommand.cost_for(coord, cost, orch.interactions if orch != null else null)
 
 
 func _get_orchestrator() -> GameOrchestrator:

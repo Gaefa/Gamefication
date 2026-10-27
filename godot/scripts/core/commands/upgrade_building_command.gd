@@ -4,6 +4,15 @@ class_name UpgradeBuildingCommand extends CommandBase
 var coord: Vector2i
 
 
+## The price after the workshop's aura discount; the HUD shows and checks this same figure.
+static func cost_for(p_coord: Vector2i, cost: Dictionary, aura: BuildingInteractions) -> Dictionary:
+	var discount: float = aura.get_upgrade_discount(p_coord) if aura != null else 0.0
+	var adjusted: Dictionary = {}
+	for res_id: String in cost:
+		adjusted[res_id] = (cost[res_id] as float) * maxf(1.0 - discount, 0.5)
+	return adjusted
+
+
 func _init(p_coord: Vector2i) -> void:
 	coord = p_coord
 
@@ -28,14 +37,8 @@ func execute(ctx: Dictionary) -> void:
 		message = Localization.t("ui.command.no_upgrade_available", "No upgrade available")
 		return
 
-	# Apply upgrade discount from aura
 	var interactions: BuildingInteractions = ctx.get("interactions") as BuildingInteractions
-	var discount: float = 0.0
-	if interactions:
-		discount = interactions.get_upgrade_discount(coord)
-	var adjusted_cost: Dictionary = {}
-	for res_id: String in cost:
-		adjusted_cost[res_id] = (cost[res_id] as float) * maxf(1.0 - discount, 0.5)
+	var adjusted_cost: Dictionary = cost_for(coord, cost, interactions)
 
 	if not GameStateStore.can_afford(adjusted_cost):
 		message = "%s: %s" % [Localization.t("ui.command.not_enough_resources", "Not enough resources"), PlacementRules.missing_cost_text(adjusted_cost)]
