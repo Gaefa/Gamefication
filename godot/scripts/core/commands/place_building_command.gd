@@ -47,9 +47,6 @@ func execute(ctx: Dictionary) -> void:
 	var coverage: CoverageMap = ctx.get("coverage") as CoverageMap
 	if coverage:
 		coverage.invalidate()
-	var road_graph: TransportGraph = ctx.get("road_graph") as TransportGraph
-	if road_graph:
-		road_graph.invalidate()
 
 	success = true
 	message = Localization.t("ui.command.built", "Built %s") % Localization.content_text(def, "label", type_id)

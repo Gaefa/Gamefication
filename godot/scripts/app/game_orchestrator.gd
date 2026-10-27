@@ -6,9 +6,7 @@ var hex_grid: HexGrid
 var spatial: SpatialIndex
 var coverage: CoverageMap
 var aura_cache: AuraCache
-var road_graph: TransportGraph
 var road_network: RoadNetwork
-var pipe_network: PipeNetwork
 var resource_flow: ResourceFlow
 var adjacency: AdjacencyCalculator
 var synergy: SynergyResolver
@@ -36,9 +34,7 @@ func build() -> void:
 	spatial = SpatialIndex.new()
 	coverage = CoverageMap.new(spatial, hex_grid)
 	aura_cache = AuraCache.new()
-	road_graph = TransportGraph.new("road", spatial)
 	road_network = RoadNetwork.new(spatial)
-	pipe_network = PipeNetwork.new(coverage)
 	resource_flow = ResourceFlow.new(coverage)
 
 	# Building interactions
@@ -58,7 +54,7 @@ func build() -> void:
 	season_sys = SeasonSystem.new()
 	power_sys = PowerSystem.new()
 	economy_sys = EconomySystem.new(interactions, resource_flow)
-	infrastructure_sys = InfrastructureSystem.new(coverage, road_graph, aura_cache)
+	infrastructure_sys = InfrastructureSystem.new(coverage, aura_cache)
 	maintenance_sys = MaintenanceSystem.new()
 	issue_sys = IssueSystem.new(rng)
 	progression_sys = ProgressionSystem.new(aura_cache, coverage)
@@ -96,7 +92,6 @@ func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator")
 	_bootstrap_campaign_hub()
 	spatial.rebuild_from_state()
 	coverage.invalidate()
-	road_graph.invalidate()
 	aura_cache.invalidate()
 	season_sys.initialize()
 	infrastructure_sys.process_tick()
@@ -112,7 +107,6 @@ func load_game() -> void:
 	build()
 	spatial.rebuild_from_state()
 	coverage.invalidate()
-	road_graph.invalidate()
 	aura_cache.invalidate()
 	season_sys.initialize()
 	infrastructure_sys.process_tick()
@@ -123,7 +117,6 @@ func _build_context() -> Dictionary:
 		"hex_grid": hex_grid,
 		"spatial": spatial,
 		"coverage": coverage,
-		"road_graph": road_graph,
 		"interactions": interactions,
 	}
 

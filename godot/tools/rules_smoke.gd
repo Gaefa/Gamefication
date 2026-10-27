@@ -415,7 +415,6 @@ func _economy_rules() -> void:
 	_new_game("appointed_administrator")
 	_ticks(1)  # the first census settles the starting district; a barrack built later starts empty
 	_place(Vector2i(-1, 2), "bld_shelter")  # by the starter road, inside the pump's radius
-	orch.road_graph.invalidate()
 	orch.infrastructure_sys.process_tick()
 	_ticks(1)
 	var before_growth: int = GameStateStore.population().get("total", 0) as int

@@ -68,9 +68,6 @@ func process_tick() -> void:
 			net_production[res_id] = (net_production[res_id] as float) - amount
 			available_inputs[res_id] = maxf((available_inputs.get(res_id, 0.0) as float) - amount, 0.0)
 
-	# Bank interest (special mechanic)
-	_process_bank_interest(net_production)
-
 	# Upkeep is part of the money flow, so the HUD trend and the depletion warning see it.
 	net_production["res_money"] = (net_production.get("res_money", 0.0) as float) - _maintenance_cost()
 
@@ -108,20 +105,6 @@ static func _input_stock_efficiency_for(consumes: Dictionary, delivery: float, a
 		var available: float = available_inputs.get(res_id, 0.0) as float
 		efficiency = minf(efficiency, clampf(available / required, 0.0, 1.0))
 	return efficiency
-
-
-func _process_bank_interest(net: Dictionary) -> void:
-	for coord: Vector2i in GameStateStore.get_all_building_coords():
-		var bld: Dictionary = GameStateStore.get_building(coord)
-		if (bld.get("type", "") as String) != "bank" and (bld.get("type", "") as String) != "bld_bank":
-			continue
-		var level: int = bld.get("level", 0) as int
-		var ldata: Dictionary = ContentDB.building_level_data("bank", level)
-		var rate: float = ldata.get("interest_per_min", 0.0) as float
-		if rate > 0.0:
-			var per_tick: float = rate / 60.0
-			var interest: float = GameStateStore.get_resource("res_money") * per_tick
-			net["res_money"] = (net.get("res_money", 0.0) as float) + interest
 
 
 func _maintenance_cost() -> float:

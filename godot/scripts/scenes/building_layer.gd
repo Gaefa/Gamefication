@@ -261,42 +261,6 @@ func _draw_building_icon(c: Vector2, type_id: String, level: int, base_color: Co
 			_draw_pickaxe(c)
 		"bld_tool_workshop":
 			_draw_gear(c)
-		"hut":
-			_draw_house(c, level)
-		"apartment":
-			_draw_apartment(c, level)
-		"farm":
-			_draw_farm(c)
-		"lumber":
-			_draw_tree(c)
-		"quarry":
-			_draw_pickaxe(c)
-		"workshop":
-			_draw_gear(c)
-		"foundry":
-			_draw_foundry(c)
-		"market":
-			_draw_market(c)
-		"bank":
-			_draw_bank(c)
-		"park":
-			_draw_park(c)
-		"library":
-			_draw_book(c)
-		"theater":
-			_draw_theater(c)
-		"power":
-			_draw_lightning(c)
-		"water_tower":
-			_draw_water(c)
-		"road":
-			_draw_road(c)
-		"warehouse":
-			_draw_warehouse(c)
-		"research":
-			_draw_flask(c)
-		"wonder":
-			_draw_star(c)
 		_:
 			# Fallback: draw letter
 			draw_string(ThemeDB.fallback_font, c + Vector2(-6, 5),
@@ -436,20 +400,6 @@ func _draw_house(c: Vector2, level: int) -> void:
 	draw_rect(Rect2(c.x + s * 0.2, c.y - s * 0.1, 4, 4), Color(0.6, 0.85, 1.0))
 
 
-## Apartment: tall rectangle with many windows
-func _draw_apartment(c: Vector2, level: int) -> void:
-	var h := 14.0 + level * 2.0
-	var w := 10.0
-	# Body
-	draw_rect(Rect2(c.x - w * 0.5, c.y - h * 0.6, w, h), Color(0.75, 0.75, 0.8))
-	# Windows (grid)
-	for row: int in range(0, mini(3 + level, 5)):
-		for col: int in 2:
-			var wx := c.x - 3 + col * 5
-			var wy := c.y - h * 0.5 + row * 4 + 2
-			draw_rect(Rect2(wx, wy, 3, 3), Color(0.9, 0.9, 0.5, 0.8))
-
-
 ## Farm: green field with wheat lines
 func _draw_farm(c: Vector2) -> void:
 	# Field
@@ -506,42 +456,6 @@ func _draw_gear(c: Vector2) -> void:
 		draw_line(p1, p2, Color(0.55, 0.55, 0.6), 3.0)
 
 
-## Foundry: chimney with smoke
-func _draw_foundry(c: Vector2) -> void:
-	# Building body
-	draw_rect(Rect2(c.x - 10, c.y - 4, 20, 14), Color(0.5, 0.4, 0.35))
-	# Chimney
-	draw_rect(Rect2(c.x + 4, c.y - 12, 5, 10), Color(0.45, 0.35, 0.3))
-	# Fire glow
-	draw_circle(c + Vector2(0, 4), 4.0, Color(1.0, 0.5, 0.1, 0.7))
-	# Smoke puffs
-	draw_circle(c + Vector2(6, -14), 2.5, Color(0.7, 0.7, 0.7, 0.4))
-	draw_circle(c + Vector2(8, -17), 3.0, Color(0.7, 0.7, 0.7, 0.3))
-
-
-## Market: tent/awning
-func _draw_market(c: Vector2) -> void:
-	# Counter
-	draw_rect(Rect2(c.x - 10, c.y, 20, 8), Color(0.6, 0.45, 0.25))
-	# Awning (zigzag)
-	var awning := PackedVector2Array([
-		c + Vector2(-12, -2), c + Vector2(-6, -8), c + Vector2(0, -2),
-		c + Vector2(6, -8), c + Vector2(12, -2),
-	])
-	draw_polyline(awning, Color(0.9, 0.3, 0.2), 2.5)
-	# Awning fill
-	var awning_l := PackedVector2Array([
-		c + Vector2(-12, -2), c + Vector2(-6, -8), c + Vector2(0, -2),
-	])
-	draw_colored_polygon(awning_l, Color(0.9, 0.3, 0.2, 0.5))
-	var awning_r := PackedVector2Array([
-		c + Vector2(0, -2), c + Vector2(6, -8), c + Vector2(12, -2),
-	])
-	draw_colored_polygon(awning_r, Color(0.85, 0.25, 0.15, 0.5))
-	# Coin symbol
-	draw_circle(c + Vector2(0, 3), 3, Color(1.0, 0.85, 0.2))
-
-
 ## Bank: pillared building
 func _draw_bank(c: Vector2) -> void:
 	# Base
@@ -558,67 +472,6 @@ func _draw_bank(c: Vector2) -> void:
 	# $ symbol
 	draw_string(ThemeDB.fallback_font, c + Vector2(-4, -3),
 		"$", HORIZONTAL_ALIGNMENT_LEFT, 12, 10, Color(0.8, 0.7, 0.1))
-
-
-## Park: tree and bench
-func _draw_park(c: Vector2) -> void:
-	# Grass circle
-	draw_circle(c, 12.0, Color(0.45, 0.75, 0.35))
-	# Tree crown
-	draw_circle(c + Vector2(-4, -5), 6.0, Color(0.2, 0.6, 0.2))
-	# Tree trunk
-	draw_rect(Rect2(c.x - 5, c.y - 1, 2, 7), Color(0.5, 0.3, 0.15))
-	# Bench
-	draw_rect(Rect2(c.x + 2, c.y + 3, 8, 2), Color(0.55, 0.35, 0.15))
-	# Flowers
-	draw_circle(c + Vector2(6, -2), 2.0, Color(1.0, 0.4, 0.5))
-	draw_circle(c + Vector2(8, 1), 1.5, Color(1.0, 0.8, 0.3))
-
-
-## Book: open book shape
-func _draw_book(c: Vector2) -> void:
-	# Building
-	draw_rect(Rect2(c.x - 10, c.y - 6, 20, 14), Color(0.7, 0.6, 0.5))
-	# Book body
-	draw_rect(Rect2(c.x - 7, c.y - 4, 14, 10), Color(0.3, 0.2, 0.5))
-	# Pages
-	draw_rect(Rect2(c.x - 6, c.y - 3, 5.5, 8), Color(0.95, 0.93, 0.85))
-	draw_rect(Rect2(c.x + 0.5, c.y - 3, 5.5, 8), Color(0.92, 0.9, 0.82))
-	# Spine
-	draw_line(Vector2(c.x, c.y - 4), Vector2(c.x, c.y + 6), Color(0.3, 0.2, 0.5), 1.5)
-
-
-## Theater: comedy/tragedy masks (simplified)
-func _draw_theater(c: Vector2) -> void:
-	# Stage
-	draw_rect(Rect2(c.x - 11, c.y + 2, 22, 8), Color(0.6, 0.2, 0.2))
-	# Curtain left
-	var curtain_l := PackedVector2Array([
-		c + Vector2(-12, -10), c + Vector2(-12, 2), c + Vector2(-4, 2), c + Vector2(-2, -6),
-	])
-	draw_colored_polygon(curtain_l, Color(0.7, 0.15, 0.15))
-	# Curtain right
-	var curtain_r := PackedVector2Array([
-		c + Vector2(12, -10), c + Vector2(12, 2), c + Vector2(4, 2), c + Vector2(2, -6),
-	])
-	draw_colored_polygon(curtain_r, Color(0.7, 0.15, 0.15))
-	# Smile face (comedy)
-	draw_circle(c + Vector2(0, -3), 5.0, Color(1.0, 0.9, 0.6))
-	draw_arc(c + Vector2(0, -2), 3.0, 0.0, PI, 8, Color.BLACK, 1.0)
-
-
-## Lightning bolt for power
-func _draw_lightning(c: Vector2) -> void:
-	# Pole
-	draw_rect(Rect2(c.x - 1.5, c.y - 8, 3, 18), Color(0.55, 0.55, 0.6))
-	# Cross-arm
-	draw_rect(Rect2(c.x - 8, c.y - 6, 16, 2), Color(0.55, 0.55, 0.6))
-	# Lightning bolt
-	var bolt := PackedVector2Array([
-		c + Vector2(-3, -12), c + Vector2(1, -4), c + Vector2(-1, -4),
-		c + Vector2(3, 4), c + Vector2(-1, -1), c + Vector2(1, -1),
-	])
-	draw_polyline(bolt, Color(1.0, 0.9, 0.2), 2.0)
 
 
 ## Water tower: tank on stilts
@@ -657,37 +510,6 @@ func _draw_warehouse(c: Vector2) -> void:
 	# Crates inside
 	draw_rect(Rect2(c.x - 4, c.y + 1, 4, 4), Color(0.7, 0.6, 0.35))
 	draw_rect(Rect2(c.x + 1, c.y + 2, 3, 3), Color(0.65, 0.55, 0.3))
-
-
-## Flask / beaker for research lab
-func _draw_flask(c: Vector2) -> void:
-	# Flask neck
-	draw_rect(Rect2(c.x - 2, c.y - 10, 4, 8), Color(0.8, 0.85, 0.9, 0.7))
-	# Flask body (triangle)
-	var body := PackedVector2Array([
-		c + Vector2(-9, 6), c + Vector2(-3, -3), c + Vector2(3, -3), c + Vector2(9, 6),
-	])
-	draw_colored_polygon(body, Color(0.8, 0.85, 0.9, 0.7))
-	# Liquid
-	var liquid := PackedVector2Array([
-		c + Vector2(-7, 6), c + Vector2(-4, 0), c + Vector2(4, 0), c + Vector2(7, 6),
-	])
-	draw_colored_polygon(liquid, Color(0.3, 0.9, 0.4, 0.7))
-	# Bubbles
-	draw_circle(c + Vector2(-2, 3), 1.5, Color(0.5, 1.0, 0.6, 0.5))
-	draw_circle(c + Vector2(2, 1), 1.0, Color(0.5, 1.0, 0.6, 0.5))
-
-
-## Star for wonder
-func _draw_star(c: Vector2) -> void:
-	var pts := PackedVector2Array()
-	for i: int in 10:
-		var angle := TAU / 10.0 * float(i) - PI / 2.0
-		var radius := 12.0 if i % 2 == 0 else 5.5
-		pts.append(c + Vector2(cos(angle), sin(angle)) * radius)
-	draw_colored_polygon(pts, Color(1.0, 0.85, 0.2))
-	# Inner glow
-	draw_circle(c, 4.0, Color(1.0, 0.95, 0.7, 0.6))
 
 
 # ============================================================

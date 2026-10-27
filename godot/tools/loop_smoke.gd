@@ -64,7 +64,6 @@ func _attach() -> void:
 				GameStateStore.set_building(coord, bld)
 		orch.spatial.rebuild_from_state()
 		orch.coverage.invalidate()
-		orch.road_graph.invalidate()
 		orch.infrastructure_sys.process_tick()
 	SimulationRunner.speed_scale = SPEED
 

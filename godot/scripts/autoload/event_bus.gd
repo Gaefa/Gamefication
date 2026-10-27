@@ -16,9 +16,6 @@ signal building_damaged(coord: Vector2i, severity: float)
 signal building_issue_added(coord: Vector2i)
 
 # --- Infrastructure ---
-signal road_network_changed()
-signal pipe_network_changed()
-signal power_network_changed()
 signal power_updated(generation: float, demand: float, tier_powered: Dictionary)
 signal coverage_recalculated()
 
@@ -28,7 +25,6 @@ signal happiness_changed(value: float)
 
 # --- Progression ---
 signal city_level_changed(new_level: int)
-signal prestige_triggered(stars: int)
 signal win_condition_met()
 
 # --- Pressure Director ---
@@ -75,7 +71,6 @@ signal tick_finished(tick_number: int)
 signal phase_changed(new_phase: String)
 signal day_timer_updated(seconds_left: float)
 signal evening_started(pending_events: Array)
-signal morning_consequences(results: Array)
 
 # --- Стол Администратора ---
 signal critical_event_started(event_data: Dictionary)
