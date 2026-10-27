@@ -170,6 +170,7 @@ func _ready() -> void:
 	_economy_rules()
 	_primitive_rules()
 	_heat_rules()
+	_content_contract_rules()
 
 	# 4/5. Content references resolve.
 	_check(ContentDB.content_warnings.is_empty(), "content check is clean (%d problems)" % ContentDB.content_warnings.size())
@@ -216,6 +217,37 @@ func _check(ok: bool, what: String) -> void:
 	if not ok:
 		_failures += 1
 	print(("PASS: " if ok else "FAIL: ") + what)
+
+
+## content_check knows the content's vocabulary: a card with a stat, season, patron, style or
+## flag the game cannot read, a buff without a lifetime, a building with per-tick flows — all
+## fail the check before a tester meets them in play.
+func _content_contract_rules() -> void:
+	ContentDB.events["qa.bad_card"] = {
+		"id": "qa.bad_card", "season": "season_monsoon", "patron": "nobody", "requires_flag": "never_set",
+		"requires_style": "anarchist", "trigger_condition": "stat_moon_phase >= 3",
+		"options": [{"effects": {"add_buff": {"id": "qa_buff", "production_mult": 0.1}, "lock_policy_days": 3, "style": "anarchist"}}],
+	}
+	ContentDB.events["qa.odd_trigger"] = {"id": "qa.odd_trigger", "trigger_condition": "water is low", "options": []}
+	ContentDB.events["qa.fine_card"] = {"id": "qa.fine_card", "trigger_condition": "res_water_stockpile < 40", "patron": "civic_directorate", "options": []}
+	ContentDB.buildings["qa.ticker"] = {"consumes": {"res_money": 1}, "levels": []}
+	ContentDB._validate_content()
+	var found: Array[String] = ContentDB.content_warnings.duplicate()
+	for key: String in ["qa.bad_card", "qa.odd_trigger", "qa.fine_card"]:
+		ContentDB.events.erase(key)
+	ContentDB.buildings.erase("qa.ticker")
+	ContentDB._validate_content()
+	for needle: String in ["season_monsoon", "patron nobody", "requires_flag never_set", "style anarchist", "stat_moon_phase",
+			"has no remaining", "without set_policy", "names unknown style anarchist", "'water is low'", "qa.ticker has flows"]:
+		_check(_mentions(found, needle), "content_check rejects %s" % needle)
+	_check(not _mentions(found, "qa.fine_card"), "content_check accepts a well-formed card")
+
+
+func _mentions(warnings: Array[String], needle: String) -> bool:
+	for warning: String in warnings:
+		if needle in warning:
+			return true
+	return false
 
 
 ## The Desk's memory: flags gate cards, styles pick them, a buff can leave a card behind,

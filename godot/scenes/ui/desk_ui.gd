@@ -238,6 +238,7 @@ func _show_event(index: int) -> void:
 	
 	# Очищаем старые кнопки
 	for child: Node in _options_container.get_children():
+		_options_container.remove_child(child)
 		child.queue_free()
 	
 	_next_btn.visible = false
@@ -412,6 +413,7 @@ func _show_next_event() -> void:
 func _show_all_resolved() -> void:
 	_counter_label.text = ""
 	for child: Node in _options_container.get_children():
+		_options_container.remove_child(child)
 		child.queue_free()
 	_next_btn.visible = false
 	if _critical_mode:
@@ -433,6 +435,7 @@ func _show_empty_desk() -> void:
 	_finish_btn.text = Localization.ru_en("Завершить вечер — начать новый день", "End the evening — start a new day")
 	_counter_label.text = ""
 	for child: Node in _options_container.get_children():
+		_options_container.remove_child(child)
 		child.queue_free()
 	_next_btn.visible = false
 	_finish_btn.visible = true

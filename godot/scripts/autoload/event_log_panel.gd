@@ -89,6 +89,7 @@ func _toggle() -> void:
 
 func _rebuild_list() -> void:
 	for child: Node in _list.get_children():
+		_list.remove_child(child)
 		child.queue_free()
 	_title.text = Localization.ru_en("Журнал событий", "Event log")
 	_close_btn.tooltip_text = Localization.ru_en("Закрыть (T или Esc)", "Close (T or Esc)")

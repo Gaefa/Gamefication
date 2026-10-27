@@ -86,11 +86,11 @@
     "sprites_by_level": ["res://assets/buildings/tiers/generator_t1_hex.png"],
     "cost_build": {"res_stone": 15, "res_tools": 2},
     "outputs": {},
-    "consumes": {"res_money": 0.05},
+    "consumes": {"res_money": 15},
     "power_output": 8,
-    "cycle_time": 0.0,
+    "cycle_time": 300,
     "levels": [
-      {"stage": "Генератор", "stage_en": "Generator", "consumes": {"res_money": 0.05}}
+      {"stage": "Генератор", "stage_en": "Generator", "consumes": {"res_money": 15}}
     ],
     "tags": ["power_source"]
   },
