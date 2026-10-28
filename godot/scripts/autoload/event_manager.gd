@@ -366,6 +366,8 @@ func _apply_effects(effects: Dictionary) -> void:
 				GameStateStore.add_style_flag(effects[key] as String)
 			"demolish_building":
 				_demolish_building(effects[key] as String)
+			"damage_building":
+				_damage_building(effects[key] as String)
 			"replace_building":
 				var swap: Dictionary = effects[key] as Dictionary
 				_replace_building(swap.get("from", "") as String, swap.get("to", "") as String)
@@ -463,6 +465,24 @@ func _force_issues(count: int) -> void:
 		bld["has_issue"] = true
 		GameStateStore.set_building(coord, bld)
 		EventBus.building_issue_added.emit(coord)
+
+
+## A riot or a storm wrecks one named building (the warehouse the crowd stormed, the pump
+## whose valve was torn off). The player repairs it like any breakdown; until then it is dead
+## weight: no flows, no coverage, no beds. Nothing of that type standing → nothing happens.
+func _damage_building(type_id: String) -> void:
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		if (bld.get("type", "") as String) != type_id or (bld.get("damaged", false) as bool):
+			continue
+		bld["damaged"] = true
+		GameStateStore.set_building(coord, bld)
+		EventBus.building_damaged.emit(coord, 1.0)
+		var orch: GameOrchestrator = _orchestrator()
+		if orch != null:
+			orch.coverage.invalidate()
+		return
+	push_warning("EventManager: no intact %s to damage" % type_id)
 
 
 func _damage_random_buildings(count: int) -> void:

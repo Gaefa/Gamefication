@@ -420,9 +420,65 @@
         "effects": {
           "stat_unrest_pressure": 12,
           "stat_city_trust": -6,
+          "set_flag": "strike_banned",
           "style": "pragmatist",
           "message": "Собрание запрещено. Бригада работает и злится на вас.",
           "message_en": "The gathering is banned. The crew is working, and it is angry with you."
+        }
+      }
+    ]
+  },
+  {
+    "id": "report.strike_riot",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "strike_banned",
+    "trigger_condition": "stat_happiness <= 32",
+    "cooldown_sec": 999999,
+    "tags": ["report", "workers"],
+    "title": "Сводка дежурного — бригада у поста",
+    "title_en": "Duty Report — The Crew at the Post",
+    "body": "Сводка дежурного.\n\nЗапрет не сработал. После второй смены бригада собралась у поста администрации, около тридцати человек, требуют отменить запрет и пересмотреть нормы. Часть толпы отошла к насосу: кто-то сорвал вентиль, вода хлещет на землю.\n\nОхрана поста просит указаний.",
+    "body_en": "Duty report.\n\nThe ban did not hold. After the second shift the crew gathered at the administration post, about thirty people, demanding the ban be lifted and the rations reviewed. Part of the crowd drifted to the pump: someone tore off the valve, and water is gushing onto the ground.\n\nThe post guard asks for orders.",
+    "options": [
+      {
+        "text": "Выйти к бригаде: отменить запрет, выдать паёк (30 еды)",
+        "text_en": "Go out to the crew: lift the ban, issue rations (30 food)",
+        "cost": { "res_food": 30 },
+        "effects": {
+          "stat_unrest_pressure": -10,
+          "stat_city_trust": 5,
+          "clear_flag": "strike_banned",
+          "style": "protector",
+          "message": "Запрет отменён, паёк выдан. Бригада сама поставила вентиль на место и разошлась.",
+          "message_en": "The ban is lifted and the rations issued. The crew put the valve back themselves and went home."
+        }
+      },
+      {
+        "text": "Вызвать охрану и разогнать",
+        "text_en": "Call the guard and disperse them",
+        "effects": {
+          "stat_unrest_pressure": 10,
+          "stat_city_trust": -8,
+          "stat_league_trust": 4,
+          "damage_building": "bld_well_pump",
+          "clear_flag": "strike_banned",
+          "style": "loyal",
+          "message": "Охрана разогнала бригаду. Насос разгромлен в давке: нужен ремонт.",
+          "message_en": "The guard dispersed the crew. The pump was wrecked in the crush: it needs repair."
+        }
+      },
+      {
+        "text": "Переждать внутри поста",
+        "text_en": "Wait it out inside the post",
+        "effects": {
+          "stat_unrest_pressure": 4,
+          "stat_city_trust": -3,
+          "damage_building": "bld_well_pump",
+          "clear_flag": "strike_banned",
+          "message": "К ночи разошлись сами. Насос разгромлен: нужен ремонт.",
+          "message_en": "By night they left on their own. The pump is wrecked: it needs repair."
         }
       }
     ]
@@ -461,9 +517,10 @@
         "effects": {
           "stat_unrest_pressure": 12,
           "stat_city_trust": -8,
+          "damage_building": "bld_warehouse",
           "style": "pragmatist",
-          "message": "Толпу разогнали, трое задержаны. В районе об этом говорят.",
-          "message_en": "The crowd was dispersed and three people detained. The district is talking about it."
+          "message": "Толпу разогнали, трое задержаны. В давке выломали ворота склада: нужен ремонт. В районе об этом говорят.",
+          "message_en": "The crowd was dispersed and three people detained. The warehouse gate was broken in the crush: it needs repair. The district is talking about it."
         }
       },
       {

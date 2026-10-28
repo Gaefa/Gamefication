@@ -122,7 +122,7 @@ func _run() -> void:
 	await _shot("24_heat_season")
 	SeasonPanel.call("_toggle")
 	for id: String in ["patron.letter.welcome", "patron.letter.directorate_welcome", "patron.letter.audit_warning", "patron.letter.heat_warning", "patron.letter.heat_warning_directorate", "report.heat_stock", "petition.covenant_shade", "rival.voss_heat", "patron.letter.audit2_warning", "patron.letter.audit2_warning_directorate", "crisis.heat_collapse", "crisis.spoiled_stock",
-			"report.promise_kept", "petition.promise_broken", "petition.ruben_debt", "report.camp_at_voss", "patron.letter.census_question", "patron.letter.census_question_directorate", "rival.voss_grudge", "rival.voss_tools", "rival.voss_buyout", "rival.voss_favor", "patron.letter.league_tanker", "patron.letter.directorate_reserve", "petition.subbotnik", "patron.letter.water_order", "patron.letter.water_advice"]:
+			"report.promise_kept", "petition.promise_broken", "petition.ruben_debt", "report.camp_at_voss", "patron.letter.census_question", "patron.letter.census_question_directorate", "rival.voss_grudge", "rival.voss_tools", "rival.voss_buyout", "rival.voss_favor", "patron.letter.league_tanker", "patron.letter.directorate_reserve", "petition.subbotnik", "patron.letter.water_order", "patron.letter.water_advice", "report.strike_riot"]:
 		var card: Dictionary = ContentDB.get_event_def(id).duplicate(true)
 		card["runtime_id"] = id
 		desk.call("_on_evening_started", [card])
