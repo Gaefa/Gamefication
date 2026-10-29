@@ -226,7 +226,7 @@ func _content_contract_rules() -> void:
 	ContentDB.events["qa.bad_card"] = {
 		"id": "qa.bad_card", "season": "season_monsoon", "patron": "nobody", "requires_flag": "never_set",
 		"requires_style": "anarchist", "trigger_condition": "stat_moon_phase >= 3",
-		"options": [{"effects": {"add_buff": {"id": "qa_buff", "production_mult": 0.1}, "lock_policy_days": 3, "style": "anarchist"}}],
+		"options": [{"effects": {"add_buff": {"id": "qa_buff", "production_mult": 0.1}, "lock_policy_days": 3, "style": "anarchist", "damage_building": "bld_nothing"}}],
 	}
 	ContentDB.events["qa.odd_trigger"] = {"id": "qa.odd_trigger", "trigger_condition": "water is low", "options": []}
 	ContentDB.events["qa.fine_card"] = {"id": "qa.fine_card", "trigger_condition": "res_water_stockpile < 40", "patron": "civic_directorate", "options": []}
@@ -238,7 +238,7 @@ func _content_contract_rules() -> void:
 	ContentDB.buildings.erase("qa.ticker")
 	ContentDB._validate_content()
 	for needle: String in ["season_monsoon", "patron nobody", "requires_flag never_set", "style anarchist", "stat_moon_phase",
-			"has no remaining", "without set_policy", "names unknown style anarchist", "'water is low'", "qa.ticker has flows"]:
+			"has no remaining", "without set_policy", "names unknown style anarchist", "'water is low'", "qa.ticker has flows", "unknown building bld_nothing"]:
 		_check(_mentions(found, needle), "content_check rejects %s" % needle)
 	_check(not _mentions(found, "qa.fine_card"), "content_check accepts a well-formed card")
 
@@ -473,6 +473,12 @@ func _economy_rules() -> void:
 		if ContentDB.is_inert_landmark(bld.get("type", "") as String) and (bld.get("has_issue", false) as bool):
 			broken_landmark = true
 	_check(not broken_landmark, "force_issues leaves the landmarks alone")
+	# A riot wrecks the building the card names; the pump stops covering until repaired.
+	var pump: Vector2i = EventManager.call("_first_coord_of_type", "bld_well_pump") as Vector2i
+	EventManager.call("_apply_effects", {"damage_building": "bld_well_pump"})
+	_check(GameStateStore.get_building(pump).get("damaged", false) as bool, "a card can wreck a named building")
+	orch.command_bus.execute(RepairBuildingCommand.new(pump))
+	_check(not (GameStateStore.get_building(pump).get("damaged", false) as bool), "…and a repair brings it back")
 	# The ground matters: a pump on a clay hill gives a fifth more than one on dusty ground.
 	var on_hill: Vector2i = Vector2i(-9999, -9999)
 	var on_grass: Vector2i = Vector2i(-9999, -9999)

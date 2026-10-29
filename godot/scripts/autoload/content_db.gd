@@ -278,7 +278,7 @@ func _validate_content() -> void:
 			var effects: Dictionary = opt.get("effects", {})
 			_check_resources(effects.get("add_resources", {}), "event %s add_resources" % event_id)
 			_check_resources(effects.get("remove_resources", {}), "event %s remove_resources" % event_id)
-			var targets: Array = [effects.get("demolish_building", "")]
+			var targets: Array = [effects.get("demolish_building", ""), effects.get("damage_building", "")]
 			var swap: Dictionary = effects.get("replace_building", {})
 			targets.append(swap.get("from", ""))
 			targets.append(swap.get("to", ""))

@@ -312,6 +312,8 @@ func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
 					parts.append("%s %s" % [_res_label(res_id), _signed(mult * ((value as Dictionary)[res_id] as float))])
 			"demolish_building":
 				parts.append(Localization.ru_en("снос: %s", "demolition: %s") % _building_name(value as String))
+			"damage_building":
+				parts.append(Localization.ru_en("разгромлено: %s (нужен ремонт)", "wrecked: %s (needs repair)") % _building_name(value as String))
 			"replace_building":
 				parts.append(Localization.ru_en("перестройка: %s", "rebuild: %s") % _building_name((value as Dictionary).get("to", "") as String))
 			"set_flag":
