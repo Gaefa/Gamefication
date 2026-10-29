@@ -151,7 +151,6 @@ func _place_district(orch: GameOrchestrator) -> void:
 	GameStateStore.set_building(G_GENERATOR, {"type": "bld_generator", "level": 0, "damaged": false, "has_issue": false})
 	orch.spatial.rebuild_from_state()
 	orch.coverage.invalidate()
-	orch.road_graph.invalidate()
 	orch.aura_cache.invalidate()
 	orch.infrastructure_sys.process_tick()
 
@@ -174,7 +173,6 @@ func _upgrade_water_infra(orch: GameOrchestrator) -> void:
 			GameStateStore.set_building(coord, bld)
 	orch.spatial.rebuild_from_state()
 	orch.coverage.invalidate()
-	orch.road_graph.invalidate()
 	orch.aura_cache.invalidate()
 	orch.infrastructure_sys.process_tick()
 
@@ -242,7 +240,6 @@ func _run_heat_reserve(second_pump: bool) -> void:
 		GameStateStore.set_building(G_SECOND_PUMP, {"type": "bld_well_pump", "level": 0, "damaged": false, "has_issue": false})
 	orch.spatial.rebuild_from_state()
 	orch.coverage.invalidate()
-	orch.road_graph.invalidate()
 	orch.aura_cache.invalidate()
 	orch.infrastructure_sys.process_tick()
 	GameStateStore.set_resource("res_water_stockpile", GameStateStore.get_cap("res_water_stockpile"))

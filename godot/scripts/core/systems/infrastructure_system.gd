@@ -2,13 +2,11 @@ class_name InfrastructureSystem
 ## Ensures all network caches are fresh before other systems run.
 
 var _coverage: CoverageMap
-var _road_graph: TransportGraph
 var _aura_cache: AuraCache
 
 
-func _init(coverage: CoverageMap, road_graph: TransportGraph, aura_cache: AuraCache) -> void:
+func _init(coverage: CoverageMap, aura_cache: AuraCache) -> void:
 	_coverage = coverage
-	_road_graph = road_graph
 	_aura_cache = aura_cache
 
 
@@ -16,7 +14,6 @@ func process_tick() -> void:
 	# Each cache reports whether it rebuilt; the signal fires only then (listeners used to
 	# redraw the whole top bar every tick on it).
 	var rebuilt: bool = _coverage.ensure_fresh()
-	rebuilt = _road_graph.ensure_fresh() or rebuilt
 	rebuilt = _aura_cache.ensure_fresh() or rebuilt
 	_recalculate_storage_caps()
 	if rebuilt:

@@ -24,7 +24,6 @@ func _ready() -> void:
 			GameStateStore.set_building(coord, bld)
 	orch.spatial.rebuild_from_state()
 	orch.coverage.invalidate()
-	orch.road_graph.invalidate()
 	for _i: int in range(WARMUP_TICKS):
 		_tick()
 

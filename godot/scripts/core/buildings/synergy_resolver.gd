@@ -31,27 +31,4 @@ func get_production_multiplier(coord: Vector2i, type_id: String) -> Dictionary:
 		for res_id: String in produces:
 			result[res_id] = (result.get(res_id, 1.0) as float) + aura_boost
 
-	# 3. Market residential coin boost
-	_apply_market_boost(coord, type_id, result)
-
 	return result
-
-
-func _apply_market_boost(coord: Vector2i, type_id: String, result: Dictionary) -> void:
-	var def: Dictionary = ContentDB.get_building_def(type_id)
-	var cat: String = def.get("category", "") as String
-	if cat != "Residential":
-		return
-	# Check if any adjacent market
-	for nb: Vector2i in HexCoords.neighbors_of(coord):
-		var nb_bld: Dictionary = GameStateStore.get_building(nb)
-		if nb_bld.is_empty():
-			continue
-		if (nb_bld.get("type", "") as String) != "market":
-			continue
-		var nb_level: int = nb_bld.get("level", 0) as int
-		var ldata: Dictionary = ContentDB.building_level_data("market", nb_level)
-		var syn: Dictionary = ldata.get("synergy", {})
-		var boost: float = syn.get("residential_coins", 0.0) as float
-		if boost > 0.0:
-			result["res_money"] = (result.get("res_money", 1.0) as float) + boost

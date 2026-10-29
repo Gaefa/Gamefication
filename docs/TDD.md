@@ -15,7 +15,6 @@
 - `EventBus`: global signals.
 - `SimulationRunner`: fixed tick driver.
 - `SaveService`: save/load.
-- `AudioManager`: audio facade.
 
 ### Core Systems
 

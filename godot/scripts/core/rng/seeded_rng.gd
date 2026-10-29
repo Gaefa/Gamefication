@@ -40,9 +40,5 @@ func range_int(low: int, high: int) -> int:
 	return low + (next_int() % (high - low))
 
 
-func range_float(low: float, high: float) -> float:
-	return low + next_float() * (high - low)
-
-
 func chance(probability: float) -> bool:
 	return next_float() < probability

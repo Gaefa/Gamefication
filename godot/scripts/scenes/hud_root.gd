@@ -32,7 +32,6 @@ var _range_lens_button: Button
 var _logistics_lens_button: Button
 var _build_scroll: ScrollContainer
 var _build_vbox: VBoxContainer
-var _category_select: OptionButton
 var _category_buttons: Dictionary = {}
 var _active_category: String = ""
 var _active_build_type: String = ""
@@ -83,7 +82,7 @@ var _minimap_viewport: SubViewport
 var _minimap_camera: Camera2D
 
 # --- Menu State ---
-var _start_menu_mode: String = "main" # "main", "campaign", "sandbox"
+var _start_menu_mode: String = "main" # "main", "campaign"
 var _start_dim: ColorRect
 
 
@@ -915,11 +914,6 @@ func _build_build_panel() -> void:
 	_build_title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(_build_title_label)
 
-	_category_select = OptionButton.new()
-	_category_select.item_selected.connect(_on_category_selected)
-	_category_select.visible = false
-	vbox.add_child(_category_select)
-
 	# Categories two to a row; an odd last one takes the whole row.
 	_category_rows = VBoxContainer.new()
 	_category_rows.add_theme_constant_override("separation", 4)
@@ -1030,18 +1024,8 @@ func _refresh_lens_buttons(ranges_enabled: bool, logistics_enabled: bool) -> voi
 		_logistics_lens_button.set_pressed_no_signal(logistics_enabled)
 
 
-func _on_category_selected(index: int) -> void:
-	if index < 0 or index >= CATEGORY_ORDER.size():
-		return
-	_set_active_category(CATEGORY_ORDER[index] as String)
-
-
 func _set_active_category(cat: String) -> void:
 	_active_category = cat
-	if _category_select:
-		var idx: int = CATEGORY_ORDER.find(cat)
-		if idx >= 0 and _category_select.selected != idx:
-			_category_select.select(idx)
 	_update_category_buttons()
 	_rebuild_building_list()
 
@@ -1064,14 +1048,6 @@ func _refresh_build_panel_labels() -> void:
 	if _logistics_lens_button:
 		_logistics_lens_button.text = Localization.t("ui.lens.logistics", "Логистика L")
 		_logistics_lens_button.tooltip_text = Localization.t("ui.lens.logistics_tooltip", "Подсветить дороги и здания без дорожного доступа")
-	if _category_select:
-		var selected_category := _active_category
-		_category_select.clear()
-		for cat: String in CATEGORY_ORDER:
-			_category_select.add_item(_category_label(cat))
-		var idx: int = CATEGORY_ORDER.find(selected_category)
-		if idx >= 0:
-			_category_select.select(idx)
 	for cat: String in _category_buttons:
 		var btn: Button = _category_buttons[cat] as Button
 		btn.text = _category_label(cat)
@@ -1922,8 +1898,6 @@ func _rebuild_start_panel() -> void:
 		_build_main_menu_options(root)
 	elif _start_menu_mode == "campaign":
 		_build_campaign_list(root)
-	elif _start_menu_mode == "sandbox":
-		_build_sandbox_options(root)
 
 
 func _build_main_menu_options(container: Control) -> void:
@@ -2040,22 +2014,6 @@ func _profile_rank(profile_id: String) -> int:
 		return 0
 	var path: String = ContentDB.get_start_profile_def(profile_id).get("start_path", "appointed") as String
 	return 1 if path == "appointed" else 2
-
-
-func _build_sandbox_options(container: Control) -> void:
-	var intro := Label.new()
-	intro.text = "Sandbox mode: unlimited potential, no pressure."
-	intro.add_theme_font_size_override("font_size", 12)
-	container.add_child(intro)
-	
-	# For now, just use the first profile as default sandbox
-	var profiles = ContentDB.get_start_profile_ids()
-	if not profiles.is_empty():
-		var btn := Button.new()
-		btn.text = "Start Default Sandbox"
-		btn.custom_minimum_size.y = 60
-		btn.pressed.connect(_start_new_run.bind(profiles[0]))
-		container.add_child(btn)
 
 
 func _build_start_profile_row(profile_id: String) -> Control:

@@ -8,8 +8,6 @@ var city_levels: Array = []
 var terrain_types: Dictionary = {}
 var events: Dictionary = {}
 var synergies: Array = []
-var categories: Array = []
-var tutorial_steps: Array = []
 var technologies: Dictionary = {}
 var policies: Dictionary = {}
 var start_profiles: Dictionary = {}
@@ -50,17 +48,12 @@ func _ready() -> void:
 	elif ev_raw is Dictionary:
 		events = ev_raw as Dictionary
 	synergies = _load_json_array(CONTENT_ROOT + "synergies.json")
-	categories = _load_json_array(CONTENT_ROOT + "categories.json")
 
 	var levels_raw: Variant = _load_json_raw(CONTENT_ROOT + "city_levels.json")
 	if levels_raw is Array:
 		city_levels = levels_raw
 	else:
 		push_warning("ContentDB: city_levels.json should be an Array")
-
-	var tut_raw: Variant = _load_json_raw(CONTENT_ROOT + "tutorial_steps.json")
-	if tut_raw is Array:
-		tutorial_steps = tut_raw
 
 	technologies = _load_keyed_array(CONTENT_ROOT + "technologies.json", "id")
 	policies = _load_keyed_array(CONTENT_ROOT + "policies.json", "id")
@@ -341,10 +334,6 @@ func get_season_def(season_id: String) -> Dictionary:
 	return seasons.get(season_id, {})
 
 
-func get_season_ids() -> Array:
-	return seasons.keys()
-
-
 func get_season_order() -> Array:
 	return (scenario.get("season_order", season_order) as Array).duplicate()
 
@@ -404,12 +393,6 @@ func get_policy_ids() -> Array:
 
 func get_start_profile_ids() -> Array:
 	return start_profiles.keys()
-
-
-func get_level_requirement(level: int, key: String) -> Variant:
-	var def := get_level_def(level)
-	var reqs: Dictionary = def.get("requirements", {})
-	return reqs.get(key, 0)
 
 
 func building_level_data(type_id: String, level: int) -> Dictionary:

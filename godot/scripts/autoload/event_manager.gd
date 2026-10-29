@@ -5,8 +5,6 @@ extends Node
 ##   ВЕЧЕР: передает массив в DeskUI для разбора.
 ##   Критические события (is_critical) ставят игру на паузу немедленно.
 
-signal pin_spawned(coord: Vector2i, pin_type: String)
-signal critical_event_fired(event_data: Dictionary)
 
 ## Cards waiting for the evening desk. They live in the run state, so they ride the save
 ## and a new run (or a load) never inherits the previous run's letters.
@@ -83,7 +81,6 @@ func _raise(event_id: String, def: Dictionary) -> void:
 	# не дожидаясь вечернего Стола (GDD §3.2: срочное не ждёт Стола).
 	if def.get("is_critical", false) as bool:
 		SimulationRunner.paused = true
-		critical_event_fired.emit(event_data)
 		EventBus.critical_event_started.emit(event_data)
 	else:
 		pending_events.append(event_data)
@@ -427,7 +424,6 @@ func _replace_building(from_type: String, to_type: String) -> void:
 	orch.spatial.add(coord, to_type)
 	orch.interactions.invalidate_caches()
 	orch.coverage.invalidate()
-	orch.road_graph.invalidate()
 	EventBus.building_removed.emit(coord, from_type)
 	EventBus.building_placed.emit(coord, to_type)
 

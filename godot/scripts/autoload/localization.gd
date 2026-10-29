@@ -33,10 +33,6 @@ func set_locale(locale: String, emit_signal: bool = true, persist: bool = true) 
 		locale_changed.emit(current_locale)
 
 
-func toggle_locale() -> void:
-	set_locale("ru" if current_locale == "en" else "en")
-
-
 func t(key: String, fallback: String = "") -> String:
 	var entry: Dictionary = _strings.get(key, {})
 	if entry.has(current_locale):
