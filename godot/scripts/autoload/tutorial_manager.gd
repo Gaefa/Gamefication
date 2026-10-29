@@ -28,6 +28,7 @@ var _base: Dictionary = {}       # counters captured when a step begins
 var _desk_seen: bool = false
 var _paused_by_us: bool = false
 var _frame: int = 0
+var _bubble_key: Array = []  # what the bubble was last laid out for
 
 var _layer: CanvasLayer
 var _shade: Control
@@ -367,8 +368,13 @@ func _update_target(step: Dictionary) -> void:
 	_has_target = control != null and control.is_visible_in_tree()
 	if _has_target:
 		_target_rect = control.get_global_rect().grow(4.0)
-	_shade.queue_redraw()
-	_place_bubble(step)
+	_shade.queue_redraw()  # the target frame pulses, so the shade redraws every frame
+	# The bubble does not: reset_size and the placement search run only when the step, the
+	# target, the viewport or the bubble's own content size changed.
+	var key: Array = [_index, _has_target, _target_rect, _shade.get_viewport_rect().size, _bubble.get_combined_minimum_size()]
+	if key != _bubble_key:
+		_bubble_key = key
+		_place_bubble(step)
 
 
 func _place_bubble(step: Dictionary) -> void:

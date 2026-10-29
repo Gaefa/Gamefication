@@ -332,6 +332,7 @@ var _clock_panel: PanelContainer
 var _clock_day: Label
 var _clock_bar: ProgressBar
 var _clock_left: Label
+var _clock_state: Array = []  # what the clock labels last showed; a still clock costs no relayout
 
 
 func _build_day_clock() -> void:
@@ -395,7 +396,6 @@ func _update_day_clock() -> void:
 	if _clock_day == null:
 		return
 	_clock_panel.visible = SimulationRunner.run_active
-	_clock_day.text = "%s %d" % [Localization.ru_en("День", "Day"), SimulationRunner.day_count]
 	var duration: float = maxf(SimulationRunner.day_duration, 1.0)
 	_clock_bar.value = clampf(1.0 - SimulationRunner.day_timer / duration, 0.0, 1.0)
 	var text: String
@@ -412,6 +412,12 @@ func _update_day_clock() -> void:
 		text = "%s %d:%02d · ×%d" % [Localization.ru_en("до вечера", "evening in"), left / 60, left % 60, int(SimulationRunner.speed_scale)]
 		if left <= 30:
 			color = Color(0.95, 0.65, 0.35)
+	# Every label assignment relayouts the top bar; the text changes once a second at most.
+	var state: Array = [SimulationRunner.day_count, text, color, int(SimulationRunner.speed_scale), Localization.current_locale]
+	if state == _clock_state:
+		return
+	_clock_state = state
+	_clock_day.text = "%s %d" % [Localization.ru_en("День", "Day"), SimulationRunner.day_count]
 	_clock_left.text = text
 	_clock_left.add_theme_color_override("font_color", color)
 	for i: int in _speed_buttons.size():
@@ -1065,6 +1071,7 @@ func _category_label(category: String) -> String:
 
 func _rebuild_building_list() -> void:
 	for c: Node in _build_vbox.get_children():
+		_build_vbox.remove_child(c)
 		c.queue_free()
 	_build_entries.clear()
 	_hover_build_type = ""
@@ -1860,6 +1867,7 @@ func _rebuild_start_panel() -> void:
 	if _start_panel == null:
 		return
 	for c: Node in _start_panel.get_children():
+		_start_panel.remove_child(c)
 		c.queue_free()
 
 	var root := VBoxContainer.new()
@@ -2004,6 +2012,7 @@ func _build_campaign_list(container: Control) -> void:
 		more.add_theme_font_size_override("font_size", 12)
 		list.add_child(more)
 		more.pressed.connect(func() -> void:
+			list.remove_child(more)
 			more.queue_free()
 			for profile_id: String in experimental:
 				list.add_child(_build_start_profile_row(profile_id)))

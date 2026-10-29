@@ -19,6 +19,13 @@ var diary_fragments: Array = []   # ordered fragment defs
 
 const CONTENT_ROOT := "res://content/base/"
 
+## The vocabulary a card may use. _validate_content rejects anything else, so a typo in a
+## trigger, season, patron, style or flag fails content_check instead of silently never firing.
+const PATRON_IDS := ["restoration_league", "civic_directorate"]
+const STYLE_IDS := ["loyal", "pragmatist", "protector", "autonomist"]
+const TRIGGER_STATS := ["stat_unrest_pressure", "stat_city_trust", "stat_league_trust", "stat_happiness",
+	"stat_population", "stat_low_pressure_housing", "stat_rival_score", "stat_rival_gap", "stat_water_days", "stat_day"]
+
 
 func _ready() -> void:
 	buildings = _load_json(CONTENT_ROOT + "buildings.json")
@@ -248,14 +255,19 @@ func _validate_content() -> void:
 			var ldata: Dictionary = level as Dictionary
 			for key: String in ["cost", "produces", "consumes"]:
 				_check_resources(ldata.get(key, {}), "building %s %s" % [type_id, key])
+		if _has_flows(def) and (def.get("cycle_time", 0.0) as float) < 1.0:
+			content_warnings.append("building %s has flows but no cycle_time: they would run per tick, not per cycle" % type_id)
 	for syn: Dictionary in synergies:
 		_check_resources(syn.get("effects_a", {}), "synergy %s effects" % syn.get("id", "?"))
 		_check_resources(syn.get("effects_b", {}), "synergy %s effects" % syn.get("id", "?"))
 		for other: Variant in syn.get("pair", []) as Array:
 			if not buildings.has(other as String):
 				content_warnings.append("synergy %s names unknown building %s" % [syn.get("id", "?"), other])
+	var set_flags: Array = _flags_set_by_cards()
 	for event_id: String in events:
-		var options: Array = (events[event_id] as Dictionary).get("options", []) as Array
+		var card: Dictionary = events[event_id] as Dictionary
+		_check_card_gates(card, event_id, set_flags)
+		var options: Array = card.get("options", []) as Array
 		var has_free: bool = options.is_empty()
 		for option: Variant in options:
 			var opt: Dictionary = option as Dictionary
@@ -274,6 +286,13 @@ func _validate_content() -> void:
 			var set_policy: String = effects.get("set_policy", "") as String
 			if set_policy != "" and get_policy_def(set_policy).is_empty():
 				content_warnings.append("event %s sets unknown policy %s" % [event_id, set_policy])
+			if effects.has("lock_policy_days") and set_policy == "":
+				content_warnings.append("event %s locks a policy without set_policy" % event_id)
+			if effects.has("style") and not STYLE_IDS.has(effects.get("style", "") as String):
+				content_warnings.append("event %s names unknown style %s" % [event_id, effects.get("style", "")])
+			var buff: Dictionary = effects.get("add_buff", {}) as Dictionary
+			if not buff.is_empty():
+				_check_buff(buff, event_id)
 			for follow_up: String in [effects.get("raise_event", "") as String, (effects.get("add_buff", {}) as Dictionary).get("on_expire_event", "") as String]:
 				if follow_up != "" and not events.has(follow_up):
 					content_warnings.append("event %s raises unknown event %s" % [event_id, follow_up])
@@ -288,6 +307,9 @@ func _validate_content() -> void:
 		for policy: Variant in profile.get("default_policies", []) as Array:
 			if not policies.has(policy as String):
 				content_warnings.append("start profile %s names unknown policy %s" % [profile_id, policy])
+	for sid: Variant in get_season_order():
+		if not seasons.has(sid as String):
+			content_warnings.append("scenario season_order names unknown season %s" % sid)
 	for warning: String in content_warnings:
 		push_warning("ContentDB: " + warning)
 
@@ -298,6 +320,64 @@ func _check_resources(raw: Variant, where: String) -> void:
 	for res_id: String in raw as Dictionary:
 		if not resources.has(RESOURCE_ID_ALIASES.get(res_id, res_id) as String):
 			content_warnings.append("%s uses unknown resource %s" % [where, res_id])
+
+
+func _has_flows(def: Dictionary) -> bool:
+	var holders: Array = [def]
+	holders.append_array(def.get("levels", []) as Array)
+	for holder: Variant in holders:
+		for key: String in ["produces", "consumes"]:
+			if not ((holder as Dictionary).get(key, {}) as Dictionary).is_empty():
+				return true
+	return false
+
+
+func _flags_set_by_cards() -> Array:
+	var flags: Array = []
+	for event_id: String in events:
+		for option: Variant in (events[event_id] as Dictionary).get("options", []) as Array:
+			var effects: Dictionary = (option as Dictionary).get("effects", {}) as Dictionary
+			for flag: Variant in [effects.get("set_flag", ""), (effects.get("add_buff", {}) as Dictionary).get("on_expire_flag", "")]:
+				if (flag as String) != "":
+					flags.append(flag as String)
+	return flags
+
+
+func _check_card_gates(card: Dictionary, event_id: String, set_flags: Array) -> void:
+	if card.has("season") and not seasons.has(card.get("season", "") as String):
+		content_warnings.append("event %s names unknown season %s" % [event_id, card.get("season", "")])
+	if card.has("patron") and not PATRON_IDS.has(card.get("patron", "") as String):
+		content_warnings.append("event %s names unknown patron %s" % [event_id, card.get("patron", "")])
+	if card.has("requires_style") and not STYLE_IDS.has(card.get("requires_style", "") as String):
+		content_warnings.append("event %s requires unknown style %s" % [event_id, card.get("requires_style", "")])
+	for key: String in ["requires_flag", "excludes_flag"]:
+		if card.has(key) and not set_flags.has(card.get(key, "") as String):
+			content_warnings.append("event %s %s %s, which no card sets" % [event_id, key, card.get(key, "")])
+	var trigger: String = card.get("trigger_condition", "") as String
+	if trigger == "":
+		return
+	# EventManager._evaluate_trigger reads exactly this shape; anything else never fires.
+	var shape := RegEx.create_from_string("^(res_[a-z_]+|stat_[a-z_]+)\\s*(>=|<=|==|>|<)\\s*-?[0-9]+(\\.[0-9]+)?$")
+	var found: RegExMatch = shape.search(trigger)
+	if found == null:
+		content_warnings.append("event %s trigger '%s' is not '<stat> <op> <number>'" % [event_id, trigger])
+		return
+	var stat: String = found.get_string(1)
+	if stat.begins_with("res_"):
+		if not resources.has(RESOURCE_ID_ALIASES.get(stat, stat) as String):
+			content_warnings.append("event %s trigger uses unknown resource %s" % [event_id, stat])
+	elif not TRIGGER_STATS.has(stat):
+		content_warnings.append("event %s trigger uses unknown stat %s" % [event_id, stat])
+
+
+func _check_buff(buff: Dictionary, event_id: String) -> void:
+	if (buff.get("id", "") as String) == "":
+		content_warnings.append("event %s adds a buff without id" % event_id)
+	var until: String = buff.get("until_season_end", "") as String
+	if until != "" and not seasons.has(until):
+		content_warnings.append("event %s buff lasts until unknown season %s" % [event_id, until])
+	if until == "" and (buff.get("remaining", 0.0) as float) <= 0.0:
+		content_warnings.append("event %s buff %s has no remaining: it would expire on its first tick" % [event_id, buff.get("id", "?")])
 
 
 # --- Public queries ---
