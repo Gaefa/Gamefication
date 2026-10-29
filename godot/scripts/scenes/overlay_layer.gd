@@ -305,9 +305,11 @@ func _is_weak_pressure(coord: Vector2i) -> bool:
 	return orch != null and orch.coverage.water_pressure(coord) < 0.8
 
 
+## The building's definition with its level's fields on top. A shallow copy: the overlay only
+## reads keys, and a deep copy of every definition for every building each tick was the
+## single most expensive thing on the map.
 func _merged_building_data(type_id: String, level: int) -> Dictionary:
-	var def: Dictionary = ContentDB.get_building_def(type_id)
-	var merged: Dictionary = def.duplicate(true)
+	var merged: Dictionary = ContentDB.get_building_def(type_id).duplicate(false)
 	var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 	for key: String in ldata:
 		merged[key] = ldata[key]
@@ -347,6 +349,13 @@ func _has_road_neighbor(coord: Vector2i) -> bool:
 
 
 func _is_water_covered(coord: Vector2i) -> bool:
+	# The core's coverage map is the truth (it knows about damaged pumps); the walk below
+	# is only for a scene without an orchestrator.
+	var scene: Node = get_tree().current_scene
+	if scene != null and scene.has_method("get_orchestrator"):
+		var orch: GameOrchestrator = scene.call("get_orchestrator") as GameOrchestrator
+		if orch != null and orch.coverage != null:
+			return orch.coverage.is_water_covered(coord)
 	for source_coord: Vector2i in GameStateStore.get_all_building_coords():
 		var source: Dictionary = GameStateStore.get_building(source_coord)
 		var type_id: String = source.get("type", "") as String

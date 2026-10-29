@@ -394,33 +394,28 @@ func _get_building_sprite(type_id: String, level: int) -> Texture2D:
 ## at the right edge; walking outward from the centre column stops at the first empty column,
 ## which separates the two.
 func _main_silhouette_rect(image: Image) -> Rect2i:
+	# All the pixel work happens in the engine: the used rect first, then one used-rect query
+	# per column inside it. The old GDScript get_pixel walk over a 1024×1024 PNG froze the
+	# game for a moment the first time each tier appeared.
+	var used: Rect2i = image.get_used_rect()
+	if not used.has_area():
+		return used
 	var w: int = image.get_width()
-	var h: int = image.get_height()
 	var occupied: Array[bool] = []
 	occupied.resize(w)
 	for x: int in w:
-		occupied[x] = false
-		for y: int in h:
-			if image.get_pixel(x, y).a > 0.05:
-				occupied[x] = true
-				break
+		occupied[x] = x >= used.position.x and x < used.end.x \
+			and image.get_region(Rect2i(x, used.position.y, 1, used.size.y)).get_used_rect().has_area()
 	var left: int = w / 2
 	var right: int = w / 2
 	while left > 0 and occupied[left - 1]:
 		left -= 1
 	while right < w - 1 and occupied[right + 1]:
 		right += 1
-	var top: int = h
-	var bottom: int = -1
-	for y: int in h:
-		for x: int in range(left, right + 1):
-			if image.get_pixel(x, y).a > 0.05:
-				top = mini(top, y)
-				bottom = maxi(bottom, y)
-				break
-	if bottom < top:
-		return image.get_used_rect()
-	return Rect2i(left, top, right - left + 1, bottom - top + 1)
+	var column: Rect2i = image.get_region(Rect2i(left, used.position.y, right - left + 1, used.size.y)).get_used_rect()
+	if not column.has_area():
+		return used
+	return Rect2i(left, used.position.y + column.position.y, right - left + 1, column.size.y)
 
 
 ## House: triangle roof + square body
