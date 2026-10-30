@@ -1,5 +1,6 @@
 extends Camera2D
 ## WASD/Arrow camera panning + mouse wheel zoom + middle-button drag.
+## On touch (the Android build) one finger drags the map and two fingers pinch to zoom.
 
 const PAN_SPEED := 400.0
 const ZOOM_MIN := 0.3
@@ -43,3 +44,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and _dragging:
 		var mm := event as InputEventMouseMotion
 		global_position -= mm.relative / zoom
+
+	elif event is InputEventScreenDrag:
+		var sd := event as InputEventScreenDrag
+		if sd.index == 0:
+			global_position -= sd.relative / zoom
+	elif event is InputEventMagnifyGesture:
+		var mg := event as InputEventMagnifyGesture
+		zoom = (zoom * mg.factor).clamp(Vector2(ZOOM_MIN, ZOOM_MIN), Vector2(ZOOM_MAX, ZOOM_MAX))

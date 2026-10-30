@@ -105,12 +105,83 @@ jobs:
           path: "${{ env.PROJECT_DIR }}/export/macos/*.dmg"
           if-no-files-found: error
 
-  # A pushed tag v* (e.g. v0.1.1) publishes both builds plus the tester guides as a
+  android-apk:
+    name: Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot and export templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_STATUS}/Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64.zip" -o godot.zip
+          curl -L "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_STATUS}/Godot_v${GODOT_VERSION}-${GODOT_STATUS}_export_templates.tpz" -o templates.tpz
+          unzip -q godot.zip
+          chmod +x "Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64"
+          unzip -q templates.tpz
+          mkdir -p "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}"
+          cp -R templates/* "${HOME}/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_STATUS}/"
+
+      # The runner image ships the Android SDK and JDK 17; Godot only has to be told where
+      # they are (editor settings) and what to sign with. With no keystore in the repo
+      # secrets the build is signed with a throwaway key, so testers uninstall the previous
+      # build before installing a new one. To keep one signature across builds, add the
+      # secrets ANDROID_KEYSTORE_BASE64 (a keystore with alias "mandate") and
+      # ANDROID_KEYSTORE_PASSWORD.
+      - name: Point Godot at the Android SDK and a keystore
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null 2>&1 || true
+          "$SDKMANAGER" "platform-tools" "build-tools;35.0.0" >/dev/null
+          if [ -n "${KEYSTORE_BASE64}" ]; then
+            echo "${KEYSTORE_BASE64}" | base64 -d > "${PWD}/release.keystore"
+            PASSWORD="${KEYSTORE_PASSWORD}"
+          else
+            PASSWORD="android"
+            keytool -genkeypair -keystore "${PWD}/release.keystore" -alias mandate -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$PASSWORD" -keypass "$PASSWORD" -dname "CN=Mandate Cities, O=Gaefa, C=RU"
+          fi
+          {
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_PATH=${PWD}/release.keystore"
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_USER=mandate"
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=${PASSWORD}"
+          } >> "$GITHUB_ENV"
+          mkdir -p "${HOME}/.config/godot"
+          SETTINGS="${HOME}/.config/godot/editor_settings-${GODOT_VERSION%.*}.tres"
+          printf '%s\n' '[gd_resource type="EditorSettings" format=3]' '' '[resource]' \
+            "export/android/java_sdk_path = \"${JAVA_HOME_17_X64}\"" \
+            "export/android/android_sdk_path = \"${ANDROID_HOME}\"" > "$SETTINGS"
+          cat "$SETTINGS"
+
+      - name: Export Android APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHORT_SHA="${GITHUB_SHA::7}"
+          mkdir -p "${PROJECT_DIR}/export/android"
+          "./Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64" --headless --path "${PROJECT_DIR}" --export-release "Android" "export/android/${EXPORT_NAME}-${SHORT_SHA}.apk"
+          test -s "${PROJECT_DIR}/export/android/${EXPORT_NAME}-${SHORT_SHA}.apk"
+
+      - name: Upload Android artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ env.EXPORT_NAME }}-android-${{ github.sha }}"
+          path: "${{ env.PROJECT_DIR }}/export/android/*.apk"
+          if-no-files-found: error
+
+  # A pushed tag v* (e.g. v0.1.1) publishes the builds plus the tester guides as a
   # GitHub Release, so testers get one link instead of a 240 MB file share.
   release:
     name: GitHub Release
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [windows-exe, macos-dmg]
+    needs: [windows-exe, macos-dmg, android-apk]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -131,6 +202,7 @@ jobs:
           mkdir -p release
           cp dist/*/*.exe "release/${EXPORT_NAME}-${TAG}.exe"
           cp dist/*/*.dmg "release/${EXPORT_NAME}-${TAG}.dmg"
+          cp dist/*/*.apk "release/${EXPORT_NAME}-${TAG}.apk"
           for f in docs/PLAYER_GUIDE.md docs/PLAYER_GUIDE_EN.md docs/README_TESTERS.txt; do
             [ -f "$f" ] && cp "$f" release/
           done
