@@ -170,6 +170,7 @@ func _ready() -> void:
 	_economy_rules()
 	_primitive_rules()
 	_heat_rules()
+	_storm_rules()
 	_content_contract_rules()
 
 	# 4/5. Content references resolve.
@@ -217,6 +218,32 @@ func _check(ok: bool, what: String) -> void:
 	if not ok:
 		_failures += 1
 	print(("PASS: " if ok else "FAIL: ") + what)
+
+
+## A storm is a warning one evening and a verdict the next: braced, one breakdown; not
+## braced, two wrecked buildings. The verdict cards come only through the warning's timer.
+func _storm_rules() -> void:
+	_new_game("appointed_administrator")
+	_ticks(1)
+	for verdict: String in ["report.storm_passed", "report.storm_passed_braced"]:
+		_check(not EventManager.call("_trigger_met", ContentDB.get_event_def(verdict)), "%s never fires on its own" % verdict)
+	var warning_def: Dictionary = ContentDB.get_event_def("report.storm_warning")
+	var ride: Dictionary = (warning_def["options"][1] as Dictionary).get("effects", {})
+	EventManager.call("_apply_effects", ride)
+	_ticks(SimulationRunner.TICKS_PER_DAY)
+	_check(EventManager.pending_events.any(func(e: Dictionary) -> bool: return e.get("runtime_id", "") == "report.storm_passed"), "an unbraced district gets the storm verdict the next evening")
+	var passed: Dictionary = ContentDB.get_event_def("report.storm_passed")
+	EventManager.call("_apply_effects", (passed["options"][1] as Dictionary).get("effects", {}))
+	var wrecked: int = 0
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		if GameStateStore.get_building(coord).get("damaged", false) as bool:
+			wrecked += 1
+	_check(wrecked == 2, "the storm wrecks two buildings (%d)" % wrecked)
+	EventManager.clear_pending()
+	var brace: Dictionary = (warning_def["options"][0] as Dictionary).get("effects", {})
+	EventManager.call("_apply_effects", brace)
+	_ticks(SimulationRunner.TICKS_PER_DAY)
+	_check(EventManager.pending_events.any(func(e: Dictionary) -> bool: return e.get("runtime_id", "") == "report.storm_passed_braced"), "a braced district gets the milder verdict")
 
 
 ## content_check knows the content's vocabulary: a card with a stat, season, patron, style or

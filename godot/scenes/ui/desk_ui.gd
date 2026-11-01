@@ -347,6 +347,9 @@ func _buff_text(buff: Dictionary) -> String:
 	var term: String = Localization.ru_en("%d дн.", "%d d") % days
 	if not is_zero_approx(buff.get("happiness_add", 0.0) as float):
 		return Localization.ru_en("счастье %s на %s", "happiness %s for %s") % [_signed(buff["happiness_add"] as float), term]
+	if is_zero_approx(buff.get("production_mult", 0.0) as float):
+		# A timer, not a modifier: the promise, the storm. Its card comes when it runs out.
+		return Localization.ru_en("ответ через %s", "the answer comes in %s") % term
 	var target: String = buff.get("target", "") as String
 	var who: String = _building_name(target) if target != "" else Localization.ru_en("все здания", "all buildings")
 	var percent: String = _signed(roundf((buff.get("production_mult", 0.0) as float) * 100.0))
