@@ -132,5 +132,6 @@ func _repair_issues() -> void:
 	if orch == null:
 		return
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
-		if GameStateStore.get_building(coord).get("has_issue", false) as bool:
+		var bld: Dictionary = GameStateStore.get_building(coord)
+		if (bld.get("has_issue", false) as bool) or (bld.get("damaged", false) as bool):
 			orch.command_bus.execute(RepairBuildingCommand.new(coord))

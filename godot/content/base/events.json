@@ -2782,5 +2782,164 @@
         }
       }
     ]
+  },
+  {
+    "id": "report.storm_warning",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_dust",
+    "trigger_day": 22,
+    "cooldown_sec": 999999,
+    "tags": ["report", "storm"],
+    "title": "Сводка наблюдателя — идёт буря",
+    "title_en": "Lookout's Report — A Storm Is Coming",
+    "body": "Сводка с вышки.\n\nНа востоке стена пыли, ветер крепчает с полудня. По опыту прошлых лет буря дойдёт до района завтра к обеду и продержится до вечера. Такой ветер срывает крыши с насосов и валит щиты на грядках.\n\nЕсли закрепить насосы и щиты сегодня, уйдут дерево и инструменты, зато утром будет что чинить по мелочи, а не отстраивать.",
+    "body_en": "Report from the tower.\n\nA wall of dust in the east, the wind picking up since noon. By past years, the storm reaches the district tomorrow by midday and holds until evening. Wind like that tears the roofs off pumps and flattens the shields on the plots.\n\nBracing the pumps and shields today costs wood and tools, but in the morning there will be small repairs, not rebuilding.",
+    "options": [
+      {
+        "text": "Закрепить насосы и щиты (20 дерева, 5 инструментов)",
+        "text_en": "Brace the pumps and shields (20 wood, 5 tools)",
+        "cost": { "res_wood": 20, "res_tools": 5 },
+        "effects": {
+          "add_buff": {
+            "id": "storm_braced",
+            "name": "Буря: всё закреплено",
+            "name_en": "Storm: everything braced",
+            "production_mult": 0.0,
+            "remaining": 300,
+            "on_expire_event": "report.storm_passed_braced"
+          },
+          "style": "pragmatist",
+          "message": "Крепления поставлены к ночи. Бригады ждут бурю под крышей.",
+          "message_en": "The bracing went up by nightfall. The crews wait out the storm under a roof."
+        }
+      },
+      {
+        "text": "Переждать как есть",
+        "text_en": "Ride it out as is",
+        "effects": {
+          "add_buff": {
+            "id": "storm_coming",
+            "name": "Буря идёт",
+            "name_en": "A storm is coming",
+            "production_mult": 0.0,
+            "remaining": 300,
+            "on_expire_event": "report.storm_passed"
+          },
+          "message": "Ничего не закреплено. Утром посмотрим, что осталось.",
+          "message_en": "Nothing is braced. In the morning we will see what is left."
+        }
+      }
+    ]
+  },
+  {
+    "id": "report.storm_warning_heat",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_heat",
+    "trigger_day": 32,
+    "cooldown_sec": 999999,
+    "tags": ["report", "storm"],
+    "title": "Сводка наблюдателя — суховей",
+    "title_en": "Lookout's Report — The Dry Wind",
+    "body": "Сводка с вышки.\n\nС юга идёт суховей: горячий ветер с песком, воздух дрожит над равниной. Завтра он пройдёт через район. В Жару такой ветер хуже пыльной бури: песок забивает насосы, а сухие щиты на грядках ломает как спички.\n\nКрепления ставятся за вечер: 20 дерева и 5 инструментов.",
+    "body_en": "Report from the tower.\n\nA dry wind is coming from the south: hot air full of sand, the plain shimmering. Tomorrow it crosses the district. In the Heat it is worse than a dust storm: sand chokes the pumps, and the dried-out shields on the plots snap like matches.\n\nBracing takes an evening: 20 wood and 5 tools.",
+    "options": [
+      {
+        "text": "Закрепить насосы и щиты (20 дерева, 5 инструментов)",
+        "text_en": "Brace the pumps and shields (20 wood, 5 tools)",
+        "cost": { "res_wood": 20, "res_tools": 5 },
+        "effects": {
+          "add_buff": {
+            "id": "storm_braced",
+            "name": "Буря: всё закреплено",
+            "name_en": "Storm: everything braced",
+            "production_mult": 0.0,
+            "remaining": 300,
+            "on_expire_event": "report.storm_passed_braced"
+          },
+          "style": "pragmatist",
+          "message": "Насосы укрыты, щиты прижаты камнями. Суховей встретим готовыми.",
+          "message_en": "The pumps are covered and the shields weighed down with stones. We meet the dry wind ready."
+        }
+      },
+      {
+        "text": "Переждать как есть",
+        "text_en": "Ride it out as is",
+        "effects": {
+          "add_buff": {
+            "id": "storm_coming",
+            "name": "Буря идёт",
+            "name_en": "A storm is coming",
+            "production_mult": 0.0,
+            "remaining": 300,
+            "on_expire_event": "report.storm_passed"
+          },
+          "message": "Ничего не закреплено. Утром посмотрим, что осталось.",
+          "message_en": "Nothing is braced. In the morning we will see what is left."
+        }
+      }
+    ]
+  },
+  {
+    "id": "report.storm_passed",
+    "category": "water",
+    "min_level": 1,
+    "callback": true,
+    "cooldown_sec": 999999,
+    "tags": ["report", "storm"],
+    "title": "Сводка — буря прошла",
+    "title_en": "Report — The Storm Has Passed",
+    "body": "Сводка дежурного.\n\nБуря шла с полудня до темноты. Два здания разгромлены: крыши сорваны, механизмы забиты песком. Пока их не починят, они стоят мёртвые: не дают ни воды, ни еды, ни крова.\n\nМожно нанять бригады на разбор завалов за счёт казны или разбирать своими силами.",
+    "body_en": "Duty report.\n\nThe storm blew from midday until dark. Two buildings are wrecked: roofs torn off, machinery choked with sand. Until repaired they stand dead: no water, no food, no shelter from them.\n\nCrews can be hired to clear the wreckage at the treasury's expense, or people can clear it themselves.",
+    "options": [
+      {
+        "text": "Нанять бригады на разбор (30 денег)",
+        "text_en": "Hire crews to clear the wreckage (30 money)",
+        "cost": { "res_money": 30 },
+        "effects": {
+          "damage_buildings": 2,
+          "stat_city_trust": 3,
+          "message": "Завалы разобраны к вечеру. Два здания ждут ремонта: выберите их на карте и нажмите R.",
+          "message_en": "The wreckage is cleared by evening. Two buildings await repair: select them on the map and press R."
+        }
+      },
+      {
+        "text": "Разбирать своими силами",
+        "text_en": "Clear it ourselves",
+        "effects": {
+          "damage_buildings": 2,
+          "stat_unrest_pressure": 5,
+          "message": "Люди разбирают завалы после смены и ворчат. Два здания ждут ремонта: выберите их на карте и нажмите R.",
+          "message_en": "People clear the wreckage after their shift, grumbling. Two buildings await repair: select them on the map and press R."
+        }
+      }
+    ]
+  },
+  {
+    "id": "report.storm_passed_braced",
+    "category": "water",
+    "min_level": 1,
+    "callback": true,
+    "cooldown_sec": 999999,
+    "tags": ["report", "storm"],
+    "title": "Сводка — крепления выдержали",
+    "title_en": "Report — The Bracing Held",
+    "body": "Сводка дежурного.\n\nБуря шла с полудня до темноты. Крепления выдержали: сорвало одну крышу, механизм забило песком, это починят за день. Остальное цело.\n\nБригады благодарят за вчерашний вечер.",
+    "body_en": "Duty report.\n\nThe storm blew from midday until dark. The bracing held: one roof came off and a mechanism is choked with sand, a day's repair. Everything else is intact.\n\nThe crews are grateful for last night.",
+    "options": [
+      {
+        "text": "Принять доклад",
+        "text_en": "Accept the report",
+        "effects": {
+          "force_issues": 1,
+          "stat_city_trust": 2,
+          "message": "Одна поломка после бури. Найдите «!» на карте и нажмите R.",
+          "message_en": "One breakdown after the storm. Find the \"!\" on the map and press R."
+        }
+      }
+    ]
   }
 ]
