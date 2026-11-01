@@ -1,4 +1,10 @@
-Mandate Cities 0.2.0 — playtest build / тестовая сборка
+Mandate Cities 0.2.1 — playtest build / тестовая сборка
+
+NEW IN 0.2.1 / НОВОЕ В 0.2.1
+  Storms on days 22 and 32 (brace the pumps the evening before or repair the wreckage after);
+  a banned strike and a dispersed food riot now wreck buildings; an Android build.
+  Бури на 22-й и 32-й день (закрепите насосы накануне или чините после); запрещённая забастовка
+  и разогнанная толпа у склада теперь ломают здания; сборка для Android.
 
 WINDOWS
   Run MandateCities.exe. If SmartScreen warns "Windows protected your PC":
@@ -15,6 +21,16 @@ macOS
   Откройте .dmg (или распакуйте .zip), перенесите Mandate Cities.app в Программы. На macOS 15
   первый запуск блокируется: Системные настройки -> Конфиденциальность и безопасность ->
   внизу «Открыть всё равно», затем запустите снова. На macOS 14 и старше: правый клик -> «Открыть».
+
+ANDROID (first look only / только посмотреть)
+  Install the .apk (allow "unknown sources" when asked). Uninstall the previous build first:
+  each build is signed with a new key. One finger drags the map, two fingers zoom, tap = click.
+  The layout is made for a 1280x720 desktop window: usable on a tablet, small on a phone.
+  No hotkeys: panels open from their buttons, pause from the clock.
+  Установите .apk (разрешите «неизвестные источники»). Сначала удалите предыдущую сборку:
+  у каждой своя подпись. Один палец тянет карту, два — зум, тап = клик. Раскладка рассчитана
+  на окно 1280x720: на планшете терпимо, на телефоне мелко. Горячих клавиш нет: панели
+  открываются кнопками, пауза — кликом по часам.
 
 KNOWN / ИЗВЕСТНО
   There is no sound yet. One autosave slot, written during the day (not at the Desk).
