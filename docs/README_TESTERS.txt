@@ -1,10 +1,12 @@
-Mandate Cities 0.2.1 — playtest build / тестовая сборка
+Mandate Cities 0.2.2 — playtest build / тестовая сборка
 
-NEW IN 0.2.1 / НОВОЕ В 0.2.1
-  Storms on days 22 and 32 (brace the pumps the evening before or repair the wreckage after);
-  a banned strike and a dispersed food riot now wreck buildings; an Android build.
-  Бури на 22-й и 32-й день (закрепите насосы накануне или чините после); запрещённая забастовка
-  и разогнанная толпа у склада теперь ломают здания; сборка для Android.
+NEW IN 0.2.2 / НОВОЕ В 0.2.2
+  Sound (clicks, the Desk, building, storms, a wind that changes with the season; two sliders
+  in Settings); an autosave every morning; a manual UI scale (Settings -> Scale) for 1080p screens.
+  Звук (кнопки, Стол, стройка, бури, ветер по сезону; два ползунка в настройках); автосохранение
+  каждое утро; ручной масштаб интерфейса (Настройки -> Масштаб) для экранов 1080p.
+  0.2.1: storms on days 22 and 32; a banned strike and a dispersed food riot wreck buildings; Android.
+  0.2.1: бури на 22-й и 32-й день; запрещённая забастовка и разогнанная толпа ломают здания; Android.
 
 WINDOWS
   Run MandateCities.exe. If SmartScreen warns "Windows protected your PC":
