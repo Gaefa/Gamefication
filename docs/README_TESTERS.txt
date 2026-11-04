@@ -33,8 +33,10 @@ ANDROID (first look only / только посмотреть)
   открываются кнопками, пауза — кликом по часам.
 
 KNOWN / ИЗВЕСТНО
-  There is no sound yet. One autosave slot, written during the day (not at the Desk).
-  Звука пока нет. Один автосейв, пишется днём (не за Столом).
+  Sound is a first procedural pack (volume in Options). One autosave slot, written every
+  morning and every two minutes during the day, never at the Desk itself.
+  Звук — первый процедурный набор (громкость в настройках). Один автосейв: каждое утро
+  и каждые две минуты днём, но не за самим Столом.
 
 LANGUAGE / ЯЗЫК
   English / Русский buttons on the main menu (also in Options, O).

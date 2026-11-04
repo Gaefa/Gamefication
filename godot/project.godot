@@ -40,6 +40,7 @@ TutorialManager="*res://scripts/autoload/tutorial_manager.gd"
 SaveService="*res://scripts/autoload/save_service.gd"
 RunLog="*res://scripts/autoload/run_log.gd"
 Localization="*res://scripts/autoload/localization.gd"
+AudioManager="*res://scripts/autoload/audio_manager.gd"
 
 [display]
 

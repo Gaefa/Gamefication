@@ -173,6 +173,8 @@ func _ready() -> void:
 	_storm_rules()
 	_content_contract_rules()
 
+	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
+
 	# 4/5. Content references resolve.
 	_check(ContentDB.content_warnings.is_empty(), "content check is clean (%d problems)" % ContentDB.content_warnings.size())
 
