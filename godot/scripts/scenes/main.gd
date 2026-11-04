@@ -25,13 +25,17 @@ func _ready() -> void:
 
 ## Text is sharp only at whole-number UI scales: a 1080p window stretched ×1.5 smears the
 ## small fonts (playtest). So the UI is drawn 1:1 until the window is at least twice the
-## 1280×720 design size, then ×2, ×3…
+## 1280×720 design size, then ×2, ×3… A player who wants it bigger anyway picks a factor
+## in Options (ui_scale > 0); 0 keeps the automatic rule.
+var ui_scale: float = 0.0
+
+
 func _apply_ui_scale() -> void:
 	var window: Window = get_window()
 	var size: Vector2i = window.size.max(Vector2i.ONE)  # a minimised window may report 0×0
 	@warning_ignore("integer_division")
-	var factor: int = maxi(1, mini(size.x / 1280, size.y / 720))
-	var logical := Vector2(size) / float(factor)
+	var factor: float = ui_scale if ui_scale > 0.0 else float(maxi(1, mini(size.x / 1280, size.y / 720)))
+	var logical := Vector2(size) / factor
 	# A window smaller than the design size shows the whole interface scaled down, not cut off.
 	var shrink: float = minf(1.0, minf(logical.x / 1280.0, logical.y / 720.0))
 	window.content_scale_size = Vector2i(ceili(logical.x / shrink), ceili(logical.y / shrink))
@@ -250,8 +254,18 @@ func _apply_saved_window_mode() -> void:
 	var config := ConfigFile.new()
 	if config.load(SETTINGS_PATH) != OK:
 		return
+	ui_scale = config.get_value("display", "ui_scale", 0.0) as float
 	if config.get_value("display", "fullscreen", false) as bool:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
+
+func set_ui_scale(factor: float) -> void:
+	ui_scale = factor
+	_apply_ui_scale()
+	var config := ConfigFile.new()
+	config.load(SETTINGS_PATH)
+	config.set_value("display", "ui_scale", factor)
+	config.save(SETTINGS_PATH)
 
 
 static func set_fullscreen(on: bool) -> void:

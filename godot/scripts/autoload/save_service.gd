@@ -20,6 +20,12 @@ func _ready() -> void:
 	# A finished run is not something to continue: the autosave would reopen it a moment
 	# before the end, and the same ending would fire again.
 	EventBus.ending_triggered.connect(func(_id: String, _kind: String) -> void: delete_save(0))
+	# Every morning too: a player who closes the game at the Desk loses the evening's letters
+	# at most, never the day before them.
+	EventBus.phase_changed.connect(func(phase: String) -> void:
+		if phase == "day" and SimulationRunner.run_active:
+			_autosave_timer = 0.0
+			save_game(0, true))
 
 
 func _process(delta: float) -> void:

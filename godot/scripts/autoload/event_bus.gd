@@ -58,6 +58,7 @@ signal run_started(continued: bool)
 
 # --- UI hints ---
 signal toast_requested(text: String, duration: float)
+signal command_failed(message: String)
 signal build_mode_changed(type_id: String)
 signal selection_changed(coord: Vector2i)
 signal ranges_changed(enabled: bool)

@@ -15,6 +15,7 @@
 - `EventBus`: global signals.
 - `SimulationRunner`: fixed tick driver.
 - `SaveService`: save/load.
+- `AudioManager`: procedural sound pack (`tools/gen_sfx.py`), SFX and Ambient buses.
 
 ### Core Systems
 

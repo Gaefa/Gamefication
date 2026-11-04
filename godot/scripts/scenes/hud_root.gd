@@ -2448,6 +2448,45 @@ func _rebuild_settings_panel() -> void:
 	fullscreen.toggled.connect(func(on: bool) -> void: get_tree().current_scene.call("set_fullscreen", on))
 	screen_row.add_child(fullscreen)
 
+	var scale_row := HBoxContainer.new()
+	scale_row.add_theme_constant_override("separation", 10)
+	root.add_child(scale_row)
+	var scale_label := Label.new()
+	scale_label.text = Localization.ru_en("Масштаб", "UI scale")
+	scale_label.custom_minimum_size.x = 120
+	scale_row.add_child(scale_label)
+	var scale_select := OptionButton.new()
+	scale_select.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var scene_scale: Variant = get_tree().current_scene.get("ui_scale")  # null under a tool scene
+	var current_scale: float = scene_scale as float if scene_scale is float else 0.0
+	for choice: Array in [[0.0, Localization.ru_en("Авто", "Auto")], [1.0, "×1"], [1.25, "×1.25"], [1.5, "×1.5"], [2.0, "×2"]]:
+		scale_select.add_item(choice[1] as String)
+		scale_select.set_item_metadata(scale_select.item_count - 1, choice[0])
+		if is_equal_approx(choice[0] as float, current_scale):
+			scale_select.select(scale_select.item_count - 1)
+	scale_select.item_selected.connect(func(index: int) -> void:
+		get_tree().current_scene.call("set_ui_scale", scale_select.get_item_metadata(index) as float))
+	scale_row.add_child(scale_select)
+
+	for sound: Array in [[Localization.ru_en("Звук", "Sound"), AudioManager.sfx_volume, AudioManager.set_sfx_volume],
+			[Localization.ru_en("Фон", "Ambience"), AudioManager.ambient_volume, AudioManager.set_ambient_volume]]:
+		var sound_row := HBoxContainer.new()
+		sound_row.add_theme_constant_override("separation", 10)
+		root.add_child(sound_row)
+		var sound_label := Label.new()
+		sound_label.text = sound[0] as String
+		sound_label.custom_minimum_size.x = 120
+		sound_row.add_child(sound_label)
+		var slider := HSlider.new()
+		slider.min_value = 0.0
+		slider.max_value = 1.0
+		slider.step = 0.05
+		slider.value = sound[1] as float
+		slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		slider.value_changed.connect(sound[2] as Callable)
+		sound_row.add_child(slider)
+
 	var note := Label.new()
 	note.text = Localization.t("ui.settings.language_note", "Language is saved automatically.")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

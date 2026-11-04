@@ -12,4 +12,6 @@ func execute(cmd: CommandBase) -> CommandBase:
 	cmd.execute(_ctx)
 	if cmd.message != "":
 		EventBus.toast_requested.emit(cmd.message, 3.0)
+		if not cmd.success:
+			EventBus.command_failed.emit(cmd.message)
 	return cmd
