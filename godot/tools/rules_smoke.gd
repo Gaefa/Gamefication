@@ -171,6 +171,7 @@ func _ready() -> void:
 	_primitive_rules()
 	_heat_rules()
 	_storm_rules()
+	_treasury_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -251,6 +252,24 @@ func _storm_rules() -> void:
 ## content_check knows the content's vocabulary: a card with a stat, season, patron, style or
 ## flag the game cannot read, a buff without a lifetime, a building with per-tick flows — all
 ## fail the check before a tester meets them in play.
+## The bookkeeper's note is how a player who spent the start-up money learns where it comes
+## from: it fires only on an empty till, and the levy option refills it at a mood price.
+func _treasury_rules() -> void:
+	_new_game("appointed_administrator")
+	_ticks(1)
+	var note: Dictionary = ContentDB.get_event_def("report.empty_treasury")
+	_check(not EventManager.call("_trigger_met", note), "the bookkeeper stays quiet while the till holds money (%d)" % int(GameStateStore.get_resource("res_money")))
+	GameStateStore.spend({"res_money": GameStateStore.get_resource("res_money") - 20.0})
+	_check(EventManager.call("_trigger_met", note), "the bookkeeper writes once the till drops to 20")
+	var ledger: Dictionary = GameStateStore.economy().get("money_ledger", {}) as Dictionary
+	_check(ledger.has("income") and ledger.has("upkeep"), "the economy keeps a money ledger for the treasury tooltip")
+	var before: float = GameStateStore.get_resource("res_money")
+	var unrest_before: float = EventManager.call("_get_stat_value", "stat_unrest_pressure")
+	EventManager.call("_apply_effects", (note["options"][0] as Dictionary).get("effects", {}))
+	_check(is_equal_approx(GameStateStore.get_resource("res_money"), before + 45.0), "the levy brings +45 money")
+	_check((EventManager.call("_get_stat_value", "stat_unrest_pressure") as float) > unrest_before, "the levy raises unrest")
+
+
 func _content_contract_rules() -> void:
 	ContentDB.events["qa.bad_card"] = {
 		"id": "qa.bad_card", "season": "season_monsoon", "patron": "nobody", "requires_flag": "never_set",

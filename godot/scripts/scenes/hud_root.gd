@@ -648,8 +648,11 @@ func _update_resource_bar() -> void:
 			delta_label.text = "%+d" % int(round(per_day))
 			delta_label.add_theme_color_override("font_color", UiStyle.GOOD if per_day > 0.0 else UiStyle.BAD)
 		var res_name: String = Localization.content_text(ContentDB.get_resource_def(res_id), "label", res_id)
-		(chip["panel"] as Control).tooltip_text = "%s: %d · %s %+d" % [
+		var tip: String = "%s: %d · %s %+d" % [
 			res_name, int(val), Localization.ru_en("в день", "per day"), int(round(per_day))]
+		if res_id == "res_money":
+			tip += _money_tooltip()
+		(chip["panel"] as Control).tooltip_text = tip
 
 	# --- People and level ---
 	var pop: int = GameStateStore.population().total as int
@@ -1570,6 +1573,24 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 
 
 ## The happiness number with its reasons: base 50 and every term that moves it.
+## Where the treasury's trend comes from: the only steady income is the rent of lived-in
+## shelters, so a player who spent the start-up money sees here how to earn it back.
+func _money_tooltip() -> String:
+	var ledger: Dictionary = GameStateStore.economy().get("money_ledger", {}) as Dictionary
+	var per_day: float = float(SimulationRunner.TICKS_PER_DAY)
+	var income: int = int(round((ledger.get("income", 0.0) as float) * per_day))
+	var upkeep: int = int(round((ledger.get("upkeep", 0.0) as float) * per_day))
+	var spend: int = int(round((ledger.get("spend", 0.0) as float) * per_day))
+	var lines: Array[String] = []
+	lines.append(Localization.ru_en("Жители бараков платят: +%d", "Shelter residents pay: +%d") % income)
+	lines.append(Localization.ru_en("Содержание района: −%d", "District upkeep: −%d") % upkeep)
+	if spend > 0:
+		lines.append(Localization.ru_en("Генераторы и прочее: −%d", "Generators and the like: −%d") % spend)
+	lines.append(Localization.ru_en("Больше заселённых бараков — больше денег. Грант Лиги — день %d.",
+		"More lived-in shelters, more money. The League grant comes on day %d.") % ContentDB.get_grant_day())
+	return "\n" + "\n".join(lines)
+
+
 func _mood_tooltip(happiness: float) -> String:
 	var terms: Dictionary = GameStateStore.population().get("mood_terms", {}) as Dictionary
 	var names := {

@@ -170,8 +170,8 @@ func _make_steps() -> Array[Dictionary]:
 			"done": func() -> bool: return _build_mode() == "bld_shelter",
 		},
 		{
-			"text": t.call("Поставьте барак [b]у дороги и в зоне воды[/b] — подсвеченные клетки подходят. Барак без воды пустует.",
-				"Place the shelter [b]by a road and inside water range[/b] — highlighted cells fit. A shelter without water stays empty."),
+			"text": t.call("Поставьте барак [b]у дороги и в зоне воды[/b] — подсвеченные клетки подходят. Барак без воды пустует.\n\n[b]Жители платят в казну[/b]: заселённые бараки — ваш единственный постоянный доход.",
+				"Place the shelter [b]by a road and inside water range[/b] — highlighted cells fit. A shelter without water stays empty.\n\n[b]Residents pay the treasury[/b]: lived-in shelters are your only steady income."),
 			"enter": func() -> void: _base = { "n": _count("bld_shelter") },
 			"target": func() -> Control: return _build_button("bld_shelter") if _build_mode() != "bld_shelter" else null,
 			"cells": func() -> Array: return _candidates("bld_shelter", true),

@@ -18,6 +18,8 @@ func process_tick() -> void:
 	var net_production: Dictionary = {}
 	var available_inputs: Dictionary = {}
 	var demand: Dictionary = {}  # what the district would draw with every input delivered
+	var money_in: float = 0.0  # what residents paid this tick
+	var money_out: float = 0.0  # what buildings (the generator) ate this tick
 	for res_id: String in ContentDB.get_resource_ids():
 		net_production[res_id] = 0.0
 		available_inputs[res_id] = GameStateStore.get_resource(res_id)
@@ -61,17 +63,24 @@ func process_tick() -> void:
 			var season_mult: float = _season_production_mult(res_id, season_mods)
 			var amount: float = base * mult * gov_mult * season_mult * input_efficiency * output_efficiency * condition_efficiency
 			net_production[res_id] = (net_production[res_id] as float) + amount
+			if res_id == "res_money":
+				money_in += amount
 
 		# If inputs cannot be delivered, the building stalls instead of silently draining stockpiles.
 		for res_id: String in consumes:
 			var amount: float = (consumes[res_id] as float) * input_efficiency * draw_multiplier(res_id, season_mods)
 			net_production[res_id] = (net_production[res_id] as float) - amount
 			available_inputs[res_id] = maxf((available_inputs.get(res_id, 0.0) as float) - amount, 0.0)
+			if res_id == "res_money":
+				money_out += amount
 
 	# Upkeep is part of the money flow, so the HUD trend and the depletion warning see it.
-	net_production["res_money"] = (net_production.get("res_money", 0.0) as float) - _maintenance_cost()
+	var upkeep: float = _maintenance_cost()
+	net_production["res_money"] = (net_production.get("res_money", 0.0) as float) - upkeep
 
 	GameStateStore.economy()["demand"] = demand
+	# Where the money went this tick; the treasury tooltip reads it. Runtime only, like demand.
+	GameStateStore.economy()["money_ledger"] = {"income": money_in, "spend": money_out, "upkeep": upkeep}
 
 	# Apply net production
 	for res_id: String in net_production:
