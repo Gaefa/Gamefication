@@ -1,0 +1,87 @@
+{
+  "order": [
+    "season_rains",
+    "season_drought",
+    "season_harvest"
+  ],
+  "seasons": [
+    {
+      "id": "season_rains",
+      "rival_target": 45,
+      "label": "Дожди",
+      "description": "Сезон Дождей. Воды с гор вдоволь, поля родят, почва отдыхает. Но склады сыреют, дороги раскисают, техника изнашивается, а по склонам сходят оползни.",
+      "description_en": "The Rains. Water comes down from the hills, the fields bear, the soil rests. But the stores go damp, the roads turn to mud, machinery wears, and the slopes slide.",
+      "length_days": 12,
+      "expert_faction": "",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "mild",
+      "modifiers": {
+        "water_mult": 0.8,
+        "water_supply_mult": 1.4,
+        "crop_mult": 1.1,
+        "solar_mult": 0.85,
+        "wear_mult": 1.25,
+        "build_cost_mult": 1.1,
+        "soil_recovery": 0.02,
+        "food_spoilage_per_day": 0.01
+      },
+      "label_en": "Rains",
+      "tile_variant": "",
+      "pressure_amplify": {
+        "food": 1.0,
+        "water": 0.6
+      }
+    },
+    {
+      "id": "season_drought",
+      "rival_target": 55,
+      "label": "Сушь",
+      "description": "Сушь. Река мелеет, колодцы тянут вдвое, урожай падает, а Завет говорит, что это кара за распаханные луга. Экзамен воды и терпения.",
+      "description_en": "The Drought. The river runs low, the wells draw twice as hard, the crops fail, and the Covenant says it is a judgement for the ploughed meadows. A test of water and patience.",
+      "length_days": 10,
+      "expert_faction": "",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "harsh",
+      "modifiers": {
+        "water_mult": 1.5,
+        "water_supply_mult": 0.6,
+        "crop_mult": 0.55,
+        "solar_mult": 1.2,
+        "wear_mult": 1.1,
+        "build_cost_mult": 1.0
+      },
+      "label_en": "Drought",
+      "tile_variant": "dust",
+      "pressure_amplify": {
+        "food": 1.4,
+        "water": 1.6
+      }
+    },
+    {
+      "id": "season_harvest",
+      "rival_target": 50,
+      "label": "Урожай",
+      "description": "Урожай. Поля дают вдвое, но без зернохранилища еда гниёт в кучах, Лига требует квоту, Завет десятину, а соседи тянут руки к вашим амбарам.",
+      "description_en": "The Harvest. The fields give double, but without a granary the food rots in heaps, the League wants its quota, the Covenant its tithe, and the neighbours reach for your barns.",
+      "length_days": 8,
+      "expert_faction": "",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "mild",
+      "modifiers": {
+        "water_mult": 1.0,
+        "water_supply_mult": 1.0,
+        "crop_mult": 1.8,
+        "solar_mult": 1.0,
+        "wear_mult": 1.0,
+        "build_cost_mult": 1.0,
+        "food_spoilage_per_day": 0.04
+      },
+      "label_en": "Harvest",
+      "tile_variant": "",
+      "pressure_amplify": {
+        "food": 0.8,
+        "water": 1.0
+      }
+    }
+  ]
+}

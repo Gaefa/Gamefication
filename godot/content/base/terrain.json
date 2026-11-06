@@ -59,6 +59,17 @@
       "cost_multiplier": 2,
       "color": "6e6560",
       "label_key": "terrain.rock.label"
+    },
+    "6": {
+      "id": "meadow",
+      "label": "Спорный луг",
+      "label_en": "Contested meadow",
+      "buildable": true,
+      "cost_multiplier": 1,
+      "color": "6f9a4a",
+      "label_key": "terrain.meadow.label",
+      "description": "Плодородная земля, на которую у Зелёного Завета свои права. Поля здесь родят лучше, но каждое — повод для спора.",
+      "description_en": "Fertile land the Green Covenant claims as its own. Fields bear better here, and every one is a quarrel."
     }
   }
 }

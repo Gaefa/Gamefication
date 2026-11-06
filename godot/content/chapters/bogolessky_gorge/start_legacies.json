@@ -1,0 +1,33 @@
+[
+  {
+    "id": "legacy_meadows",
+    "label": "Поля на лугах, Завет в гневе",
+    "label_en": "Fields on the meadows, the Covenant angry",
+    "description": "Ренн распахал три спорных луга: урожай с первого дня, зато Завет уже считает вас врагом. Письма придут быстрее.",
+    "description_en": "Renn ploughed three contested meadows: a harvest from day one, but the Covenant already counts you an enemy. The letters come sooner.",
+    "buildings": [ { "coord": [3, -1], "type": "bld_field_strip" }, { "coord": [3, -2], "type": "bld_field_strip" }, { "coord": [-3, 2], "type": "bld_field_strip" } ],
+    "resources": { "res_food": 120 },
+    "flags": ["legacy_meadows", "covenant_angry"]
+  },
+  {
+    "id": "legacy_granary",
+    "label": "Полный амбар, долг Лиге",
+    "label_en": "A full granary, a debt to the League",
+    "description": "Ренн выпросил у Лиги зернохранилище и зерно в долг: еды на сезон вперёд, но доверие ниже и счёт придёт на четвёртый день.",
+    "description_en": "Renn begged a granary and grain on credit from the League: a season of food ahead, but trust is lower and the bill comes on day four.",
+    "buildings": [ { "coord": [2, 0], "type": "bld_granary" } ],
+    "resources": { "res_food": 350 },
+    "mandate": { "patron_trust": 58 },
+    "flags": ["legacy_granary", "league_debt"]
+  },
+  {
+    "id": "legacy_empty",
+    "label": "Пустые бараки, полный склад",
+    "label_en": "Empty shelters, a full store",
+    "description": "После Ренна люди ушли к Ярвену: в двух бараках двое. Зато склад ломится дерево и камнем — стройте и зовите обратно.",
+    "description_en": "After Renn the people left for Jarven's: two residents in two shelters. But the store bursts with wood and stone: build, and call them back.",
+    "resources": { "res_wood": 220, "res_stone": 160, "res_food": 60 },
+    "residents": 2,
+    "flags": ["legacy_empty"]
+  }
+]

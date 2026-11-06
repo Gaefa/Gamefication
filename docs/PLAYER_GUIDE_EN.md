@@ -143,3 +143,13 @@ Also: a screenshot of the ending screen ("SUMMARY") and the `analytics` folder �
 - Art is being replaced: some buildings and all decoration are still placeholder.
 - The English localization is new: please report any untranslated or awkward text.
 - No mobile versions and no gamepad.
+
+## Chapter 2. Bogolessky Gorge
+
+Opens after any Rust Pit finale, in the "Chapter" row of the mandate screen. 30 days: Rains (1–12), Drought (13–22), Harvest (23–30). Audits on days 15 and 27, the grant on day 10. The rival is Elder Jarven of the Upper Fields, the patron the League (Inspector Helin Varga), the third power the Green Covenant (Mother Alder).
+
+- **Contested meadows** (the dark-green cells in a ring around the centre): a plot on them bears a quarter better and never tires, but every such plot is a Covenant claim. One plot brings a letter, three a demand; with an angry Covenant and four plots the channel is closed and two plots dry out. A treaty with the Covenant (day 11, or at the dam) ends the claims at the price of League trust.
+- **Soil**: on plain ground a plot loses 1.5% of its yield a day; meadows never tire. The Rains give soil back, a seed vault within two hexes halves the wear. The percentage shows on the plot's card.
+- **Granary** (300 food) halves spoilage in the Harvest; without one, half the harvest rots.
+- **A letter from the previous chapter** arrives on the first evening: how Rust Pit ended is how they remember you.
+- Three legacies of Renn: fields on the meadows with an angry Covenant; a full granary with a League debt; empty shelters with a full store.

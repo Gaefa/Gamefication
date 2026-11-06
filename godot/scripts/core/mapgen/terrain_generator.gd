@@ -14,6 +14,7 @@ const SAND := 2
 const HILL := 3
 const FOREST := 4
 const ROCK := 5
+const MEADOW := 6  # contested fertile land (chapter 2+): painted by the chapter's terrain rules
 
 # Noise thresholds
 const WATER_THRESHOLD := 0.28
@@ -57,6 +58,7 @@ func generate() -> void:
 
 	_smooth_clusters(terrain, coords)
 	_apply_start_guarantees(terrain)
+	_apply_chapter_rules(terrain, coords)
 
 	for coord: Vector2i in coords:
 		GameStateStore.set_terrain(coord, terrain.get(coord, GRASS) as int)
@@ -156,3 +158,19 @@ func _paint_cluster(terrain: Dictionary, center: Vector2i, radius: int, core_ter
 			continue
 		var dist: int = HexCoords.distance(center, coord)
 		terrain[coord] = core_terrain if dist <= radius - 1 else edge_terrain
+
+
+## The chapter's own touches (chapter.json "terrain"): a ring of contested meadows at
+## `contested_ring` [min, max] hexes from the centre, each grass cell with `contested_chance`.
+## Rust Pit has no rules and keeps its map; the RNG is only drawn when a chapter asks.
+func _apply_chapter_rules(terrain: Dictionary, coords: Array[Vector2i]) -> void:
+	var rules: Dictionary = ContentDB.get_chapter_def().get("terrain", {}) as Dictionary
+	if rules.is_empty():
+		return
+	var ring: Array = rules.get("contested_ring", []) as Array
+	var chance: float = rules.get("contested_chance", 0.0) as float
+	if ring.size() == 2 and chance > 0.0:
+		for coord: Vector2i in coords:
+			var dist: int = HexCoords.distance(Vector2i.ZERO, coord)
+			if dist >= (ring[0] as int) and dist <= (ring[1] as int) and (terrain.get(coord, GRASS) as int) == GRASS and _rng.chance(chance):
+				terrain[coord] = MEADOW

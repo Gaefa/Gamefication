@@ -62,6 +62,8 @@ func process_tick() -> void:
 			var gov_mult: float = _governance_production_multiplier(res_id)
 			var season_mult: float = _season_production_mult(res_id, season_mods)
 			var amount: float = base * mult * gov_mult * season_mult * input_efficiency * output_efficiency * condition_efficiency
+			if res_id == "res_food" and bld.has("soil"):
+				amount *= bld.get("soil", 1.0) as float  # worn soil (SoilSystem, chapter mechanic)
 			net_production[res_id] = (net_production[res_id] as float) + amount
 			if res_id == "res_money":
 				money_in += amount
@@ -266,7 +268,8 @@ static func daily_spoilage() -> float:
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		# Building levels are zero-based: displayed level 2 is index 1.
-		if bld.get("type", "") == "bld_warehouse" and (bld.get("level", 0) as int) >= 1 and not bld.get("damaged", false):
+		var dry_store: bool = (ContentDB.get_building_def(bld.get("type", "") as String).get("tags", []) as Array).has("food_store")
+		if (dry_store or (bld.get("type", "") == "bld_warehouse" and (bld.get("level", 0) as int) >= 1)) and not bld.get("damaged", false):
 			warehouses += 1
 	if (GameStateStore.mandate().get("flags", {}) as Dictionary).get("dried_rations", false):
 		rate *= 0.5

@@ -1561,6 +1561,10 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 	if orch_adj != null:
 		for entry: Dictionary in orch_adj.adjacency.active_rules(coord, type_id):
 			lines.append("%s %s" % [_dim_bb(Localization.ru_en("Соседство:", "Neighbours:")), _rule_text(entry.rule as Dictionary)])
+	if bld.has("soil"):
+		var soil: int = int(round((bld.get("soil", 1.0) as float) * 100.0))
+		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD if soil >= 70 else UiStyle.WARN),
+			Localization.ru_en("Почва: %d%%. Обычная земля устаёт, спорный луг нет; дожди и семенной склад рядом берегут её.", "Soil: %d%%. Plain ground wears out, contested meadows do not; rains and a seed vault nearby spare it.") % soil])
 	if bld.get("damaged", false) as bool:
 		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), Localization.ru_en("Повреждено: не работает, пока не починят.", "Damaged: out of action until repaired.")])
 	elif bld.get("has_issue", false) as bool:

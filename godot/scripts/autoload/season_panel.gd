@@ -22,11 +22,11 @@ func _ready() -> void:
 	EventBus.season_changed.connect(_on_season_changed)
 
 
-func _on_season_changed(_sid: String, day: int, _length: int) -> void:
+func _on_season_changed(season_id: String, day: int, _length: int) -> void:
 	if day > 1:
 		return  # a loaded save re-announces its season; the notice is for the first morning only
 	if EconomySystem.daily_spoilage() > 0.0:
-		EventBus.toast_requested.emit(Localization.ru_en("Жара: еда портится. Улучшите склад или высушите пайки.", "Heat: food spoils. Upgrade a warehouse or dry the rations."), 6.0)
+		EventBus.toast_requested.emit(Localization.ru_en("%s: еда портится. Улучшите склад или высушите пайки.", "%s: food spoils. Upgrade a warehouse or dry the rations.") % Localization.content_text(ContentDB.get_season_def(season_id), "label", season_id), 6.0)
 	if _visible:
 		_body.text = _compose()
 

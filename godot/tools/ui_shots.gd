@@ -121,8 +121,13 @@ func _run() -> void:
 	SeasonPanel.open()
 	await _shot("24_heat_season")
 	SeasonPanel.call("_toggle")
-	for id: String in ["patron.letter.welcome", "patron.letter.directorate_welcome", "patron.letter.audit_warning", "patron.letter.heat_warning", "patron.letter.heat_warning_directorate", "report.heat_stock", "petition.covenant_shade", "rival.voss_heat", "patron.letter.audit2_warning", "patron.letter.audit2_warning_directorate", "crisis.heat_collapse", "crisis.spoiled_stock",
-			"report.promise_kept", "petition.promise_broken", "petition.ruben_debt", "report.camp_at_voss", "patron.letter.census_question", "patron.letter.census_question_directorate", "rival.voss_grudge", "rival.voss_tools", "rival.voss_buyout", "rival.voss_favor", "patron.letter.league_tanker", "patron.letter.directorate_reserve", "petition.subbotnik", "patron.letter.water_order", "patron.letter.water_advice", "report.strike_riot", "report.storm_warning", "report.storm_warning_heat", "report.storm_passed", "report.storm_passed_braced", "report.empty_treasury", "legacy.cistern", "legacy.ruben_water", "legacy.people", "legacy.office", "legacy.office_inspector"]:
+	var card_ids: Array = ["patron.letter.welcome", "patron.letter.directorate_welcome", "patron.letter.audit_warning", "patron.letter.heat_warning", "patron.letter.heat_warning_directorate", "report.heat_stock", "petition.covenant_shade", "rival.voss_heat", "patron.letter.audit2_warning", "patron.letter.audit2_warning_directorate", "crisis.heat_collapse", "crisis.spoiled_stock",
+			"report.promise_kept", "petition.promise_broken", "petition.ruben_debt", "report.camp_at_voss", "patron.letter.census_question", "patron.letter.census_question_directorate", "rival.voss_grudge", "rival.voss_tools", "rival.voss_buyout", "rival.voss_favor", "patron.letter.league_tanker", "patron.letter.directorate_reserve", "petition.subbotnik", "patron.letter.water_order", "patron.letter.water_advice", "report.strike_riot", "report.storm_warning", "report.storm_warning_heat", "report.storm_passed", "report.storm_passed_braced", "report.empty_treasury", "legacy.cistern", "legacy.ruben_water", "legacy.people", "legacy.office", "legacy.office_inspector"]
+	if ContentDB.active_chapter == "bogolessky_gorge":
+		card_ids = ["gorge.league_welcome", "gorge.covenant_greeting", "gorge.jarven_intro", "gorge.settlers_land", "gorge.covenant_treaty", "gorge.covenant_blockade", "gorge.league_harvest_quota", "gorge.harvest_festival", "gorge.crisis_water", "legacy_gorge.meadows", "legacy_gorge.granary", "legacy_gorge.empty", "interlude.previous_chapter"]
+	for id: String in card_ids:
+		if ContentDB.get_event_def(id).is_empty():
+			continue  # another chapter's card
 		var card: Dictionary = ContentDB.get_event_def(id).duplicate(true)
 		card["runtime_id"] = id
 		desk.call("_on_evening_started", [card])

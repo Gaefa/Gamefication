@@ -1,0 +1,651 @@
+[
+  {
+    "id": "gorge.league_welcome",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter"],
+    "title": "Лига Восстановления — назначение в Ущелье",
+    "title_en": "Restoration League — Appointment to the Gorge",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\nАдминистратору района Боголесское Ущелье.\n\nУведомляю о вашем назначении. Район плодородный и спокойный, прежний администратор Ренн уехал по собственному желанию. Ваша задача на срок: к Урожаю не меньше двенадцати жителей, амбары полные, квота Лиги сдана.\n\nЛуга вдоль реки по реестру числятся за районом. Что об этом думает Зелёный Завет, Лигу не интересует.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\nTo the administrator of the Bogolessky Gorge district.\n\nI notify you of your appointment. The district is fertile and quiet; the previous administrator, Renn, left of his own accord. Your task for the term: by the Harvest, no fewer than twelve residents, full barns, the League's quota delivered.\n\nThe meadows along the river are registered to the district. What the Green Covenant thinks of that is of no interest to the League.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Принять мандат", "text_en": "Accept the mandate", "effects": { "message": "Печать поставлена. Ущелье ваше на тридцать дней.", "message_en": "The seal is set. The Gorge is yours for thirty days." } }
+    ]
+  },
+  {
+    "id": "gorge.covenant_greeting",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 2,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "covenant"],
+    "title": "Записка — Мать Ольха о лугах",
+    "title_en": "A Note — Mother Alder on the Meadows",
+    "body": "Записка на бересте, принесена девочкой.\n\n«Администратору. Луга вдоль реки не ваши и не Лиги: их держит Завет со времён Разлома, и земля там жива, потому что её не трогали. Стройте дома, копайте колодцы, сейте на своей земле. Луга оставьте.\n\nЕсли не оставите, мы будем писать. Потом перестанем писать».\n\nОльха Данир, Зелёный Завет.",
+    "body_en": "A note on birch bark, brought by a girl.\n\n\"To the administrator. The meadows along the river are not yours and not the League's: the Covenant has held them since the Collapse, and the land there is alive because nobody touched it. Build houses, dig wells, sow on your own ground. Leave the meadows.\n\nIf you do not, we will write. Then we will stop writing.\"\n\nAlder Danir, Green Covenant.",
+    "options": [
+      { "text": "Ответить вежливо: луга пока не трогаю", "text_en": "Reply politely: the meadows stay untouched for now", "effects": { "stat_city_trust": 2, "style": "protector", "message": "Девочка унесла ответ. На следующий день у поста лежала корзина яблок.", "message_en": "The girl took the reply back. The next day a basket of apples lay at the post." } },
+      { "text": "Ответить по реестру: земля района", "text_en": "Reply by the register: district land", "effects": { "stat_league_trust": 2, "set_flag": "covenant_angry", "style": "loyal", "message": "Ответ ушёл. Корзины не было.", "message_en": "The reply went out. There was no basket." } }
+    ]
+  },
+  {
+    "id": "gorge.jarven_intro",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 3,
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter"],
+    "title": "Письмо — староста Ярвен из Верхних Полей",
+    "title_en": "A Letter — Elder Jarven of the Upper Fields",
+    "body": "Письмо на хорошей бумаге, с печатью Верхних Полей.\n\n«Сосед. Я держу Верхние Поля двенадцать лет: с Заветом в мире, с Лигой в счётах, с рекой на вы. Ренн сеял на лугах и уехал с пустым амбаром. Вы умнее, надеюсь.\n\nГрант Лиги на этот сезон один на двоих. Кто к десятому дню крепче стоит, тот и получит. Я стою давно».\n\nЯрвен.",
+    "body_en": "A letter on good paper, with the seal of the Upper Fields.\n\n\"Neighbour. I have held the Upper Fields for twelve years: at peace with the Covenant, in accounts with the League, on formal terms with the river. Renn sowed the meadows and left with an empty barn. You are cleverer, I hope.\n\nThe League's grant this season is one for the two of us. Whoever stands firmer by day ten takes it. I have been standing a long time.\"\n\nJarven.",
+    "options": [
+      { "text": "Принять к сведению", "text_en": "Note it", "effects": { "message": "Письмо легло в ящик. Верхние Поля видны с холма: крыши, дым, порядок.", "message_en": "The letter went into the drawer. The Upper Fields can be seen from the hill: roofs, smoke, order." } }
+    ]
+  },
+  {
+    "id": "gorge.settlers_land",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 4,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "families"],
+    "title": "Обращение — переселенцы просят земли",
+    "title_en": "Petition — Settlers Ask for Land",
+    "body": "У поста четыре семьи с телегами: шли из Сухих земель на слух о зелёном районе.\n\nСтаршая, Марта Квил: «Нам нужно жильё и земля под грядки. Луга у реки пустые, мы бы сели там. Если скажете нет, сядем на холме, но там камень».",
+    "body_en": "Four families with carts at the post: they came from the Dry Lands on word of a green district.\n\nThe eldest, Marta Quill: \"We need housing and land for plots. The meadows by the river stand empty; we would settle there. If you say no, we settle on the hill, but that is stone.\"",
+    "options": [
+      { "text": "Принять: жильё дам, луга не обещаю (+4 жителя, если есть места)", "text_en": "Take them in: housing yes, no promises on the meadows (+4 residents if there is room)", "effects": { "add_residents": 4, "stat_city_trust": 3, "style": "protector", "message": "Семьи заняли свободные койки. Про луга Марта промолчала.", "message_en": "The families took the free beds. Marta said nothing about the meadows." } },
+      { "text": "Принять и обещать луга (+4 жителя, Завет запомнит)", "text_en": "Take them in and promise the meadows (+4 residents, the Covenant remembers)", "effects": { "add_residents": 4, "stat_city_trust": 4, "set_flag": "settlers_meadow", "stat_unrest_pressure": 3, "style": "pragmatist", "message": "Семьи пошли смотреть луга в тот же вечер. С холма на них смотрели.", "message_en": "The families went to look at the meadows that same evening. From the hill, someone watched them." } },
+      { "text": "Отказать: мест нет", "text_en": "Refuse: no room", "effects": { "stat_city_trust": -3, "style": "loyal", "message": "Телеги ушли к Верхним Полям.", "message_en": "The carts went on to the Upper Fields." } }
+    ]
+  },
+  {
+    "id": "gorge.rains_mudslide",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "season": "season_rains",
+    "trigger_day": 5,
+    "cooldown_sec": 999999,
+    "tags": ["report", "rains"],
+    "title": "Сводка — оползень на склоне",
+    "title_en": "Report — A Slide on the Slope",
+    "body": "Сводка дежурного.\n\nНочью по склону сошёл оползень: грязь и камни легли на крайнюю грядку, ткань сорвана, канава забита. Бригада говорит, что отроет за день, если дать дерево на подпорки. Иначе грядка стоит до конца Дождей.",
+    "body_en": "Duty report.\n\nA slide came down the slope in the night: mud and stones lie on the outer plot, the cloth torn, the ditch choked. The crew says it can dig it out in a day given wood for props. Otherwise the plot stands idle until the Rains end.",
+    "options": [
+      { "text": "Дать дерево на подпорки (15 дерева)", "text_en": "Give wood for props (15 wood)", "cost": { "res_wood": 15 }, "effects": { "stat_city_trust": 2, "message": "Грядку отрыли к вечеру. Подпорки стоят.", "message_en": "The plot was dug out by evening. The props stand." } },
+      { "text": "Пусть стоит до конца Дождей", "text_en": "Let it stand until the Rains end", "effects": { "damage_building": "bld_field_strip", "message": "Грядка под грязью. Найдите «!» на карте и почините, когда будет дерево.", "message_en": "The plot is under mud. Find the \"!\" on the map and repair it when there is wood." } }
+    ]
+  },
+  {
+    "id": "gorge.league_land_order",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 6,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter"],
+    "title": "Лига Восстановления — о лугах",
+    "title_en": "Restoration League — On the Meadows",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. По реестру луга вдоль реки — земля района, и Лига ждёт, что к Урожаю они будут распаханы: план по продовольствию для Зелёного пояса считался с этими полями.\n\nПрошу сообщить, сколько полей стоит на лугах. Если ни одного, прошу объяснить, почему.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. By the register the meadows along the river are district land, and the League expects them ploughed by the Harvest: the food plan for the Green Belt was reckoned with those fields.\n\nState how many fields stand on the meadows. If none, explain why.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Обещать распахать луга к Урожаю", "text_en": "Promise to plough the meadows by the Harvest", "effects": { "stat_league_trust": 5, "set_flag": "promised_meadows", "style": "loyal", "message": "Ответ ушёл. Инспектор приписала: «Проверю на аудите».", "message_en": "The reply went out. The inspector added: \"I will check at the audit.\"" } },
+      { "text": "Объяснить: луга спорные, план выполню на своей земле", "text_en": "Explain: the meadows are contested, the plan will be met on our own land", "effects": { "stat_league_trust": -3, "stat_city_trust": 3, "style": "protector", "message": "Инспектор не ответила. В деле появилась закладка.", "message_en": "The inspector did not reply. A bookmark appeared in the file." } }
+    ]
+  },
+  {
+    "id": "gorge.beekeeper",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 7,
+    "cooldown_sec": 999999,
+    "tags": ["petition"],
+    "title": "Обращение — дед Савва и ульи",
+    "title_en": "Petition — Old Savva and the Hives",
+    "body": "Дед Савва держит ульи на краю леса с довоенных времён и просит десять досок на новые колоды: старые рассохлись в Дожди.\n\n«Мёд — на всех. И поля с пчёлами родят лучше, это и Завет знает, и Лига».",
+    "body_en": "Old Savva has kept hives at the forest edge since before the war and asks for ten boards for new hives: the old ones cracked in the Rains.\n\n\"Honey for everyone. And fields with bees bear better; the Covenant knows it and so does the League.\"",
+    "options": [
+      { "text": "Дать доски (10 дерева)", "text_en": "Give the boards (10 wood)", "cost": { "res_wood": 10 }, "effects": { "add_buff": { "id": "savva_hives", "name": "Ульи деда Саввы", "name_en": "Old Savva's hives", "production_mult": 0.08, "target": "bld_field_strip", "happiness_add": 2, "remaining": 3000 }, "stat_city_trust": 2, "style": "protector", "message": "Колоды сбиты за день. К вечеру в поста стоял горшок мёда.", "message_en": "The hives were knocked together in a day. By evening a pot of honey stood at the post." } },
+      { "text": "Доски нужны на другое", "text_en": "The boards are needed elsewhere", "effects": { "message": "Дед ушёл молча.", "message_en": "The old man left without a word." } }
+    ]
+  },
+  {
+    "id": "gorge.rains_rot",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "season": "season_rains",
+    "trigger_day": 8,
+    "cooldown_sec": 999999,
+    "tags": ["report", "rains"],
+    "title": "Сводка — склад отсырел",
+    "title_en": "Report — The Store Has Gone Damp",
+    "body": "Сводка кладовщика.\n\nДожди идут десятый день, склад течёт по углу, нижние мешки с зерном прели. Если перекрыть крышу сейчас, потеряем мало. Если ждать Суши, потеряем треть запаса.\n\nКладовщик добавляет: Ренн обещал амбар на сваях и не построил.",
+    "body_en": "Storekeeper's report.\n\nThe Rains are in their tenth day, the store leaks at one corner, the bottom sacks of grain have gone mouldy. If we re-roof now we lose little. If we wait for the Drought, we lose a third of the stock.\n\nThe storekeeper adds: Renn promised a granary on stilts and never built it.",
+    "options": [
+      { "text": "Перекрыть крышу (15 дерева)", "text_en": "Re-roof the store (15 wood)", "cost": { "res_wood": 15 }, "effects": { "message": "Крышу перекрыли за день. Прелые мешки отдали свиньям.", "message_en": "The roof was done in a day. The mouldy sacks went to the pigs." } },
+      { "text": "Ждать Суши (−30 еды)", "text_en": "Wait for the Drought (−30 food)", "effects": { "add_resources": { "res_food": -30 }, "stat_city_trust": -2, "message": "Треть нижних мешков ушла в компост.", "message_en": "A third of the bottom sacks went to the compost." } }
+    ]
+  },
+  {
+    "id": "gorge.jarven_exchange",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 9,
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter"],
+    "title": "Письмо — Ярвен предлагает обмен",
+    "title_en": "A Letter — Jarven Offers a Trade",
+    "body": "«Сосед. У меня лес рубят плохо, у вас лес под боком. Тридцать брёвен против двадцати мешков зерна с моих полей, обоз мой. Завет об этом знать не должен: они не любят, когда зерно уходит за реку.\n\nЕсли нет, не обижусь. Грант всё равно мой».\n\nЯрвен.",
+    "body_en": "\"Neighbour. My people cut wood badly, you have the forest at hand. Thirty logs for twenty sacks of grain from my fields, my convoy. The Covenant need not know: they dislike grain crossing the river.\n\nIf not, no offence taken. The grant is mine either way.\"\n\nJarven.",
+    "options": [
+      { "text": "Согласиться (30 дерева за 20 еды)", "text_en": "Agree (30 wood for 20 food)", "cost": { "res_wood": 30 }, "effects": { "add_resources": { "res_food": 20 }, "stat_rival_score": -3, "style": "pragmatist", "message": "Обоз прошёл ночью. Зерно хорошее.", "message_en": "The convoy passed at night. Good grain." } },
+      { "text": "Отказать: дерево нужно самим", "text_en": "Refuse: we need the wood ourselves", "effects": { "stat_rival_score": 2, "message": "Ярвен ответил одной строкой: «Как знаете».", "message_en": "Jarven replied in one line: \"As you wish.\"" } }
+    ]
+  },
+  {
+    "id": "gorge.covenant_treaty",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 11,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "covenant", "branch"],
+    "title": "Переговоры — Завет предлагает договор",
+    "title_en": "Talks — The Covenant Offers a Treaty",
+    "body": "Мать Ольха пришла сама, с двумя стариками и мешком семян.\n\n«Договор простой. Луга остаются лугами: что на них стоит, стоит, нового не ставьте. Мы открываем верхний канал в Сушь и продаём семена по-соседски. Лига будет недовольна, это ваша плата.\n\nБез договора в Сушь канал закроем. Это не угроза, это как было при Ренне».",
+    "body_en": "Mother Alder came herself, with two old men and a sack of seed.\n\n\"The treaty is simple. The meadows stay meadows: what stands on them stands, put nothing new there. We open the upper channel in the Drought and sell seed as neighbours do. The League will be displeased; that is your price.\n\nWithout a treaty we close the channel in the Drought. Not a threat: that is how it was under Renn.\"",
+    "options": [
+      { "text": "Подписать договор с Заветом", "text_en": "Sign the treaty with the Covenant", "effects": { "set_flag": "covenant_treaty", "clear_flag": "covenant_angry", "stat_league_trust": -4, "stat_city_trust": 5, "stat_unrest_pressure": -6, "style": "protector", "message": "Подписано на бересте и на бумаге. Старики унесли копию в лес.", "message_en": "Signed on bark and on paper. The old men carried a copy into the forest." } },
+      { "text": "Отказать: земля по реестру наша", "text_en": "Refuse: the land is ours by the register", "effects": { "stat_league_trust": 3, "stat_unrest_pressure": 4, "set_flag": "covenant_angry", "style": "loyal", "message": "Ольха кивнула и ушла. Мешок семян унесли с собой.", "message_en": "Alder nodded and left. They took the sack of seed with them." } }
+    ]
+  },
+  {
+    "id": "gorge.league_audit_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 12,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter"],
+    "title": "Лига Восстановления — аудит через три дня",
+    "title_en": "Restoration League — Audit in Three Days",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Через три дня первая проверка: люди, запас воды на Сушь, поддержка района. Отдельно смотрю на поля: план Зелёного пояса не ждёт.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. The first inspection is in three days: people, the water reserve for the Drought, the district's support. I will look at the fields separately: the Green Belt's plan does not wait.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Принято, готовимся", "text_en": "Noted, we prepare", "effects": { "message": "Секретарь достал ведомости.", "message_en": "The secretary got out the ledgers." } }
+    ]
+  },
+  {
+    "id": "gorge.jarven_grudge",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 13,
+    "trigger_condition": "stat_rival_gap <= -8",
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter"],
+    "title": "Письмо — Ярвен о гранте",
+    "title_en": "A Letter — Jarven on the Grant",
+    "body": "«Сосед. Грант ушёл ко мне, и правильно. Если нужна вода в Сушь, я продам: пятьдесят кубов за сорок денег, обоз мой. Без обид».\n\nЯрвен.",
+    "body_en": "\"Neighbour. The grant came to me, and rightly. If you need water in the Drought I will sell: fifty units for forty in money, my convoy. No offence.\"\n\nJarven.",
+    "options": [
+      { "text": "Купить воду (40 денег, +50 воды)", "text_en": "Buy water (40 money, +50 water)", "cost": { "res_money": 40 }, "effects": { "add_resources": { "res_water_stockpile": 50 }, "style": "pragmatist", "message": "Цистерна Ярвена пришла на следующий день.", "message_en": "Jarven's tank came the next day." } },
+      { "text": "Не покупать", "text_en": "Do not buy", "effects": { "message": "Письмо осталось без ответа.", "message_en": "The letter went unanswered." } }
+    ]
+  },
+  {
+    "id": "gorge.drought_wells",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_drought",
+    "trigger_day": 14,
+    "cooldown_sec": 999999,
+    "tags": ["report", "drought"],
+    "title": "Сводка — река ушла в камни",
+    "title_en": "Report — The River Went into the Stones",
+    "body": "Сводка инженера.\n\nСушь. Река мелеет на глазах, насос тянет вполсилы. Предлагаю ввести выдачу воды по часам до конца Суши: люди поворчат, зато цистерна дотянет до Урожая.",
+    "body_en": "Engineer's report.\n\nThe Drought. The river is running low before our eyes; the pump draws at half strength. I propose water by the hour until the Drought ends: people will grumble, but the cistern will last to the Harvest.",
+    "options": [
+      { "text": "Ввести выдачу по часам", "text_en": "Water by the hour", "effects": { "set_policy": "water_hours", "stat_league_trust": 2, "style": "pragmatist", "message": "Расписание повесили у цистерны.", "message_en": "The schedule went up by the cistern." } },
+      { "text": "Оставить как есть", "text_en": "Leave it as it is", "effects": { "stat_city_trust": 2, "style": "protector", "message": "Вода идёт свободно. Инженер покачал головой.", "message_en": "The water runs free. The engineer shook his head." } }
+    ]
+  },
+  {
+    "id": "gorge.teacher_school",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 15,
+    "cooldown_sec": 999999,
+    "tags": ["petition"],
+    "title": "Обращение — учительница просит класс",
+    "title_en": "Petition — The Teacher Asks for a Classroom",
+    "body": "Учительница Нора Велль собирает детей под навесом у склада и просит тридцать досок на класс: в Сушь под навесом не усидеть.\n\n«Дети Завета тоже ходят. Это, может, важнее договора».",
+    "body_en": "The teacher, Nora Vell, gathers the children under an awning by the store and asks for thirty boards for a classroom: nobody can sit under an awning in the Drought.\n\n\"The Covenant's children come too. That may matter more than any treaty.\"",
+    "options": [
+      { "text": "Дать доски на класс (30 дерева)", "text_en": "Give the boards (30 wood)", "cost": { "res_wood": 30 }, "effects": { "add_buff": { "id": "gorge_school", "name": "Класс Норы Велль", "name_en": "Nora Vell's classroom", "happiness_add": 3, "remaining": 4500 }, "stat_city_trust": 3, "stat_unrest_pressure": -3, "style": "protector", "message": "Класс сбили за два дня. Дети Завета пришли на третий.", "message_en": "The classroom went up in two days. The Covenant's children came on the third." } },
+      { "text": "Отложить до Урожая", "text_en": "Put it off until the Harvest", "effects": { "stat_city_trust": -1, "message": "Нора кивнула. Навес остался навесом.", "message_en": "Nora nodded. The awning stayed an awning." } }
+    ]
+  },
+  {
+    "id": "gorge.covenant_seeds",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "covenant_treaty",
+    "trigger_day": 16,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "covenant"],
+    "title": "Записка — семена по договору",
+    "title_en": "A Note — Seed by the Treaty",
+    "body": "«Администратору. Как уговорено: канал открыт, семена привезём завтра. Сорок мешков, по-соседски. Урожай с них будет лучше, чем с того, что оставил Ренн».\n\nОльха Данир.",
+    "body_en": "\"To the administrator. As agreed: the channel is open, the seed comes tomorrow. Forty sacks, as neighbours do. The harvest from it will be better than from what Renn left.\"\n\nAlder Danir.",
+    "options": [
+      { "text": "Принять семена", "text_en": "Accept the seed", "effects": { "add_resources": { "res_food": 40 }, "add_buff": { "id": "covenant_seed", "name": "Семена Завета", "name_en": "Covenant seed", "production_mult": 0.15, "target": "bld_field_strip", "remaining": 4200 }, "stat_city_trust": 2, "message": "Мешки привезли на рассвете. Ткань на грядках сменили.", "message_en": "The sacks came at dawn. The cloth on the plots was changed." } }
+    ]
+  },
+  {
+    "id": "gorge.koren_offer",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 17,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "shadow"],
+    "title": "Записка — Корень продаёт зерно",
+    "title_en": "A Note — Root Sells Grain",
+    "body": "Записка через секретаря, без подписи, но все знают: это Корень, который возит зерно по ночам между Заветом, Ярвеном и Лигой.\n\n«администратору. сушь, зерно дорожает. у меня восемьдесят мешков чужих, отдам за сорок денег, ночью, без бумаг. лига узнает, если захочет узнать».",
+    "body_en": "A note through the secretary, unsigned, but everyone knows: it is Root, who carts grain at night between the Covenant, Jarven and the League.\n\n\"to the administrator. drought, grain is dear. I have eighty sacks that are not mine, yours for forty in money, at night, no papers. the league finds out if it wants to find out.\"",
+    "options": [
+      { "text": "Купить (40 денег, +80 еды, Лига может узнать)", "text_en": "Buy (40 money, +80 food, the League may find out)", "cost": { "res_money": 40 }, "effects": { "add_resources": { "res_food": 80 }, "stat_league_trust": -3, "set_flag": "koren_grain", "style": "pragmatist", "message": "Мешки сгрузили до рассвета. Чьи — лучше не спрашивать.", "message_en": "The sacks were unloaded before dawn. Whose they were is better not asked." } },
+      { "text": "Отказать", "text_en": "Refuse", "effects": { "stat_league_trust": 1, "style": "loyal", "message": "Ответа не было. Корень ушёл к Ярвену.", "message_en": "No reply. Root went to Jarven's." } }
+    ]
+  },
+  {
+    "id": "gorge.jarven_favor",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 18,
+    "trigger_condition": "stat_rival_gap >= 8",
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter"],
+    "title": "Письмо — Ярвен просит об услуге",
+    "title_en": "A Letter — Jarven Asks a Favour",
+    "body": "«Сосед. Признаю: Ущелье стоит крепче Верхних Полей, не ждал. У меня в Сушь слегла треть людей, лекарь один. Пришлите вашего на неделю, я верну семенами на Урожай».\n\nЯрвен.",
+    "body_en": "\"Neighbour. I admit it: the Gorge stands firmer than the Upper Fields; I did not expect that. A third of my people are down in the Drought, and I have one healer. Send me yours for a week; I will repay in seed at the Harvest.\"\n\nJarven.",
+    "options": [
+      { "text": "Послать лекаря (счастье ниже на неделю, семена потом)", "text_en": "Send the healer (mood lower for a week, seed later)", "effects": { "add_buff": { "id": "healer_away", "name": "Лекарь в Верхних Полях", "name_en": "The healer is at the Upper Fields", "happiness_add": -3, "remaining": 2100, "on_expire_event": "gorge.jarven_repays" }, "stat_rival_score": 3, "style": "protector", "message": "Лекарь уехал утром с мешком трав.", "message_en": "The healer left in the morning with a bag of herbs." } },
+      { "text": "Отказать: свои болеют", "text_en": "Refuse: our own are sick", "effects": { "stat_rival_score": -2, "message": "Ярвен не ответил.", "message_en": "Jarven did not reply." } }
+    ]
+  },
+  {
+    "id": "gorge.jarven_repays",
+    "category": "food",
+    "min_level": 1,
+    "callback": true,
+    "cooldown_sec": 999999,
+    "tags": ["rival", "letter"],
+    "title": "Письмо — Ярвен возвращает долг",
+    "title_en": "A Letter — Jarven Repays",
+    "body": "«Сосед. Лекарь вернулся, люди встали. Семена, как обещал: тридцать мешков, лучшие. Не забуду».\n\nЯрвен.",
+    "body_en": "\"Neighbour. The healer is back, the people are on their feet. Seed, as promised: thirty sacks, the best. I will not forget.\"\n\nJarven.",
+    "options": [
+      { "text": "Принять семена", "text_en": "Accept the seed", "effects": { "add_resources": { "res_food": 30 }, "stat_city_trust": 2, "message": "Мешки сложили в амбар.", "message_en": "The sacks went into the barn." } }
+    ]
+  },
+  {
+    "id": "gorge.drought_fire",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_drought",
+    "trigger_day": 19,
+    "cooldown_sec": 999999,
+    "tags": ["report", "drought"],
+    "title": "Сводка — пожар на сухом склоне",
+    "title_en": "Report — Fire on the Dry Slope",
+    "body": "Сводка дежурного.\n\nСухая трава на склоне загорелась от костра, огонь идёт к баракам. Бригада держит его вёдрами, но нужна вода из цистерны: двадцать кубов, и он не дойдёт. Без воды сгорит крайний барак.",
+    "body_en": "Duty report.\n\nDry grass on the slope caught from a campfire; the fire is moving toward the shelters. The crew is holding it with buckets, but it needs water from the cistern: twenty units and it will not reach them. Without water the outer shelter burns.",
+    "options": [
+      { "text": "Дать воду (20 воды)", "text_en": "Give the water (20 water)", "cost": { "res_water_stockpile": 20 }, "effects": { "stat_city_trust": 3, "message": "Огонь сбили к ночи. Склон чёрный, бараки целы.", "message_en": "The fire was beaten down by night. The slope is black, the shelters stand." } },
+      { "text": "Беречь воду", "text_en": "Keep the water", "effects": { "damage_building": "bld_shelter", "stat_unrest_pressure": 5, "stat_city_trust": -4, "style": "loyal", "message": "Крайний барак сгорел до каркаса. Найдите «!» и отстройте.", "message_en": "The outer shelter burned to the frame. Find the \"!\" and rebuild." } }
+    ]
+  },
+  {
+    "id": "gorge.thanks",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 20,
+    "trigger_condition": "stat_city_trust >= 55",
+    "cooldown_sec": 999999,
+    "tags": ["petition"],
+    "title": "Обращение — благодарность за Сушь",
+    "title_en": "Petition — Thanks for the Drought",
+    "body": "Жители собрались у поста. Марта Квил говорит за всех: «Сушь ещё не кончилась, а мы живы и вода есть. Ренн к этому дню уже запирался в конторе. Спасибо».",
+    "body_en": "The residents gathered at the post. Marta Quill speaks for all: \"The Drought is not over, and we are alive and there is water. By this day Renn was locking himself in the office. Thank you.\"",
+    "options": [
+      { "text": "Ответить благодарностью", "text_en": "Reply with thanks", "effects": { "stat_city_trust": 2, "stat_unrest_pressure": -3, "message": "Разошлись спокойно.", "message_en": "They went home quietly." } }
+    ]
+  },
+  {
+    "id": "gorge.league_harvest_quota",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "season": "season_harvest",
+    "trigger_day": 23,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter"],
+    "title": "Лига Восстановления — квота Урожая",
+    "title_en": "Restoration League — The Harvest Quota",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Урожай начался. Квота района по плану Зелёного пояса: сто единиц продовольствия до второй проверки. Обоз Лиги придёт за ними сам.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. The Harvest has begun. The district's quota under the Green Belt plan: one hundred units of food before the second inspection. The League's convoy will collect.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Сдать квоту (100 еды)", "text_en": "Deliver the quota (100 food)", "cost": { "res_food": 100 }, "effects": { "stat_league_trust": 8, "style": "loyal", "message": "Обоз ушёл с сотней мешков. Инспектор расписалась.", "message_en": "The convoy left with a hundred sacks. The inspector signed." } },
+      { "text": "Сдать половину: остальное людям (50 еды)", "text_en": "Deliver half: the rest is for the people (50 food)", "cost": { "res_food": 50 }, "effects": { "stat_league_trust": -2, "stat_city_trust": 4, "style": "protector", "message": "Полсотни ушло. Инспектор записала недостачу.", "message_en": "Fifty went. The inspector noted the shortfall." } },
+      { "text": "Отказать: квота задушит район", "text_en": "Refuse: the quota would strangle the district", "effects": { "stat_league_trust": -8, "stat_city_trust": 6, "style": "autonomist", "message": "Обоз ушёл пустым. Письмо из Инспекции придёт.", "message_en": "The convoy left empty. A letter from the Inspectorate will come." } }
+    ]
+  },
+  {
+    "id": "gorge.harvest_festival",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_harvest",
+    "trigger_day": 24,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "harvest"],
+    "title": "Обращение — праздник первого снопа",
+    "title_en": "Petition — The First Sheaf Festival",
+    "body": "Старики просят разрешить праздник первого снопа на площади: костёр, столы, Завет придёт с мёдом, если позвать.\n\nСекретарь: «Или продать сноп Ярвену, он даёт шестьдесят денег за шестьдесят мешков: ему не хватает к квоте».",
+    "body_en": "The old folk ask leave for the first-sheaf festival on the square: a fire, tables, the Covenant will come with honey if invited.\n\nThe secretary: \"Or sell the sheaf to Jarven: he pays sixty in money for sixty sacks; he is short for his quota.\"",
+    "options": [
+      { "text": "Праздник, и позвать Завет (20 еды)", "text_en": "A festival, and invite the Covenant (20 food)", "cost": { "res_food": 20 }, "effects": { "add_buff": { "id": "first_sheaf", "name": "Первый сноп", "name_en": "The first sheaf", "happiness_add": 5, "remaining": 2400 }, "stat_city_trust": 3, "stat_unrest_pressure": -5, "style": "protector", "message": "Костёр горел до утра. Ольха сидела в углу и молчала, но пришла.", "message_en": "The fire burned till morning. Alder sat in the corner and said nothing, but she came." } },
+      { "text": "Продать Ярвену (60 еды за 60 денег)", "text_en": "Sell to Jarven (60 food for 60 money)", "cost": { "res_food": 60 }, "effects": { "add_resources": { "res_money": 60 }, "stat_rival_score": 4, "stat_city_trust": -2, "style": "pragmatist", "message": "Обоз ушёл за реку. Праздника не было.", "message_en": "The convoy went over the river. There was no festival." } },
+      { "text": "Ни праздника, ни продажи: сноп в амбар", "text_en": "No festival, no sale: the sheaf goes to the barn", "effects": { "stat_city_trust": -1, "message": "Старики разошлись. Сноп лёг в амбар.", "message_en": "The old folk went home. The sheaf went into the barn." } }
+    ]
+  },
+  {
+    "id": "gorge.league_audit2_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 25,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter"],
+    "title": "Лига Восстановления — итоговая проверка",
+    "title_en": "Restoration League — The Final Inspection",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Через два дня итоговая проверка срока: население, запасы, поддержка, квота. По её итогам решится продление мандата.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. In two days the term's final inspection: population, stores, support, the quota. The mandate's renewal is decided on it.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Подготовить ведомости", "text_en": "Prepare the ledgers", "effects": { "message": "Ведомости легли на стол.", "message_en": "The ledgers went on the desk." } }
+    ]
+  },
+  {
+    "id": "gorge.harvest_tithe",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "season": "season_harvest",
+    "trigger_day": 26,
+    "excludes_flag": "covenant_treaty",
+    "cooldown_sec": 999999,
+    "tags": ["petition", "covenant"],
+    "title": "Записка — Завет требует десятину",
+    "title_en": "A Note — The Covenant Demands a Tithe",
+    "body": "«Администратору. Урожай с лугов не ваш, а раз вы его взяли, отдайте десятину: пятьдесят мешков к лесу до конца недели. Иначе возьмём сами, и не десятину».\n\nОльха Данир.",
+    "body_en": "\"To the administrator. The harvest from the meadows is not yours, and since you took it, pay the tithe: fifty sacks to the forest by week's end. Otherwise we take it ourselves, and not a tithe.\"\n\nAlder Danir.",
+    "options": [
+      { "text": "Отдать десятину (50 еды)", "text_en": "Pay the tithe (50 food)", "cost": { "res_food": 50 }, "effects": { "stat_unrest_pressure": -4, "stat_city_trust": 2, "style": "protector", "message": "Мешки унесли в лес. Ночью на площади никого не было.", "message_en": "The sacks went into the forest. Nobody was on the square that night." } },
+      { "text": "Отказать и поставить охрану", "text_en": "Refuse and post a guard", "effects": { "stat_unrest_pressure": 8, "stat_league_trust": 3, "damage_building": "bld_field_strip", "style": "loyal", "message": "Ночью одну грядку выкосили. Охрана никого не видела.", "message_en": "One plot was cut down in the night. The guard saw no one." } }
+    ]
+  },
+  {
+    "id": "gorge.covenant_claim",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_condition": "stat_contested_fields >= 1",
+    "excludes_flag": "covenant_treaty",
+    "cooldown_sec": 999999,
+    "tags": ["petition", "covenant"],
+    "title": "Записка — первое поле на лугу",
+    "title_en": "A Note — The First Field on the Meadow",
+    "body": "«Администратору. Вы поставили поле на лугу. Мы видели. Это первое письмо.\n\nУберите его до Суши, и мы забудем. Оставите, напишем второе».\n\nОльха Данир.",
+    "body_en": "\"To the administrator. You have put a field on the meadow. We saw. This is the first letter.\n\nTake it off before the Drought and we forget. Leave it and we write a second.\"\n\nAlder Danir.",
+    "options": [
+      { "text": "Извиниться и послать мёд (10 еды)", "text_en": "Apologise and send honey (10 food)", "cost": { "res_food": 10 }, "effects": { "stat_unrest_pressure": -2, "style": "protector", "message": "Мёд приняли. Поле осталось.", "message_en": "The honey was accepted. The field stayed." } },
+      { "text": "Оставить без ответа", "text_en": "Leave it unanswered", "effects": { "stat_unrest_pressure": 3, "set_flag": "covenant_angry", "style": "loyal", "message": "Девочка ушла без ответа.", "message_en": "The girl left without a reply." } }
+    ]
+  },
+  {
+    "id": "gorge.covenant_demand",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_condition": "stat_contested_fields >= 3",
+    "excludes_flag": "covenant_treaty",
+    "cooldown_sec": 999999,
+    "tags": ["petition", "covenant"],
+    "title": "Записка — третье поле на лугах",
+    "title_en": "A Note — The Third Field on the Meadows",
+    "body": "«Администратору. Три поля на лугах. Это второе письмо, и оно короче.\n\nЗавет требует: ни одного нового поля на лугах и сорок мешков с тех, что стоят. Иначе в Сушь верхний канал закроем, а что будет с полями, узнаете сами».\n\nОльха Данир.",
+    "body_en": "\"To the administrator. Three fields on the meadows. This is the second letter, and it is shorter.\n\nThe Covenant demands: no new field on the meadows, and forty sacks from those that stand. Otherwise we close the upper channel in the Drought, and what becomes of the fields you will learn yourself.\"\n\nAlder Danir.",
+    "options": [
+      { "text": "Заплатить сорок мешков (40 еды)", "text_en": "Pay the forty sacks (40 food)", "cost": { "res_food": 40 }, "effects": { "stat_unrest_pressure": -3, "stat_city_trust": 1, "style": "pragmatist", "message": "Мешки унесли. Канал пока открыт.", "message_en": "The sacks were carried off. The channel stays open for now." } },
+      { "text": "Отказать: поля стоят по реестру", "text_en": "Refuse: the fields stand by the register", "effects": { "stat_unrest_pressure": 6, "stat_league_trust": 3, "set_flag": "covenant_angry", "style": "loyal", "message": "Ответ ушёл. Ночью у канала стояли люди с лопатами.", "message_en": "The reply went out. That night people with spades stood by the channel." } }
+    ]
+  },
+  {
+    "id": "gorge.covenant_blockade",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "covenant_angry",
+    "trigger_condition": "stat_contested_fields >= 4",
+    "excludes_flag": "covenant_treaty",
+    "cooldown_sec": 999999,
+    "tags": ["report", "covenant", "crisis"],
+    "title": "Сводка — Завет перекрыл канал",
+    "title_en": "Report — The Covenant Closed the Channel",
+    "body": "Сводка инженера.\n\nВерхний канал перекрыт за ночь: камни, брёвна, дёрн. Две грядки на лугах стоят сухие, ткань сорвана. Люди Завета стоят у плотины и не уходят.\n\nИнженер: можно разобрать плотину силой, можно сесть договариваться.",
+    "body_en": "Engineer's report.\n\nThe upper channel was closed overnight: stones, logs, turf. Two plots on the meadows stand dry, the cloth torn. The Covenant's people stand at the dam and will not leave.\n\nThe engineer: we can clear the dam by force, or sit down and talk.",
+    "options": [
+      { "text": "Разобрать плотину силой", "text_en": "Clear the dam by force", "effects": { "damage_buildings": 2, "stat_unrest_pressure": 8, "stat_league_trust": 4, "stat_city_trust": -5, "style": "loyal", "message": "Плотину разобрали. Две грядки всё равно пропали: найдите «!» и почините. Завет ушёл в лес.", "message_en": "The dam was cleared. The two plots are lost all the same: find the \"!\" and repair them. The Covenant went into the forest." } },
+      { "text": "Сесть договариваться (поля с лугов снять, канал откроют)", "text_en": "Sit down and talk (take the fields off the meadows, the channel opens)", "effects": { "damage_buildings": 2, "set_flag": "covenant_treaty", "clear_flag": "covenant_angry", "stat_league_trust": -5, "stat_city_trust": 4, "stat_unrest_pressure": -4, "style": "protector", "message": "Договор подписан у плотины. Две сухие грядки чинить придётся самим.", "message_en": "The treaty was signed at the dam. The two dry plots are yours to repair." } }
+    ]
+  },
+  {
+    "id": "gorge.crisis_food",
+    "category": "food",
+    "driver": "pressure",
+    "min_level": 1,
+    "cooldown_sec": 2400,
+    "is_critical": true,
+    "tags": ["crisis", "food"],
+    "title": "СРОЧНО — очередь у амбара",
+    "title_en": "URGENT — A Queue at the Barn",
+    "body": "Еда кончается. У склада очередь с утра, кладовщик заперся изнутри. Марта Квил просит либо паёк, либо честно сказать, что еды нет.",
+    "body_en": "The food is running out. A queue at the store since morning; the storekeeper has locked himself in. Marta Quill asks either for rations or for an honest word that there is none.",
+    "options": [
+      { "text": "Купить зерно у Ярвена (60 денег, +60 еды)", "text_en": "Buy grain from Jarven (60 money, +60 food)", "cost": { "res_money": 60 }, "effects": { "add_resources": { "res_food": 60 }, "stat_rival_score": 2, "style": "pragmatist", "message": "Обоз Ярвена пришёл к вечеру.", "message_en": "Jarven's convoy came by evening." } },
+      { "text": "Сказать честно и ввести паёк", "text_en": "Say it honestly and ration", "effects": { "stat_city_trust": 2, "stat_unrest_pressure": 4, "style": "protector", "message": "Очередь разошлась. Кладовщик вышел.", "message_en": "The queue dispersed. The storekeeper came out." } }
+    ]
+  },
+  {
+    "id": "gorge.crisis_water",
+    "category": "water",
+    "driver": "pressure",
+    "min_level": 1,
+    "cooldown_sec": 2400,
+    "is_critical": true,
+    "tags": ["crisis", "water"],
+    "title": "СРОЧНО — цистерна пуста",
+    "title_en": "URGENT — The Cistern Is Empty",
+    "body": "Воды нет. Река в камнях, насос хрипит. Инженер предлагает рыть временный колодец у реки силами всех, кто стоит на ногах; Завет предлагает открыть верхний канал, если вы попросите.",
+    "body_en": "There is no water. The river is in the stones, the pump wheezes. The engineer proposes digging a temporary well by the river with everyone who can stand; the Covenant offers to open the upper channel if you ask.",
+    "options": [
+      { "text": "Рыть колодец всем районом (+40 воды, счастье ниже)", "text_en": "Dig a well with the whole district (+40 water, mood lower)", "effects": { "add_resources": { "res_water_stockpile": 40 }, "add_buff": { "id": "well_digging", "name": "Все на колодце", "name_en": "Everyone at the well", "happiness_add": -3, "remaining": 900 }, "style": "pragmatist", "message": "Колодец дал воду к ночи.", "message_en": "The well gave water by night." } },
+      { "text": "Просить Завет открыть канал (+60 воды, Лига недовольна)", "text_en": "Ask the Covenant to open the channel (+60 water, the League displeased)", "effects": { "add_resources": { "res_water_stockpile": 60 }, "stat_league_trust": -3, "stat_city_trust": 3, "style": "protector", "message": "Канал открыли на три дня.", "message_en": "The channel was opened for three days." } }
+    ]
+  },
+  {
+    "id": "gorge.crisis_happiness",
+    "category": "happiness",
+    "driver": "pressure",
+    "min_level": 1,
+    "cooldown_sec": 2400,
+    "is_critical": true,
+    "tags": ["crisis", "workers"],
+    "title": "СРОЧНО — сход на площади",
+    "title_en": "URGENT — An Assembly on the Square",
+    "body": "Люди собрались на площади и не расходятся. Говорят о пайке, о лугах, о том, что Ренн тоже обещал. Мать Ольха стоит с краю и слушает.",
+    "body_en": "The people have gathered on the square and will not disperse. They talk of rations, of the meadows, of how Renn promised too. Mother Alder stands at the edge and listens.",
+    "options": [
+      { "text": "Выйти и говорить до ночи", "text_en": "Go out and talk until night", "effects": { "stat_unrest_pressure": -10, "stat_city_trust": 4, "style": "protector", "message": "Разошлись за полночь. Ольха ушла последней.", "message_en": "They dispersed past midnight. Alder left last." } },
+      { "text": "Раздать по мешку с амбара (30 еды)", "text_en": "Hand out a sack each from the barn (30 food)", "cost": { "res_food": 30 }, "effects": { "stat_unrest_pressure": -8, "style": "pragmatist", "message": "Мешки разобрали. Площадь опустела.", "message_en": "The sacks went. The square emptied." } }
+    ]
+  },
+  {
+    "id": "gorge.crisis_mandate",
+    "category": "mandate",
+    "driver": "pressure",
+    "min_level": 1,
+    "patron": "restoration_league",
+    "cooldown_sec": 2400,
+    "is_critical": true,
+    "tags": ["crisis", "patron"],
+    "title": "СРОЧНО — ультиматум Инспекции",
+    "title_en": "URGENT — The Inspectorate's Ultimatum",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Доверие Лиги к вашему управлению на исходе. Либо вы немедленно подтверждаете план по лугам и квоте письменно, либо Инспекция начинает процедуру отзыва.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. The League's trust in your administration is nearly spent. Either you confirm the meadow and quota plan in writing at once, or the Inspectorate begins recall proceedings.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Подтвердить план письменно", "text_en": "Confirm the plan in writing", "effects": { "stat_league_trust": 8, "stat_city_trust": -4, "set_flag": "promised_meadows", "style": "loyal", "message": "Письмо ушло с печатью. Отзыв отложен.", "message_en": "The letter went out under seal. The recall is deferred." } },
+      { "text": "Ответить, что район жив и этого довольно", "text_en": "Reply that the district lives and that is enough", "effects": { "stat_city_trust": 4, "stat_unrest_pressure": -3, "style": "autonomist", "message": "Инспектор не ответила.", "message_en": "The inspector did not reply." } }
+    ]
+  },
+  {
+    "id": "legacy_gorge.meadows",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_meadows",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["report", "legacy"],
+    "title": "Акт передачи — три поля на лугах",
+    "title_en": "Handover Act — Three Fields on the Meadows",
+    "body": "Акт передачи района, подписан секретарём.\n\nРенн оставил три поля на спорных лугах и амбар с урожаем с них. Родят они как ничто другое. На каждом по ночам кто-то ставил вешки с зелёной лентой.\n\nСекретарь добавляет: писем от Завета было три, Ренн не ответил ни на одно.",
+    "body_en": "District handover act, signed by the secretary.\n\nRenn left three fields on the contested meadows and a barn with their harvest. They bear like nothing else. Someone has been planting stakes with green ribbon on each of them at night.\n\nThe secretary adds: there were three letters from the Covenant; Renn answered none.",
+    "options": [
+      { "text": "Принять район. С Заветом говорить буду сам", "text_en": "Take over. I will speak with the Covenant myself", "effects": { "message": "Подписано. Вешки с лентами остались на полях.", "message_en": "Signed. The ribboned stakes stayed in the fields." } }
+    ]
+  },
+  {
+    "id": "legacy_gorge.covenant_angry",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_meadows",
+    "trigger_day": 2,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "covenant", "legacy"],
+    "title": "Записка — четвёртое письмо Завета",
+    "title_en": "A Note — The Covenant's Fourth Letter",
+    "body": "«Новому администратору. Ренну мы писали трижды. Вам пишем один раз: поля с лугов снять до Суши. Снимете, начнём с чистого листа. Нет, канал закроем в первый день Суши».\n\nОльха Данир.",
+    "body_en": "\"To the new administrator. We wrote Renn three times. We write you once: take the fields off the meadows before the Drought. Do it and we start clean. If not, we close the channel on the Drought's first day.\"\n\nAlder Danir.",
+    "options": [
+      { "text": "Снять поля с лугов (убрать три грядки, Завет остынет)", "text_en": "Take the fields off the meadows (remove three plots, the Covenant cools)", "effects": { "demolish_building": "bld_field_strip", "clear_flag": "covenant_angry", "stat_city_trust": 2, "stat_league_trust": -3, "style": "protector", "message": "Одну грядку сняли при них, остальные обещали. Ольха кивнула.", "message_en": "One plot came down before them, the rest were promised. Alder nodded." } },
+      { "text": "Оставить: урожай нужен району", "text_en": "Leave them: the district needs the harvest", "effects": { "stat_unrest_pressure": 4, "stat_league_trust": 2, "style": "pragmatist", "message": "Ответ не отправляли. Вешек стало больше.", "message_en": "No reply was sent. There were more stakes." } }
+    ]
+  },
+  {
+    "id": "legacy_gorge.granary",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_granary",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["report", "legacy"],
+    "title": "Акт передачи — амбар полон, Лиге должны",
+    "title_en": "Handover Act — The Granary Full, the League Owed",
+    "body": "Акт передачи района, подписан секретарём.\n\nРенн выпросил у Лиги зернохранилище на сваях и триста мешков зерна в долг под будущий урожай. Амбар стоит, зерно в нём. Долг записан на район, и инспектор Варга об этом помнит лучше, чем о Ренне.",
+    "body_en": "District handover act, signed by the secretary.\n\nRenn begged the League for a granary on stilts and three hundred sacks of grain on credit against the coming harvest. The granary stands, the grain is in it. The debt is written against the district, and Inspector Varga remembers it better than she remembers Renn.",
+    "options": [
+      { "text": "Принять район и долг", "text_en": "Take over the district and the debt", "effects": { "message": "Подписано. Счёт придёт.", "message_en": "Signed. The bill will come." } }
+    ]
+  },
+  {
+    "id": "legacy_gorge.league_debt",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "league_debt",
+    "patron": "restoration_league",
+    "trigger_day": 4,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "legacy"],
+    "title": "Лига Восстановления — счёт за зерно",
+    "title_en": "Restoration League — The Bill for the Grain",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. За зернохранилище и триста мешков, выданных вашему предшественнику, район должен восемьдесят единиц в казну Лиги. Прошу погасить до первой проверки или вернуть зерном к Урожаю.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. For the granary and the three hundred sacks issued to your predecessor the district owes eighty units to the League's treasury. Settle before the first inspection, or repay in grain at the Harvest.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Погасить деньгами (80 денег)", "text_en": "Settle in money (80 money)", "cost": { "res_money": 80 }, "effects": { "clear_flag": "league_debt", "stat_league_trust": 6, "style": "loyal", "message": "Счёт закрыт. Инспектор расписалась.", "message_en": "The bill is closed. The inspector signed." } },
+      { "text": "Вернуть зерном к Урожаю (120 еды потом)", "text_en": "Repay in grain at the Harvest (120 food later)", "effects": { "add_buff": { "id": "league_grain_debt", "name": "Долг Лиге зерном", "name_en": "Grain debt to the League", "production_mult": 0.0, "remaining": 6000, "on_expire_event": "legacy_gorge.league_debt_due" }, "style": "pragmatist", "message": "Инспектор записала: «зерном, к Урожаю».", "message_en": "The inspector wrote: \"in grain, at the Harvest.\"" } }
+    ]
+  },
+  {
+    "id": "legacy_gorge.league_debt_due",
+    "category": "mandate",
+    "min_level": 1,
+    "callback": true,
+    "patron": "restoration_league",
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "legacy"],
+    "title": "Лига Восстановления — обоз за долгом",
+    "title_en": "Restoration League — The Convoy for the Debt",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Обоз Лиги стоит у поста за зерном по долгу вашего предшественника: сто двадцать мешков.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. The League's convoy stands at the post for the grain owed by your predecessor: one hundred and twenty sacks.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Отдать зерно (120 еды)", "text_en": "Hand over the grain (120 food)", "cost": { "res_food": 120 }, "effects": { "clear_flag": "league_debt", "stat_league_trust": 6, "message": "Обоз ушёл. Долг закрыт.", "message_en": "The convoy left. The debt is closed." } },
+      { "text": "Просить отсрочки", "text_en": "Ask for a deferral", "effects": { "stat_league_trust": -6, "message": "Обоз ушёл пустым. В деле появилась пометка «должник».", "message_en": "The convoy left empty. The file now says \"debtor.\"" } }
+    ]
+  },
+  {
+    "id": "legacy_gorge.empty",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_empty",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["report", "legacy"],
+    "title": "Акт передачи — бараки пустые, склад полный",
+    "title_en": "Handover Act — Empty Shelters, a Full Store",
+    "body": "Акт передачи района, подписан секретарём.\n\nПосле Ренна люди ушли в Верхние Поля: в двух бараках двое стариков. Зато склад полон: Ренн свозил дерево и камень под стройку, которую так и не начал.\n\nСекретарь: «Люди вернутся, если будет куда и к кому».",
+    "body_en": "District handover act, signed by the secretary.\n\nAfter Renn the people left for the Upper Fields: two old folk in two shelters. But the store is full: Renn hauled in wood and stone for a build he never began.\n\nThe secretary: \"The people will come back if there is somewhere and someone to come back to.\"",
+    "options": [
+      { "text": "Принять район. Строить и звать", "text_en": "Take over. Build and call them back", "effects": { "message": "Подписано. Склад открыт для стройки.", "message_en": "Signed. The store is open for building." } }
+    ]
+  }
+]
