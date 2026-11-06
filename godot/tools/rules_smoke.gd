@@ -356,7 +356,8 @@ func _campaign_rules() -> void:
 	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("interlude.previous_chapter")), "the interlude letter arrives on its first evening")
 	EventManager.raise_event("interlude.previous_chapter")
 	var letter: Dictionary = EventManager.pending_events.back() if not EventManager.pending_events.is_empty() else {}
-	_check((letter.get("body", "") as String).find("{prev_") < 0 and (letter.get("body", "") as String).find("Ржавая Нора") >= 0, "…and names the chapter before")
+	var prev_title: String = Localization.content_text(ContentDB.get_chapter_def("rust_pit"), "title", "?")
+	_check((letter.get("body", "") as String).find("{prev_") < 0 and (letter.get("body", "") as String).find(prev_title) >= 0, "…and names the chapter before (%s)" % prev_title)
 	EventManager.clear_pending()
 	Campaign.reset_campaign()
 	_new_game("appointed_administrator")
