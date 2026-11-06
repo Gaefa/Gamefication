@@ -1,0 +1,48 @@
+{
+  "fragments": [
+    {
+      "id": "gorge.diary.01",
+      "order": 1,
+      "title": "Дневник Тобиаса Ренна — I",
+      "title_en": "Tobias Renn's Diary — I",
+      "body": "Принял Ущелье. Инспектор говорит: земля родит, воды вдоволь, район лёгкий. Староста лугов, Мать Ольха, смотрела на меня как на вора. Завтра распашу первый луг. Пусть смотрят.",
+      "body_en": "Took over the Gorge. The inspector says the land bears, there is water to spare, an easy district. The elder of the meadows, Mother Alder, looked at me like a thief. Tomorrow I plough the first meadow. Let them look.",
+      "unlock": {
+        "day": 1
+      }
+    },
+    {
+      "id": "gorge.diary.02",
+      "order": 2,
+      "title": "Дневник Тобиаса Ренна — II",
+      "title_en": "Tobias Renn's Diary — II",
+      "body": "Четыре поля на лугах. Урожай втрое против старой земли. Завет прислал третье письмо, я не ответил. Ярвен из Верхних Полей торгует с ними семенами и зовёт меня дураком. Лига довольна: цифры растут.",
+      "body_en": "Four fields on the meadows. Triple the yield of the old ground. The Covenant sent a third letter; I did not answer. Jarven of the Upper Fields trades seed with them and calls me a fool. The League is pleased: the numbers grow.",
+      "unlock": {
+        "day": 6
+      }
+    },
+    {
+      "id": "gorge.diary.03",
+      "order": 3,
+      "title": "Дневник Тобиаса Ренна — III",
+      "title_en": "Tobias Renn's Diary — III",
+      "body": "Сушь. Река ушла в камни. Ночью кто-то перекрыл верхний канал, и три поля на лугах высохли за два дня. Ольха сказала при всех: «Земля не ваша, и вода не ваша». Я вызвал охрану. Зря.",
+      "body_en": "The Drought. The river went into the stones. One night someone closed the upper channel, and three meadow fields dried in two days. Alder said before everyone: \"The land is not yours, nor the water.\" I called the guard. A mistake.",
+      "unlock": {
+        "season": "season_drought"
+      }
+    },
+    {
+      "id": "gorge.diary.04",
+      "order": 4,
+      "title": "Дневник Тобиаса Ренна — IV",
+      "title_en": "Tobias Renn's Diary — IV",
+      "body": "Урожай собрали, половина сгнила: амбара нет, дожди пришли рано. Лига прислала счёт за квоту. Завет не продаёт семян. Я уезжаю до аудита. Тому, кто придёт: договоритесь с лугами раньше, чем с инспектором.",
+      "body_en": "The harvest came in; half of it rotted: no barn, and the rains came early. The League sent the bill for the quota. The Covenant sells no seed. I leave before the audit. To whoever comes next: settle with the meadows before you settle with the inspector.",
+      "unlock": {
+        "season": "season_harvest"
+      }
+    }
+  ]
+}

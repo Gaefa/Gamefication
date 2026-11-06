@@ -1,0 +1,165 @@
+{
+  "bld_granary": {
+    "badge": "storage",
+    "category": "Infrastructure",
+    "name": "Зернохранилище",
+    "name_en": "Granary",
+    "description": "Сухой амбар на сваях: еда хранится дольше и больше. В Урожай без него половина сгниёт на поле.",
+    "description_en": "A dry barn on stilts: food keeps longer and more of it fits. Without one, half the Harvest rots in the field.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/warehouse_t1_hex.png"
+    ],
+    "sprite_tint": "d9b84a",
+    "cost_build": {
+      "res_wood": 25,
+      "res_stone": 15
+    },
+    "outputs": {},
+    "consumes": {},
+    "storage": {
+      "res_food": 300
+    },
+    "cycle_time": 0.0,
+    "levels": [
+      {
+        "stage": "Зернохранилище",
+        "stage_en": "Granary",
+        "storage": {
+          "res_food": 300
+        }
+      }
+    ],
+    "tags": [
+      "storage",
+      "needs_road",
+      "food_store"
+    ]
+  },
+  "bld_seed_vault": {
+    "badge": "production",
+    "category": "Production",
+    "name": "Семенной склад",
+    "name_en": "Seed vault",
+    "description": "Отборные семена и пар по кругу: поля в двух клетках устают вдвое медленнее.",
+    "description_en": "Select seed and fallow in rotation: plots within two hexes wear out half as fast.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/tool_workshop_t1_hex.png"
+    ],
+    "sprite_tint": "8fd27a",
+    "cost_build": {
+      "res_wood": 20,
+      "res_stone": 10,
+      "res_tools": 2
+    },
+    "outputs": {},
+    "consumes": {},
+    "storage": {
+      "res_food": 60
+    },
+    "cycle_time": 0.0,
+    "levels": [
+      {
+        "stage": "Семенной склад",
+        "stage_en": "Seed vault",
+        "storage": {
+          "res_food": 60
+        }
+      }
+    ],
+    "tags": [
+      "storage",
+      "needs_road",
+      "seed_vault"
+    ]
+  },
+  "bld_field_strip": {
+    "badge": "food",
+    "name": "Пылевая грядка",
+    "name_en": "Dust Plot",
+    "description": "Грядка под тканью. На спорном лугу родит на четверть лучше и не устаёт; на обычной земле устаёт без дождей и семенного склада.",
+    "description_en": "A plot under cloth. On a contested meadow it bears a quarter better and never tires; on plain ground it wears out without rains or a seed vault.",
+    "size": [
+      1,
+      1
+    ],
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/field_strip_t1_hex.png",
+      "res://assets/buildings/tiers/field_strip_t2_hex.png",
+      "res://assets/buildings/tiers/field_strip_t3_hex.png"
+    ],
+    "cost_build": {
+      "res_wood": 10
+    },
+    "outputs": {
+      "res_food": 3
+    },
+    "consumes": {
+      "res_water_stockpile": 0.5
+    },
+    "cycle_time": 10.0,
+    "terrain_bonus": {
+      "3": 0.15,
+      "4": 0.1,
+      "2": -0.25,
+      "6": 0.25
+    },
+    "levels": [
+      {
+        "stage": "Ручная грядка",
+        "stage_en": "Hand-tilled plot",
+        "produces": {
+          "res_food": 3
+        },
+        "consumes": {
+          "res_water_stockpile": 0.5
+        }
+      },
+      {
+        "stage": "Орошенная грядка",
+        "stage_en": "Irrigated plot",
+        "cost": {
+          "res_wood": 15,
+          "res_stone": 8
+        },
+        "produces": {
+          "res_food": 5
+        },
+        "consumes": {
+          "res_water_stockpile": 0.75
+        }
+      },
+      {
+        "stage": "Пылевая ферма",
+        "stage_en": "Dust farm",
+        "cost": {
+          "res_wood": 25,
+          "res_stone": 15,
+          "res_tools": 1
+        },
+        "produces": {
+          "res_food": 8
+        },
+        "consumes": {
+          "res_water_stockpile": 1.25
+        }
+      }
+    ],
+    "tags": [
+      "food_source",
+      "needs_road"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "0": { "id": "grass", "label": "Луг", "label_en": "Meadow", "buildable": true, "cost_multiplier": 1, "color": "7c9a4f", "label_key": "terrain.grass.label",
+         "description": "Обычная земля ущелья: родит, но устаёт без отдыха.", "description_en": "The gorge's plain ground: it bears, but wears out without rest." },
+  "1": { "id": "water", "label": "Река", "label_en": "River", "buildable": false, "cost_multiplier": 0, "color": "4a7fa0", "label_key": "terrain.water.label",
+         "description": "Боголесская река. С гор идёт вода, в Сушь мелеет.", "description_en": "The Bogolessky river. Water comes down from the hills; it runs low in the Drought." },
+  "2": { "id": "sand", "label": "Галечник", "label_en": "Gravel bank", "buildable": true, "cost_multiplier": 1.1, "color": "c8b98a", "label_key": "terrain.sand.label",
+         "description": "Галечный берег: строить можно, растёт плохо.", "description_en": "A gravel bank: you can build, little grows." },
+  "3": { "id": "hill", "label": "Холм", "label_en": "Hill", "buildable": true, "cost_multiplier": 1.5, "color": "8a7a52", "label_key": "terrain.hill.label",
+         "description": "Склон ущелья.", "description_en": "A slope of the gorge." },
+  "4": { "id": "forest", "label": "Лес", "label_en": "Forest", "buildable": true, "cost_multiplier": 1.3, "color": "3f6b2a", "label_key": "terrain.forest.label",
+         "description": "Настоящий лес: дерева много.", "description_en": "A real forest: plenty of wood." },
+  "5": { "id": "rock", "label": "Скала", "label_en": "Rock", "buildable": true, "cost_multiplier": 2, "color": "6e6560", "label_key": "terrain.rock.label",
+         "description": "Скальный выход.", "description_en": "An outcrop of rock." }
+}

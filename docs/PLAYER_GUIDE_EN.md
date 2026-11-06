@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.2.5 — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.3.0-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Storms: on day 22 (Dust) and day 32 (Heat) the lookout warns of a storm for tomorrow; unbraced (20 wood, 5 tools) it wrecks two buildings, braced it leaves one breakdown. A wrecked building does nothing until repaired (R). Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
@@ -143,3 +143,13 @@ Also: a screenshot of the ending screen ("SUMMARY") and the `analytics` folder �
 - Art is being replaced: some buildings and all decoration are still placeholder.
 - The English localization is new: please report any untranslated or awkward text.
 - No mobile versions and no gamepad.
+
+## Chapter 2. Bogolessky Gorge
+
+Opens after any Rust Pit finale, in the "Chapter" row of the mandate screen. 30 days: Rains (1–12), Drought (13–22), Harvest (23–30). Audits on days 15 and 27, the grant on day 10. The rival is Elder Jarven of the Upper Fields, the patron the League (Inspector Helin Varga), the third power the Green Covenant (Mother Alder).
+
+- **Contested meadows** (the dark-green cells in a ring around the centre): a plot on them bears a quarter better and never tires, but every such plot is a Covenant claim. One plot brings a letter, three a demand; with an angry Covenant and four plots the channel is closed and two plots dry out. A treaty with the Covenant (day 11, or at the dam) ends the claims at the price of League trust.
+- **Soil**: on plain ground a plot loses 1.5% of its yield a day; meadows never tire. The Rains give soil back, a seed vault within two hexes halves the wear. The percentage shows on the plot's card.
+- **Granary** (300 food) halves spoilage in the Harvest; without one, half the harvest rots.
+- **A letter from the previous chapter** arrives on the first evening: how Rust Pit ended is how they remember you.
+- Three legacies of Renn: fields on the meadows with an angry Covenant; a full granary with a League debt; empty shelters with a full store.

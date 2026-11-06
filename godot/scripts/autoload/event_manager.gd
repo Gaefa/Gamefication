@@ -291,6 +291,14 @@ func _get_stat_value(stat_name: String) -> float:
 		"stat_water_days":
 			var days: float = EconomySystem.days_of("res_water_stockpile")
 			return 999.0 if is_inf(days) else days
+		"stat_contested_fields":
+			# Fields and plots standing on contested meadows: what the Covenant counts.
+			var claims: int = 0
+			for coord: Vector2i in GameStateStore.get_all_building_coords():
+				var tags: Array = ContentDB.get_building_def(GameStateStore.get_building(coord).get("type", "") as String).get("tags", []) as Array
+				if tags.has("food_source") and GameStateStore.get_terrain(coord) == 6:
+					claims += 1
+			return float(claims)
 		"stat_day":
 			return float(GameStateStore.climate().get("total_day", 1) as int)
 	push_warning("EventManager: unknown stat '%s' in a trigger" % stat_name)

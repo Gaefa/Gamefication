@@ -72,6 +72,11 @@ func build() -> void:
 		pressure_sys,
 	)
 
+	# Chapter mechanics (chapter.json "mechanics"): only the chapter that asks pays for them.
+	var mechanics: Dictionary = ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary
+	if mechanics.get("soil", false) as bool:
+		tick_scheduler.add_system(SoilSystem.new())
+
 	# Command bus
 	command_bus = CommandBus.new()
 	command_bus.set_context(_build_context())

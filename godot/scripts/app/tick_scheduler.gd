@@ -9,6 +9,7 @@ var _maintenance: MaintenanceSystem
 var _issue: IssueSystem
 var _progression: ProgressionSystem
 var _pressure: PressureSystem
+var _extras: Array = []  # chapter mechanics (soil, …), run after the random issues
 
 
 func _init(
@@ -54,6 +55,8 @@ func run_tick() -> void:
 
 	# Phase 4: Random issues
 	_issue.process_tick()
+	for extra: Variant in _extras:
+		extra.process_tick()
 
 	# Phase 5: Population & happiness
 	_progression.process_tick()
@@ -68,3 +71,8 @@ func run_tick() -> void:
 	GameStateStore.save_meta().playtime_sec = (GameStateStore.save_meta().playtime_sec as float) + 1.0
 
 	EventBus.tick_finished.emit(tick)
+
+
+## A chapter's own system (anything with process_tick), run every tick after the issues.
+func add_system(system: Variant) -> void:
+	_extras.append(system)

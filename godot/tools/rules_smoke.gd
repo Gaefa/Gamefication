@@ -174,6 +174,7 @@ func _ready() -> void:
 	_treasury_rules()
 	_legacy_rules()
 	_campaign_rules()
+	_gorge_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -335,7 +336,7 @@ func _legacy_rules() -> void:
 func _campaign_rules() -> void:
 	Campaign.reset_campaign()
 	_check(ContentDB.get_chapter_ids(true).size() >= 2 and ContentDB.get_chapter_ids(true)[0] == "rust_pit", "the campaign lists Rust Pit first")
-	_check(Campaign.is_unlocked("rust_pit") and not Campaign.is_unlocked("gorge_stub"), "chapter 1 is open, chapter 2 waits for a finale")
+	_check(Campaign.is_unlocked("rust_pit") and not Campaign.is_unlocked("bogolessky_gorge"), "chapter 1 is open, chapter 2 waits for a finale")
 	_new_game("appointed_administrator")
 	_check(ContentDB.active_chapter == "rust_pit" and (GameStateStore.save_meta().get("chapter_id", "") as String) == "rust_pit", "a plain new game is chapter 1 and says so in the save")
 	var audits: Array = ContentDB.get_audit_days()
@@ -344,14 +345,14 @@ func _campaign_rules() -> void:
 	_check(RivalManager.rival_short() == Localization.ru_en("Восс", "Voss"), "chapter 1's rival is still Voss")
 	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("interlude.previous_chapter")), "no interlude before any chapter is finished")
 	Campaign.record_result("rust_pit", "ending.win.loyal", "win")
-	_check(Campaign.is_unlocked("gorge_stub") and Campaign.next_open_chapter() == "" , "a finale opens the next chapter (the stub is hidden from the open list)")
+	_check(Campaign.is_unlocked("bogolessky_gorge") and Campaign.next_open_chapter() == "bogolessky_gorge", "a finale opens the next chapter")
 
 	orch = GameOrchestrator.new()
-	orch.new_game(12345, "appointed_administrator", "", "gorge_stub")
+	orch.new_game(12345, "appointed_administrator", "", "bogolessky_gorge")
 	SimulationRunner.start_run()
-	_check(ContentDB.active_chapter == "gorge_stub" and ContentDB.get_win_day() == 30 and ContentDB.get_season_order()[0] == "season_rains", "the stub chapter loads its own calendar")
-	_check(GameStateStore.get_all_building_coords().size() == 12 and not GameStateStore.has_building(Vector2i(2, 1)), "…its own layout without the Company's traces (%d)" % GameStateStore.get_all_building_coords().size())
-	_check(ContentDB.get_event_def("gorge.handover").size() > 0 and ContentDB.get_event_def("report.storm_warning").is_empty(), "…its own cards, not Rust Pit's")
+	_check(ContentDB.active_chapter == "bogolessky_gorge" and ContentDB.get_win_day() == 30 and ContentDB.get_season_order()[0] == "season_rains", "chapter 2 loads its own calendar")
+	_check(GameStateStore.get_all_building_coords().size() == 13 and not GameStateStore.has_building(Vector2i(2, 1)), "…its own layout without the Company's traces (%d)" % GameStateStore.get_all_building_coords().size())
+	_check(ContentDB.get_event_def("gorge.league_welcome").size() > 0 and ContentDB.get_event_def("report.storm_warning").is_empty(), "…its own cards, not Rust Pit's")
 	_check(RivalManager.rival_short() != Localization.ru_en("Восс", "Voss"), "…and its own rival")
 	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("interlude.previous_chapter")), "the interlude letter arrives on its first evening")
 	EventManager.raise_event("interlude.previous_chapter")
@@ -362,6 +363,55 @@ func _campaign_rules() -> void:
 	Campaign.reset_campaign()
 	_new_game("appointed_administrator")
 	_check(ContentDB.active_chapter == "rust_pit" and ContentDB.get_event_def("report.storm_warning").size() > 0, "switching back restores chapter 1's content")
+
+
+## Chapter 2: contested meadows, worn soil, the Covenant's letters, a dry granary.
+func _gorge_rules() -> void:
+	Campaign.reset_campaign()
+	EventManager.clear_pending()
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "bogolessky_gorge")
+	SimulationRunner.start_run()
+	var meadows: Array[Vector2i] = []
+	for coord: Vector2i in HexCoords.disk(Vector2i.ZERO, 8):
+		if GameStateStore.get_terrain(coord) == 6 and not GameStateStore.has_building(coord):
+			meadows.append(coord)
+	_check(meadows.size() >= 8, "the Gorge has contested meadows (%d)" % meadows.size())
+	var plain: Vector2i = Vector2i(2, -1)  # a starter plot on plain ground
+	_check(GameStateStore.get_terrain(plain) == 0, "the starter plots stand on plain ground")
+	_check(EventManager.call("_get_stat_value", "stat_contested_fields") == 0.0, "no claims at the start")
+	GameStateStore.set_building(meadows[0], {"type": "bld_field_strip", "level": 0, "damaged": false, "has_issue": false})
+	_check(EventManager.call("_get_stat_value", "stat_contested_fields") == 1.0, "a plot on a meadow is a claim")
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("gorge.covenant_claim")), "…and the Covenant writes")
+	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("gorge.covenant_demand")), "…but does not demand yet")
+	# The Rains give the soil back more than a day takes; dry the season out to see the wear.
+	var active_mods: Dictionary = GameStateStore.climate().get("modifiers", {}) as Dictionary
+	var recovery: float = active_mods.get("soil_recovery", 0.0) as float
+	active_mods["soil_recovery"] = 0.0
+	for day_offset: int in range(1, 4):
+		GameStateStore.climate()["total_day"] = 1 + day_offset
+		_ticks(1)
+	active_mods["soil_recovery"] = recovery
+	var plain_soil: float = GameStateStore.get_building(plain).get("soil", 1.0) as float
+	var meadow_soil: float = GameStateStore.get_building(meadows[0]).get("soil", 1.0) as float
+	_check(plain_soil < 1.0 and plain_soil > 0.9, "plain soil wears a little each dry day (%.3f)" % plain_soil)
+	_check(is_equal_approx(meadow_soil, 1.0), "meadow soil does not wear (%.3f)" % meadow_soil)
+	_check(recovery > 0.0, "the Rains give soil back")
+	var treaty: Dictionary = (ContentDB.get_event_def("gorge.covenant_treaty")["options"][0] as Dictionary).get("effects", {})
+	EventManager.call("_apply_effects", treaty)
+	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("gorge.covenant_claim")), "the treaty silences the claims")
+	var loss_before: float = EconomySystem.daily_spoilage()
+	GameStateStore.climate()["modifiers"]["food_spoilage_per_day"] = 0.04
+	var loss_plain: float = EconomySystem.daily_spoilage()
+	GameStateStore.set_building(Vector2i(2, 0), {"type": "bld_granary", "level": 0, "damaged": false, "has_issue": false})
+	var loss_granary: float = EconomySystem.daily_spoilage()
+	_check(loss_plain > 0.0 and loss_granary < loss_plain, "a granary slows spoilage (%.2f → %.2f, was %.2f)" % [loss_plain, loss_granary, loss_before])
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_meadows", "bogolessky_gorge")
+	SimulationRunner.start_run()
+	_check(EventManager.call("_get_stat_value", "stat_contested_fields") >= 1.0 and (GameStateStore.mandate().get("flags", {}) as Dictionary).get("covenant_angry", false), "the meadows legacy starts with claims and an angry Covenant (%d)" % int(EventManager.call("_get_stat_value", "stat_contested_fields")))
+	Campaign.reset_campaign()
+	_new_game("appointed_administrator")
 
 
 func _content_contract_rules() -> void:

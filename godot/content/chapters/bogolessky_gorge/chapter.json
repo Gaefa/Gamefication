@@ -1,0 +1,137 @@
+{
+  "id": "bogolessky_gorge",
+  "order": 2,
+  "title": "Боголесское Ущелье",
+  "title_en": "Bogolessky Gorge",
+  "region": "Зелёный пояс",
+  "region_en": "The Green Belt",
+  "blurb": "Зелёное ущелье, где земля ещё родит. Лига прислала вас поднять район, Зелёный Завет считает луга своими. Дожди, Сушь, Урожай: 30 дней.",
+  "blurb_en": "A green gorge where the land still bears. The League sent you to raise the district; the Green Covenant calls the meadows its own. Rains, Drought, Harvest: 30 days.",
+  "scenario": {
+    "season_order": [
+      "season_rains",
+      "season_drought",
+      "season_harvest"
+    ],
+    "win_day": 30,
+    "audit_days": [
+      15,
+      27
+    ],
+    "grant_day": 10
+  },
+  "rival": {
+    "name": "Староста Ярвен",
+    "name_en": "Elder Jarven",
+    "short": "Ярвен",
+    "short_en": "Jarven",
+    "district": "Верхние Поля",
+    "district_en": "The Upper Fields"
+  },
+  "tutorial_intro": "Вы — администратор [b]Боголесского Ущелья[/b]. Земля здесь родит, но [b]спорные луга[/b] (зелёные клетки) считает своими Зелёный Завет: каждое поле на них — повод для письма. Обычная земля устаёт, луга нет. [b]Сушь[/b] — дни 13–22, [b]Урожай[/b] — 23–30. Аудиты — дни 15 и 27. Продержитесь до 30-го дня с не меньше чем 12 жителями.\n\nВремя пока стоит — спокойно осмотримся.",
+  "tutorial_intro_en": "You are the administrator of [b]Bogolessky Gorge[/b]. The land bears here, but the [b]contested meadows[/b] (green cells) are claimed by the Green Covenant: every field on them is a letter waiting to happen. Plain ground wears out, the meadows do not. The [b]Drought[/b] runs on days 13–22, the [b]Harvest[/b] on 23–30. Audits: days 15 and 27. Hold out until day 30 with at least 12 residents.\n\nTime is stopped for now — let's look around.",
+  "company_traces": false,
+  "mechanics": {
+    "soil": true
+  },
+  "terrain": {
+    "contested_ring": [
+      3,
+      7
+    ],
+    "contested_chance": 0.45
+  },
+  "start_layout": [
+    {
+      "coord": [
+        0,
+        0
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        1,
+        -1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -1,
+        1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -1,
+        0
+      ],
+      "type": "bld_admin_post"
+    },
+    {
+      "coord": [
+        1,
+        0
+      ],
+      "type": "bld_main_cistern"
+    },
+    {
+      "coord": [
+        0,
+        -1
+      ],
+      "type": "bld_warehouse"
+    },
+    {
+      "coord": [
+        0,
+        1
+      ],
+      "type": "bld_well_pump"
+    },
+    {
+      "coord": [
+        -2,
+        1
+      ],
+      "type": "bld_shelter"
+    },
+    {
+      "coord": [
+        -1,
+        2
+      ],
+      "type": "bld_shelter"
+    },
+    {
+      "coord": [
+        2,
+        -1
+      ],
+      "type": "bld_field_strip"
+    },
+    {
+      "coord": [
+        1,
+        -2
+      ],
+      "type": "bld_field_strip"
+    },
+    {
+      "coord": [
+        -1,
+        -1
+      ],
+      "type": "bld_solar_panel"
+    },
+    {
+      "coord": [
+        -2,
+        0
+      ],
+      "type": "bld_solar_panel"
+    }
+  ]
+}

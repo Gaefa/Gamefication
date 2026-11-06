@@ -1,0 +1,58 @@
+[
+  {
+    "id": "ending.win.loyal",
+    "kind": "win",
+    "title": "Удержанный мандат — луга в реестре Лиги",
+    "title_en": "Mandate Held — The Meadows in the League's Register",
+    "body": "Проверка пройдена, мандат продлён. Боголесское Ущелье прошло Сушь и собрало Урожай: амбары полны, квота ушла в срок, поля стоят там, где вы их поставили. Инспектор Варга вписала луга в реестр Лиги как «земли района».\n\nЗавет молчит. Мать Ольха ушла в Верхние Поля к Ярвену. Лига предлагает вам следующий район: промышленный, грязный и злой.",
+    "body_en": "The inspection is passed and the mandate extended. Bogolessky Gorge came through the Drought and brought in the Harvest: the barns are full, the quota went out on time, the fields stand where you put them. Inspector Varga entered the meadows in the League's register as \"district land.\"\n\nThe Covenant is silent. Mother Alder has gone to Jarven's Upper Fields. The League offers you the next district: industrial, dirty and angry."
+  },
+  {
+    "id": "ending.win.protector",
+    "kind": "win",
+    "title": "Удержанный мандат — договор с лугами",
+    "title_en": "Mandate Held — A Treaty with the Meadows",
+    "body": "Мандат продлён, хотя инспектор писала отчёт сквозь зубы. Ущелье выжило в Сушь, потому что Завет открыл верхний канал, и собрало Урожай, потому что Завет продал семена. Луга остались лугами, ваши поля — на вашей земле, и обе стороны это подписали.\n\nМать Ольха прислала корзину яблок без записки. Лига предлагает вам следующий район и просит «на этот раз помнить, кто вас назначил».",
+    "body_en": "The mandate is extended, though the inspector wrote her report through her teeth. The Gorge survived the Drought because the Covenant opened the upper channel, and brought in the Harvest because the Covenant sold seed. The meadows stayed meadows, your fields stayed on your land, and both sides signed it.\n\nMother Alder sent a basket of apples with no note. The League offers you the next district and asks you \"this time to remember who appointed you.\""
+  },
+  {
+    "id": "ending.lose.isolation",
+    "kind": "lose",
+    "title": "Отзыв — социальная изоляция",
+    "title_en": "Recall — Social Isolation",
+    "body": "Доверие Лиги кончилось. Инспектор Варга не стала устраивать сцен: из Ущелья просто перестали отвечать на ваши письма, обоз с семенами ушёл к Ярвену, а на пост у дороги поставили человека, который вас не знает.\n\nЧерез неделю вы уехали сами. Луга остались, как были.",
+    "body_en": "The League's trust ran out. Inspector Varga made no scene: the Gorge simply stopped answering your letters, the seed convoy went to Jarven, and a man who did not know you was put on the post by the road.\n\nA week later you left on your own. The meadows stayed as they were."
+  },
+  {
+    "id": "ending.lose.riot",
+    "kind": "lose",
+    "title": "Бунт — луга забрали землю назад",
+    "title_en": "Riot — The Meadows Took the Land Back",
+    "body": "Поддержка жителей кончилась. Ночью люди Завета и ваши же переселенцы вышли на поля с косами и выкосили всё, что стояло на лугах. Утром у поста лежал ваш мандат с оторванной печатью.\n\nМать Ольха не пришла. Ей не нужно было.",
+    "body_en": "The residents' backing ran out. At night the Covenant's people and your own settlers went out to the fields with scythes and cut down everything standing on the meadows. In the morning your mandate lay at the post with its seal torn off.\n\nMother Alder did not come. She did not need to."
+  },
+  {
+    "id": "ending.lose.exodus",
+    "kind": "lose",
+    "title": "Исход — ушли к Ярвену",
+    "title_en": "Exodus — Gone to Jarven's",
+    "body": "Район опустел. Ущелье зелёное, но люди ушли туда, где с ними говорят: в Верхние Поля, к старосте Ярвену, у которого вода, семена и мир с Заветом.\n\nВ отчёте Лиги вы значитесь как «администратор, не удержавший население».",
+    "body_en": "The district emptied. The Gorge is green, but the people went where they are spoken to: the Upper Fields, to Elder Jarven, who has water, seed and peace with the Covenant.\n\nIn the League's report you are listed as \"an administrator who failed to hold the population.\""
+  },
+  {
+    "id": "ending.lose.not_renewed",
+    "kind": "lose",
+    "title": "Мандат не продлён — Ущелье не выросло",
+    "title_en": "Mandate Not Renewed — The Gorge Did Not Grow",
+    "body": "Срок вышел, а в Ущелье всё те же два барака. Инспектор Варга записала: «земля родит, администратор нет». Мандат на второй срок не продлён.\n\nВам вернули дорожные и пожелали удачи в менее зелёном месте.",
+    "body_en": "The term ran out and the Gorge still has the same two shelters. Inspector Varga wrote: \"The land bears; the administrator does not.\" The mandate was not renewed for a second term.\n\nYou were refunded your travel money and wished luck somewhere less green."
+  },
+  {
+    "id": "ending.lose.not_renewed_losses",
+    "kind": "lose",
+    "title": "Мандат не продлён — Ущелье растеряло людей",
+    "title_en": "Mandate Not Renewed — The Gorge Bled People",
+    "body": "Ущелье росло, пока не пришла Сушь, а потом люди потянулись в Верхние Поля. К аудиту район был меньше, чем на старте. Инспектор Варга не стала спорить с цифрами.\n\nМандат не продлён. Луга достались следующему.",
+    "body_en": "The Gorge grew until the Drought came, and then the people drifted to the Upper Fields. By the audit the district was smaller than at the start. Inspector Varga did not argue with the numbers.\n\nThe mandate was not renewed. The meadows went to the next one."
+  }
+]
