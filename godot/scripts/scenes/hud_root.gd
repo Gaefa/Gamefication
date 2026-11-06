@@ -1586,6 +1586,11 @@ func _money_tooltip() -> String:
 	lines.append(Localization.ru_en("Содержание района: −%d", "District upkeep: −%d") % upkeep)
 	if spend > 0:
 		lines.append(Localization.ru_en("Генераторы и прочее: −%d", "Generators and the like: −%d") % spend)
+	var economy: Dictionary = GameStateStore.economy()
+	var repairs: int = economy.get("repairs_today", 0) as int
+	if repairs > 0 and (economy.get("repairs_day", 0) as int) == (GameStateStore.climate().get("total_day", 1) as int):
+		lines.append(Localization.ru_en("Ремонт сегодня: −%d (%d поломок по %d)", "Repairs today: −%d (%d breakdowns at %d)")
+			% [repairs * int(RepairBuildingCommand.REPAIR_COST_COINS), repairs, int(RepairBuildingCommand.REPAIR_COST_COINS)])
 	lines.append(Localization.ru_en("Больше заселённых бараков — больше денег. Грант Лиги — день %d.",
 		"More lived-in shelters, more money. The League grant comes on day %d.") % ContentDB.get_grant_day())
 	return "\n" + "\n".join(lines)

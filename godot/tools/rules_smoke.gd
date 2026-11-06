@@ -268,6 +268,14 @@ func _treasury_rules() -> void:
 	EventManager.call("_apply_effects", (note["options"][0] as Dictionary).get("effects", {}))
 	_check(is_equal_approx(GameStateStore.get_resource("res_money"), before + 45.0), "the levy brings +45 money")
 	_check((EventManager.call("_get_stat_value", "stat_unrest_pressure") as float) > unrest_before, "the levy raises unrest")
+	var shelter: Vector2i = GameStateStore.get_all_building_coords().filter(func(c: Vector2i) -> bool: return GameStateStore.get_building(c).get("type", "") == "bld_shelter").front()
+	var broken: Dictionary = GameStateStore.get_building(shelter)
+	broken["has_issue"] = true
+	GameStateStore.set_building(shelter, broken)
+	orch.command_bus.execute(RepairBuildingCommand.new(shelter))
+	_check((GameStateStore.economy().get("repairs_today", 0) as int) == 1, "a repair is counted in today's repair bill")
+	var per_day: float = IssueSystem.ISSUE_CHANCE_PER_BUILDING * float(SimulationRunner.TICKS_PER_DAY)
+	_check(per_day <= 0.15, "a building breaks no more than once a week on average (%.2f a day)" % per_day)
 
 
 func _content_contract_rules() -> void:

@@ -27,6 +27,7 @@ func execute(ctx: Dictionary) -> void:
 		return
 
 	GameStateStore.spend({"res_money": REPAIR_COST_COINS})
+	_note_repair_spend()
 	bld["damaged"] = false
 	bld["has_issue"] = false
 	GameStateStore.set_building(coord, bld)
@@ -37,3 +38,14 @@ func execute(ctx: Dictionary) -> void:
 	success = true
 	message = Localization.t("ui.command.building_repaired", "Building repaired")
 	EventBus.building_repaired.emit(coord)
+
+
+## Today's repair bill, for the treasury tooltip: the money trend only sees flows, and a
+## player who repairs four "!" a day would otherwise watch a "+25" treasury shrink.
+static func _note_repair_spend() -> void:
+	var economy: Dictionary = GameStateStore.economy()
+	var today: int = GameStateStore.climate().get("total_day", 1) as int
+	if (economy.get("repairs_day", 0) as int) != today:
+		economy["repairs_day"] = today
+		economy["repairs_today"] = 0
+	economy["repairs_today"] = (economy.get("repairs_today", 0) as int) + 1
