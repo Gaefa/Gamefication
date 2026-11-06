@@ -80,7 +80,7 @@ func build() -> void:
 	SimulationRunner.tick_callback = tick_scheduler.run_tick
 
 
-func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator") -> void:
+func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator", legacy_id: String = "") -> void:
 	if seed_val == 0:
 		seed_val = randi()
 	EventBus.run_reset.emit()
@@ -90,11 +90,13 @@ func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator")
 	_generate_terrain()
 	GameStateStore.save_meta().rng_state = rng.get_state()
 	_bootstrap_campaign_hub()
+	_apply_legacy(legacy_id)
 	spatial.rebuild_from_state()
 	coverage.invalidate()
 	aura_cache.invalidate()
 	season_sys.initialize()
 	infrastructure_sys.process_tick()
+	_apply_legacy_resources(legacy_id)
 	EventBus.new_game_started.emit()
 
 
@@ -154,6 +156,49 @@ func _bootstrap_campaign_hub() -> void:
 			"has_issue": false,
 		})
 	_bootstrap_company_traces()
+
+
+## What the previous administrator left (start_legacies.json): the same map, a different
+## first ten minutes. Extra buildings, wrecked ones, a stocked or emptied store, a lower
+## patron trust, and flags the Desk cards key on. An empty id is the plain start.
+func _apply_legacy(legacy_id: String) -> void:
+	GameStateStore.save_meta().legacy_id = legacy_id
+	GameStateStore.mandate()["legacy_id"] = legacy_id
+	var legacy: Dictionary = ContentDB.get_start_legacy_def(legacy_id)
+	if legacy.is_empty():
+		return
+	for entry: Variant in legacy.get("buildings", []) as Array:
+		var cell: Array = (entry as Dictionary).get("coord", [0, 0]) as Array
+		GameStateStore.set_building(Vector2i(cell[0] as int, cell[1] as int), {
+			"type": (entry as Dictionary).get("type", "") as String, "level": 0, "damaged": false, "has_issue": false,
+		})
+	for type_id: Variant in legacy.get("damaged", []) as Array:
+		for coord: Vector2i in GameStateStore.get_all_building_coords():
+			var bld: Dictionary = GameStateStore.get_building(coord)
+			if bld.get("type", "") == type_id and not (bld.get("damaged", false) as bool):
+				bld["damaged"] = true
+				GameStateStore.set_building(coord, bld)
+				break
+	var mandate_state: Dictionary = GameStateStore.mandate()
+	var overrides: Dictionary = legacy.get("mandate", {}) as Dictionary
+	for key: String in overrides:
+		mandate_state[key] = overrides[key]
+	if legacy.has("residents"):
+		# People who were here before the pump broke: they leave over days unless it is fixed.
+		GameStateStore.population()["residents"] = float(legacy.get("residents", 0) as int)
+		GameStateStore.population()["total"] = legacy.get("residents", 0) as int
+	var flags: Dictionary = mandate_state.get("flags", {}) as Dictionary
+	for flag: Variant in legacy.get("flags", []) as Array:
+		flags[flag as String] = true
+	mandate_state["flags"] = flags
+
+
+## The legacy's stores go in once the infrastructure tick has set the caps: a full cistern
+## is 750 only after the cistern has told the store how much it holds.
+func _apply_legacy_resources(legacy_id: String) -> void:
+	var resources: Dictionary = ContentDB.get_start_legacy_def(legacy_id).get("resources", {}) as Dictionary
+	for res_id: String in resources:
+		GameStateStore.set_resource(res_id, resources[res_id] as float)
 
 
 ## The district is not a clean building site (GDD §3.1): the Company's dead pipeline runs

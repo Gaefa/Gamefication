@@ -795,6 +795,7 @@
     "category": "mandate",
     "min_level": 1,
     "once": true,
+    "excludes_flag": "forecaster_active",
     "trigger_condition": "res_tools >= 20",
     "cooldown_sec": 999999,
     "tags": ["quest", "forecaster"],
@@ -2975,6 +2976,180 @@
           "style": "protector",
           "message": "Счетовод кивает: дешевле заселить ещё один барак, чем ссориться с теми, кто уже платит.",
           "message_en": "The bookkeeper nods: cheaper to fill one more shelter than to quarrel with those already paying."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy.cistern",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_cistern",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["report", "legacy"],
+    "title": "Акт передачи — цистерна полна, насос разбит",
+    "title_en": "Handover Act — The Cistern Full, the Pump Wrecked",
+    "body": "Акт передачи района, подписан секретарём.\n\nПрежний администратор уехал три дня назад. Главная Цистерна залита под крышку: семьсот пятьдесят кубов. Насос при этом стоит разбитый, вал сорван, бригада ждёт денег на ремонт.\n\nОткуда столько воды при мёртвом насосе, в акте не сказано. Секретарь добавляет от себя: воду возил Рубен, и он считает, что ему должны сто кубов.",
+    "body_en": "District handover act, signed by the secretary.\n\nThe previous administrator left three days ago. The Main Cistern is filled to the lid: seven hundred and fifty units. The pump, meanwhile, stands wrecked, its shaft torn out; the crew waits for repair money.\n\nWhere so much water came from with a dead pump, the act does not say. The secretary adds on his own: Ruben hauled it, and he reckons he is owed a hundred units.",
+    "options": [
+      {
+        "text": "Принять район. Насос чинить первым делом",
+        "text_en": "Take over. The pump comes first",
+        "effects": {
+          "message": "Подписано. Бригада ждёт у насоса: найдите «!» на карте и нажмите R.",
+          "message_en": "Signed. The crew waits at the pump: find the \"!\" on the map and press R."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy.ruben_water",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "ruben_water_debt",
+    "trigger_day": 3,
+    "cooldown_sec": 999999,
+    "tags": ["petition", "shadow", "legacy"],
+    "title": "Записка — Рубен пришёл за водой",
+    "title_en": "A Note — Ruben Comes for the Water",
+    "body": "Записка через секретаря, без подписи.\n\n«администратору. воду в вашу цистерну возил я, четыре ходки, пока насос стоял. прежний обещал сто кубов обратно, когда насос заработает. он уехал, вы остались. сто кубов или сойдёмся на шестидесяти деньгами. ждать долго не буду.»",
+    "body_en": "A note through the secretary, unsigned.\n\n\"to the administrator. the water in your cistern I hauled, four trips, while the pump stood. the old one promised a hundred units back once the pump ran. he left, you stayed. a hundred units, or sixty in money and we are square. I will not wait long.\"",
+    "options": [
+      {
+        "text": "Отдать сто кубов воды",
+        "text_en": "Hand over a hundred units of water",
+        "cost": { "res_water_stockpile": 100 },
+        "effects": {
+          "clear_flag": "ruben_water_debt",
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Обоз ушёл ночью. Рубен кивнул: долг прежнего закрыт.",
+          "message_en": "The convoy left at night. Ruben nodded: the old debt is closed."
+        }
+      },
+      {
+        "text": "Заплатить деньгами (60)",
+        "text_en": "Pay in money (60)",
+        "cost": { "res_money": 60 },
+        "effects": {
+          "clear_flag": "ruben_water_debt",
+          "style": "pragmatist",
+          "message": "Деньги ушли через секретаря. Вода осталась в цистерне.",
+          "message_en": "The money went through the secretary. The water stays in the cistern."
+        }
+      },
+      {
+        "text": "Отказать: долги прежнего не мои",
+        "text_en": "Refuse: the old debts are not mine",
+        "effects": {
+          "clear_flag": "ruben_water_debt",
+          "set_flag": "ruben_burned",
+          "stat_unrest_pressure": 4,
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Ответа не было. На следующий день у цистерны нашли сорванную пломбу — пустую угрозу или нет, покажет время.",
+          "message_en": "No reply came. The next day a torn seal was found on the cistern: an empty threat or not, time will tell."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy.people",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_people",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["report", "legacy"],
+    "title": "Акт передачи — восемь жителей, пустой склад",
+    "title_en": "Handover Act — Eight Residents, an Empty Warehouse",
+    "body": "Акт передачи района, подписан секретарём.\n\nПрежний администратор принимал всех, кто приходил: два барака заселены, восемь человек. Кормил он их со склада, и склад кончился: еды на день, дерева на один барак, камня на дорогу.\n\nЛюди знают, что администратор сменился, и ждут, что будет с пайком.",
+    "body_en": "District handover act, signed by the secretary.\n\nThe previous administrator took in everyone who came: two shelters lived in, eight people. He fed them from the warehouse, and the warehouse ran out: a day of food, wood for one shelter, stone for a road.\n\nThe people know the administrator has changed and wait to hear about the rations.",
+    "options": [
+      {
+        "text": "Просить Лигу об авансе продовольствия (+40 еды, Лига запомнит)",
+        "text_en": "Ask the League for a food advance (+40 food, the League remembers)",
+        "effects": {
+          "add_resources": { "res_food": 40 },
+          "stat_league_trust": -3,
+          "style": "loyal",
+          "message": "Подвода с продовольствием пришла к вечеру. В отчёте Лиги появилась первая пометка.",
+          "message_en": "A cart of food arrived by evening. The League's report has its first mark."
+        }
+      },
+      {
+        "text": "Справимся сами: грядки и карьер, паёк без урезания",
+        "text_en": "We manage ourselves: plots and the quarry, rations uncut",
+        "effects": {
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Люди выслушали и разошлись по работам. Еды хватит на день, дальше — ваши грядки.",
+          "message_en": "The people listened and went to work. The food lasts a day; after that, your plots."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy.office",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_office",
+    "trigger_day": 1,
+    "cooldown_sec": 999999,
+    "tags": ["report", "legacy", "forecaster"],
+    "title": "Акт передачи — контора вскрыта, «Прогнозист» гудит",
+    "title_en": "Handover Act — The Office Opened, the Forecaster Humming",
+    "body": "Акт передачи района, подписан секретарём.\n\nКонтора Компании Чистого Истока вскрыта прежним администратором. На третьем этаже гудит вычислитель «Прогнозист»: он назовёт первый день Пыли с точностью до дня, и прогноз у вас точнее, чем у Восс.\n\nПломбы Лиги на дверях сорваны. Инспекция об этом знает, и в деле уже лежит рапорт.",
+    "body_en": "District handover act, signed by the secretary.\n\nThe Clear Source Company office was broken open by the previous administrator. On the third floor the Forecaster hums: it will name the first day of the Dust to the day, and your forecast is sharper than Voss's.\n\nThe League's seals on the doors are torn. The Inspectorate knows, and a report already lies in the file.",
+    "options": [
+      {
+        "text": "Принять район. Контора остаётся открытой",
+        "text_en": "Take over. The office stays open",
+        "effects": {
+          "message": "Подписано. Пломбы никто не вернул.",
+          "message_en": "Signed. Nobody put the seals back."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy.office_inspector",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_office",
+    "patron": "restoration_league",
+    "trigger_day": 2,
+    "cooldown_sec": 999999,
+    "tags": ["patron", "letter", "legacy"],
+    "title": "Лига Восстановления — о конторе Компании",
+    "title_en": "Restoration League — On the Company Office",
+    "body": "Лига Восстановления. Инспекция сухих районов.\n\nАдминистратору района Ржавая Нора.\n\nВаш предшественник вскрыл имущество Компании без санкции Лиги и запустил вычислитель. Рапорт у меня. Отвечать за него вы не обязаны, но за контору теперь отвечаете вы.\n\nПрошу сообщить, что в ней работает и кто имеет доступ.",
+    "body_en": "Restoration League. Dry Districts Inspectorate.\n\nTo the administrator of the Rust Pit district.\n\nYour predecessor opened Company property without the League's sanction and started the computer. The report is with me. You do not answer for him, but you answer for the office now.\n\nState what runs in it and who has access.",
+    "options": [
+      {
+        "text": "Отчитаться полностью: что работает, кто ходит",
+        "text_en": "Report in full: what runs, who goes in",
+        "effects": {
+          "stat_league_trust": 6,
+          "style": "loyal",
+          "message": "Отчёт ушёл. Инспектор ответил коротко: «Принято. Пломбы верну сам, когда приеду».",
+          "message_en": "The report went out. The inspector replied briefly: \"Noted. I will reseal it myself when I come.\""
+        }
+      },
+      {
+        "text": "Отчитаться сухо: контора под охраной, подробности при аудите",
+        "text_en": "Report dryly: the office is guarded, details at the audit",
+        "effects": {
+          "stat_city_trust": 2,
+          "style": "pragmatist",
+          "message": "Инспектор не ответил. Рапорт остался в деле.",
+          "message_en": "The inspector did not reply. The report stays in the file."
         }
       }
     ]

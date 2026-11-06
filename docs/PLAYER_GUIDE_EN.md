@@ -77,7 +77,7 @@ Click a building — at the bottom left the game names **the one main cause** of
 - **Warehouse**, **Lumber Yard**, **Stone Quarry**, **Tool Workshop** — materials and tools.
 - **Solar Panel / Generator** — power. In the Dust, panels drop to half.
 
-Starting objects: administration post, the Main Cistern, warehouse, pump, shelter, plot, panel. Plus the legacy of the Clear Source Company: the old Source Tower (on day 8 you decide its fate), the Company office, and ruins along the dead pipeline (ruins can be salvaged for stone).
+Starting objects: administration post, the Main Cistern, warehouse, pump, shelter, plot, panel. On the start screen you can pick what the previous administrator left: the plain start ("As it is", for a first run), a full cistern with a wrecked pump and a debt to Ruben, eight residents with an empty warehouse, or the Company office broken open with the Forecaster running but the League's trust at 55. The map is the same; the first days and the letters differ. Plus the legacy of the Clear Source Company: the old Source Tower (on day 8 you decide its fate), the Company office, and ruins along the dead pipeline (ruins can be salvaged for stone).
 
 ## Neighbours
 

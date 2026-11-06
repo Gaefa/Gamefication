@@ -13,6 +13,7 @@ const MAX_DAY := 44
 const STUCK_FRAMES := 600     # 10 sim seconds paused with no desk and no finale → blocker
 
 var _prepared: bool = false
+var _legacy: String = ""        # start_legacies.json id (override: -- legacy=legacy_cistern)
 var _main: Node
 var _desk: Control
 var _stuck: int = 0
@@ -30,6 +31,8 @@ func _ready() -> void:
 			_prepared = true
 		if arg.begins_with("speed="):
 			SPEED = arg.trim_prefix("speed=").to_float()
+		if arg.begins_with("legacy="):
+			_legacy = arg.trim_prefix("legacy=")
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
 		_ending = "%s (%s)" % [eid, kind])
 	EventBus.evening_started.connect(func(events: Array) -> void:
@@ -54,6 +57,7 @@ func _attach() -> void:
 	_desk = _main.get_node("HUDCanvas/DeskUI") as Control
 	# Behind the start menu nothing runs; start the run the way the menu button does.
 	seed(12345)  # compare speed runs against the same city and issue sequence
+	_main.get_node("HUDCanvas/HUD").set("_selected_legacy", _legacy)
 	_main.get_node("HUDCanvas/HUD").call("_start_new_run", "appointed_administrator")
 	if _prepared:
 		# The prepared district of balance_sim's stand B: roads, two more barracks, a second
