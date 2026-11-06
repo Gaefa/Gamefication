@@ -1,11 +1,13 @@
-Mandate Cities 0.2.3 — playtest build / тестовая сборка
+Mandate Cities 0.2.4 — playtest build / тестовая сборка
 
-NEW IN 0.2.3 / НОВОЕ В 0.2.3
-  Where the money comes from: residents of lived-in shelters pay about 30 a day each; hover the
-  treasury at the top for the breakdown. An empty till brings a bookkeeper's note to the Desk.
-  Откуда деньги: жители заселённых бараков платят около 30 в день с барака; наведите курсор на
-  казну вверху, там расписан приток и расход. Пустая касса приносит на Стол записку счетовода.
-  0.2.2: sound, an autosave every morning, a manual UI scale / звук, автосейв по утрам, масштаб.
+NEW IN 0.2.4 / НОВОЕ В 0.2.4
+  Buildings break about every eight days instead of every three, and the treasury tooltip shows
+  today's repair bill. The bookkeeper keeps a repair reserve (10 per building plus two days of
+  upkeep): a technology or policy that would leave less in the till is not signed.
+  Здания ломаются примерно раз в восемь дней вместо трёх, подсказка казны показывает траты на
+  ремонт за сегодня. Счетовод держит резерв на ремонт (по 10 на постройку плюс два дня
+  содержания): технологию или политику, после которой в кассе останется меньше, не подпишет.
+  0.2.3: where the money comes from (treasury tooltip, bookkeeper's note) / откуда деньги.
   0.2.1: storms on days 22 and 32; a banned strike and a dispersed food riot wreck buildings; Android.
   0.2.1: бури на 22-й и 32-й день; запрещённая забастовка и разогнанная толпа ломают здания; Android.
 
