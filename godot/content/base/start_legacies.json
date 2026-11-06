@@ -1,0 +1,32 @@
+[
+  {
+    "id": "legacy_cistern",
+    "label": "Полная цистерна, сломанный насос",
+    "label_en": "A full cistern, a broken pump",
+    "description": "Прежний администратор запас воду впрок: Главная Цистерна полна. Но насос стоит разбитый, и Рубену за эту воду должны сто кубов. Чините насос в первый же день, иначе люди уйдут.",
+    "description_en": "Your predecessor stocked water ahead: the Main Cistern is full. But the pump stands wrecked, and Ruben is owed a hundred units for that water. Repair the pump on day one or people leave.",
+    "resources": { "res_water_stockpile": 750 },
+    "damaged": ["bld_well_pump"],
+    "residents": 4,
+    "flags": ["legacy_cistern", "ruben_water_debt"]
+  },
+  {
+    "id": "legacy_people",
+    "label": "Восемь жителей, пустой склад",
+    "label_en": "Eight residents, an empty warehouse",
+    "description": "Прежний администратор принимал всех: два барака заселены, восемь ртов. Склад он при этом проел почти до дна. Еда и стройматериалы нужны сразу.",
+    "description_en": "Your predecessor took everyone in: two shelters lived in, eight mouths. He ate the warehouse nearly to the floor doing it. Food and materials are needed at once.",
+    "buildings": [ { "coord": [-1, 2], "type": "bld_shelter" } ],
+    "resources": { "res_food": 15, "res_wood": 25, "res_stone": 15, "res_tools": 3 },
+    "flags": ["legacy_people"]
+  },
+  {
+    "id": "legacy_office",
+    "label": "Вскрытая контора",
+    "label_en": "The office broken open",
+    "description": "Прежний администратор вскрыл контору Компании и запустил вычислитель «Прогнозист»: начало Пыли вы узнаете с точностью до дня. Но Лига знает о сделке, и доверие к вам ниже.",
+    "description_en": "Your predecessor broke open the Company office and started the Forecaster: you will know the day the Dust begins. But the League knows about the deal, and its trust in you is lower.",
+    "mandate": { "patron_trust": 55 },
+    "flags": ["legacy_office", "forecaster_active"]
+  }
+]

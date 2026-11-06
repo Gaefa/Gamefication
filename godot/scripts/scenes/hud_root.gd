@@ -50,6 +50,7 @@ var _toast_timer: float = 0.0
 
 var _start_panel: PanelContainer
 var _start_visible: bool = true
+var _selected_legacy: String = ""  # start_legacies.json id, "" = the plain start
 var _help_panel: Control  # the modal frame (its dim); see UiStyle.modal
 var _help_label: Label
 var _help_visible: bool = false
@@ -2010,6 +2011,7 @@ func _build_campaign_list(container: Control) -> void:
 	intro.add_theme_font_size_override("font_size", 13)
 	intro.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	container.add_child(intro)
+	_build_legacy_row(container)
 
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -2043,6 +2045,49 @@ func _build_campaign_list(container: Control) -> void:
 			more.queue_free()
 			for profile_id: String in experimental:
 				list.add_child(_build_start_profile_row(profile_id)))
+
+
+## What the previous administrator left: the same map, a different first ten minutes.
+## "As it is" is the tutorial's start; the three legacies are for a second run.
+func _build_legacy_row(container: Control) -> void:
+	var caption := Label.new()
+	caption.text = Localization.ru_en("Что оставил прежний администратор", "What the previous administrator left")
+	UiStyle.caption(caption)
+	container.add_child(caption)
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	container.add_child(row)
+	var hint := Label.new()
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 12)
+	hint.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
+	container.add_child(hint)
+
+	var group := ButtonGroup.new()
+	var options: Array = [""]
+	options.append_array(ContentDB.get_start_legacy_ids())
+	for legacy_id: String in options:
+		var def: Dictionary = ContentDB.get_start_legacy_def(legacy_id)
+		var btn := Button.new()
+		btn.toggle_mode = true
+		btn.button_group = group
+		btn.text = Localization.ru_en("Как есть", "As it is") if legacy_id == "" else Localization.content_text(def, "label", legacy_id)
+		btn.add_theme_font_size_override("font_size", 12)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.button_pressed = legacy_id == _selected_legacy
+		btn.pressed.connect(func() -> void:
+			_selected_legacy = legacy_id
+			hint.text = _legacy_hint(legacy_id))
+		row.add_child(btn)
+	hint.text = _legacy_hint(_selected_legacy)
+
+
+func _legacy_hint(legacy_id: String) -> String:
+	if legacy_id == "":
+		return Localization.ru_en("Обычный старт: пост, цистерна, склад, насос, барак и грядка. Для первой игры.",
+			"The plain start: post, cistern, warehouse, pump, shelter and plot. For a first run.")
+	return Localization.content_text(ContentDB.get_start_legacy_def(legacy_id), "description", legacy_id)
 
 
 func _profile_rank(profile_id: String) -> int:
@@ -2141,7 +2186,7 @@ func _profile_stat(parent: Control, label: String, value: int, hint: String) -> 
 func _start_new_run(profile_id: String) -> void:
 	var main_node: Node = get_tree().current_scene
 	if main_node and main_node.has_method("start_new_run"):
-		main_node.call("start_new_run", profile_id)
+		main_node.call("start_new_run", profile_id, _selected_legacy)
 	_close_start_panel()
 	TutorialManager.on_run_started()
 	_update_resource_bar()

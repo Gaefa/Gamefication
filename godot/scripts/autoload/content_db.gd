@@ -11,6 +11,7 @@ var synergies: Array = []
 var technologies: Dictionary = {}
 var policies: Dictionary = {}
 var start_profiles: Dictionary = {}
+var start_legacies: Dictionary = {}  # what the previous administrator left: a choice at new game
 var seasons: Dictionary = {}
 var season_order: Array = []
 var scenario: Dictionary = {}
@@ -65,6 +66,7 @@ func _ready() -> void:
 	technologies = _load_keyed_array(CONTENT_ROOT + "technologies.json", "id")
 	policies = _load_keyed_array(CONTENT_ROOT + "policies.json", "id")
 	start_profiles = _load_keyed_array(CONTENT_ROOT + "start_profiles.json", "id")
+	start_legacies = _load_keyed_array(CONTENT_ROOT + "start_legacies.json", "id")
 	scenario = _load_json(CONTENT_ROOT + "scenario.json")
 	_load_seasons()
 	_load_endings()
@@ -263,6 +265,15 @@ func _validate_content() -> void:
 		for other: Variant in syn.get("pair", []) as Array:
 			if not buildings.has(other as String):
 				content_warnings.append("synergy %s names unknown building %s" % [syn.get("id", "?"), other])
+	for legacy_id: String in start_legacies:
+		var legacy: Dictionary = start_legacies[legacy_id] as Dictionary
+		_check_resources(legacy.get("resources", {}), "legacy %s resources" % legacy_id)
+		for entry: Variant in legacy.get("buildings", []) as Array:
+			if not buildings.has((entry as Dictionary).get("type", "") as String):
+				content_warnings.append("legacy %s places unknown building %s" % [legacy_id, (entry as Dictionary).get("type", "")])
+		for type_id: Variant in legacy.get("damaged", []) as Array:
+			if not buildings.has(type_id as String):
+				content_warnings.append("legacy %s damages unknown building %s" % [legacy_id, type_id])
 	var set_flags: Array = _flags_set_by_cards()
 	for event_id: String in events:
 		var card: Dictionary = events[event_id] as Dictionary
@@ -334,6 +345,8 @@ func _has_flows(def: Dictionary) -> bool:
 
 func _flags_set_by_cards() -> Array:
 	var flags: Array = []
+	for legacy_id: String in start_legacies:
+		flags.append_array((start_legacies[legacy_id] as Dictionary).get("flags", []) as Array)
 	for event_id: String in events:
 		for option: Variant in (events[event_id] as Dictionary).get("options", []) as Array:
 			var effects: Dictionary = (option as Dictionary).get("effects", {}) as Dictionary
@@ -473,6 +486,14 @@ func get_policy_ids() -> Array:
 
 func get_start_profile_ids() -> Array:
 	return start_profiles.keys()
+
+
+func get_start_legacy_ids() -> Array:
+	return start_legacies.keys()
+
+
+func get_start_legacy_def(legacy_id: String) -> Dictionary:
+	return start_legacies.get(legacy_id, {})
 
 
 func building_level_data(type_id: String, level: int) -> Dictionary:

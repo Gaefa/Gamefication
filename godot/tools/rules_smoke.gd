@@ -172,6 +172,7 @@ func _ready() -> void:
 	_heat_rules()
 	_storm_rules()
 	_treasury_rules()
+	_legacy_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -287,6 +288,45 @@ func _treasury_rules() -> void:
 	_check(research.success, "the same technology goes through once the reserve stays intact")
 	var policy: CommandBase = orch.command_bus.execute(SetPolicyCommand.new("green_zoning"))
 	_check(not policy.success, "a policy switch respects the reserve too")
+
+
+## What the previous administrator left: the same map, a different first ten minutes.
+func _legacy_rules() -> void:
+	_ended = ""
+	EventManager.clear_pending()
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_cistern")
+	SimulationRunner.start_run()
+	_check(is_equal_approx(GameStateStore.get_resource("res_water_stockpile"), 750.0), "the cistern legacy starts with a full cistern")
+	var pump_damaged: bool = GameStateStore.get_all_building_coords().any(func(c: Vector2i) -> bool:
+		var b: Dictionary = GameStateStore.get_building(c)
+		return b.get("type", "") == "bld_well_pump" and (b.get("damaged", false) as bool))
+	_check(pump_damaged, "…and a wrecked pump")
+	_check((GameStateStore.population().get("total", 0) as int) == 4, "…with the four residents still there (%d)" % (GameStateStore.population().get("total", 0) as int))
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("legacy.cistern")), "the handover act lands on the first evening")
+	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("legacy.ruben_water")), "Ruben waits until day 3")
+	GameStateStore.climate()["total_day"] = 3
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("legacy.ruben_water")), "…then comes for his water")
+	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("legacy.people")), "the other legacies' acts stay away")
+
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_people")
+	SimulationRunner.start_run()
+	_ticks(1)
+	_check((GameStateStore.population().get("total", 0) as int) == 8, "the people legacy starts with eight residents (%d)" % (GameStateStore.population().get("total", 0) as int))
+	_check(GameStateStore.get_resource("res_food") < 20.0, "…and an empty warehouse")
+
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_office")
+	SimulationRunner.start_run()
+	_check((GameStateStore.mandate().get("flags", {}) as Dictionary).get("forecaster_active", false), "the office legacy starts with the Forecaster on")
+	_check(is_equal_approx(GameStateStore.mandate().get("patron_trust", 0.0) as float, 55.0), "…and the League's trust at 55")
+	GameStateStore.set_resource("res_tools", 25.0)
+	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("quest.forecaster")), "the Forecaster quest never asks to switch on what already runs")
+	_check((GameStateStore.save_meta().get("legacy_id", "") as String) == "legacy_office", "the save remembers the legacy")
+
+	_new_game("appointed_administrator")
+	_check(is_equal_approx(GameStateStore.get_resource("res_water_stockpile"), 100.0) and (GameStateStore.save_meta().get("legacy_id", "x") as String) == "", "the plain start is untouched")
 
 
 func _content_contract_rules() -> void:
