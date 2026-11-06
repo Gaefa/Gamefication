@@ -80,12 +80,15 @@ func build() -> void:
 	SimulationRunner.tick_callback = tick_scheduler.run_tick
 
 
-func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator", legacy_id: String = "") -> void:
+func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator", legacy_id: String = "", chapter_id: String = "") -> void:
 	if seed_val == 0:
 		seed_val = randi()
+	# No chapter named: the campaign's first one (the title screen always names one).
+	ContentDB.set_chapter(chapter_id if chapter_id != "" else ContentDB.default_chapter())
 	EventBus.run_reset.emit()
 	GameStateStore.reset(profile_id)
 	GameStateStore.save_meta().rng_seed = seed_val
+	GameStateStore.save_meta().chapter_id = ContentDB.active_chapter
 	build()
 	_generate_terrain()
 	GameStateStore.save_meta().rng_state = rng.get_state()
@@ -129,33 +132,22 @@ func _generate_terrain() -> void:
 
 
 func _bootstrap_campaign_hub() -> void:
-	var starter_layout: Array[Dictionary] = [
-		{"coord": Vector2i(0, 0), "type": "bld_road"},
-		{"coord": Vector2i(1, -1), "type": "bld_road"},
-		{"coord": Vector2i(-1, 1), "type": "bld_road"},
-		{"coord": Vector2i(-1, 0), "type": "bld_admin_post"},
-		{"coord": Vector2i(1, 0), "type": "bld_main_cistern"},
-		{"coord": Vector2i(0, -1), "type": "bld_warehouse"},
-		{"coord": Vector2i(0, 1), "type": "bld_well_pump"},
-		{"coord": Vector2i(-2, 1), "type": "bld_shelter"},
-		{"coord": Vector2i(2, -1), "type": "bld_field_strip"},
-		{"coord": Vector2i(-1, -1), "type": "bld_solar_panel"},
-		# Material traces of the old owner (Компания Чистого Истока) — landmarks, flavor + hooks.
-		{"coord": Vector2i(2, 1), "type": "bld_source_tower"},
-		{"coord": Vector2i(-2, 2), "type": "bld_company_office"},
-	]
-	for entry: Dictionary in starter_layout:
-		var coord: Vector2i = entry.get("coord", Vector2i.ZERO) as Vector2i
-		var type_id: String = entry.get("type", "") as String
+	# The starter layout is the chapter's (chapter.json start_layout); Rust Pit's is the
+	# post, the cistern, the store, a pump, a shelter, a plot, a panel and the Company's traces.
+	var chapter: Dictionary = ContentDB.get_chapter_def()
+	for entry: Variant in chapter.get("start_layout", []) as Array:
+		var cell: Array = (entry as Dictionary).get("coord", [0, 0]) as Array
+		var type_id: String = (entry as Dictionary).get("type", "") as String
 		if type_id == "":
 			continue
-		GameStateStore.set_building(coord, {
+		GameStateStore.set_building(Vector2i(cell[0] as int, cell[1] as int), {
 			"type": type_id,
 			"level": 0,
 			"damaged": false,
 			"has_issue": false,
 		})
-	_bootstrap_company_traces()
+	if chapter.get("company_traces", false) as bool:
+		_bootstrap_company_traces()
 
 
 ## What the previous administrator left (start_legacies.json): the same map, a different

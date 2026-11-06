@@ -161,10 +161,10 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 	var trust_line_en: String = "%s trust %s." % [authority_en, delta_text]
 	var title: String = "Проверка Директората — Комиссар" if directorate else "Аудит Лиги — Инспектор Койл"
 	var title_en: String = "Directorate Inspection — the Commissar" if directorate else "League Audit — Inspector Coyle"
-	var comparison: String = "Для сравнения — район Мары Восс: %d, ваш: %d." % [
-		int(RivalManager.rival_score()), int(RivalManager.player_score())]
+	var comparison: String = "Для сравнения — район %s: %d, ваш: %d." % [
+		RivalManager.rival_name(), int(RivalManager.rival_score()), int(RivalManager.player_score())]
 	var comparison_en: String = "For comparison — %s's district: %d, yours: %d." % [
-		RivalManager.NAME_EN, int(RivalManager.rival_score()), int(RivalManager.player_score())]
+		RivalManager.rival_name(), int(RivalManager.rival_score()), int(RivalManager.player_score())]
 
 	return {
 		"runtime_id": "audit.result2" if second else "audit.result",

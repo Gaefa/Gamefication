@@ -51,6 +51,7 @@ var _toast_timer: float = 0.0
 var _start_panel: PanelContainer
 var _start_visible: bool = true
 var _selected_legacy: String = ""  # start_legacies.json id, "" = the plain start
+var _selected_chapter: String = ""  # chapter id for the next run, "" = the active chapter
 var _help_panel: Control  # the modal frame (its dim); see UiStyle.modal
 var _help_label: Label
 var _help_visible: bool = false
@@ -94,6 +95,13 @@ func _ready() -> void:
 	_build_build_panel()
 	_build_info_panel()
 	_build_toast()
+	if _selected_chapter == "":
+		_selected_chapter = ContentDB.active_chapter  # tools may have picked one on the command line
+	if Campaign.pending_chapter != "":
+		# The finale sent us here: open the mandate list on the next chapter.
+		_selected_chapter = Campaign.pending_chapter
+		Campaign.pending_chapter = ""
+		_start_menu_mode = "campaign"
 	_build_start_panel()
 	_build_minimap()
 	_build_left_column()
@@ -246,8 +254,8 @@ func _build_resource_bar() -> void:
 	_rival_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_rival_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_chip(bottom, func() -> String: return Localization.ru_en(
-		"Показатель района Мары Восс и ваш: среднее из счастья, поддержки города, запаса воды в днях (%d дн. = 100) и населения (%d чел. = 100). По нему делят грант на %d-й день; на аудите разрыв от %d меняет доверие.",
-		"Mara Voss's district score and yours: the average of mood, city support, water in days (%d d = 100) and population (%d people = 100). It decides the grant on day %d; at the audit a gap of %d or more moves trust.") % [int(RivalManager.WATER_DAYS_FULL), int(RivalManager.PEOPLE_FULL), ContentDB.get_grant_day(), int(RivalManager.AUDIT_EDGE)]).add_child(_rival_label)
+		"Показатель района соперника (%s) и ваш: среднее из счастья, поддержки города, запаса воды в днях (%d дн. = 100) и населения (%d чел. = 100). По нему делят грант на %d-й день; на аудите разрыв от %d меняет доверие.",
+		"The rival district's (%s) score and yours: the average of mood, city support, water in days (%d d = 100) and population (%d people = 100). It decides the grant on day %d; at the audit a gap of %d or more moves trust.") % [RivalManager.rival_name(), int(RivalManager.WATER_DAYS_FULL), int(RivalManager.PEOPLE_FULL), ContentDB.get_grant_day(), int(RivalManager.AUDIT_EDGE)]).add_child(_rival_label)
 
 	# Pressure director: four gauges filling toward a crisis at 100.
 	var pressure: HBoxContainer = _chip(bottom, func() -> String: return Localization.ru_en(
@@ -593,7 +601,7 @@ func _update_goals() -> void:
 	var theirs: int = int(RivalManager.rival_score())
 	_set_goal("grant", has_patron and not (GameStateStore.rival().get("grant_decided", false) as bool), ours >= theirs,
 		Localization.ru_en("Грант · день %d", "Grant · day %d") % ContentDB.get_grant_day(),
-		Localization.ru_en("вы %d : %d Восс", "you %d : %d Voss") % [int(RivalManager.player_score()), int(RivalManager.rival_score())])
+		Localization.ru_en("вы %d : %d %s", "you %d : %d %s") % [int(RivalManager.player_score()), int(RivalManager.rival_score()), RivalManager.rival_short()])
 
 	# 4. The finish line.
 	_set_goal("finish", true, false, Localization.ru_en("Дожить до дня %d", "Reach day %d") % ContentDB.get_win_day(),
@@ -774,7 +782,7 @@ func _rival_bb() -> String:
 		color = UiStyle.hex(UiStyle.GOOD)
 		sign = "▲"
 	return "%s %d · [color=%s]%s %s %d[/color]" % [
-		Localization.ru_en("Восс", "Voss"), int(theirs), color, sign, Localization.ru_en("вы", "you"), int(ours)]
+		RivalManager.rival_short(), int(theirs), color, sign, Localization.ru_en("вы", "you"), int(ours)]
 
 
 func _on_utility_gui_input(event: InputEvent) -> void:
@@ -1910,7 +1918,7 @@ func _rebuild_start_panel() -> void:
 		UiStyle.title(title, 38, UiStyle.ACCENT)
 		root.add_child(title)
 		var chapter := Label.new()
-		chapter.text = Localization.ru_en("Ржавая Нора", "The Rust Pit")
+		chapter.text = Localization.content_text(ContentDB.get_chapter_def(_selected_chapter), "title", Localization.ru_en("Ржавая Нора", "The Rust Pit"))
 		chapter.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		UiStyle.caption(chapter)
 		chapter.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
@@ -2011,6 +2019,7 @@ func _build_campaign_list(container: Control) -> void:
 	intro.add_theme_font_size_override("font_size", 13)
 	intro.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	container.add_child(intro)
+	_build_chapter_row(container)
 	_build_legacy_row(container)
 
 	var scroll := ScrollContainer.new()
@@ -2045,6 +2054,53 @@ func _build_campaign_list(container: Control) -> void:
 			more.queue_free()
 			for profile_id: String in experimental:
 				list.add_child(_build_start_profile_row(profile_id)))
+
+
+## The campaign's chapters in order; a chapter opens once the one before it has a finale.
+func _build_chapter_row(container: Control) -> void:
+	var ids: Array = ContentDB.get_chapter_ids()
+	if ids.size() < 2:
+		return
+	if _selected_chapter == "" or not ids.has(_selected_chapter):
+		_selected_chapter = Campaign.next_open_chapter() if Campaign.next_open_chapter() != "" else ids[0] as String
+	var caption := Label.new()
+	caption.text = Localization.ru_en("Глава", "Chapter")
+	UiStyle.caption(caption)
+	container.add_child(caption)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	container.add_child(row)
+	var hint := Label.new()
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 12)
+	hint.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
+	container.add_child(hint)
+	var group := ButtonGroup.new()
+	for chapter_id: String in ids:
+		var def: Dictionary = ContentDB.get_chapter_def(chapter_id)
+		var btn := Button.new()
+		btn.toggle_mode = true
+		btn.button_group = group
+		btn.text = "%d. %s" % [def.get("order", 0) as int, Localization.content_text(def, "title", chapter_id)]
+		btn.add_theme_font_size_override("font_size", 12)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.disabled = not Campaign.is_unlocked(chapter_id)
+		btn.button_pressed = chapter_id == _selected_chapter
+		btn.pressed.connect(func() -> void:
+			_selected_chapter = chapter_id
+			hint.text = _chapter_hint(chapter_id))
+		row.add_child(btn)
+	hint.text = _chapter_hint(_selected_chapter)
+
+
+func _chapter_hint(chapter_id: String) -> String:
+	var def: Dictionary = ContentDB.get_chapter_def(chapter_id)
+	var text: String = Localization.content_text(def, "blurb", "")
+	var result: Dictionary = Campaign.result_of(chapter_id)
+	if not result.is_empty():
+		var ending: Dictionary = ContentDB.get_ending_def(result.get("ending", "") as String)
+		text += "\n" + Localization.ru_en("Пройдена: %s", "Finished: %s") % Localization.content_text(ending, "title", result.get("ending", "") as String)
+	return text
 
 
 ## What the previous administrator left: the same map, a different first ten minutes.
@@ -2186,7 +2242,7 @@ func _profile_stat(parent: Control, label: String, value: int, hint: String) -> 
 func _start_new_run(profile_id: String) -> void:
 	var main_node: Node = get_tree().current_scene
 	if main_node and main_node.has_method("start_new_run"):
-		main_node.call("start_new_run", profile_id, _selected_legacy)
+		main_node.call("start_new_run", profile_id, _selected_legacy, _selected_chapter)
 	_close_start_panel()
 	TutorialManager.on_run_started()
 	_update_resource_bar()

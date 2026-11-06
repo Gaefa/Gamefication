@@ -358,12 +358,12 @@ func _refresh_buildings() -> void:
 	_refresh_overlay_state()
 
 
-func start_new_run(profile_id: String, legacy_id: String = "") -> void:
+func start_new_run(profile_id: String, legacy_id: String = "", chapter_id: String = "") -> void:
 	_selected_coord = Vector2i(-9999, -9999)
 	_build_mode = ""
 	_show_ranges = false
 	_show_logistics = false
-	_orchestrator.new_game(0, profile_id, legacy_id)
+	_orchestrator.new_game(0, profile_id, legacy_id, chapter_id)
 	var terrain_layer: Node = get_node_or_null("World/TerrainLayer")
 	if terrain_layer:
 		terrain_layer.call("render_terrain", _orchestrator.hex_grid)

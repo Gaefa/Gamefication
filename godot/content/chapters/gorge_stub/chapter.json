@@ -1,0 +1,42 @@
+{
+  "id": "gorge_stub",
+  "order": 2,
+  "hidden": true,
+  "title": "Боголесское Ущелье (болванка)",
+  "title_en": "Bogolessky Gorge (stub)",
+  "region": "Зелёный пояс",
+  "region_en": "The Green Belt",
+  "blurb": "Плодородный, но спорный район. Болванка главы 2: макет, сезоны и одно письмо, пока без механики земли.",
+  "blurb_en": "A fertile but contested district. Chapter 2 stub: a layout, seasons and one letter, no land mechanic yet.",
+  "scenario": {
+    "season_order": ["season_rains", "season_drought", "season_harvest"],
+    "win_day": 30,
+    "audit_days": [15, 27],
+    "grant_day": 10
+  },
+  "rival": {
+    "name": "Староста Ярвен",
+    "name_en": "Elder Jarven",
+    "short": "Ярвен",
+    "short_en": "Jarven",
+    "district": "Верхние Поля",
+    "district_en": "The Upper Fields"
+  },
+  "tutorial_intro": "Вы — администратор [b]Боголесского Ущелья[/b]. [b]Сушь[/b] — дни 13–22, [b]Урожай[/b] — 23–30. Аудиты — дни 15 и 27. Продержитесь до 30-го дня.\n\nВремя пока стоит.",
+  "tutorial_intro_en": "You are the administrator of [b]Bogolessky Gorge[/b]. The [b]Drought[/b] runs on days 13–22, the [b]Harvest[/b] on 23–30. Audits: days 15 and 27. Hold out until day 30.\n\nTime is stopped for now.",
+  "company_traces": false,
+  "start_layout": [
+    { "coord": [0, 0], "type": "bld_road" },
+    { "coord": [0, 1], "type": "bld_road" },
+    { "coord": [0, -1], "type": "bld_road" },
+    { "coord": [-1, 0], "type": "bld_admin_post" },
+    { "coord": [1, 0], "type": "bld_main_cistern" },
+    { "coord": [1, -1], "type": "bld_warehouse" },
+    { "coord": [-1, 1], "type": "bld_well_pump" },
+    { "coord": [-1, 2], "type": "bld_shelter" },
+    { "coord": [1, 1], "type": "bld_shelter" },
+    { "coord": [-1, -1], "type": "bld_solar_panel" },
+    { "coord": [-2, 0], "type": "bld_field_strip" },
+    { "coord": [1, -2], "type": "bld_field_strip" }
+  ]
+}

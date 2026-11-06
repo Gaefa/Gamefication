@@ -12,6 +12,9 @@ var technologies: Dictionary = {}
 var policies: Dictionary = {}
 var start_profiles: Dictionary = {}
 var start_legacies: Dictionary = {}  # what the previous administrator left: a choice at new game
+var chapters: Dictionary = {}  # chapter id → chapter.json (the campaign's table of contents)
+var active_chapter: String = "rust_pit"
+var _cmdline_chapter: String = ""  # a tool asked for this chapter on the command line
 var seasons: Dictionary = {}
 var season_order: Array = []
 var scenario: Dictionary = {}
@@ -19,6 +22,7 @@ var endings: Dictionary = {}
 var diary_fragments: Array = []   # ordered fragment defs
 
 const CONTENT_ROOT := "res://content/base/"
+const CHAPTERS_ROOT := "res://content/chapters/"
 
 ## The vocabulary a card may use. _validate_content rejects anything else, so a typo in a
 ## trigger, season, patron, style or flag fails content_check instead of silently never firing.
@@ -29,9 +33,57 @@ const TRIGGER_STATS := ["stat_unrest_pressure", "stat_city_trust", "stat_league_
 
 
 func _ready() -> void:
+	_load_chapter_index()
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("chapter=") and chapters.has(arg.trim_prefix("chapter=")):
+			_cmdline_chapter = arg.trim_prefix("chapter=")
+			active_chapter = _cmdline_chapter
+	_load_all()
+
+
+## The chapter a run starts in when nobody names one: the command line's, else the first.
+func default_chapter() -> String:
+	if _cmdline_chapter != "":
+		return _cmdline_chapter
+	var ids: Array = get_chapter_ids(true)
+	return ids[0] as String if not ids.is_empty() else active_chapter
+
+
+## Every chapter folder with a chapter.json: the campaign's table of contents.
+func _load_chapter_index() -> void:
+	chapters = {}
+	var dir := DirAccess.open(CHAPTERS_ROOT)
+	if dir == null:
+		push_warning("ContentDB: no chapters folder at %s" % CHAPTERS_ROOT)
+		return
+	for sub: String in dir.get_directories():
+		var def: Variant = _load_json_raw(CHAPTERS_ROOT + sub + "/chapter.json")
+		if def is Dictionary and ((def as Dictionary).get("id", "") as String) != "":
+			chapters[(def as Dictionary)["id"] as String] = def
+
+
+## Switch the active chapter: the base content is reloaded with that chapter's overlay.
+## Call before GameStateStore.reset() / load_from_dict(), never mid-run.
+func set_chapter(chapter_id: String) -> void:
+	if chapter_id == "" or chapter_id == active_chapter or not chapters.has(chapter_id):
+		return
+	active_chapter = chapter_id
+	_load_all()
+
+
+func _chapter_file(file_name: String) -> String:
+	return CHAPTERS_ROOT + active_chapter + "/" + file_name
+
+
+## Base content first, then the active chapter's files: keyed files merge by id (the chapter
+## wins), whole-set files (seasons, diary, legacies, scenario) replace the base when present.
+func _load_all() -> void:
+	content_warnings = []
 	buildings = _load_json(CONTENT_ROOT + "buildings.json")
+	_merge_keyed(buildings, _chapter_file("buildings.json"), "")
 	_normalize_building_defs()
 	# resources.json is an Array — convert to Dictionary keyed by "id"
+	resources = {}
 	var res_raw: Variant = _load_json_raw(CONTENT_ROOT + "resources.json")
 	if res_raw is Array:
 		for entry: Variant in res_raw:
@@ -44,17 +96,9 @@ func _ready() -> void:
 		resources = res_raw as Dictionary
 	var terrain_raw: Dictionary = _load_json(CONTENT_ROOT + "terrain.json")
 	terrain_types = terrain_raw.get("types", terrain_raw)
-	# events.json is an Array — convert to Dictionary keyed by "id"
-	var ev_raw: Variant = _load_json_raw(CONTENT_ROOT + "events.json")
-	if ev_raw is Array:
-		for entry: Variant in ev_raw:
-			if entry is Dictionary:
-				var d: Dictionary = entry as Dictionary
-				var ev_id: String = d.get("id", "") as String
-				if ev_id != "":
-					events[ev_id] = d
-	elif ev_raw is Dictionary:
-		events = ev_raw as Dictionary
+	events = {}
+	_merge_keyed(events, CONTENT_ROOT + "events.json", "id")
+	_merge_keyed(events, _chapter_file("events.json"), "id")
 	synergies = _load_json_array(CONTENT_ROOT + "synergies.json")
 
 	var levels_raw: Variant = _load_json_raw(CONTENT_ROOT + "city_levels.json")
@@ -66,14 +110,50 @@ func _ready() -> void:
 	technologies = _load_keyed_array(CONTENT_ROOT + "technologies.json", "id")
 	policies = _load_keyed_array(CONTENT_ROOT + "policies.json", "id")
 	start_profiles = _load_keyed_array(CONTENT_ROOT + "start_profiles.json", "id")
-	start_legacies = _load_keyed_array(CONTENT_ROOT + "start_legacies.json", "id")
-	scenario = _load_json(CONTENT_ROOT + "scenario.json")
-	_load_seasons()
-	_load_endings()
-	_load_diary()
+	var legacies_path: String = _first_existing(["start_legacies.json"])
+	start_legacies = _load_keyed_array(legacies_path, "id") if legacies_path != "" else {}
+	var chapter_def: Dictionary = get_chapter_def()
+	var scenario_path: String = _first_existing(["scenario.json"])
+	if chapter_def.has("scenario"):
+		scenario = (chapter_def.get("scenario", {}) as Dictionary).duplicate(true)
+	else:
+		scenario = _load_json(scenario_path) if scenario_path != "" else {}
+	seasons = {}
+	season_order = []
+	_load_seasons(_first_existing(["seasons.json"]))
+	endings = {}
+	_load_endings(CONTENT_ROOT + "endings.json")
+	_load_endings(_chapter_file("endings.json"))
+	_load_diary(_first_existing(["diary.json"]))
 	_normalize_governance_defs()
 	_validate_content()
 	_normalize_start_profiles()
+
+
+## The chapter's copy of a whole-set file when it has one, else the base copy, else "".
+func _first_existing(names: Array) -> String:
+	for name: String in names:
+		if FileAccess.file_exists(_chapter_file(name)):
+			return _chapter_file(name)
+	for name: String in names:
+		if FileAccess.file_exists(CONTENT_ROOT + name):
+			return CONTENT_ROOT + name
+	return ""
+
+
+## Merge a keyed JSON file into `target`; an Array is keyed by `key_name`, a Dictionary by
+## its own keys. Missing files are simply skipped: most chapters override only a few sets.
+func _merge_keyed(target: Dictionary, path: String, key_name: String) -> void:
+	if path == "" or not FileAccess.file_exists(path):
+		return
+	var raw: Variant = _load_json_raw(path)
+	if raw is Array:
+		for entry: Variant in raw:
+			if entry is Dictionary and ((entry as Dictionary).get(key_name, "") as String) != "":
+				target[(entry as Dictionary)[key_name] as String] = entry
+	elif raw is Dictionary:
+		for key: String in raw as Dictionary:
+			target[key] = (raw as Dictionary)[key]
 
 
 # --- Content normalization ---
@@ -488,6 +568,28 @@ func get_start_profile_ids() -> Array:
 	return start_profiles.keys()
 
 
+## Chapters in campaign order; hidden ones (stubs) only when asked for.
+func get_chapter_ids(include_hidden: bool = false) -> Array:
+	var ids: Array = []
+	for chapter_id: String in chapters:
+		if include_hidden or not ((chapters[chapter_id] as Dictionary).get("hidden", false) as bool):
+			ids.append(chapter_id)
+	ids.sort_custom(func(a: String, b: String) -> bool:
+		return ((chapters[a] as Dictionary).get("order", 99) as int) < ((chapters[b] as Dictionary).get("order", 99) as int))
+	return ids
+
+
+func get_chapter_def(chapter_id: String = "") -> Dictionary:
+	return chapters.get(active_chapter if chapter_id == "" else chapter_id, {})
+
+
+## The chapter that follows `chapter_id` in order, hidden stubs included; "" after the last.
+func next_chapter_id(chapter_id: String = "") -> String:
+	var ids: Array = get_chapter_ids(true)
+	var index: int = ids.find(active_chapter if chapter_id == "" else chapter_id)
+	return ids[index + 1] as String if index >= 0 and index + 1 < ids.size() else ""
+
+
 func get_start_legacy_ids() -> Array:
 	return start_legacies.keys()
 
@@ -509,8 +611,10 @@ func max_building_level(type_id: String) -> int:
 	return def.get("levels", []).size()
 
 
-func _load_seasons() -> void:
-	var raw: Variant = _load_json_raw(CONTENT_ROOT + "seasons.json")
+func _load_seasons(path: String) -> void:
+	if path == "" or not FileAccess.file_exists(path):
+		return
+	var raw: Variant = _load_json_raw(path)
 	var season_list: Array = []
 	if raw is Dictionary:
 		var d: Dictionary = raw as Dictionary
@@ -539,8 +643,10 @@ func _load_seasons() -> void:
 	season_order = clean_order
 
 
-func _load_diary() -> void:
-	var raw: Variant = _load_json_raw(CONTENT_ROOT + "diary.json")
+func _load_diary(path: String) -> void:
+	if path == "" or not FileAccess.file_exists(path):
+		return
+	var raw: Variant = _load_json_raw(path)
 	var frags: Array = []
 	if raw is Dictionary:
 		frags = (raw as Dictionary).get("fragments", []) as Array
@@ -555,8 +661,10 @@ func _load_diary() -> void:
 	diary_fragments = clean
 
 
-func _load_endings() -> void:
-	var raw: Variant = _load_json_raw(CONTENT_ROOT + "endings.json")
+func _load_endings(path: String) -> void:
+	if path == "" or not FileAccess.file_exists(path):
+		return
+	var raw: Variant = _load_json_raw(path)
 	var ending_list: Array = []
 	if raw is Dictionary:
 		ending_list = (raw as Dictionary).get("endings", []) as Array

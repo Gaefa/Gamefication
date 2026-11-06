@@ -26,6 +26,7 @@ var _outcome_label: Label
 var _body_label: RichTextLabel
 var _theses_label: RichTextLabel
 var _menu_btn: Button
+var _next_btn: Button
 
 const PRESSURE_LABELS := { "food": "еда", "water": "вода", "happiness": "люди", "mandate": "мандат" }
 const PRESSURE_LABELS_EN := { "food": "food", "water": "water", "happiness": "people", "mandate": "mandate" }
@@ -245,11 +246,17 @@ func _build_ui() -> void:
 	_theses_label.add_theme_color_override("default_color", UiStyle.INK_DIM)
 	columns.add_child(_theses_label)
 
+	_next_btn = Button.new()
+	_next_btn.text = Localization.ru_en("Следующая глава", "Next chapter")
+	UiStyle.primary(_next_btn)
+	_next_btn.pressed.connect(_on_next_chapter_pressed)
 	_menu_btn = Button.new()
 	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
 	_menu_btn.custom_minimum_size.y = 44
 	UiStyle.primary(_menu_btn)
 	_menu_btn.pressed.connect(_on_menu_pressed)
+	_next_btn.custom_minimum_size.y = 44
+	vbox.add_child(_next_btn)
 	vbox.add_child(_menu_btn)
 
 
@@ -257,6 +264,9 @@ func _show_finale(def: Dictionary, ending_id: String) -> void:
 	var kind: String = def.get("kind", "") as String
 	_title_label.text = Localization.content_text(def, "title", Localization.ru_en("Финал", "Finale"))
 	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
+	_next_btn.text = Localization.ru_en("Следующая глава", "Next chapter")
+	# A finale ends a chapter, not the campaign: the next chapter opens from here.
+	_next_btn.visible = ContentDB.next_chapter_id(GameStateStore.save_meta().get("chapter_id", ContentDB.active_chapter) as String) != ""
 	if (GameStateStore.mandate().get("patron_id", "") as String) == "":
 		_outcome_label.text = Localization.ru_en("РАЙОН УСТОЯЛ", "THE DISTRICT HELD") if kind == "win" else Localization.ru_en("РАЙОН РАСПАЛСЯ", "THE DISTRICT FELL APART")
 	else:
@@ -310,8 +320,8 @@ func _replacement_epilogue(ending_id: String) -> String:
 	if not RECALL_ENDINGS.has(ending_id):
 		return ""
 	return Localization.ru_en(
-		"\n\n[i]Через неделю в ваш кабинет въехала %s из соседнего района — со своим расписанием воды и своими печатями.[/i]" % RivalManager.NAME,
-		"\n\n[i]A week later, %s from the neighboring district moved into your office, with her own water schedule and her own stamps.[/i]" % RivalManager.NAME_EN)
+		"\n\n[i]Через неделю в ваш кабинет въехал новый администратор из соседнего района, %s, — со своим расписанием воды и своими печатями.[/i]" % RivalManager.rival_name(),
+		"\n\n[i]A week later a new administrator from the neighbouring district, %s, moved into your office, with their own water schedule and their own stamps.[/i]" % RivalManager.rival_name())
 
 
 func _style_epilogue() -> String:
@@ -353,4 +363,12 @@ func _chronicle() -> String:
 func _on_menu_pressed() -> void:
 	_layer.visible = false
 	# Fresh start → main._ready() runs new_game() → new_game_started resets us.
+	get_tree().reload_current_scene()
+
+
+## The campaign goes on: the title screen opens on the mandate list with the next chapter
+## picked, and its first evening carries a letter about how this one ended.
+func _on_next_chapter_pressed() -> void:
+	Campaign.pending_chapter = ContentDB.next_chapter_id(GameStateStore.save_meta().get("chapter_id", ContentDB.active_chapter) as String)
+	_layer.visible = false
 	get_tree().reload_current_scene()

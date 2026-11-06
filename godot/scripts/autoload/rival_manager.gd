@@ -15,6 +15,22 @@ const NAME := "Мара Восс"
 const DISTRICT := "Сухой Лог"
 const NAME_EN := "Mara Voss"
 const DISTRICT_EN := "Dry Gully"
+
+
+## The rival of the active chapter (chapter.json "rival"); Voss is the fallback.
+static func rival_name() -> String:
+	var rival: Dictionary = ContentDB.get_chapter_def().get("rival", {}) as Dictionary
+	return Localization.content_text(rival, "name", Localization.ru_en(NAME, NAME_EN))
+
+
+static func rival_short() -> String:
+	var rival: Dictionary = ContentDB.get_chapter_def().get("rival", {}) as Dictionary
+	return Localization.content_text(rival, "short", Localization.ru_en("Восс", "Voss"))
+
+
+static func rival_district() -> String:
+	var rival: Dictionary = ContentDB.get_chapter_def().get("rival", {}) as Dictionary
+	return Localization.content_text(rival, "district", Localization.ru_en(DISTRICT, DISTRICT_EN))
 ## Tuned so preparation wins the grant (prepared ≈58 vs 56 on day 14) and neglect loses it.
 const DRIFT_PER_DAY := 1.5
 const GRANT_MONEY := 150.0

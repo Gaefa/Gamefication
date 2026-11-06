@@ -1,0 +1,41 @@
+{
+  "id": "rust_pit",
+  "order": 1,
+  "title": "Ржавая Нора",
+  "title_en": "The Rust Pit",
+  "region": "Сухие земли",
+  "region_en": "The Dry Lands",
+  "blurb": "Сухой район Лиги вокруг старого водного узла. Первый мандат, дневник Лидии, Сезон Пыли.",
+  "blurb_en": "A dry League district around an old water hub. The first mandate, Lydia's diary, the Dust Season.",
+  "scenario": {
+    "season_order": ["season_window", "season_dust", "season_heat"],
+    "win_day": 40,
+    "audit_days": [20, 36],
+    "grant_day": 14
+  },
+  "rival": {
+    "name": "Мара Восс",
+    "name_en": "Mara Voss",
+    "short": "Восс",
+    "short_en": "Voss",
+    "district": "Сухой Лог",
+    "district_en": "Dry Gully"
+  },
+  "tutorial_intro": "Вы — администратор [b]Ржавой Норы[/b]. [b]Пыль[/b] — дни 19–29, [b]Жара[/b] — 30–40. Аудиты — дни 20 и 36. Продержитесь до 40-го дня со счастьем не ниже 40 и не меньше чем 12 жителями, не потеряв ни Лигу, ни город.\n\nВремя пока стоит — спокойно осмотримся.",
+  "tutorial_intro_en": "You are the administrator of the [b]Rust Pit[/b]. [b]Dust[/b] runs on days 19–29, [b]Heat[/b] on 30–40. Audits: days 20 and 36. Hold out until day 40 with mood at least 40 and at least 12 residents, without losing the League or the city.\n\nTime is stopped for now — let's look around.",
+  "company_traces": true,
+  "start_layout": [
+    { "coord": [0, 0], "type": "bld_road" },
+    { "coord": [1, -1], "type": "bld_road" },
+    { "coord": [-1, 1], "type": "bld_road" },
+    { "coord": [-1, 0], "type": "bld_admin_post" },
+    { "coord": [1, 0], "type": "bld_main_cistern" },
+    { "coord": [0, -1], "type": "bld_warehouse" },
+    { "coord": [0, 1], "type": "bld_well_pump" },
+    { "coord": [-2, 1], "type": "bld_shelter" },
+    { "coord": [2, -1], "type": "bld_field_strip" },
+    { "coord": [-1, -1], "type": "bld_solar_panel" },
+    { "coord": [2, 1], "type": "bld_source_tower" },
+    { "coord": [-2, 2], "type": "bld_company_office" }
+  ]
+}
