@@ -16,6 +16,11 @@ static func migrate(data: Dictionary) -> Dictionary:
 		mandate["audits_done"] = 1 if mandate.get("audit_done", false) else 0
 	mandate.erase("audit_done")
 	data["mandate"] = mandate
+	# Saves from before the campaign are Rust Pit runs.
+	var meta: Dictionary = data.get("meta", {})
+	if not meta.has("chapter_id"):
+		meta["chapter_id"] = "rust_pit"
+	data["meta"] = meta
 	return data
 
 

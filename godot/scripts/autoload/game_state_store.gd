@@ -62,6 +62,7 @@ func reset(start_profile_id: String = "appointed_administrator") -> void:
 			"playtime_sec": 0.0,
 			"difficulty": "normal",
 			"rng_seed": 0,
+			"chapter_id": "rust_pit",
 			"schema_version": 1,
 		},
 	}

@@ -114,6 +114,8 @@ func load_game(slot: int) -> bool:
 		EventBus.toast_requested.emit(Localization.t("ui.save.invalid", "Save file invalid (slot %d)") % slot, 4.0)
 		return false
 
+	# The save's chapter decides which content the run is rebuilt from.
+	ContentDB.set_chapter((migrated.get("meta", {}) as Dictionary).get("chapter_id", "rust_pit") as String)
 	GameStateStore.load_from_dict(migrated)
 	EventBus.game_loaded.emit(slot)
 	EventBus.toast_requested.emit(Localization.t("ui.save.loaded", "Game loaded (slot %d)") % slot, 2.0)

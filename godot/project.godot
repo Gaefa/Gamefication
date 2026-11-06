@@ -39,6 +39,7 @@ OnboardingManager="*res://scripts/autoload/onboarding_manager.gd"
 TutorialManager="*res://scripts/autoload/tutorial_manager.gd"
 SaveService="*res://scripts/autoload/save_service.gd"
 RunLog="*res://scripts/autoload/run_log.gd"
+Campaign="*res://scripts/autoload/campaign.gd"
 Localization="*res://scripts/autoload/localization.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
 

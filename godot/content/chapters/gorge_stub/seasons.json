@@ -1,0 +1,84 @@
+{
+  "order": [
+    "season_rains",
+    "season_drought",
+    "season_harvest"
+  ],
+  "seasons": [
+    {
+      "id": "season_rains",
+      "rival_target": 56,
+      "label": "Дожди",
+      "label_key": "season.window.label",
+      "description": "Спокойный период. Время строить, чинить и копить запасы перед сезоном.",
+      "description_en": "A calm stretch. Time to build, repair and stockpile before the season.",
+      "length_days": 12,
+      "expert_faction": "",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "calm",
+      "modifiers": {
+        "water_mult": 0.8,
+        "water_supply_mult": 1.4,
+        "crop_mult": 1.2,
+        "solar_mult": 1.0,
+        "wear_mult": 1.2,
+        "build_cost_mult": 0.9
+      },
+      "label_en": "Rains"
+    },
+    {
+      "id": "season_drought",
+      "rival_target": 50,
+      "tile_variant": "dust",
+      "pressure_amplify": {
+        "food": 1.5,
+        "water": 1.5
+      },
+      "label": "Сушь",
+      "label_key": "season.dust.label",
+      "description": "Сезон Пыли. Урожай гибнет, воды уходит больше, техника засоряется. Главный экзамен подготовки.",
+      "description_en": "The Dust season. Crops die, water drains faster, machinery clogs. The real test of your preparation.",
+      "length_days": 10,
+      "expert_faction": "union_engineers",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "harsh",
+      "modifiers": {
+        "water_mult": 1.4,
+        "water_supply_mult": 0.7,
+        "crop_mult": 0.6,
+        "solar_mult": 0.5,
+        "wear_mult": 1.0,
+        "build_cost_mult": 1.0
+      },
+      "label_en": "Drought"
+    },
+    {
+      "id": "season_harvest",
+      "rival_target": 52,
+      "terrain_tint": "ffe4b8",
+      "pressure_amplify": {
+        "water": 1.75,
+        "happiness": 1.25
+      },
+      "label": "Урожай",
+      "label_key": "season.heat.label",
+      "description": "Жара. Воды нужно больше, продукты портятся. Склад и устойчивое снабжение важнее полного запаса.",
+      "description_en": "Heat. Water use rises and food spoils. Warehouses and steady supply matter more than a full reserve.",
+      "length_days": 8,
+      "expert_faction": "green_covenant",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "harsh",
+      "modifiers": {
+        "water_mult": 1.0,
+        "water_supply_mult": 1.0,
+        "crop_mult": 1.6,
+        "solar_mult": 1.2,
+        "wear_mult": 1.0,
+        "build_cost_mult": 1.0,
+        "food_spoilage_per_day": 0.04,
+        "heat_stress": true
+      },
+      "label_en": "Harvest"
+    }
+  ]
+}

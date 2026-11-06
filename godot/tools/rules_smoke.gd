@@ -173,6 +173,7 @@ func _ready() -> void:
 	_storm_rules()
 	_treasury_rules()
 	_legacy_rules()
+	_campaign_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -327,6 +328,39 @@ func _legacy_rules() -> void:
 
 	_new_game("appointed_administrator")
 	_check(is_equal_approx(GameStateStore.get_resource("res_water_stockpile"), 100.0) and (GameStateStore.save_meta().get("legacy_id", "x") as String) == "", "the plain start is untouched")
+
+
+## The campaign scaffold: chapter 1 plays exactly as before, a stub chapter starts with its
+## own layout and seasons, a finale opens the next chapter and the save remembers the chapter.
+func _campaign_rules() -> void:
+	Campaign.reset_campaign()
+	_check(ContentDB.get_chapter_ids(true).size() >= 2 and ContentDB.get_chapter_ids(true)[0] == "rust_pit", "the campaign lists Rust Pit first")
+	_check(Campaign.is_unlocked("rust_pit") and not Campaign.is_unlocked("gorge_stub"), "chapter 1 is open, chapter 2 waits for a finale")
+	_new_game("appointed_administrator")
+	_check(ContentDB.active_chapter == "rust_pit" and (GameStateStore.save_meta().get("chapter_id", "") as String) == "rust_pit", "a plain new game is chapter 1 and says so in the save")
+	var audits: Array = ContentDB.get_audit_days()
+	_check(ContentDB.get_win_day() == 40 and audits.size() == 2 and int(audits[0]) == 20 and int(audits[1]) == 36 and ContentDB.get_grant_day() == 14 and ContentDB.get_season_order() == ["season_window", "season_dust", "season_heat"], "chapter 1 keeps its calendar")
+	_check(GameStateStore.get_all_building_coords().size() >= 12 + 3 and GameStateStore.has_building(Vector2i(2, 1)) and GameStateStore.has_building(Vector2i(-2, 2)), "chapter 1 keeps its starter layout and the Company's traces (%d)" % GameStateStore.get_all_building_coords().size())
+	_check(RivalManager.rival_short() == Localization.ru_en("Восс", "Voss"), "chapter 1's rival is still Voss")
+	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("interlude.previous_chapter")), "no interlude before any chapter is finished")
+	Campaign.record_result("rust_pit", "ending.win.loyal", "win")
+	_check(Campaign.is_unlocked("gorge_stub") and Campaign.next_open_chapter() == "" , "a finale opens the next chapter (the stub is hidden from the open list)")
+
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "gorge_stub")
+	SimulationRunner.start_run()
+	_check(ContentDB.active_chapter == "gorge_stub" and ContentDB.get_win_day() == 30 and ContentDB.get_season_order()[0] == "season_rains", "the stub chapter loads its own calendar")
+	_check(GameStateStore.get_all_building_coords().size() == 12 and not GameStateStore.has_building(Vector2i(2, 1)), "…its own layout without the Company's traces (%d)" % GameStateStore.get_all_building_coords().size())
+	_check(ContentDB.get_event_def("gorge.handover").size() > 0 and ContentDB.get_event_def("report.storm_warning").is_empty(), "…its own cards, not Rust Pit's")
+	_check(RivalManager.rival_short() != Localization.ru_en("Восс", "Voss"), "…and its own rival")
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("interlude.previous_chapter")), "the interlude letter arrives on its first evening")
+	EventManager.raise_event("interlude.previous_chapter")
+	var letter: Dictionary = EventManager.pending_events.back() if not EventManager.pending_events.is_empty() else {}
+	_check((letter.get("body", "") as String).find("{prev_") < 0 and (letter.get("body", "") as String).find("Ржавая Нора") >= 0, "…and names the chapter before")
+	EventManager.clear_pending()
+	Campaign.reset_campaign()
+	_new_game("appointed_administrator")
+	_check(ContentDB.active_chapter == "rust_pit" and ContentDB.get_event_def("report.storm_warning").size() > 0, "switching back restores chapter 1's content")
 
 
 func _content_contract_rules() -> void:

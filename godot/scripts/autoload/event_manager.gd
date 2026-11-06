@@ -66,6 +66,42 @@ func _check_triggers() -> void:
 			_raise(event_id, def)
 
 
+func _previous_chapter_result() -> Dictionary:
+	var ids: Array = ContentDB.get_chapter_ids(true)
+	var index: int = ids.find(ContentDB.active_chapter)
+	if index <= 0:
+		return {}
+	return Campaign.result_of(ids[index - 1] as String)
+
+
+## The interlude card's text names the chapter before and how it ended: {prev_title},
+## {prev_ending}, {prev_style}, {prev_people} in body / body_en are filled here.
+func _fill_interlude(event_data: Dictionary) -> void:
+	var ids: Array = ContentDB.get_chapter_ids(true)
+	var index: int = ids.find(ContentDB.active_chapter)
+	if index <= 0:
+		return
+	var prev_id: String = ids[index - 1] as String
+	var result: Dictionary = Campaign.result_of(prev_id)
+	var ending: Dictionary = ContentDB.get_ending_def(result.get("ending", "") as String)
+	var style_names: Dictionary = {
+		"loyal": Localization.ru_en("лоялист", "a loyalist"), "pragmatist": Localization.ru_en("прагматик", "a pragmatist"),
+		"protector": Localization.ru_en("защитник", "a protector"), "autonomist": Localization.ru_en("автономист", "an autonomist"),
+	}
+	var fills: Dictionary = {
+		"{prev_title}": Localization.content_text(ContentDB.get_chapter_def(prev_id), "title", prev_id),
+		"{prev_ending}": Localization.content_text(ending, "title", result.get("ending", "") as String),
+		"{prev_style}": style_names.get(result.get("style", "") as String, Localization.ru_en("администратор без ярлыка", "an administrator without a label")) as String,
+		"{prev_people}": str(result.get("population", 0) as int),
+	}
+	for key: String in ["title", "title_en", "body", "body_en"]:
+		if event_data.has(key):
+			var text: String = event_data[key] as String
+			for token: String in fills:
+				text = text.replace(token, fills[token] as String)
+			event_data[key] = text
+
+
 ## Patron business (letters, sanctions, the recall ultimatum) never reaches a founder,
 ## who has no patron. The Forecaster quest is filed under "mandate" but is the district's own.
 func _patronless_skip(def: Dictionary) -> bool:
@@ -77,6 +113,8 @@ func _patronless_skip(def: Dictionary) -> bool:
 func _raise(event_id: String, def: Dictionary) -> void:
 	var event_data: Dictionary = def.duplicate(true)
 	event_data["runtime_id"] = event_id
+	if def.get("interlude", false) as bool:
+		_fill_interlude(event_data)
 	# Критические события (ультиматум Лиги) — немедленная пауза и карточка,
 	# не дожидаясь вечернего Стола (GDD §3.2: срочное не ждёт Стола).
 	if def.get("is_critical", false) as bool:
@@ -159,6 +197,9 @@ func raise_event(event_id: String) -> void:
 
 func _trigger_met(def: Dictionary) -> bool:
 	if not _season_met(def) or not _flags_met(def):
+		return false
+	# An interlude is the letter from the chapter before: only when there was one.
+	if (def.get("interlude", false) as bool) and _previous_chapter_result().is_empty():
 		return false
 	# Пока упрощённая проверка: min_level и условие по ресурсам
 	var min_level: int = def.get("min_level", 1) as int
