@@ -276,6 +276,17 @@ func _treasury_rules() -> void:
 	_check((GameStateStore.economy().get("repairs_today", 0) as int) == 1, "a repair is counted in today's repair bill")
 	var per_day: float = IssueSystem.ISSUE_CHANCE_PER_BUILDING * float(SimulationRunner.TICKS_PER_DAY)
 	_check(per_day <= 0.15, "a building breaks no more than once a week on average (%.2f a day)" % per_day)
+	# The bookkeeper's reserve: the start-up money cannot all go on one purchase.
+	var reserve: float = EconomySystem.bookkeeper_reserve()
+	_check(reserve >= 60.0 and reserve <= 150.0, "the starter district's reserve is a few repairs, not a fortune (%.0f)" % reserve)
+	GameStateStore.set_resource("res_money", reserve + 50.0)
+	var research: CommandBase = orch.command_bus.execute(ResearchTechnologyCommand.new("basic_logistics"))
+	_check(not research.success and not GameStateStore.has_technology("basic_logistics"), "a technology that would eat the reserve is not signed")
+	GameStateStore.set_resource("res_money", reserve + 100.0)
+	research = orch.command_bus.execute(ResearchTechnologyCommand.new("basic_logistics"))
+	_check(research.success, "the same technology goes through once the reserve stays intact")
+	var policy: CommandBase = orch.command_bus.execute(SetPolicyCommand.new("green_zoning"))
+	_check(not policy.success, "a policy switch respects the reserve too")
 
 
 func _content_contract_rules() -> void:

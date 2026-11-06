@@ -116,6 +116,26 @@ static func _input_stock_efficiency_for(consumes: Dictionary, delivery: float, a
 	return efficiency
 
 
+## The bookkeeper's reserve: one repair for every building that can break plus two days of
+## upkeep. A technology or a policy that would leave less than this in the till is not signed:
+## the start-up money cannot all go on one purchase, and the reserve grows with the district.
+static func bookkeeper_reserve() -> float:
+	var per_tick_upkeep: float = (GameStateStore.economy().get("money_ledger", {}) as Dictionary).get("upkeep", 0.0) as float
+	return float(IssueSystem.breakable_buildings()) * RepairBuildingCommand.REPAIR_COST_COINS + per_tick_upkeep * 2.0 * float(SimulationRunner.TICKS_PER_DAY)
+
+
+## How much a purchase would eat into the reserve; 0 when it leaves the reserve intact.
+static func reserve_shortfall(cost: Dictionary) -> float:
+	var price: float = 0.0
+	for res_id: String in cost:
+		if res_id == "res_money" or res_id == "coins" or res_id == "money":
+			price += cost[res_id] as float
+	if price <= 0.0:
+		return 0.0
+	var left: float = GameStateStore.get_resource("res_money") - price
+	return maxf(bookkeeper_reserve() - left, 0.0)
+
+
 func _maintenance_cost() -> float:
 	var bld_count: int = 0
 	for coord: Vector2i in GameStateStore.get_all_building_coords():

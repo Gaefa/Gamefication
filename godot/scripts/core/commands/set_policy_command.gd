@@ -21,6 +21,9 @@ func execute(_ctx: Dictionary) -> void:
 	if not GameStateStore.can_afford(switch_cost):
 		message = Localization.t("ui.command.not_enough_resources", "Not enough resources")
 		return
+	if EconomySystem.reserve_shortfall(switch_cost) > 0.0:
+		message = Localization.ru_en("Счетовод не подпишет: в кассе должно остаться не меньше %d на ремонт района", "The bookkeeper will not sign: the till must keep at least %d for the district's repairs") % int(ceil(EconomySystem.bookkeeper_reserve()))
+		return
 	var category: String = def.get("category", "general") as String
 	var locks: Dictionary = GameStateStore.governance().get("policy_locks", {}) as Dictionary
 	var locked_until: int = locks.get(category, 0) as int
