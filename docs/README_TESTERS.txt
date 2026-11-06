@@ -1,14 +1,15 @@
-Mandate Cities 0.2.5 — playtest build / тестовая сборка
+Mandate Cities 0.3.0-alpha — playtest build / тестовая сборка
 
-NEW IN 0.2.5 / НОВОЕ В 0.2.5
-  Inherited starts: on the mandate screen pick what the previous administrator left (a full
-  cistern with a wrecked pump and a debt to Ruben; eight residents with an empty warehouse;
-  the Company office broken open). Same map, a different first ten minutes.
-  Наследство старта: на экране мандата выберите, что оставил прежний администратор (полная
-  цистерна при разбитом насосе и долге Рубену; восемь жителей при пустом складе; вскрытая
-  контора). Карта та же, первые десять минут другие.
-  0.2.4: breakdowns every eight days, the repair bill and the bookkeeper's reserve / поломки
-  реже, счёт за ремонт и резерв счетовода.
+NEW IN 0.3.0-alpha / НОВОЕ В 0.3.0-alpha
+  Chapter 2, Bogolessky Gorge: a green district where the Covenant claims the meadows. It opens
+  after any Rust Pit finale (the "Chapter" row on the mandate screen, or "Next chapter" at the
+  finale). 30 days, contested meadows, soil that wears out, a granary. Placeholder art: the
+  map is coloured hexes, two buildings are tinted stand-ins; real art is on its way.
+  Глава 2, Боголесское Ущелье: зелёный район, где Завет считает луга своими. Открывается после
+  любого финала Ржавой Норы (ряд «Глава» на экране мандата или «Следующая глава» в финале).
+  30 дней, спорные луга, усталость почвы, зернохранилище. Арт пока заглушки: карта цветными
+  шестиугольниками, два здания перекрашены; настоящий арт в работе.
+  Also: inherited starts for Rust Pit (what the previous administrator left) / наследство старта.
 
 WINDOWS
   Run MandateCities.exe. If SmartScreen warns "Windows protected your PC":
