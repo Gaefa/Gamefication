@@ -121,8 +121,8 @@ func _run(label: String, prepared: bool) -> void:
 		_upgrade_water_infra(orch)
 
 	print("=== %s ===" % label)
-	print(" д | сезон     дн | вода   (нет/т) | еда   (нет/т) | нас | сч | Лига | Город | давл")
-	print("---+--------------+---------------+--------------+-----+----+------+-------+-----")
+	print(" д | сезон     дн | вода   (нет/т) | еда   (нет/т) | деньги (/дн) | нас | сч | Лига | Город | давл")
+	print("---+--------------+---------------+--------------+--------------+-----+----+------+-------+-----")
 	var seen: int = 0
 	for day: int in range(1, DAYS + 1):
 		if day > 1:
@@ -189,7 +189,7 @@ func _log_day(day: int) -> void:
 		"P" if tp.get("priority", true) else "·",
 		"S" if tp.get("secondary", true) else "·",
 		"T" if tp.get("tertiary", true) else "·"]
-	print("%2d | %-9s %d/%-2d | %6.0f (%+5.2f) | %5.0f (%+5.2f) | %3d | %2.0f | %4.0f | %5.0f | %3.0f | эл %2.0f/%2.0f %s" % [
+	print("%2d | %-9s %d/%-2d | %6.0f (%+5.2f) | %5.0f (%+5.2f) | %6.0f (%+4.0f) | %3d | %2.0f | %4.0f | %5.0f | %3.0f | эл %2.0f/%2.0f %s" % [
 		day,
 		sname,
 		c.get("day_in_season", 0) as int,
@@ -198,6 +198,8 @@ func _log_day(day: int) -> void:
 		prod.get("res_water_stockpile", 0.0) as float,
 		GameStateStore.get_resource("res_food"),
 		prod.get("res_food", 0.0) as float,
+		GameStateStore.get_resource("res_money"),
+		(prod.get("res_money", 0.0) as float) * float(TICKS_PER_DAY),
 		GameStateStore.population().get("total", 0) as int,
 		GameStateStore.population().get("happiness", 0.0) as float,
 		GameStateStore.mandate().get("patron_trust", 0) as float,
