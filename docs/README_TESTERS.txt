@@ -1,10 +1,11 @@
-Mandate Cities 0.2.2 — playtest build / тестовая сборка
+Mandate Cities 0.2.3 — playtest build / тестовая сборка
 
-NEW IN 0.2.2 / НОВОЕ В 0.2.2
-  Sound (clicks, the Desk, building, storms, a wind that changes with the season; two sliders
-  in Settings); an autosave every morning; a manual UI scale (Settings -> Scale) for 1080p screens.
-  Звук (кнопки, Стол, стройка, бури, ветер по сезону; два ползунка в настройках); автосохранение
-  каждое утро; ручной масштаб интерфейса (Настройки -> Масштаб) для экранов 1080p.
+NEW IN 0.2.3 / НОВОЕ В 0.2.3
+  Where the money comes from: residents of lived-in shelters pay about 30 a day each; hover the
+  treasury at the top for the breakdown. An empty till brings a bookkeeper's note to the Desk.
+  Откуда деньги: жители заселённых бараков платят около 30 в день с барака; наведите курсор на
+  казну вверху, там расписан приток и расход. Пустая касса приносит на Стол записку счетовода.
+  0.2.2: sound, an autosave every morning, a manual UI scale / звук, автосейв по утрам, масштаб.
   0.2.1: storms on days 22 and 32; a banned strike and a dispersed food riot wreck buildings; Android.
   0.2.1: бури на 22-й и 32-й день; запрещённая забастовка и разогнанная толпа ломают здания; Android.
 
