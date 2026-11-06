@@ -19,6 +19,8 @@ var _stuck: int = 0
 var _evenings: int = 0
 var _cards: int = 0
 var _ending: String = ""
+var _repairs: int = 0
+var _repair_money: float = 0.0
 
 
 func _ready() -> void:
@@ -33,7 +35,13 @@ func _ready() -> void:
 	EventBus.evening_started.connect(func(events: Array) -> void:
 		_evenings += 1
 		_repair_issues()  # a player presses R on the "!" pins before the Desk
-		print("  вечер, день %d: %d карт." % [SimulationRunner.day_count, events.size()]))
+		var prod: Dictionary = GameStateStore.economy().get("production", {}) as Dictionary
+		print("  вечер, день %d: %d карт. деньги %d (%+d/дн) · еда %d · вода %d · дерево %d · камень %d · инстр %d · жители %d · сч %d" % [
+			SimulationRunner.day_count, events.size(),
+			int(GameStateStore.get_resource("res_money")), int(round((prod.get("res_money", 0.0) as float) * float(SimulationRunner.TICKS_PER_DAY))),
+			int(GameStateStore.get_resource("res_food")), int(GameStateStore.get_resource("res_water_stockpile")),
+			int(GameStateStore.get_resource("res_wood")), int(GameStateStore.get_resource("res_stone")), int(GameStateStore.get_resource("res_tools")),
+			GameStateStore.population().get("total", 0) as int, int(GameStateStore.population().get("happiness", 0.0) as float)]))
 	EventBus.critical_event_started.connect(func(data: Dictionary) -> void:
 		print("  СРОЧНО, день %d: %s" % [SimulationRunner.day_count, data.get("runtime_id", "?") as String]))
 	_main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
@@ -131,7 +139,14 @@ func _repair_issues() -> void:
 	var orch: GameOrchestrator = _main.call("get_orchestrator") as GameOrchestrator
 	if orch == null:
 		return
+	var fixed: int = 0
+	var before: float = GameStateStore.get_resource("res_money")
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
 		if (bld.get("has_issue", false) as bool) or (bld.get("damaged", false) as bool):
 			orch.command_bus.execute(RepairBuildingCommand.new(coord))
+			fixed += 1
+	_repairs += fixed
+	_repair_money += before - GameStateStore.get_resource("res_money")
+	if fixed > 0:
+		print("    ремонт: %d поломок, −%d денег (всего за партию %d / −%d)" % [fixed, int(before - GameStateStore.get_resource("res_money")), _repairs, int(_repair_money)])

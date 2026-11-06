@@ -4,7 +4,10 @@ class_name IssueSystem
 
 var _rng: SeededRNG
 
-const ISSUE_CHANCE_PER_BUILDING := 0.001  # 0.1% per tick per building
+## 0.04% per tick: a building breaks about every eight days, so a starter district (eight
+## things that can break) sees roughly one "!" a day and a 16-building district two. At the
+## old 0.1% the repairs (10 money each) ate 24–50 money a day, as much as the shelters earned.
+const ISSUE_CHANCE_PER_BUILDING := 0.0004
 
 
 func _init(rng: SeededRNG) -> void:
