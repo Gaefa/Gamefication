@@ -1591,6 +1591,7 @@ func _money_tooltip() -> String:
 	if repairs > 0 and (economy.get("repairs_day", 0) as int) == (GameStateStore.climate().get("total_day", 1) as int):
 		lines.append(Localization.ru_en("Ремонт сегодня: −%d (%d поломок по %d)", "Repairs today: −%d (%d breakdowns at %d)")
 			% [repairs * int(RepairBuildingCommand.REPAIR_COST_COINS), repairs, int(RepairBuildingCommand.REPAIR_COST_COINS)])
+	lines.append(Localization.ru_en("Резерв счетовода на ремонт: %d (технологии и политики его не трогают)", "Bookkeeper's repair reserve: %d (technologies and policies leave it alone)") % int(ceil(EconomySystem.bookkeeper_reserve())))
 	lines.append(Localization.ru_en("Больше заселённых бараков — больше денег. Грант Лиги — день %d.",
 		"More lived-in shelters, more money. The League grant comes on day %d.") % ContentDB.get_grant_day())
 	return "\n" + "\n".join(lines)
@@ -2680,6 +2681,7 @@ func _build_tech_tab() -> Control:
 	list.add_theme_constant_override("separation", 6)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(list)
+	list.add_child(_reserve_line())
 
 	for tech_id: String in ContentDB.get_technology_ids():
 		list.add_child(_build_tech_row(tech_id))
@@ -2744,6 +2746,7 @@ func _build_policy_tab() -> Control:
 	active_summary.add_theme_font_size_override("font_size", 12)
 	active_summary.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
 	list.add_child(active_summary)
+	list.add_child(_reserve_line())
 
 	for policy_id: String in ContentDB.get_policy_ids():
 		list.add_child(_build_policy_row(policy_id))
@@ -2815,8 +2818,16 @@ func _set_policy(policy_id: String) -> void:
 	_update_resource_bar()
 	_rebuild_governance_panel()
 
+## The bookkeeper's rule, stated where the buttons it greys out live.
+func _reserve_line() -> Control:
+	var reserve: int = int(ceil(EconomySystem.bookkeeper_reserve()))
+	return _bb_line(_dim_bb(Localization.ru_en(
+		"Резерв счетовода: %d денег (по 10 на каждую постройку и два дня содержания). Покупку, после которой в кассе останется меньше, не подпишут.",
+		"Bookkeeper's reserve: %d money (10 per building plus two days of upkeep). A purchase that would leave less in the till is not signed.") % reserve), UiStyle.TEXT)
+
+
 func _can_research_tech(def: Dictionary) -> bool:
-	if not GameStateStore.can_afford(def.get("cost", {})):
+	if not GameStateStore.can_afford(def.get("cost", {})) or EconomySystem.reserve_shortfall(def.get("cost", {})) > 0.0:
 		return false
 	var requires: Array = def.get("requires", [])
 	for req_var: Variant in requires:
@@ -2826,7 +2837,7 @@ func _can_research_tech(def: Dictionary) -> bool:
 
 
 func _can_set_policy(def: Dictionary) -> bool:
-	if not GameStateStore.can_afford(def.get("switch_cost", {})):
+	if not GameStateStore.can_afford(def.get("switch_cost", {})) or EconomySystem.reserve_shortfall(def.get("switch_cost", {})) > 0.0:
 		return false
 	var requirements: Dictionary = def.get("requirements", {})
 	var city_level: int = requirements.get("city_level", 1) as int

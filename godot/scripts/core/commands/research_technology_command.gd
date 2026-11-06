@@ -24,6 +24,9 @@ func execute(_ctx: Dictionary) -> void:
 	if not GameStateStore.can_afford(cost):
 		message = Localization.t("ui.command.not_enough_resources", "Not enough resources")
 		return
+	if EconomySystem.reserve_shortfall(cost) > 0.0:
+		message = Localization.ru_en("Счетовод не подпишет: в кассе должно остаться не меньше %d на ремонт района", "The bookkeeper will not sign: the till must keep at least %d for the district's repairs") % int(ceil(EconomySystem.bookkeeper_reserve()))
+		return
 	GameStateStore.spend(cost)
 	GameStateStore.add_technology(technology_id)
 	success = true

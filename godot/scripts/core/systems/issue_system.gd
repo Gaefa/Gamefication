@@ -14,6 +14,18 @@ func _init(rng: SeededRNG) -> void:
 	_rng = rng
 
 
+## What can break and so what the bookkeeper keeps a repair reserve for: everything but
+## roads, ruins and monuments. The tick loop below applies the same rule.
+static func breakable_buildings() -> int:
+	var count: int = 0
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var type_id: String = GameStateStore.get_building(coord).get("type", "") as String
+		if type_id == "road" or type_id == "bld_road" or ContentDB.is_inert_landmark(type_id):
+			continue
+		count += 1
+	return count
+
+
 func process_tick() -> void:
 	# The Dust clogs machinery: the season's wear_mult scales the breakdown chance.
 	var wear: float = (GameStateStore.climate().get("modifiers", {}) as Dictionary).get("wear_mult", 1.0) as float

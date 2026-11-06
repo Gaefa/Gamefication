@@ -46,7 +46,7 @@ Under the minimap on the left is your list of **goals**: days until the next sea
 ## What you see at the top
 
 - **Resources:** money, food, water reserve, wood, stone, tools.
-- **Money:** only residents pay. A lived-in shelter brings about 30 a day, an empty one nothing; upkeep of the buildings eats a few coins a day. The treasury goes on technologies, policies, repairs (10 a breakdown, one or two a day on average) and Desk decisions. The League grant comes on day 14; raising the district to a Village pays 250. Hover the treasury at the top for the income and expense breakdown.
+- **Money:** only residents pay. A lived-in shelter brings about 30 a day, an empty one nothing; upkeep of the buildings eats a few coins a day. The treasury goes on technologies, policies, repairs (10 a breakdown, one or two a day on average) and Desk decisions. The League grant comes on day 14; raising the district to a Village pays 250. Hover the treasury at the top for the income and expense breakdown. The bookkeeper keeps a repair reserve (10 per building plus two days of upkeep): a technology or policy that would leave less in the till is not signed, so the start-up money cannot all go in one evening.
 - **Water for N days** — the key number. Yellow below 5 days, red below 2.
 - **League ↕ City** — the two masters. A red meter means that master is about to remove you.
 - **Voss · you** — comparison with the neighboring district run by Mara Voss (the Directorate). Your patron compares you with her: on day 14 the better district gets the Dust grant, and at the audit the gap affects trust.
