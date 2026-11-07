@@ -39,12 +39,12 @@ func _ready() -> void:
 		_evenings += 1
 		_repair_issues()  # a player presses R on the "!" pins before the Desk
 		var prod: Dictionary = GameStateStore.economy().get("production", {}) as Dictionary
-		print("  вечер, день %d: %d карт. деньги %d (%+d/дн) · еда %d · вода %d · дерево %d · камень %d · инстр %d · жители %d · сч %d" % [
+		print("  вечер, день %d: %d карт. деньги %d (%+d/дн) · еда %d · вода %d · дерево %d · камень %d · инстр %d · жители %d · сч %d%s" % [
 			SimulationRunner.day_count, events.size(),
 			int(GameStateStore.get_resource("res_money")), int(round((prod.get("res_money", 0.0) as float) * float(SimulationRunner.TICKS_PER_DAY))),
 			int(GameStateStore.get_resource("res_food")), int(GameStateStore.get_resource("res_water_stockpile")),
 			int(GameStateStore.get_resource("res_wood")), int(GameStateStore.get_resource("res_stone")), int(GameStateStore.get_resource("res_tools")),
-			GameStateStore.population().get("total", 0) as int, int(GameStateStore.population().get("happiness", 0.0) as float)]))
+			GameStateStore.population().get("total", 0) as int, int(GameStateStore.population().get("happiness", 0.0) as float), _mood_terms_text()]))
 	EventBus.critical_event_started.connect(func(data: Dictionary) -> void:
 		print("  СРОЧНО, день %d: %s" % [SimulationRunner.day_count, data.get("runtime_id", "?") as String]))
 	_main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
@@ -98,6 +98,16 @@ func _physics_process(_delta: float) -> void:
 		_stuck = 0
 
 
+## Why the mood is what it is: every term that moves it by a point or more (ProgressionSystem.mood_terms).
+func _mood_terms_text() -> String:
+	var terms: Dictionary = GameStateStore.population().get("mood_terms", {}) as Dictionary
+	var parts: Array[String] = []
+	for key: String in ["supply", "power", "pressure", "buildings", "buffs", "governance", "neighbours", "waste"]:
+		var value: float = terms.get(key, 0.0) as float
+		if absf(value) >= 1.0:
+			parts.append("%s %+d" % [key, roundi(value)])
+	return "" if parts.is_empty() else " (→%d: %s)" % [int(terms.get("target", 50.0) as float), ", ".join(parts)]
+
 func _auto_resolve() -> void:
 	if (_desk.get("_finish_btn") as Button).visible:
 		_desk.call("_finish_evening")
@@ -133,7 +143,7 @@ func _finish(result: String) -> void:
 	print((EndingManager.get("_theses_label") as RichTextLabel).get_parsed_text())
 	var entries: Array = GameStateStore.events().get("log", []) as Array
 	print("журнал событий: %d записей; последняя: %s" % [entries.size(), str(entries.back()) if not entries.is_empty() else "—"])
-	print("соперник: Восс %.0f · вы %.0f; грант решён: %s" % [RivalManager.rival_score(), RivalManager.player_score(), str(GameStateStore.rival().get("grant_decided", false))])
+	print("соперник: %s %.0f · вы %.0f; грант решён: %s" % [RivalManager.rival_short(), RivalManager.rival_score(), RivalManager.player_score(), str(GameStateStore.rival().get("grant_decided", false))])
 	set_physics_process(false)
 	get_tree().quit()
 

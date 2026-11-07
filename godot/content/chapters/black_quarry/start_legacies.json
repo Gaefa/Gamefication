@@ -1,0 +1,76 @@
+[
+  {
+    "id": "legacy_smelter",
+    "label": "Плавильня Крамер, дым над районом",
+    "label_en": "Kramer's smelter, smoke over the district",
+    "description": "Ида Крамер поставила плавильню и гнала металл Хартиям: на складе 40 металла, но дым уже на 45, а барон Вельм придёт за долгом на третий день.",
+    "description_en": "Ida Kramer built a smelter and ran metal to the Charters: 40 metal in store, but the smoke stands at 45, and Baron Velm comes for the debt on day three.",
+    "buildings": [
+      {
+        "coord": [
+          1,
+          -2
+        ],
+        "type": "bld_smelter"
+      }
+    ],
+    "resources": {
+      "res_metal": 40,
+      "res_wood": 90
+    },
+    "climate": {
+      "waste": 45
+    },
+    "flags": [
+      "legacy_smelter",
+      "charters_debt"
+    ]
+  },
+  {
+    "id": "legacy_filters",
+    "label": "Фильтры стоят, казна пуста",
+    "label_en": "Filters up, treasury empty",
+    "description": "Крамер выполнила стандарт Союза: фильтровальная станция работает, доверие Союза выше. Но на неё ушла вся казна: 35 монет на старте.",
+    "description_en": "Kramer met the Union's standard: the filter station runs and the Union's trust is higher. But it took the whole treasury: 35 coins to start.",
+    "buildings": [
+      {
+        "coord": [
+          -2,
+          3
+        ],
+        "type": "bld_filter_station"
+      }
+    ],
+    "resources": {
+      "res_money": 35,
+      "res_metal": 20
+    },
+    "mandate": {
+      "patron_trust": 62
+    },
+    "flags": [
+      "legacy_filters",
+      "union_standard"
+    ]
+  },
+  {
+    "id": "legacy_strike",
+    "label": "После сломанной забастовки",
+    "label_en": "After a broken strike",
+    "description": "Крамер разогнала забастовку охраной Вельма. Люди ушли к нему: трое в двух бараках, поддержка района низкая. Склад и дрова на месте.",
+    "description_en": "Kramer broke a strike with Velm's guards. The people left for his Burn: three residents in two shelters, the district's support low. The store and the firewood remain.",
+    "resources": {
+      "res_food": 110,
+      "res_wood": 130,
+      "res_stone": 60
+    },
+    "residents": 3,
+    "mandate": {
+      "support": 35
+    },
+    "flags": [
+      "legacy_strike",
+      "strike_history"
+    ]
+  }
+]

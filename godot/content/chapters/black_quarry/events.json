@@ -1,0 +1,1573 @@
+[
+  {
+    "id": "quarry.union_welcome",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "engineers_union",
+    "trigger_day": 1,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — назначение в Карьер",
+    "title_en": "Engineers' Union — Appointment to the Quarry",
+    "body": "Союз Инженеров. Ревизионная служба промпояса.\nАдминистратору района Чёрный Карьер.\n\nУведомляю о назначении. Район рудный: жила под восточным склоном, старый карьер, остатки печей Компании. Прежний администратор Крамер отозвана по итогам ревизии.\n\nЗадача на срок: к Морозу не меньше двенадцати жителей, запасы воды и еды, металл для мостовых работ Союза. И стандарт чистоты: дым над районом не выше сорока. Хартии будут предлагать вам иное; это ваш выбор и ваша ревизия.\n\nИнженер-ревизор Матиас Хольт.",
+    "body_en": "Engineers' Union. Industrial Belt Review Service.\nTo the administrator of the Black Quarry district.\n\nI notify you of your appointment. The district is ore country: a seam under the east slope, an old pit, the remains of Company furnaces. The previous administrator, Kramer, was recalled after review.\n\nYour task for the term: by the Frost, no fewer than twelve residents, water and food in reserve, metal for the Union's bridge works. And the clean-air standard: smoke over the district no higher than forty. The Charters will offer you otherwise; that is your choice and your review.\n\nEngineer-Auditor Matthias Holt.",
+    "options": [
+      {
+        "text": "Принять мандат",
+        "text_en": "Accept the mandate",
+        "effects": {
+          "message": "Печать поставлена. Карьер ваш на тридцать дней.",
+          "message_en": "The seal is set. The Quarry is yours for thirty days."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.velm_intro",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 3,
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — барон Отто Вельм с Гари",
+    "title_en": "A Letter — Baron Otto Velm of the Burn",
+    "body": "Письмо на плотной бумаге, с оттиском молота и короны.\n\n«Сосед. Я держу Вельмову Гарь восемь лет: три печи, своя охрана, никаких фильтров и никаких ревизоров. Крамер продавала мне металл и жила неплохо, пока слушала Хольта вполуха.\n\nГрант Союза на сезон один на двоих: кто к десятому дню крепче стоит, тот и получит. Я стою на шлаке, он не проседает».\n\nВельм.",
+    "body_en": "A letter on heavy paper, stamped with a hammer and a crown.\n\n\"Neighbour. I have held Velm's Burn for eight years: three furnaces, my own guards, no filters and no auditors. Kramer sold me metal and lived well enough while she listened to Holt with half an ear.\n\nThe Union's grant this season is one for the two of us: whoever stands firmer by day ten takes it. I stand on slag; it does not sink.\"\n\nVelm.",
+    "options": [
+      {
+        "text": "Принять к сведению",
+        "text_en": "Note it",
+        "effects": {
+          "message": "Письмо легло в ящик. Гарь видна с отвала: три трубы, дым до неба.",
+          "message_en": "The letter went into the drawer. The Burn can be seen from the spoil heap: three stacks, smoke to the sky."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.smog_report",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_smog",
+    "trigger_day": 2,
+    "tags": [
+      "report",
+      "smog"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — дым над карьером",
+    "title_en": "Report — Smoke over the Quarry",
+    "body": "Сводка инженера насосной.\n\nСмог: ветра нет, дым от карьера стоит над бараками. Счётчик отходов вверху: карьер даёт три в день, плавильня дала бы пять, ветер снимает один. Фильтровальная станция снимает четыре, но ей нужен ток и металл; отвал снимает два за гроши, но соседям он не нравится.\n\nПока дым ниже сорока, люди терпят.",
+    "body_en": "Report from the pump engineer.\n\nThe Smog: no wind, the pit's smoke stands over the housing. The waste counter at the top: the pit adds three a day, a smelter would add five, the wind takes one. A filter station takes four but needs power and metal; a slag heap takes two for pennies, but the neighbours dislike it.\n\nAs long as the smoke stays under forty, people put up with it.",
+    "options": [
+      {
+        "text": "Понятно. Следить за счётчиком",
+        "text_en": "Understood. Watch the counter",
+        "effects": {
+          "message": "Инженер отметил на карте жилу и место под фильтры.",
+          "message_en": "The engineer marked the seam and a site for filters on the map."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.charters_offer",
+    "category": "mandate",
+    "min_level": 1,
+    "trigger_condition": "res_metal >= 20",
+    "trigger_day": 4,
+    "cooldown_sec": 1500,
+    "tags": [
+      "charters",
+      "trade"
+    ],
+    "title": "Предложение — Хартии берут металл",
+    "title_en": "An Offer — The Charters Buy Metal",
+    "body": "У поста агент Хартий Сильва Крон с весами и кошельком.\n\n«Двадцать слитков — семьдесят монет, сегодня и наличными. Куда идёт металл, не спрашивайте, Союзу не говорите. Приду ещё».",
+    "body_en": "At the post, Silva Kron, the Charters' agent, with scales and a purse.\n\n\"Twenty ingots, seventy coins, today and in cash. Where the metal goes, do not ask; do not tell the Union. I will come again.\"",
+    "options": [
+      {
+        "text": "Продать 20 металла за 70 монет",
+        "text_en": "Sell 20 metal for 70 coins",
+        "cost": {
+          "res_metal": 20
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 70
+          },
+          "set_flag": "charters_deal",
+          "stat_league_trust": -2,
+          "style": "pragmatist",
+          "message": "Слитки ушли на телегу. Крон приподняла шляпу.",
+          "message_en": "The ingots went onto the cart. Kron tipped her hat."
+        }
+      },
+      {
+        "text": "Отказать: металл для Союза",
+        "text_en": "Refuse: the metal is for the Union",
+        "effects": {
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Крон уехала без слитков. Весы оставила: «на случай, если передумаете».",
+          "message_en": "Kron left without the ingots. She left the scales: \"in case you change your mind.\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.union_standard",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "engineers_union",
+    "trigger_day": 5,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — стандарт чистоты",
+    "title_en": "Engineers' Union — The Clean-Air Standard",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Напоминаю о стандарте: фильтровальная станция в районе с действующим карьером обязательна. Союз выдаёт чертёж бесплатно; металл и камень ваши.\n\nПрошу сообщить, когда станция будет поставлена. Если никогда, прошу объяснить, почему.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. A reminder of the standard: a filter station is mandatory in a district with a working pit. The Union gives the drawing free; the metal and stone are yours.\n\nState when the station will be built. If never, explain why.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Обещать станцию к первой ревизии",
+        "text_en": "Promise the station by the first review",
+        "effects": {
+          "stat_league_trust": 5,
+          "set_flag": "union_standard",
+          "style": "loyal",
+          "message": "Ответ ушёл. Хольт приписал: «Проверю на пятнадцатый день».",
+          "message_en": "The reply went out. Holt added: \"I will check on day fifteen.\""
+        }
+      },
+      {
+        "text": "Объяснить: сначала люди и еда, фильтры потом",
+        "text_en": "Explain: people and food first, filters later",
+        "effects": {
+          "stat_league_trust": -3,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Хольт не ответил. В деле появилась закладка.",
+          "message_en": "Holt did not reply. A bookmark appeared in the file."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.miners_arrive",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 6,
+    "tags": [
+      "petition",
+      "families"
+    ],
+    "cooldown_sec": 999999,
+    "title": "У ворот — рудокопы с Гари",
+    "title_en": "At the Gate — Miners from the Burn",
+    "body": "У поста шесть человек с кайлами и мешками: ушли от Вельма.\n\nСтарший, Данила Рех: «У барона платят, но смена двенадцать часов и фильтров нет. Мы умеем бить руду. Дайте койки, и карьер пойдёт быстрее».",
+    "body_en": "Six people with picks and sacks at the post: they left Velm.\n\nThe eldest, Danila Rech: \"The baron pays, but the shift is twelve hours and there are no filters. We know how to break ore. Give us beds and the pit goes faster.\"",
+    "options": [
+      {
+        "text": "Принять (+4 жителя, если есть места)",
+        "text_en": "Take them in (+4 residents if there is room)",
+        "effects": {
+          "add_residents": 4,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Рудокопы заняли свободные койки. Рех остался у ворот до темноты.",
+          "message_en": "The miners took the free beds. Rech stayed at the gate until dark."
+        }
+      },
+      {
+        "text": "Отказать: с Вельмом ссориться рано",
+        "text_en": "Refuse: too early to quarrel with Velm",
+        "effects": {
+          "stat_city_trust": -3,
+          "stat_rival_score": 2,
+          "style": "pragmatist",
+          "message": "Ушли обратно на Гарь. Вельм об этом узнает.",
+          "message_en": "They went back to the Burn. Velm will hear of it."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.velm_exchange",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 9,
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Вельм предлагает охрану",
+    "title_en": "A Letter — Velm Offers Guards",
+    "body": "«Сосед. Слышал, у вас появились мои рудокопы и мой Рех. Он говорливый. Моя охрана за пятьдесят монет в сезон постоит у вашей плавильни, и говорить он перестанет.\n\nПредложение дружеское. Отказ тоже приму — по-дружески».\n\nВельм.",
+    "body_en": "\"Neighbour. I hear you have my miners and my Rech. He talks. For fifty coins a season my guards will stand at your smelter, and he will stop talking.\n\nA friendly offer. A refusal I will also take, in a friendly way.\"\n\nVelm.",
+    "options": [
+      {
+        "text": "Нанять охрану Вельма (50 монет)",
+        "text_en": "Hire Velm's guards (50 coins)",
+        "cost": {
+          "res_money": 50
+        },
+        "effects": {
+          "set_flag": "velm_guards",
+          "stat_unrest_pressure": -6,
+          "stat_city_trust": -4,
+          "style": "pragmatist",
+          "message": "У ворот встали двое с дубинками и бляхами Гари. Стало тише.",
+          "message_en": "Two men with clubs and Burn badges took the gate. It got quieter."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "stat_city_trust": 3,
+          "stat_rival_score": 1,
+          "style": "protector",
+          "message": "Ответ ушёл. Рех узнал и принёс к посту хлеб.",
+          "message_en": "The reply went out. Rech heard and brought bread to the post."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.union_audit_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "engineers_union",
+    "trigger_day": 12,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — ревизия через три дня",
+    "title_en": "Engineers' Union — Review in Three Days",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Через три дня первая ревизия: люди, запас воды, запас еды, поддержка района. Отдельно смотрю дым: стандарт сорок.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The first review is in three days: people, the water reserve, the food reserve, the district's support. I will look at the smoke separately: the standard is forty.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Принято, готовимся",
+        "text_en": "Noted, we prepare",
+        "effects": {
+          "message": "Секретарь достал ведомости и счётчик дыма.",
+          "message_en": "The secretary got out the ledgers and the smoke count."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.filters_praise",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "engineers_union",
+    "requires_flag": "union_standard",
+    "trigger_condition": "stat_waste <= 10",
+    "trigger_day": 8,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — стандарт выполнен",
+    "title_en": "Engineers' Union — The Standard Is Met",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Фильтры работают, дым в норме. Редкий случай в промпоясе; в докладе отмечено. Союз направляет вам инженера-наладчика на сезон.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The filters work, the smoke is within the standard. A rare thing in the belt; noted in the report. The Union sends you a fitter for the season.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Принять наладчика",
+        "text_en": "Take the fitter",
+        "effects": {
+          "stat_league_trust": 5,
+          "add_buff": {
+            "id": "union_fitter",
+            "name": "Наладчик Союза",
+            "name_en": "The Union's fitter",
+            "production_mult": 0.1,
+            "remaining": 6
+          },
+          "message": "Наладчик осмотрел насос и подтянул фильтры.",
+          "message_en": "The fitter went over the pump and tightened the filters."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.cough",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_condition": "stat_waste >= 40",
+    "tags": [
+      "petition",
+      "health"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Записка врача — кашель в бараках",
+    "title_en": "The Doctor's Note — Coughing in the Housing",
+    "body": "Врач района Ясна Орлик.\n\n«Администратору. Дым выше сорока: дети в бараках кашляют по ночам, старики не выходят. Пока это кашель. Если дым дойдёт до семидесяти, это будут больные.\n\nМожно снять ночную смену с карьера, можно раздать мокрые повязки, можно ничего. Я записала, что сказала».",
+    "body_en": "The district doctor, Yasna Orlik.\n\n\"To the administrator. The smoke is over forty: the children in the housing cough at night, the old do not go out. For now it is a cough. If the smoke reaches seventy, it will be the sick.\n\nYou can take the night shift off the pit, you can hand out wet masks, you can do nothing. I have written down that I said so.\"",
+    "options": [
+      {
+        "text": "Снять ночную смену (добыча −20% на 4 дня)",
+        "text_en": "Take off the night shift (output −20% for 4 days)",
+        "effects": {
+          "add_buff": {
+            "id": "night_shift_off",
+            "name": "Без ночной смены",
+            "name_en": "No night shift",
+            "production_mult": -0.2,
+            "remaining": 4
+          },
+          "stat_waste": -8,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Карьер стоит по ночам. Кашель стих.",
+          "message_en": "The pit stands at night. The coughing eased."
+        }
+      },
+      {
+        "text": "Раздать повязки (30 монет)",
+        "text_en": "Hand out masks (30 coins)",
+        "cost": {
+          "res_money": 30
+        },
+        "effects": {
+          "stat_unrest_pressure": -4,
+          "style": "pragmatist",
+          "message": "Повязки разобрали. Врач покачала головой, но взяла.",
+          "message_en": "The masks went. The doctor shook her head, but took them."
+        }
+      },
+      {
+        "text": "Записать и работать дальше",
+        "text_en": "Note it and work on",
+        "effects": {
+          "stat_unrest_pressure": 5,
+          "stat_city_trust": -3,
+          "style": "loyal",
+          "message": "Записка легла в дело. Карьер работает.",
+          "message_en": "The note went into the file. The pit works."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.sickness",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_condition": "stat_waste >= 70",
+    "is_critical": true,
+    "tags": [
+      "crisis",
+      "health"
+    ],
+    "cooldown_sec": 999999,
+    "title": "СРОЧНО — дымовая болезнь",
+    "title_en": "URGENT — Smoke Sickness",
+    "body": "Врач Орлик у поста, без записки.\n\n«Семьдесят. Двое стариков не встали утром, троих детей я положила в конторе. Две семьи уже собирают вещи на Гарь. Остановите печи на неделю или хороните дальше».",
+    "body_en": "Doctor Orlik at the post, without a note.\n\n\"Seventy. Two of the old did not get up this morning; I have put three children in the office. Two families are already packing for the Burn. Stop the furnaces for a week, or keep burying.\"",
+    "options": [
+      {
+        "text": "Остановить печи на 5 дней",
+        "text_en": "Stop the furnaces for 5 days",
+        "effects": {
+          "add_buff": {
+            "id": "furnaces_stopped",
+            "name": "Печи остановлены",
+            "name_en": "Furnaces stopped",
+            "production_mult": -0.5,
+            "remaining": 5
+          },
+          "stat_waste": -20,
+          "stat_city_trust": 4,
+          "add_residents": -2,
+          "style": "protector",
+          "message": "Печи остыли. Дым пошёл вниз, добыча тоже.",
+          "message_en": "The furnaces went cold. The smoke went down, and so did the output."
+        }
+      },
+      {
+        "text": "Хоронить и работать",
+        "text_en": "Bury and work on",
+        "effects": {
+          "add_residents": -4,
+          "stat_city_trust": -8,
+          "stat_unrest_pressure": 10,
+          "style": "loyal",
+          "message": "Две семьи ушли на Гарь. Карьер не остановился.",
+          "message_en": "Two families left for the Burn. The pit did not stop."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.slag_dump_offer",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_condition": "stat_waste >= 50",
+    "tags": [
+      "rival",
+      "charters"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Вельм вывезет шлак",
+    "title_en": "A Letter — Velm Will Haul the Slag",
+    "body": "«Сосед. Вижу ваш дым с моего отвала. Мои телеги вывезут шлак и золу на Гарь за шестьдесят монет: у меня там всё равно уже не растёт. Хольту можете сказать, что это ваши фильтры».\n\nВельм.",
+    "body_en": "\"Neighbour. I see your smoke from my heap. My carts will haul your slag and ash to the Burn for sixty coins: nothing grows there anyway. You can tell Holt it was your filters.\"\n\nVelm.",
+    "options": [
+      {
+        "text": "Заплатить за вывоз (60 монет, дым −30)",
+        "text_en": "Pay for the hauling (60 coins, smoke −30)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "stat_waste": -30,
+          "set_flag": "charters_deal",
+          "stat_league_trust": -2,
+          "style": "pragmatist",
+          "message": "Телеги Гари вывозили шлак две ночи. Воздух стал чище; Хольт промолчал.",
+          "message_en": "The Burn's carts hauled slag for two nights. The air cleared; Holt said nothing."
+        }
+      },
+      {
+        "text": "Отказать: справимся фильтрами",
+        "text_en": "Refuse: filters will do",
+        "effects": {
+          "stat_league_trust": 1,
+          "style": "loyal",
+          "message": "Ответ ушёл. Дым остался.",
+          "message_en": "The reply went out. The smoke stayed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.school",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 14,
+    "tags": [
+      "petition",
+      "families"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Обращение — учительница просит класс",
+    "title_en": "Petition — The Teacher Asks for a Classroom",
+    "body": "Учительница Вера Лаш у поста с девятью детьми.\n\n«Дети сидят в бараках, пока родители в карьере. Дайте угол на складе и двадцать досок на лавки, и у района будет школа. Хотя бы на сезон».",
+    "body_en": "The teacher, Vera Lash, at the post with nine children.\n\n\"The children sit in the housing while the parents are in the pit. Give me a corner of the store and twenty planks for benches, and the district has a school. For the season at least.\"",
+    "options": [
+      {
+        "text": "Дать угол и доски (20 дерева)",
+        "text_en": "Give the corner and the planks (20 wood)",
+        "cost": {
+          "res_wood": 20
+        },
+        "effects": {
+          "add_buff": {
+            "id": "school",
+            "name": "Школа на складе",
+            "name_en": "School in the store",
+            "happiness_add": 4,
+            "remaining": 12
+          },
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Лавки сколотили к вечеру. Дети шумят на складе.",
+          "message_en": "The benches were nailed up by evening. The children are loud in the store."
+        }
+      },
+      {
+        "text": "Склад не для детей",
+        "text_en": "The store is not for children",
+        "effects": {
+          "stat_city_trust": -2,
+          "style": "loyal",
+          "message": "Дети остались в бараках.",
+          "message_en": "The children stayed in the housing."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.strike_fund",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "engineers_union",
+    "season": "season_strike_autumn",
+    "trigger_day": 12,
+    "excludes_flag": "velm_guards",
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — посредник на осень",
+    "title_en": "Engineers' Union — A Mediator for the Autumn",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Осень в промпоясе забастовочная. Союз предлагает посредника к комитету Реха: инженер-переговорщик, расходы Союза. Условие: без охраны Хартий у ворот.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. Autumn in the belt is strike season. The Union offers a mediator for Rech's committee: a negotiating engineer, at the Union's expense. The condition: no Charters' guards at the gate.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Принять посредника",
+        "text_en": "Accept the mediator",
+        "effects": {
+          "stat_league_trust": 3,
+          "stat_unrest_pressure": -6,
+          "set_flag": "union_mediator",
+          "style": "loyal",
+          "message": "Посредник сел с комитетом у ворот. Разговор долгий.",
+          "message_en": "The mediator sat with the committee at the gate. A long talk."
+        }
+      },
+      {
+        "text": "Отказать: сами договоримся",
+        "text_en": "Refuse: we will settle it ourselves",
+        "effects": {
+          "stat_league_trust": -2,
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Хольт записал отказ.",
+          "message_en": "Holt noted the refusal."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.strike_warning",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_strike_autumn",
+    "trigger_condition": "stat_happiness <= 38",
+    "tags": [
+      "petition",
+      "workers"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Записка комитета — требования",
+    "title_en": "The Committee's Note — Demands",
+    "body": "Комитет рудокопов, Данила Рех.\n\n«Администратору. Смена восемь часов, воды по норме, дым ниже сорока. Это не просьба, это предупреждение: если нет, с понедельника карьер стоит».",
+    "body_en": "The miners' committee, Danila Rech.\n\n\"To the administrator. Eight-hour shifts, water by the norm, smoke under forty. This is not a request, it is a warning: if not, from Monday the pit stands.\"",
+    "options": [
+      {
+        "text": "Уступить: смена восемь часов (добыча −15% на 5 дней)",
+        "text_en": "Concede: eight-hour shifts (output −15% for 5 days)",
+        "effects": {
+          "add_buff": {
+            "id": "short_shifts",
+            "name": "Короткие смены",
+            "name_en": "Short shifts",
+            "production_mult": -0.15,
+            "remaining": 5
+          },
+          "stat_unrest_pressure": -8,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Рех пожал руку. Карьер работает в два коротких приёма.",
+          "message_en": "Rech shook hands. The pit works in two short shifts."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "stat_unrest_pressure": 6,
+          "style": "loyal",
+          "message": "Рех ушёл молча. У ворот собираются.",
+          "message_en": "Rech left in silence. People gather at the gate."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.crisis_strike",
+    "category": "happiness",
+    "min_level": 1,
+    "driver": "pressure",
+    "season": "season_strike_autumn",
+    "is_critical": true,
+    "cooldown_sec": 2400,
+    "tags": [
+      "crisis",
+      "workers"
+    ],
+    "title": "СРОЧНО — забастовка",
+    "title_en": "URGENT — Strike",
+    "body": "Карьер стоит. Комитет Реха встал у плавильни и не пускает смену; у ворот человек сорок, костёр, лозунги. Охрана ждёт указаний.",
+    "body_en": "The pit stands. Rech's committee holds the smelter and lets no shift through; forty people at the gate, a bonfire, slogans. The guards await instructions.",
+    "options": [
+      {
+        "text": "Сесть с комитетом (60 монет на требования)",
+        "text_en": "Sit down with the committee (60 coins for the demands)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "stat_unrest_pressure": -12,
+          "stat_city_trust": 5,
+          "style": "protector",
+          "message": "Договорились к ночи. Смена вышла утром.",
+          "message_en": "A deal by night. The shift went out in the morning."
+        }
+      },
+      {
+        "text": "Разогнать: охрана, дубинки",
+        "text_en": "Break it: guards, clubs",
+        "effects": {
+          "stat_unrest_pressure": -6,
+          "stat_city_trust": -10,
+          "set_flag": "strike_broken",
+          "damage_building": "bld_shelter",
+          "style": "pragmatist",
+          "message": "Ворота отбили. Один барак разнесли в драке. Об этом будут помнить.",
+          "message_en": "The gate was cleared. One shelter was wrecked in the fight. This will be remembered."
+        }
+      },
+      {
+        "text": "Ждать: пусть стоят (добыча −50% на 3 дня)",
+        "text_en": "Wait them out (output −50% for 3 days)",
+        "effects": {
+          "add_buff": {
+            "id": "strike_wait",
+            "name": "Забастовка",
+            "name_en": "Strike",
+            "production_mult": -0.5,
+            "remaining": 3
+          },
+          "stat_unrest_pressure": -5,
+          "add_residents": -1,
+          "style": "loyal",
+          "message": "Стояли три дня. Разошлись сами, не все.",
+          "message_en": "They stood three days. They dispersed on their own, not all of them."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.crisis_happiness",
+    "category": "happiness",
+    "min_level": 1,
+    "driver": "pressure",
+    "is_critical": true,
+    "cooldown_sec": 2400,
+    "tags": [
+      "crisis",
+      "workers"
+    ],
+    "title": "СРОЧНО — сход у ворот карьера",
+    "title_en": "URGENT — An Assembly at the Pit Gate",
+    "body": "Люди собрались у ворот карьера и не расходятся. Говорят о дыме, о пайке, о том, что Крамер тоже обещала. Рех стоит с краю и слушает.",
+    "body_en": "The people have gathered at the pit gate and will not disperse. They talk of the smoke, of rations, of how Kramer promised too. Rech stands at the edge and listens.",
+    "options": [
+      {
+        "text": "Выйти и говорить до ночи",
+        "text_en": "Go out and talk until night",
+        "effects": {
+          "stat_unrest_pressure": -10,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Разошлись за полночь. Рех ушёл последним.",
+          "message_en": "They dispersed past midnight. Rech left last."
+        }
+      },
+      {
+        "text": "Раздать по мешку со склада (30 еды)",
+        "text_en": "Hand out a sack each from the store (30 food)",
+        "cost": {
+          "res_food": 30
+        },
+        "effects": {
+          "stat_unrest_pressure": -8,
+          "style": "pragmatist",
+          "message": "Мешки разобрали. У ворот пусто.",
+          "message_en": "The sacks went. The gate is empty."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.crisis_food",
+    "category": "food",
+    "min_level": 1,
+    "driver": "pressure",
+    "cooldown_sec": 900,
+    "tags": [
+      "crisis",
+      "food"
+    ],
+    "title": "Срочно — семьи у склада",
+    "title_en": "Urgent — Families at the Store",
+    "body": "Сводка дежурного.\n\nУ склада семьи рудокопов, человек пятьдесят, требуют еды: паёк кончился. Двое выломали пустой лоток. Охрана просит указаний.\n\nПричина: запас еды в районе на исходе.",
+    "body_en": "Duty officer's report.\n\nMiners' families at the store, some fifty people, demanding food: the ration is gone. Two broke an empty stall. The guards ask for instructions.\n\nCause: the district's food reserve is nearly gone.",
+    "options": [
+      {
+        "text": "Купить паёк у Хартий (100 монет)",
+        "text_en": "Buy rations from the Charters (100 coins)",
+        "cost": {
+          "res_money": 100
+        },
+        "effects": {
+          "add_resources": {
+            "res_food": 30
+          },
+          "stat_unrest_pressure": -10,
+          "style": "protector",
+          "message": "Телега Крон привезла мешки. Семьи разошлись.",
+          "message_en": "Kron's cart brought the sacks. The families went home."
+        }
+      },
+      {
+        "text": "Разогнать силой",
+        "text_en": "Disperse them by force",
+        "effects": {
+          "stat_unrest_pressure": 12,
+          "stat_city_trust": -8,
+          "damage_building": "bld_warehouse",
+          "style": "pragmatist",
+          "message": "Толпу разогнали, ворота склада выломаны: нужен ремонт.",
+          "message_en": "The crowd was dispersed; the store gate is broken and needs repair."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.crisis_water",
+    "category": "water",
+    "min_level": 1,
+    "driver": "pressure",
+    "cooldown_sec": 900,
+    "tags": [
+      "crisis",
+      "water"
+    ],
+    "title": "Срочно — очередь у цистерны",
+    "title_en": "Urgent — A Queue at the Cistern",
+    "body": "Сводка дежурного.\n\nУ цистерны очередь с вёдрами и драка: насос тянет с глубины медленно, шлаковую речку пить нельзя. Двое в конторе с разбитыми головами.\n\nПричина: запас воды в районе на исходе.",
+    "body_en": "Duty officer's report.\n\nA queue with buckets at the cistern and a fight: the pump draws slowly from deep, the slag creek is not for drinking. Two in the office with cracked heads.\n\nCause: the district's water reserve is nearly gone.",
+    "options": [
+      {
+        "text": "Ввести выдачу по часам",
+        "text_en": "Water by the hour",
+        "effects": {
+          "set_policy": "water_hours",
+          "stat_unrest_pressure": -8,
+          "style": "pragmatist",
+          "message": "Расписание повесили у цистерны. Ворчат, но стоят по порядку.",
+          "message_en": "The schedule went up by the cistern. They grumble, but queue in order."
+        }
+      },
+      {
+        "text": "Купить воду у Вельма (60 монет)",
+        "text_en": "Buy water from Velm (60 coins)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "add_resources": {
+            "res_water_stockpile": 80
+          },
+          "stat_unrest_pressure": -8,
+          "stat_rival_score": 2,
+          "style": "pragmatist",
+          "message": "Бочки с Гари пришли к вечеру.",
+          "message_en": "Barrels from the Burn arrived by evening."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.crisis_mandate",
+    "category": "mandate",
+    "min_level": 1,
+    "driver": "pressure",
+    "patron": "engineers_union",
+    "cooldown_sec": 960,
+    "tags": [
+      "crisis",
+      "mandate"
+    ],
+    "title": "Срочно — Союз замораживает смету",
+    "title_en": "Urgent — The Union Freezes the Budget",
+    "body": "Союз Инженеров. Финансовая служба.\nАдминистратору Чёрного Карьера.\n\nСмета на обслуживание района заморожена до улучшения показателей. Основание: доклад ревизора.\n\nДля возобновления представьте план исправления. По вопросам обращайтесь к инженеру-ревизору Хольту.",
+    "body_en": "Engineers' Union. Finance Service.\nTo the administrator of the Black Quarry.\n\nThe district's maintenance budget is frozen until the figures improve. Grounds: the auditor's report.\n\nTo resume it, submit a correction plan. Direct questions to Engineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Принять условия и исправлять",
+        "text_en": "Accept the terms and correct the figures",
+        "effects": {
+          "stat_city_trust": -5,
+          "stat_league_trust": 6,
+          "message": "Вы приняли условия. Союз отметил готовность.",
+          "message_en": "You accepted the terms. The Union noted your willingness."
+        }
+      },
+      {
+        "text": "Продать металл Хартиям (15 металла → 60 монет)",
+        "text_en": "Sell metal to the Charters (15 metal → 60 coins)",
+        "cost": {
+          "res_metal": 15
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 60
+          },
+          "set_flag": "charters_deal",
+          "stat_league_trust": -3,
+          "style": "pragmatist",
+          "message": "Крон заплатила за ночь. Союз об этом узнает.",
+          "message_en": "Kron paid overnight. The Union will hear of it."
+        }
+      },
+      {
+        "text": "Найти деньги в районе: сборы (+80 монет)",
+        "text_en": "Find the money in the district: levies (+80 coins)",
+        "effects": {
+          "add_resources": {
+            "res_money": 80
+          },
+          "stat_league_trust": -3,
+          "stat_unrest_pressure": 6,
+          "message": "Сборы собрали. У ворот недовольны.",
+          "message_en": "The levies were collected. The gate is unhappy."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.recall_ultimatum",
+    "category": "mandate",
+    "min_level": 1,
+    "patron": "engineers_union",
+    "is_critical": true,
+    "trigger_condition": "stat_league_trust <= 25",
+    "cooldown_sec": 1800,
+    "tags": [
+      "crisis",
+      "mandate",
+      "recall"
+    ],
+    "title": "Срочно — последнее предупреждение Союза",
+    "title_en": "Urgent — The Union's Final Warning",
+    "body": "Союз Инженеров. Ревизионная служба.\nАдминистратору Чёрного Карьера. Лично в руки.\n\nДоверие Союза к вам исчерпано. Я обязан либо показать результат, либо подписать представление об отзыве.\n\nРезультат такой: тридцать единиц металла и сорок монет из средств района передаются на мостовые работы Союза. Это подтвердит, что район управляем.\n\nДругого предложения не будет.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\nTo the administrator of the Black Quarry. By hand.\n\nThe Union's trust in you is exhausted. I must either show a result or sign a recommendation for your recall.\n\nThe result is this: thirty units of metal and forty coins from the district's funds go to the Union's bridge works. That will confirm the district is under control.\n\nThere will be no other offer.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Передать 30 металла и 40 монет",
+        "text_en": "Hand over 30 metal and 40 coins",
+        "cost": {
+          "res_metal": 30,
+          "res_money": 40
+        },
+        "effects": {
+          "stat_league_trust": 12,
+          "style": "loyal",
+          "message": "Передано. Хольт отозвал представление.",
+          "message_en": "Handed over. Holt withdrew the recommendation."
+        }
+      },
+      {
+        "text": "Отказать, сославшись на нужды жителей",
+        "text_en": "Refuse, citing the residents' needs",
+        "effects": {
+          "stat_league_trust": -5,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Отказ записан. Представление ушло наверх.",
+          "message_en": "The refusal is on record. The recommendation went up."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.union_quota",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "engineers_union",
+    "trigger_day": 18,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — металл на мосты",
+    "title_en": "Engineers' Union — Metal for the Bridges",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Мостовые работы на тракте ждут металл Карьера: тридцать единиц до конца осени. Это и есть смысл вашего мандата.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The bridge works on the highway wait for the Quarry's metal: thirty units by the end of autumn. That is what your mandate is for.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Отправить 30 металла",
+        "text_en": "Send 30 metal",
+        "cost": {
+          "res_metal": 30
+        },
+        "effects": {
+          "stat_league_trust": 8,
+          "style": "loyal",
+          "message": "Обоз Союза ушёл с металлом. Хольт расписался в получении.",
+          "message_en": "The Union's convoy left with the metal. Holt signed the receipt."
+        }
+      },
+      {
+        "text": "Просить отсрочки до Мороза",
+        "text_en": "Ask for a deferral until the Frost",
+        "effects": {
+          "stat_league_trust": -5,
+          "stat_city_trust": 2,
+          "message": "Отсрочка дана. В деле пометка.",
+          "message_en": "The deferral is granted. A note in the file."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.velm_grudge",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 20,
+    "trigger_condition": "stat_rival_gap < -6",
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Вельм напоминает",
+    "title_en": "A Letter — Velm Reminds You",
+    "body": "«Сосед. Ваш показатель ниже моего, и Хольт это видит. На Гари нет фильтров, а люди есть. Подумайте об этом, когда будете снова читать его стандарт».\n\nВельм.",
+    "body_en": "\"Neighbour. Your score is below mine, and Holt sees it. The Burn has no filters, and it has people. Think about that when you read his standard again.\"\n\nVelm.",
+    "options": [
+      {
+        "text": "Принять к сведению",
+        "text_en": "Note it",
+        "effects": {
+          "stat_city_trust": -2,
+          "message": "Письмо легло в ящик.",
+          "message_en": "The letter went into the drawer."
+        }
+      },
+      {
+        "text": "Ответить: у нас дети не кашляют",
+        "text_en": "Reply: our children do not cough",
+        "effects": {
+          "stat_city_trust": 3,
+          "stat_rival_score": -2,
+          "style": "protector",
+          "message": "Ответ ушёл на Гарь. Рех переписал его на лист и повесил у ворот.",
+          "message_en": "The reply went to the Burn. Rech copied it onto a sheet and hung it at the gate."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.velm_favor",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 22,
+    "trigger_condition": "stat_rival_gap >= 6",
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Вельм просит об услуге",
+    "title_en": "A Letter — Velm Asks a Favour",
+    "body": "«Сосед. Признаю: вы стоите крепче. У меня печь встала, дутьё сгорело. Продайте десять металла по честной цене, и я забуду про Реха».\n\nВельм.",
+    "body_en": "\"Neighbour. I admit it: you stand firmer. My furnace is down, the blast burned out. Sell me ten metal at a fair price and I forget about Rech.\"\n\nVelm.",
+    "options": [
+      {
+        "text": "Продать 10 металла за 50 монет",
+        "text_en": "Sell 10 metal for 50 coins",
+        "cost": {
+          "res_metal": 10
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 50
+          },
+          "stat_rival_score": 3,
+          "style": "pragmatist",
+          "message": "Телега с Гари увезла слитки. Вельм прислал расписку и бочонок.",
+          "message_en": "The cart from the Burn took the ingots. Velm sent a receipt and a keg."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Печь на Гари стоит. Хольт доволен.",
+          "message_en": "The Burn's furnace stands. Holt is pleased."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.committee_thanks",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 10,
+    "trigger_condition": "stat_happiness >= 68",
+    "tags": [
+      "petition",
+      "workers"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Записка комитета — спасибо",
+    "title_en": "The Committee's Note — Thanks",
+    "body": "Комитет рудокопов, Данила Рех.\n\n«Администратору. В бараках тепло, вода есть, дым терпимый. Люди говорят: при Крамер так не было. С Гари просятся ещё двое, мы за них ручаемся».",
+    "body_en": "The miners' committee, Danila Rech.\n\n\"To the administrator. The housing is warm, there is water, the smoke is bearable. People say it was not like this under Kramer. Two more ask to come from the Burn; we vouch for them.\"",
+    "options": [
+      {
+        "text": "Принять двоих",
+        "text_en": "Take the two",
+        "effects": {
+          "add_residents": 2,
+          "stat_city_trust": 3,
+          "message": "Двое заняли койки. Рех расписался за них.",
+          "message_en": "The two took beds. Rech signed for them."
+        }
+      },
+      {
+        "text": "Поблагодарить, мест нет",
+        "text_en": "Thank them; no room",
+        "effects": {
+          "stat_city_trust": 1,
+          "message": "Записку прочли у ворот.",
+          "message_en": "The note was read out at the gate."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.union_audit2_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "engineers_union",
+    "trigger_day": 24,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — вторая ревизия",
+    "title_en": "Engineers' Union — The Second Review",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Вторая ревизия на 27-й день, в Мороз: люди, вода, еда и сохранность запасов. Дым смотрю отдельно. Срок мандата — 30-й день.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The second review is on day 27, in the Frost: people, water, food and how the reserves were kept. I look at the smoke separately. The mandate ends on day 30.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Принято",
+        "text_en": "Noted",
+        "effects": {
+          "message": "Три дня до ревизии.",
+          "message_en": "Three days to the review."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.frost_report",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_frost",
+    "trigger_day": 23,
+    "tags": [
+      "report",
+      "frost"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — Мороз",
+    "title_en": "Report — The Frost",
+    "body": "Сводка инженера насосной.\n\nМороз. Трубы к баракам обмерзают, насос тянет вполсилы, поля стоят. Предлагаю: сжечь сорок дерева на печки в бараках, и люди перезимуют; или жечь шлак, он горит, но дым пойдёт вверх.",
+    "body_en": "Report from the pump engineer.\n\nThe Frost. The pipes to the housing are icing, the pump draws at half strength, the fields stand idle. I propose: burn forty wood in the housing stoves and people winter through; or burn slag, it burns, but the smoke goes up.",
+    "options": [
+      {
+        "text": "Жечь дерево (40 дерева)",
+        "text_en": "Burn wood (40 wood)",
+        "cost": {
+          "res_wood": 40
+        },
+        "effects": {
+          "add_buff": {
+            "id": "warm_housing",
+            "name": "Тёплые бараки",
+            "name_en": "Warm housing",
+            "happiness_add": 6,
+            "remaining": 8
+          },
+          "style": "protector",
+          "message": "В бараках тепло. Дрова ушли в печки.",
+          "message_en": "The housing is warm. The wood went into the stoves."
+        }
+      },
+      {
+        "text": "Жечь шлак (дым +12)",
+        "text_en": "Burn slag (smoke +12)",
+        "effects": {
+          "add_buff": {
+            "id": "warm_housing_slag",
+            "name": "Тёплые бараки",
+            "name_en": "Warm housing",
+            "happiness_add": 4,
+            "remaining": 8
+          },
+          "stat_waste": 12,
+          "style": "pragmatist",
+          "message": "Шлак горит синим. Над бараками тепло и гарь.",
+          "message_en": "The slag burns blue. Over the housing, warmth and soot."
+        }
+      },
+      {
+        "text": "Ничего: перетерпят",
+        "text_en": "Nothing: they will bear it",
+        "effects": {
+          "stat_unrest_pressure": 6,
+          "style": "loyal",
+          "message": "Холодно. У ворот недовольны.",
+          "message_en": "Cold. The gate is unhappy."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.frost_pipes",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_frost",
+    "trigger_day": 25,
+    "tags": [
+      "report",
+      "frost"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — насос обмёрз",
+    "title_en": "Report — The Pump Froze",
+    "body": "Сводка инженера.\n\nНочью лопнула труба у насоса. Можно чинить сейчас, пока лёд не разорвал корпус: пятнадцать монет на людей и уголь. Или ждать оттепели; тогда насос встанет до ремонта.",
+    "body_en": "Engineer's report.\n\nA pipe burst at the pump overnight. We can fix it now, before the ice splits the casing: fifteen coins for men and coal. Or wait for the thaw; then the pump stands until repaired.",
+    "options": [
+      {
+        "text": "Чинить сейчас (15 монет)",
+        "text_en": "Fix it now (15 coins)",
+        "cost": {
+          "res_money": 15
+        },
+        "effects": {
+          "stat_city_trust": 2,
+          "style": "pragmatist",
+          "message": "Трубу отогрели и заварили. Насос тянет.",
+          "message_en": "The pipe was thawed and welded. The pump draws."
+        }
+      },
+      {
+        "text": "Ждать оттепели",
+        "text_en": "Wait for the thaw",
+        "effects": {
+          "damage_building": "bld_well_pump",
+          "stat_unrest_pressure": 4,
+          "style": "loyal",
+          "message": "Насос встал. Найдите «!» и почините.",
+          "message_en": "The pump stopped. Find the \"!\" and repair it."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.frost_stoves",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_frost",
+    "trigger_condition": "res_wood <= 20",
+    "tags": [
+      "petition",
+      "frost"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Обращение — дрова кончились",
+    "title_en": "Petition — The Firewood Is Gone",
+    "body": "У поста женщины из бараков: «Дров нет, дети мёрзнут. На складе металл; отдайте десять слитков на печки, кузнец их за день согнёт».",
+    "body_en": "Women from the housing at the post: \"No firewood; the children are freezing. There is metal in the store; give ten ingots for stoves, the smith will bend them in a day.\"",
+    "options": [
+      {
+        "text": "Отдать 10 металла на печки",
+        "text_en": "Give 10 metal for stoves",
+        "cost": {
+          "res_metal": 10
+        },
+        "effects": {
+          "stat_city_trust": 4,
+          "stat_unrest_pressure": -4,
+          "style": "protector",
+          "message": "Печки сложили за день. В бараках тепло.",
+          "message_en": "The stoves were built in a day. The housing is warm."
+        }
+      },
+      {
+        "text": "Металл для Союза",
+        "text_en": "The metal is for the Union",
+        "effects": {
+          "stat_unrest_pressure": 6,
+          "stat_city_trust": -3,
+          "style": "loyal",
+          "message": "Женщины ушли молча.",
+          "message_en": "The women left in silence."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.union_term_report",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "engineers_union",
+    "trigger_day": 29,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — к концу срока",
+    "title_en": "Engineers' Union — Toward the End of the Term",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Срок мандата истекает на 30-й день. Решение о продлении Союз примет по итогам обеих ревизий, по людям и по дыму. Хартии своё мнение уже прислали; оно к делу не приобщено.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The mandate expires on day 30. The Union will decide on renewal by both reviews, by the people and by the smoke. The Charters have already sent their opinion; it is not added to the file.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Принято",
+        "text_en": "Noted",
+        "effects": {
+          "message": "Последние дни срока.",
+          "message_en": "The last days of the term."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.empty_treasury",
+    "category": "mandate",
+    "min_level": 1,
+    "trigger_condition": "res_money <= 25",
+    "trigger_day": 3,
+    "cooldown_sec": 2400,
+    "tags": [
+      "report",
+      "money"
+    ],
+    "title": "Докладная — казна пуста",
+    "title_en": "Memo — The Treasury Is Empty",
+    "body": "Докладная секретаря.\n\nВ казне меньше двадцати пяти монет: ремонт встанет, счетовод не подпишет ни одной покупки. Можно продать металл Хартиям сегодня или просить у Союза аванс под смету.",
+    "body_en": "Secretary's memo.\n\nUnder twenty-five coins in the treasury: repairs stop, the bookkeeper signs no purchase. We can sell metal to the Charters today, or ask the Union for an advance on the budget.",
+    "options": [
+      {
+        "text": "Продать 15 металла Хартиям (+60 монет)",
+        "text_en": "Sell 15 metal to the Charters (+60 coins)",
+        "cost": {
+          "res_metal": 15
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 60
+          },
+          "set_flag": "charters_deal",
+          "stat_league_trust": -2,
+          "style": "pragmatist",
+          "message": "Крон заплатила. В ведомости появилась строка.",
+          "message_en": "Kron paid. A line appeared in the ledger."
+        }
+      },
+      {
+        "text": "Просить аванс у Союза (+40 монет)",
+        "text_en": "Ask the Union for an advance (+40 coins)",
+        "effects": {
+          "add_resources": {
+            "res_money": 40
+          },
+          "stat_league_trust": -4,
+          "style": "loyal",
+          "message": "Аванс пришёл с пометкой «в счёт сметы».",
+          "message_en": "The advance came marked \"against the budget.\""
+        }
+      },
+      {
+        "text": "Ждать аренды",
+        "text_en": "Wait for the rent",
+        "effects": {
+          "message": "Казна пуста до вечера.",
+          "message_en": "The treasury is empty until evening."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_quarry.smelter",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_smelter",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — плавильня дымит",
+    "title_en": "Handover Act — The Smelter Smokes",
+    "body": "Акт передачи района, подписан секретарём.\n\nКрамер поставила плавильню и гнала металл Хартиям. На складе сорок слитков, в бараках кашель: дым на сорока пяти. Барон Вельм считает, что ему должны ещё партию.\n\nСекретарь: «Печь можно остановить. Долг сам не остановится».",
+    "body_en": "District handover act, signed by the secretary.\n\nKramer built a smelter and ran metal to the Charters. Forty ingots in the store, coughing in the housing: the smoke stands at forty-five. Baron Velm reckons he is owed one more batch.\n\nThe secretary: \"The furnace can be stopped. The debt will not stop on its own.\"",
+    "options": [
+      {
+        "text": "Принять район. Печь пока работает",
+        "text_en": "Take over. The furnace runs for now",
+        "effects": {
+          "message": "Подписано. Дым виден вверху.",
+          "message_en": "Signed. The smoke shows at the top."
+        }
+      },
+      {
+        "text": "Принять и остановить печь на 3 дня",
+        "text_en": "Take over and stop the furnace for 3 days",
+        "effects": {
+          "add_buff": {
+            "id": "legacy_furnace_stop",
+            "name": "Печь остановлена",
+            "name_en": "Furnace stopped",
+            "production_mult": -0.5,
+            "remaining": 3
+          },
+          "stat_waste": -10,
+          "style": "protector",
+          "message": "Печь остыла. Дым пошёл вниз.",
+          "message_en": "The furnace went cold. The smoke went down."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_quarry.charters_debt",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "charters_debt",
+    "trigger_day": 3,
+    "tags": [
+      "rival",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Вельм пришёл за долгом",
+    "title_en": "A Letter — Velm Comes for the Debt",
+    "body": "«Сосед. Крамер взяла у меня дрова и камень под плавильню и обещала партию: двадцать пять слитков. Её нет, плавильня есть, долг тоже. Слитками или восемьдесят монет. Отказ приму, но запомню».\n\nВельм.",
+    "body_en": "\"Neighbour. Kramer took wood and stone from me for the smelter and promised a batch: twenty-five ingots. She is gone, the smelter is here, so is the debt. In ingots, or eighty coins. A refusal I will take, and remember.\"\n\nVelm.",
+    "options": [
+      {
+        "text": "Отдать 25 металла",
+        "text_en": "Hand over 25 metal",
+        "cost": {
+          "res_metal": 25
+        },
+        "effects": {
+          "clear_flag": "charters_debt",
+          "stat_rival_score": 2,
+          "style": "pragmatist",
+          "message": "Слитки ушли на Гарь. Долг закрыт.",
+          "message_en": "The ingots went to the Burn. The debt is closed."
+        }
+      },
+      {
+        "text": "Заплатить 80 монет",
+        "text_en": "Pay 80 coins",
+        "cost": {
+          "res_money": 80
+        },
+        "effects": {
+          "clear_flag": "charters_debt",
+          "style": "pragmatist",
+          "message": "Вельм прислал расписку.",
+          "message_en": "Velm sent a receipt."
+        }
+      },
+      {
+        "text": "Отказать: долг Крамер, не района",
+        "text_en": "Refuse: Kramer's debt, not the district's",
+        "effects": {
+          "set_flag": "velm_angry",
+          "stat_unrest_pressure": 5,
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Ответ ушёл. На Гари об этом говорят.",
+          "message_en": "The reply went out. The Burn talks of it."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_quarry.velm_angry",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "velm_angry",
+    "trigger_day": 5,
+    "tags": [
+      "report",
+      "rival",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — ночью у отвала",
+    "title_en": "Report — At the Heap by Night",
+    "body": "Сводка дежурного.\n\nНочью люди с Гари подожгли старый отвал у дороги: дым пошёл на бараки. Охрана никого не задержала. Вельм передал: «Это за долг».",
+    "body_en": "Duty officer's report.\n\nMen from the Burn set the old spoil heap by the road alight overnight: the smoke went onto the housing. The guards caught no one. Velm's message: \"That is for the debt.\"",
+    "options": [
+      {
+        "text": "Тушить всем районом",
+        "text_en": "Put it out with the whole district",
+        "effects": {
+          "stat_waste": 8,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Тушили до утра. Отвал дотлел.",
+          "message_en": "They fought it until morning. The heap burned out."
+        }
+      },
+      {
+        "text": "Пусть горит, жаловаться Союзу",
+        "text_en": "Let it burn, complain to the Union",
+        "effects": {
+          "stat_waste": 18,
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Хольт записал жалобу. Отвал горел два дня.",
+          "message_en": "Holt recorded the complaint. The heap burned two days."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_quarry.filters",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_filters",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — фильтры стоят, казна пуста",
+    "title_en": "Handover Act — Filters Up, Treasury Empty",
+    "body": "Акт передачи района, подписан секретарём.\n\nКрамер выполнила стандарт Союза: фильтровальная станция работает, Хольт доволен. На неё ушла вся казна: тридцать пять монет на всё, ремонт не на что делать.\n\nСекретарь: «Чистый воздух есть. Денег нет».",
+    "body_en": "District handover act, signed by the secretary.\n\nKramer met the Union's standard: the filter station runs, Holt is pleased. It took the whole treasury: thirty-five coins for everything, nothing for repairs.\n\nThe secretary: \"There is clean air. There is no money.\"",
+    "options": [
+      {
+        "text": "Принять район. Беречь казну",
+        "text_en": "Take over. Mind the treasury",
+        "effects": {
+          "message": "Подписано. Счетовод закрыл сейф.",
+          "message_en": "Signed. The bookkeeper locked the safe."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_quarry.strike",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_strike",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — после забастовки",
+    "title_en": "Handover Act — After the Strike",
+    "body": "Акт передачи района, подписан секретарём.\n\nКрамер разогнала забастовку охраной Вельма. Люди ушли на Гарь: в двух бараках трое. Склад и дрова на месте, доверие района к конторе на дне.\n\nСекретарь: «Люди вернутся, если поверят. Рех у ворот, ждёт разговора».",
+    "body_en": "District handover act, signed by the secretary.\n\nKramer broke the strike with Velm's guards. The people left for the Burn: three residents in two shelters. The store and the firewood remain; the district's trust in the office is at the bottom.\n\nThe secretary: \"The people will come back if they believe. Rech is at the gate, waiting to talk.\"",
+    "options": [
+      {
+        "text": "Принять район. Говорить с Рехом",
+        "text_en": "Take over. Talk to Rech",
+        "effects": {
+          "message": "Подписано. Рех придёт завтра.",
+          "message_en": "Signed. Rech comes tomorrow."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_quarry.committee",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_strike",
+    "trigger_day": 2,
+    "tags": [
+      "petition",
+      "workers",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Разговор у ворот — комитет Реха",
+    "title_en": "A Talk at the Gate — Rech's Committee",
+    "body": "Данила Рех у поста, без шапки.\n\n«Крамер звала охрану. Вы кто? Если дадите слово, что охраны Хартий у ворот не будет, я верну людей с Гари. Не всех, но верну».",
+    "body_en": "Danila Rech at the post, bareheaded.\n\n\"Kramer called the guards. Who are you? Give your word there will be no Charters' guards at the gate, and I bring the people back from the Burn. Not all, but I bring them.\"",
+    "options": [
+      {
+        "text": "Дать слово (+5 жителей, если есть места)",
+        "text_en": "Give your word (+5 residents if there is room)",
+        "effects": {
+          "add_residents": 5,
+          "stat_city_trust": 8,
+          "set_flag": "no_guards_promise",
+          "style": "protector",
+          "message": "Рех ушёл на Гарь и вернулся с людьми к ночи.",
+          "message_en": "Rech went to the Burn and came back with people by night."
+        }
+      },
+      {
+        "text": "Слова не давать",
+        "text_en": "Give no word",
+        "effects": {
+          "stat_city_trust": -4,
+          "style": "loyal",
+          "message": "Рех надел шапку и ушёл.",
+          "message_en": "Rech put on his cap and left."
+        }
+      }
+    ]
+  }
+]

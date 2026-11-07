@@ -20,6 +20,24 @@ func _ready() -> void:
 	EventBus.tick_finished.connect(_on_tick_finished)
 
 
+## The patron the chapter names (chapter.json "patron") when the run answers to it; {} otherwise.
+static func chapter_patron() -> Dictionary:
+	var def: Dictionary = ContentDB.get_chapter_def().get("patron", {}) as Dictionary
+	var patron_id: String = GameStateStore.mandate().get("patron_id", "") as String
+	return def if patron_id != "" and (def.get("id", "") as String) == patron_id else {}
+
+
+## How the HUD and the cards built in code name the patron: the chapter's own, or the two
+## founding patrons by their old names.
+static func patron_name(short: bool = false) -> String:
+	var own: Dictionary = chapter_patron()
+	if not own.is_empty():
+		return Localization.content_text(own, "short" if short else "name", "")
+	if (GameStateStore.mandate().get("patron_id", "") as String) == "civic_directorate":
+		return Localization.ru_en("Директорат", "Directorate") if short else Localization.ru_en("Гражданский Директорат", "the Civic Directorate")
+	return Localization.ru_en("Лига", "League") if short else Localization.ru_en("Лига Восстановления", "the Restoration League")
+
+
 func _on_tick_finished(_tick: int) -> void:
 	var mandate: Dictionary = GameStateStore.mandate()
 	var next_day: int = next_audit_day()
@@ -103,9 +121,13 @@ func _mark(ok: bool) -> String:
 
 func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, trust_delta: float) -> Dictionary:
 	var directorate: bool = (GameStateStore.mandate().get("patron_id", "") as String) == "civic_directorate"
+	var own: Dictionary = chapter_patron()  # a chapter's patron speaks in its own words (chapter.json "patron")
 	var verdict: String
 	var verdict_en: String
-	if directorate:
+	if own.has("verdicts"):
+		verdict = (own.get("verdicts", []) as Array)[clampi(3 - score, 0, 3)] as String
+		verdict_en = (own.get("verdicts_en", own.get("verdicts", [])) as Array)[clampi(3 - score, 0, 3)] as String
+	elif directorate:
 		match score:
 			3:
 				verdict = "Заключение комиссара: нормы выполнены, замечаний нет."
@@ -153,14 +175,14 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 		var prior_en: String = "%d/3" % int(first) if first != null else "result in the previous file"
 		verdict = "Повторная проверка: выполнено %d из 4 норм. Первый аудит: %s." % [score, prior]
 		verdict_en = "Second inspection: %d of 4 targets met. First audit: %s." % [score, prior_en]
-	var authority: String = "Директората" if directorate else "Лиги"
-	var authority_en: String = "Directorate" if directorate else "League"
+	var authority: String = own.get("genitive", "Директората" if directorate else "Лиги") as String
+	var authority_en: String = own.get("genitive_en", "Directorate" if directorate else "League") as String
 	# The second audit weighs 1.5×, so its change can be fractional; whole numbers stay whole.
 	var delta_text: String = ("%+d" % int(trust_delta)) if is_equal_approx(trust_delta, roundf(trust_delta)) else ("%+.1f" % trust_delta)
 	var trust_line: String = "Доверие %s %s." % [authority, delta_text]
 	var trust_line_en: String = "%s trust %s." % [authority_en, delta_text]
-	var title: String = "Проверка Директората — Комиссар" if directorate else "Аудит Лиги — Инспектор Койл"
-	var title_en: String = "Directorate Inspection — the Commissar" if directorate else "League Audit — Inspector Coyle"
+	var title: String = own.get("audit_title", "Проверка Директората — Комиссар" if directorate else "Аудит Лиги — Инспектор Койл") as String
+	var title_en: String = own.get("audit_title_en", "Directorate Inspection — the Commissar" if directorate else "League Audit — Inspector Coyle") as String
 	var comparison: String = "Для сравнения — район %s: %d, ваш: %d." % [
 		RivalManager.rival_name(), int(RivalManager.rival_score()), int(RivalManager.player_score())]
 	var comparison_en: String = "For comparison — %s's district: %d, yours: %d." % [

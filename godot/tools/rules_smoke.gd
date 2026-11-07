@@ -175,6 +175,7 @@ func _ready() -> void:
 	_legacy_rules()
 	_campaign_rules()
 	_gorge_rules()
+	_quarry_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -412,6 +413,76 @@ func _gorge_rules() -> void:
 	_check(EventManager.call("_get_stat_value", "stat_contested_fields") >= 1.0 and (GameStateStore.mandate().get("flags", {}) as Dictionary).get("covenant_angry", false), "the meadows legacy starts with claims and an angry Covenant (%d)" % int(EventManager.call("_get_stat_value", "stat_contested_fields")))
 	Campaign.reset_campaign()
 	_new_game("appointed_administrator")
+
+
+## Chapter 3: ore seams, a smoke count the pits feed and the filters drain, the Union as patron,
+## the Charters' letters, a mood that follows the smoke, legacies with smoke of their own.
+func _quarry_rules() -> void:
+	Campaign.reset_campaign()
+	EventManager.clear_pending()
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "black_quarry")
+	SimulationRunner.start_run()
+	var pit: Vector2i = Vector2i(2, -2)
+	_check(GameStateStore.get_terrain(pit) == 7 and GameStateStore.get_building(pit).get("type", "") == "bld_ore_pit", "the starter pit stands on an ore seam")
+	var seams: int = 0
+	for coord: Vector2i in HexCoords.disk(Vector2i.ZERO, 8):
+		if GameStateStore.get_terrain(coord) == 7:
+			seams += 1
+	_check(seams >= 6, "the Quarry has ore seams (%d)" % seams)
+	_check((GameStateStore.mandate().get("patron_id", "") as String) == "engineers_union", "the Quarry answers to the Engineers' Union")
+	_check(MandateManager.patron_name(true) == Localization.ru_en("Союз", "Union"), "…and the HUD names it (%s)" % MandateManager.patron_name(true))
+	_check(not ContentDB.get_resource_def("res_metal").is_empty() and is_zero_approx(GameStateStore.get_resource("res_metal")), "metal is a resource here and starts at zero")
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("quarry.union_welcome")), "the Union's appointment letter comes on the first evening")
+	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("quarry.charters_offer")), "the Charters wait for metal to buy")
+	GameStateStore.set_resource("res_metal", 25.0)
+	GameStateStore.climate()["total_day"] = 4
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("quarry.charters_offer")), "…and come once there is")
+	GameStateStore.set_resource("res_metal", 0.0)
+	# The smoke: the pit feeds it, the wind takes one, nothing else at the start.
+	_ticks(1)
+	var smoke_day1: float = WasteSystem.level()
+	_check(is_equal_approx(smoke_day1, (3.0 * 1.6 - 1.0)), "a working pit in the Smog leaves %.1f smoke after the first day (%.1f)" % [3.0 * 1.6 - 1.0, smoke_day1])
+	_check(EventManager.call("_get_stat_value", "stat_waste") == smoke_day1, "stat_waste reads the count")
+	_ticks(60)
+	_check(GameStateStore.get_resource("res_metal") > 0.0, "the pit produces metal (%.1f)" % GameStateStore.get_resource("res_metal"))
+	GameStateStore.climate()["total_day"] = 5
+	_ticks(1)
+	var smoke_before: float = WasteSystem.level()
+	GameStateStore.set_building(Vector2i(1, -2), {"type": "bld_smelter", "level": 0, "damaged": false, "has_issue": false})
+	GameStateStore.climate()["total_day"] = 6
+	_ticks(1)
+	_check(WasteSystem.level() > smoke_before + 4.0, "a smelter thickens the smoke (%.1f → %.1f)" % [smoke_before, WasteSystem.level()])
+	GameStateStore.climate()["waste"] = 60.0
+	orch.progression_sys.process_tick()
+	var mood_terms: Dictionary = GameStateStore.population().get("mood_terms", {}) as Dictionary
+	_check(is_equal_approx(mood_terms.get("waste", 0.0) as float, -15.0), "60 smoke costs 15 mood (%.1f)" % (mood_terms.get("waste", 0.0) as float))
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("quarry.cough")) and not EventManager.call("_trigger_met", ContentDB.get_event_def("quarry.sickness")), "at 60 the doctor writes about coughing, not yet about the sick")
+	EventManager.call("_apply_effects", {"stat_waste": -30})
+	_check(is_equal_approx(WasteSystem.level(), 30.0), "a card can haul the slag away")
+	# Filters: powered they drain, unpowered they are a shed; the heap works without power.
+	var filter_at: Vector2i = Vector2i(-2, 3)
+	GameStateStore.set_building(filter_at, {"type": "bld_filter_station", "level": 0, "damaged": false, "has_issue": false, "powered": true})
+	_check(is_equal_approx(WasteSystem.daily_sink(), 4.0), "a powered filter station takes 4 a day (%.1f)" % WasteSystem.daily_sink())
+	var filter_bld: Dictionary = GameStateStore.get_building(filter_at)
+	filter_bld["powered"] = false
+	GameStateStore.set_building(filter_at, filter_bld)
+	_check(is_zero_approx(WasteSystem.daily_sink()), "…and nothing without power")
+	GameStateStore.set_building(Vector2i(-3, 3), {"type": "bld_slag_heap", "level": 0, "damaged": false, "has_issue": false})
+	_check(is_equal_approx(WasteSystem.daily_sink(), 2.0), "a slag heap takes 2 whatever the power")
+	# The legacies: Kramer's smelter comes with smoke and a debt; the broken strike with few people.
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_smelter", "black_quarry")
+	SimulationRunner.start_run()
+	_check(is_equal_approx(WasteSystem.level(), 45.0) and is_equal_approx(GameStateStore.get_resource("res_metal"), 40.0), "the smelter legacy starts with 45 smoke and 40 metal (%.0f, %.0f)" % [WasteSystem.level(), GameStateStore.get_resource("res_metal")])
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("legacy_quarry.smelter")) and not EventManager.call("_trigger_met", ContentDB.get_event_def("legacy_quarry.charters_debt")), "the handover act comes first, Velm waits until day 3")
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_strike", "black_quarry")
+	SimulationRunner.start_run()
+	_check((GameStateStore.population().get("total", 0) as int) == 3 and is_equal_approx(GameStateStore.mandate().get("support", 0.0) as float, 35.0), "the strike legacy starts with three residents and low support")
+	Campaign.reset_campaign()
+	_new_game("appointed_administrator")
+	_check((GameStateStore.mandate().get("patron_id", "") as String) == "restoration_league" and ContentDB.get_resource_def("res_metal").is_empty(), "Rust Pit keeps the League and has no metal")
 
 
 func _content_contract_rules() -> void:

@@ -1,0 +1,197 @@
+{
+  "id": "black_quarry",
+  "order": 3,
+  "title": "Чёрный Карьер",
+  "title_en": "The Black Quarry",
+  "region": "Старый промпояс",
+  "region_en": "The Old Industrial Belt",
+  "blurb": "Рудный район Союза Инженеров на краю старого промпояса. Карьер и плавильня дают металл и дым; Крайние Хартии платят за грязь, Союз требует чистоты. Смог, Забастовочная осень, Мороз: 30 дней.",
+  "blurb_en": "An ore district of the Engineers' Union on the edge of the old industrial belt. The pit and the smelter give metal and smoke; the Outer Charters pay for dirt, the Union demands clean air. Smog, Strike Autumn, Frost: 30 days.",
+  "scenario": {
+    "season_order": [
+      "season_smog",
+      "season_strike_autumn",
+      "season_frost"
+    ],
+    "win_day": 30,
+    "audit_days": [
+      15,
+      27
+    ],
+    "grant_day": 10
+  },
+  "patron": {
+    "id": "engineers_union",
+    "name": "Союз Инженеров",
+    "name_en": "The Engineers' Union",
+    "short": "Союз",
+    "short_en": "Union",
+    "genitive": "Союза",
+    "genitive_en": "Union",
+    "audit_title": "Ревизия Союза — инженер Хольт",
+    "audit_title_en": "Union Review — Engineer Holt",
+    "verdicts": [
+      "Заключение Хольта: район держит стандарт. Доклад в Союз без замечаний.",
+      "Заключение Хольта: приемлемо. Одна норма не выполнена; к следующей ревизии закрыть.",
+      "Заключение Хольта: две нормы из трёх не выполнены. Он просит Союз дать вам ещё срок.",
+      "Заключение Хольта: ни одна норма не выполнена. Защищать ваш мандат в Союзе ему нечем."
+    ],
+    "verdicts_en": [
+      "Holt's conclusion: the district holds the standard. The report goes to the Union with no remarks.",
+      "Holt's conclusion: acceptable. One target was missed; close it by the next review.",
+      "Holt's conclusion: two targets out of three were missed. He asks the Union to give you more time.",
+      "Holt's conclusion: none of the targets is met. He has nothing to defend your mandate with."
+    ]
+  },
+  "rival": {
+    "name": "Барон Отто Вельм",
+    "name_en": "Baron Otto Velm",
+    "short": "Вельм",
+    "short_en": "Velm",
+    "district": "Вельмова Гарь",
+    "district_en": "Velm's Burn"
+  },
+  "tutorial_intro": "Вы — администратор [b]Чёрного Карьера[/b]. [b]Рудные жилы[/b] (бурые клетки) дают металл, но карьер и плавильня копят [b]дым[/b] над районом: он виден вверху и давит на счастье. Фильтры и отвалы снимают его. [b]Смог[/b] — дни 1–10, [b]Забастовочная осень[/b] — 11–22, [b]Мороз[/b] — 23–30. Ревизии Союза — дни 15 и 27. Продержитесь до 30-го дня с не меньше чем 12 жителями.\n\nВремя пока стоит — спокойно осмотримся.",
+  "tutorial_intro_en": "You are the administrator of the [b]Black Quarry[/b]. [b]Ore seams[/b] (brown cells) give metal, but the pit and the smelter pile up [b]smoke[/b] over the district: it shows at the top and weighs on mood. Filters and slag heaps take it back. The [b]Smog[/b] runs on days 1–10, the [b]Strike Autumn[/b] on 11–22, the [b]Frost[/b] on 23–30. Union reviews: days 15 and 27. Hold out until day 30 with at least 12 residents.\n\nTime is stopped for now — let's look around.",
+  "company_traces": false,
+  "mechanics": {
+    "waste": true
+  },
+  "terrain": {
+    "paint_type": 7,
+    "contested_ring": [
+      3,
+      7
+    ],
+    "contested_chance": 0.3,
+    "paint_cells": [
+      [
+        2,
+        -2
+      ],
+      [
+        3,
+        -3
+      ],
+      [
+        3,
+        -2
+      ],
+      [
+        2,
+        -3
+      ],
+      [
+        4,
+        -3
+      ]
+    ]
+  },
+  "start_layout": [
+    {
+      "coord": [
+        0,
+        0
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        1,
+        -1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -1,
+        1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -2,
+        2
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -1,
+        0
+      ],
+      "type": "bld_admin_post"
+    },
+    {
+      "coord": [
+        1,
+        0
+      ],
+      "type": "bld_main_cistern"
+    },
+    {
+      "coord": [
+        0,
+        -1
+      ],
+      "type": "bld_warehouse"
+    },
+    {
+      "coord": [
+        0,
+        1
+      ],
+      "type": "bld_well_pump"
+    },
+    {
+      "coord": [
+        -2,
+        1
+      ],
+      "type": "bld_shelter"
+    },
+    {
+      "coord": [
+        -1,
+        2
+      ],
+      "type": "bld_shelter"
+    },
+    {
+      "coord": [
+        2,
+        -1
+      ],
+      "type": "bld_field_strip"
+    },
+    {
+      "coord": [
+        -3,
+        2
+      ],
+      "type": "bld_field_strip"
+    },
+    {
+      "coord": [
+        -1,
+        -1
+      ],
+      "type": "bld_solar_panel"
+    },
+    {
+      "coord": [
+        -2,
+        0
+      ],
+      "type": "bld_solar_panel"
+    },
+    {
+      "coord": [
+        2,
+        -2
+      ],
+      "type": "bld_ore_pit"
+    }
+  ]
+}
