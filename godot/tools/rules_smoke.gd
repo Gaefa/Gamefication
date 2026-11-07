@@ -176,6 +176,7 @@ func _ready() -> void:
 	_campaign_rules()
 	_gorge_rules()
 	_quarry_rules()
+	_nyupa_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -483,6 +484,63 @@ func _quarry_rules() -> void:
 	Campaign.reset_campaign()
 	_new_game("appointed_administrator")
 	_check((GameStateStore.mandate().get("patron_id", "") as String) == "restoration_league" and ContentDB.get_resource_def("res_metal").is_empty(), "Rust Pit keeps the League and has no metal")
+
+
+## Chapter 4: a river with low banks, a pier that needs the shore, a level the Flood pushes over
+## the line, levees and stilts that keep the water off, legacies with levees and with fever.
+func _nyupa_rules() -> void:
+	Campaign.reset_campaign()
+	EventManager.clear_pending()
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "big_nyupa")
+	SimulationRunner.start_run()
+	_check(GameStateStore.get_terrain(Vector2i(4, 0)) == 1 and GameStateStore.get_terrain(Vector2i(3, 1)) == 1, "the Nyupa runs where the chapter drew it")
+	_check(GameStateStore.get_terrain(Vector2i(3, -1)) == 8 and GameStateStore.get_terrain(Vector2i(3, 0)) == 8, "its banks are floodplain")
+	_check(GameStateStore.get_terrain(Vector2i(1, -2)) == 0, "the second plot stands on dry ground")
+	_check(GameStateStore.get_building(Vector2i(3, 0)).get("type", "") == "bld_fishing_pier", "the starter pier stands on the bank")
+	GameStateStore.set_resource("res_wood", 200.0)
+	GameStateStore.set_resource("res_tools", 10.0)
+	var inland: PlaceBuildingCommand = orch.command_bus.execute(PlaceBuildingCommand.new(Vector2i(-2, 2), "bld_fishing_pier")) as PlaceBuildingCommand
+	_check(not inland.success, "a pier away from the water is refused (%s)" % inland.message)
+	var shore: PlaceBuildingCommand = orch.command_bus.execute(PlaceBuildingCommand.new(Vector2i(2, 1), "bld_fishing_pier")) as PlaceBuildingCommand
+	_check(shore.success, "…and accepted on the shore (%s)" % shore.message)
+	_check(is_zero_approx(FloodSystem.level()), "the river starts low")
+	_ticks(1)
+	_check(is_zero_approx(FloodSystem.level()) and not FloodSystem.is_high(), "Low Water keeps it down")
+	_check(EventManager.call("_get_stat_value", "stat_levees") == 0.0 and not EventManager.call("_trigger_met", ContentDB.get_event_def("nyupa.boat_protest")), "no levees, no protest")
+	# Put the water up by hand: the exposed plot drowns, the pier and a levee-sheltered plot do not.
+	var plot: Vector2i = Vector2i(3, -1)
+	var sheltered: Vector2i = Vector2i(2, 2)
+	GameStateStore.set_building(sheltered, {"type": "bld_field_strip", "level": 0, "damaged": false, "has_issue": false})
+	GameStateStore.set_building(Vector2i(1, 2), {"type": "bld_levee", "level": 0, "damaged": false, "has_issue": false})
+	GameStateStore.set_building(Vector2i(-2, 3), {"type": "bld_levee", "level": 0, "damaged": false, "has_issue": false})
+	GameStateStore.set_building(Vector2i(-3, 3), {"type": "bld_levee", "level": 0, "damaged": false, "has_issue": false})
+	_check(GameStateStore.get_terrain(sheltered) == 8 and FloodSystem.has_levee(sheltered) and not FloodSystem.has_levee(plot), "a levee shelters its neighbours only")
+	_check(EventManager.call("_get_stat_value", "stat_levees") == 3.0 and EventManager.call("_trigger_met", ContentDB.get_event_def("nyupa.boat_protest")), "three levees and the boat people write")
+	GameStateStore.climate()["modifiers"]["flood_rise"] = 12.0
+	GameStateStore.climate()["season_id"] = "season_flood"
+	GameStateStore.climate()["flood"] = 50.0
+	GameStateStore.climate()["total_day"] = 12
+	_ticks(1)
+	_check(is_equal_approx(FloodSystem.level(), 62.0) and FloodSystem.is_high(), "the Flood pushes the river over the line (%.0f)" % FloodSystem.level())
+	_check(GameStateStore.get_building(plot).get("damaged", false) as bool, "the unsheltered plot on the floodplain is wrecked")
+	_check(not (GameStateStore.get_building(sheltered).get("damaged", false) as bool), "the plot behind a levee is not")
+	_check(not (GameStateStore.get_building(Vector2i(3, 0)).get("damaged", false) as bool), "the pier stands on stilts")
+	_check(not (GameStateStore.get_building(Vector2i(1, -2)).get("damaged", false) as bool), "dry ground is dry")
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("nyupa.flood_crest")), "the crest report comes when the water is on the meadows")
+	EventManager.call("_apply_effects", {"stat_flood": -20})
+	_check(is_equal_approx(FloodSystem.level(), 42.0), "a card can open the sluice")
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_levees", "big_nyupa")
+	SimulationRunner.start_run()
+	_check(FloodSystem.levee_count() == 2 and FloodSystem.has_levee(Vector2i(3, -1)), "the levee legacy shelters the meadow plot")
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_fever", "big_nyupa")
+	SimulationRunner.start_run()
+	_check((GameStateStore.population().get("total", 0) as int) == 3 and is_equal_approx(GameStateStore.get_resource("res_water_stockpile"), 400.0), "the fever legacy starts with three residents and a full cistern")
+	Campaign.reset_campaign()
+	_new_game("appointed_administrator")
+	_check(GameStateStore.get_terrain(Vector2i(4, 0)) != 1 or GameStateStore.get_terrain(Vector2i(3, -1)) != 8, "Rust Pit has no drawn river")
 
 
 func _content_contract_rules() -> void:

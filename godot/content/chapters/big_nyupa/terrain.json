@@ -1,0 +1,78 @@
+{
+  "0": {
+    "id": "grass",
+    "label": "Пойменная земля",
+    "label_en": "Floodplain ground",
+    "buildable": true,
+    "cost_multiplier": 1,
+    "color": "7f9460",
+    "label_key": "terrain.grass.label",
+    "description": "Сухая земля повыше реки: строить можно, паводок сюда не доходит.",
+    "description_en": "Dry ground above the river: you can build, the flood does not reach it."
+  },
+  "1": {
+    "id": "water",
+    "label": "Нюпа",
+    "label_en": "The Nyupa",
+    "buildable": false,
+    "cost_multiplier": 0,
+    "color": "3f6f93",
+    "label_key": "terrain.water.label",
+    "description": "Большая река. В Малую воду мелеет, в Паводок выходит на луга.",
+    "description_en": "The big river. It runs low in Low Water and comes out onto the meadows in the Flood."
+  },
+  "2": {
+    "id": "sand",
+    "label": "Отмель",
+    "label_en": "Sandbar",
+    "buildable": true,
+    "cost_multiplier": 1.1,
+    "color": "c2b58d",
+    "label_key": "terrain.sand.label",
+    "description": "Песчаная коса.",
+    "description_en": "A sandy spit."
+  },
+  "3": {
+    "id": "hill",
+    "label": "Грива",
+    "label_en": "Ridge",
+    "buildable": true,
+    "cost_multiplier": 1.5,
+    "color": "8c8457",
+    "label_key": "terrain.hill.label",
+    "description": "Высокий сухой берег.",
+    "description_en": "A high dry bank."
+  },
+  "4": {
+    "id": "forest",
+    "label": "Ивняк",
+    "label_en": "Willow scrub",
+    "buildable": true,
+    "cost_multiplier": 1.3,
+    "color": "4f7a3c",
+    "label_key": "terrain.forest.label",
+    "description": "Ивы по берегу: дерево гибкое, на дамбы годится.",
+    "description_en": "Willows along the bank: pliant wood, good for levees."
+  },
+  "5": {
+    "id": "rock",
+    "label": "Скала",
+    "label_en": "Rock",
+    "buildable": true,
+    "cost_multiplier": 2,
+    "color": "6a655f",
+    "label_key": "terrain.rock.label",
+    "description": "Скальный выход.",
+    "description_en": "An outcrop of rock."
+  },
+  "8": {
+    "id": "floodplain",
+    "label": "Заливной луг",
+    "label_en": "Floodplain",
+    "buildable": true,
+    "cost_multiplier": 1,
+    "color": "5f9a5e",
+    "description": "Низкий берег. Ил родит, но в Паводок вода забирает всё, что не на сваях и не за дамбой.",
+    "description_en": "Low bank. The silt bears, but in the Flood the water takes whatever is not on stilts or behind a levee."
+  }
+}

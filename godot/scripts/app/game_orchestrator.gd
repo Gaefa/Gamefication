@@ -78,6 +78,8 @@ func build() -> void:
 		tick_scheduler.add_system(SoilSystem.new())
 	if mechanics.get("waste", false) as bool:
 		tick_scheduler.add_system(WasteSystem.new())
+	if mechanics.get("flood", false) as bool:
+		tick_scheduler.add_system(FloodSystem.new())
 
 	# Command bus
 	command_bus = CommandBus.new()

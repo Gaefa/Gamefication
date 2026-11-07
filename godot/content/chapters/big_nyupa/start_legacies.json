@@ -1,0 +1,81 @@
+[
+  {
+    "id": "legacy_levees",
+    "label": "Дамбы Галая, долг Лиге",
+    "label_en": "Galai's levees, a debt to the League",
+    "description": "Пётр Галай успел насыпать две дамбы у восточного берега на деньги Лиги: грядка на лугу защищена, но доверие Лиги ниже и счёт за дерево придёт на четвёртый день.",
+    "description_en": "Pyotr Galai managed to raise two levees on the east bank with League money: the plot on the meadow is sheltered, but the League's trust is lower and the bill for the timber comes on day four.",
+    "buildings": [
+      {
+        "coord": [
+          3,
+          -2
+        ],
+        "type": "bld_levee"
+      },
+      {
+        "coord": [
+          2,
+          1
+        ],
+        "type": "bld_levee"
+      }
+    ],
+    "resources": {
+      "res_wood": 40
+    },
+    "mandate": {
+      "patron_trust": 58
+    },
+    "flags": [
+      "legacy_levees",
+      "league_timber_debt"
+    ]
+  },
+  {
+    "id": "legacy_boats",
+    "label": "Мир с лодочниками",
+    "label_en": "Peace with the boat people",
+    "description": "Галай договорился с Плёсами: лодочники перевезли к вам четыре семьи и рыбу, третий барак полон. Но он обещал им, что дамб не будет.",
+    "description_en": "Galai made terms with the Reaches: the boat people brought four families and fish to you, a third shelter is full. But he promised them there would be no levees.",
+    "buildings": [
+      {
+        "coord": [
+          -2,
+          2
+        ],
+        "type": "bld_shelter"
+      }
+    ],
+    "resources": {
+      "res_food": 160
+    },
+    "residents": 10,
+    "mandate": {
+      "support": 62
+    },
+    "flags": [
+      "legacy_boats",
+      "boat_pact"
+    ]
+  },
+  {
+    "id": "legacy_fever",
+    "label": "После лихорадки",
+    "label_en": "After the fever",
+    "description": "Прошлая Гниль принесла лихорадку: Галай уехал, люди разбежались по Плёсам, в двух бараках трое. Цистерна полна, фельдшер остался.",
+    "description_en": "The last Rot brought fever: Galai left, the people scattered to the Reaches, three remain in two shelters. The cistern is full, the medic stayed.",
+    "resources": {
+      "res_water_stockpile": 400,
+      "res_food": 90
+    },
+    "residents": 3,
+    "mandate": {
+      "support": 40
+    },
+    "flags": [
+      "legacy_fever",
+      "fever_history"
+    ]
+  }
+]

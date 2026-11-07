@@ -79,6 +79,16 @@
       "color": "7a4632",
       "description": "Выход руды к поверхности. Карьер здесь даёт вдвое больше металла и столько же дыма.",
       "description_en": "Ore breaking the surface. A pit here gives twice the metal and the same smoke."
+    },
+    "8": {
+      "id": "floodplain",
+      "label": "Заливной луг",
+      "label_en": "Floodplain",
+      "buildable": true,
+      "cost_multiplier": 1,
+      "color": "5f8a5a",
+      "description": "Низкий берег. Ил родит, но в Паводок вода забирает всё, что не на сваях и не за дамбой.",
+      "description_en": "Low bank. The silt bears, but in the Flood the water takes whatever is not on stilts or behind a levee."
     }
   }
 }
