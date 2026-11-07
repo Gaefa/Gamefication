@@ -1,0 +1,58 @@
+[
+  {
+    "id": "ending.win.loyal",
+    "kind": "win",
+    "title": "Удержанный мандат — берег за дамбами",
+    "title_en": "Mandate Held — The Bank Behind the Levees",
+    "body": "Аудит пройден, мандат продлён. Большая Нюпа прошла Паводок за дамбами и Гниль с полными амбарами; рыба с причалов ушла в квоту Лиги. Инспектор Мирош вписала луга в реестр как «осушенные земли района».\n\nИвель увёл лодки выше по течению. Лига предлагает вам следующий район: внешнее кольцо Старого Капитала, где разрешений больше, чем камня.",
+    "body_en": "The audit is passed and the mandate extended. Big Nyupa came through the Flood behind its levees and the Rot with full barns; the fish from the piers went into the League's quota. Inspector Mirosh entered the meadows in the register as \"reclaimed district land.\"\n\nIvel took his boats upstream. The League offers you the next district: the outer ring of the Old Capital, where permits outnumber stones."
+  },
+  {
+    "id": "ending.win.protector",
+    "kind": "win",
+    "title": "Удержанный мандат — договор с рекой",
+    "title_en": "Mandate Held — A Treaty with the River",
+    "body": "Мандат продлён, хотя инспектор Мирош писала отчёт сквозь зубы. Нюпа выжила в Паводок, потому что лодочники Ивеля перевозили людей и рыбу, когда вода стояла на лугах, а вы не поставили ни одной дамбы поперёк их проток. Люди остались, дома стоят на сваях.\n\nИвель прислал сеть и записку в одно слово. Лига предлагает вам следующий район и просит «на этот раз помнить, кто вас назначил».",
+    "body_en": "The mandate is extended, though Inspector Mirosh wrote her report through her teeth. Nyupa survived the Flood because Ivel's boat people ferried folk and fish while the water stood on the meadows, and you put no levee across their channels. The people stayed; the houses stand on stilts.\n\nIvel sent a net and a one-word note. The League offers you the next district and asks you \"this time to remember who appointed you.\""
+  },
+  {
+    "id": "ending.lose.isolation",
+    "kind": "lose",
+    "title": "Отзыв — социальная изоляция",
+    "title_en": "Recall — Social Isolation",
+    "body": "Доверие Лиги кончилось. Инспектор Мирош не устраивала сцен: баржа с дровами прошла мимо к Плёсам, письма из Поймы перестали приходить, а на пристани поставили человека, который вас не знает.\n\nЧерез неделю вы уехали сами, на лодке Ивеля. Он не взял денег.",
+    "body_en": "The League's trust ran out. Inspector Mirosh made no scene: the firewood barge went past to the Reaches, the letters from the Floodplain stopped, and a man who did not know you was put on the landing stage.\n\nA week later you left on your own, in Ivel's boat. He took no money."
+  },
+  {
+    "id": "ending.lose.riot",
+    "kind": "lose",
+    "title": "Бунт — дамбы разрыли",
+    "title_en": "Riot — The Levees Were Dug Up",
+    "body": "Поддержка жителей кончилась. Ночью ваши же люди с лопатами и лодочники с баграми разрыли дамбы, и река пошла туда, куда шла всегда. Утром у поста лежал ваш мандат с оторванной печатью.\n\nИвель не пришёл. Ему не нужно было.",
+    "body_en": "The residents' backing ran out. At night your own people with shovels and the boat people with hooks dug up the levees, and the river went where it had always gone. In the morning your mandate lay at the post with its seal torn off.\n\nIvel did not come. He did not need to."
+  },
+  {
+    "id": "ending.lose.exodus",
+    "kind": "lose",
+    "title": "Исход — ушли на Плёсы",
+    "title_en": "Exodus — Gone to the Reaches",
+    "body": "Район опустел. Луга зелёные, рыба идёт, но люди ушли туда, где живут с рекой, а не против неё: на Плёсы, к Ивелю, у которого лодки, сваи и мир с водой.\n\nВ отчёте Лиги вы значитесь как «администратор, не удержавший население».",
+    "body_en": "The district emptied. The meadows are green, the fish run, but the people went where they live with the river rather than against it: to the Reaches, to Ivel, who has boats, stilts and peace with the water.\n\nIn the League's report you are listed as \"an administrator who failed to hold the population.\""
+  },
+  {
+    "id": "ending.lose.not_renewed",
+    "kind": "lose",
+    "title": "Мандат не продлён — Нюпа не выросла",
+    "title_en": "Mandate Not Renewed — Nyupa Did Not Grow",
+    "body": "Срок вышел, а на берегу всё те же два барака. Инспектор Мирош записала: «Река кормит, администратор нет». Мандат на второй срок не продлён.\n\nВам вернули дорожные и пожелали удачи в менее мокром месте.",
+    "body_en": "The term ran out and the bank still has the same two shelters. Inspector Mirosh wrote: \"The river feeds; the administrator does not.\" The mandate was not renewed for a second term.\n\nYou were refunded your travel money and wished luck somewhere drier."
+  },
+  {
+    "id": "ending.lose.not_renewed_losses",
+    "kind": "lose",
+    "title": "Мандат не продлён — Нюпа растеряла людей",
+    "title_en": "Mandate Not Renewed — Nyupa Bled People",
+    "body": "Нюпа росла, пока не пришла вода, а потом люди потянулись на Плёсы. К аудиту район был меньше, чем на старте. Инспектор Мирош не стала спорить с цифрами.\n\nМандат не продлён. Берег достался следующему.",
+    "body_en": "Nyupa grew until the water came, and then the people drifted to the Reaches. By the audit the district was smaller than at the start. Inspector Mirosh did not argue with the numbers.\n\nThe mandate was not renewed. The bank went to the next one."
+  }
+]

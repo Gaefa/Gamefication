@@ -1,0 +1,235 @@
+{
+  "bld_levee": {
+    "badge": "water",
+    "category": "Infrastructure",
+    "name": "Дамба",
+    "name_en": "Levee",
+    "description": "Земляной вал с плетнём: клетки рядом с ним вода не заливает, пока вал цел. Лодочники дамб не любят.",
+    "description_en": "An earth bank with wattle: the cells next to it are not flooded while it stands. The boat people dislike levees.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/quarry_pit_t1_hex.png"
+    ],
+    "sprite_tint": "7c8d7a",
+    "cost_build": {
+      "res_wood": 8,
+      "res_stone": 6
+    },
+    "outputs": {},
+    "consumes": {},
+    "cycle_time": 0.0,
+    "levels": [
+      {
+        "stage": "Дамба",
+        "stage_en": "Levee"
+      }
+    ],
+    "tags": [
+      "infrastructure",
+      "levee",
+      "flood_proof"
+    ]
+  },
+  "bld_stilt_house": {
+    "badge": "people",
+    "category": "Residential",
+    "name": "Дом на сваях",
+    "name_en": "Stilt house",
+    "description": "Жильё лодочников: стоит над водой, паводок проходит под полом. Дороже барака, зато на заливном лугу.",
+    "description_en": "Boat people's housing: it stands above the water, the flood passes under the floor. Dearer than a shelter, but safe on the floodplain.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/shelter_t1_hex.png"
+    ],
+    "sprite_tint": "a9bfc4",
+    "cost_build": {
+      "res_wood": 18,
+      "res_tools": 1
+    },
+    "outputs": {
+      "res_money": 1
+    },
+    "consumes": {
+      "res_food": 1,
+      "res_water_stockpile": 1
+    },
+    "population": 5,
+    "power_need": 1,
+    "cycle_time": 10.0,
+    "levels": [
+      {
+        "stage": "Дом на сваях",
+        "stage_en": "Stilt house",
+        "produces": {
+          "res_money": 1
+        },
+        "consumes": {
+          "res_food": 1,
+          "res_water_stockpile": 1
+        },
+        "population": 5,
+        "happiness": 0
+      }
+    ],
+    "tags": [
+      "housing",
+      "needs_road",
+      "flood_proof"
+    ]
+  },
+  "bld_fishing_pier": {
+    "badge": "food",
+    "category": "Production",
+    "name": "Рыбацкий причал",
+    "name_en": "Fishing pier",
+    "description": "Мостки и сети: даёт рыбу без воды и семян. Ставится только у реки; паводок ему не страшен.",
+    "description_en": "Planks and nets: gives fish with no water or seed. Built only by the river; the flood does not reach it.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/lumber_yard_t1_hex.png"
+    ],
+    "sprite_tint": "86aab8",
+    "cost_build": {
+      "res_wood": 15,
+      "res_tools": 1
+    },
+    "outputs": {
+      "res_food": 3
+    },
+    "consumes": {},
+    "cycle_time": 10.0,
+    "requires_adjacent_terrain": [
+      1
+    ],
+    "storage": {
+      "res_food": 40
+    },
+    "levels": [
+      {
+        "stage": "Причал",
+        "stage_en": "Pier",
+        "produces": {
+          "res_food": 3
+        },
+        "storage": {
+          "res_food": 40
+        }
+      },
+      {
+        "stage": "Причал с коптильней",
+        "stage_en": "Pier with a smokehouse",
+        "cost": {
+          "res_wood": 20,
+          "res_stone": 8,
+          "res_tools": 1
+        },
+        "produces": {
+          "res_food": 5
+        },
+        "storage": {
+          "res_food": 80
+        }
+      }
+    ],
+    "tags": [
+      "production",
+      "food_source",
+      "needs_road",
+      "flood_proof",
+      "pier"
+    ]
+  },
+  "bld_field_strip": {
+    "badge": "food",
+    "name": "Пойменная грядка",
+    "name_en": "Floodplain plot",
+    "description": "Грядка под тканью. На заливном лугу родит на треть лучше, но в Паводок её заливает без дамбы рядом.",
+    "description_en": "A plot under cloth. On the floodplain it bears a third better, but the Flood takes it without a levee next to it.",
+    "size": [
+      1,
+      1
+    ],
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/field_strip_t1_hex.png",
+      "res://assets/buildings/tiers/field_strip_t2_hex.png",
+      "res://assets/buildings/tiers/field_strip_t3_hex.png"
+    ],
+    "cost_build": {
+      "res_wood": 10
+    },
+    "outputs": {
+      "res_food": 3
+    },
+    "consumes": {
+      "res_water_stockpile": 0.5
+    },
+    "cycle_time": 10.0,
+    "terrain_bonus": {
+      "3": 0.15,
+      "4": 0.1,
+      "2": -0.25,
+      "8": 0.3
+    },
+    "levels": [
+      {
+        "stage": "Ручная грядка",
+        "stage_en": "Hand-tilled plot",
+        "produces": {
+          "res_food": 3
+        },
+        "consumes": {
+          "res_water_stockpile": 0.5
+        }
+      },
+      {
+        "stage": "Орошенная грядка",
+        "stage_en": "Irrigated plot",
+        "cost": {
+          "res_wood": 15,
+          "res_stone": 8
+        },
+        "produces": {
+          "res_food": 5
+        },
+        "consumes": {
+          "res_water_stockpile": 0.75
+        }
+      },
+      {
+        "stage": "Пылевая ферма",
+        "stage_en": "Dust farm",
+        "cost": {
+          "res_wood": 25,
+          "res_stone": 15,
+          "res_tools": 1
+        },
+        "produces": {
+          "res_food": 8
+        },
+        "consumes": {
+          "res_water_stockpile": 1.25
+        }
+      }
+    ],
+    "tags": [
+      "food_source",
+      "needs_road"
+    ]
+  }
+}

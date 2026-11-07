@@ -301,7 +301,7 @@ func _consequences_text(effects: Dictionary, cost: Dictionary) -> String:
 			"stat_unrest_pressure":
 				parts.append(Localization.ru_en("давление «люди» %s", "\"people\" pressure %s") % _signed(value as float))
 			"stat_rival_score":
-				parts.append(Localization.ru_en("показатель Восс %s", "Voss's score %s") % _signed(value as float))
+				parts.append(Localization.ru_en("показатель %s %s", "%s's score %s") % [RivalManager.rival_short(), _signed(value as float)])
 			"add_residents":
 				parts.append(Localization.ru_en("жителей %s", "residents %s") % _signed(value as float))
 			"set_policy":

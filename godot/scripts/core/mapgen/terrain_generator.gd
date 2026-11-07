@@ -16,6 +16,7 @@ const FOREST := 4
 const ROCK := 5
 const MEADOW := 6  # contested fertile land (chapter 2+): painted by the chapter's terrain rules
 const ORE := 7  # ore seams (chapter 3+): painted the same way
+const FLOODPLAIN := 8  # low ground by a chapter's river (chapter 4+)
 
 # Noise thresholds
 const WATER_THRESHOLD := 0.28
@@ -182,3 +183,18 @@ func _apply_chapter_rules(terrain: Dictionary, coords: Array[Vector2i]) -> void:
 		var coord := Vector2i((cell as Array)[0] as int, (cell as Array)[1] as int)
 		if HexCoords.distance(Vector2i.ZERO, coord) <= _radius:
 			terrain[coord] = paint
+	# A river (`river.cells`) runs where the chapter draws it, its banks (`river.bank_type`)
+	# one hex to each side wherever the ground was plain; the hub's own cells are left alone.
+	var river: Dictionary = rules.get("river", {}) as Dictionary
+	if not river.is_empty():
+		var bank: int = river.get("bank_type", FLOODPLAIN) as int
+		var cells: Array[Vector2i] = []
+		for cell: Variant in river.get("cells", []) as Array:
+			cells.append(Vector2i((cell as Array)[0] as int, (cell as Array)[1] as int))
+		for coord: Vector2i in cells:
+			if HexCoords.distance(Vector2i.ZERO, coord) <= _radius:
+				terrain[coord] = WATER
+		for coord: Vector2i in cells:
+			for nb: Vector2i in HexCoords.neighbors_of(coord):
+				if HexCoords.distance(Vector2i.ZERO, nb) <= _radius and (terrain.get(nb, GRASS) as int) in [GRASS, SAND, FOREST] and not cells.has(nb):
+					terrain[nb] = bank

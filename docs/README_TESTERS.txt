@@ -1,18 +1,18 @@
-Mandate Cities 0.3.1-alpha — playtest build / тестовая сборка
+Mandate Cities 0.3.2-alpha — playtest build / тестовая сборка
 
-NEW IN 0.3.1-alpha / НОВОЕ В 0.3.1-alpha
-  Chapter 3, the Black Quarry: an ore district of the Engineers' Union. Opens after any Gorge
-  finale. 30 days: Smog, Strike Autumn, Frost. New resource metal (ore pit, smelter), a smoke
-  count at the top of the screen that the pits feed and filters or slag heaps drain; smoke
-  weighs on mood and brings the doctor's letters. The Charters buy metal for cash, the Union
-  wants it for bridges. Placeholder art: tinted stand-ins, coloured hexes.
-  Глава 3, Чёрный Карьер: рудный район Союза Инженеров. Открывается после любого финала
-  Ущелья. 30 дней: Смог, Забастовочная осень, Мороз. Новый ресурс металл (карьер, плавильня),
-  счётчик дыма вверху экрана: карьеры его копят, фильтры и отвалы снимают; дым давит на
-  счастье и приводит письма врача. Хартии покупают металл за наличные, Союз хочет его на
-  мосты. Арт пока заглушки: перекрашенные здания, цветные шестиугольники.
-  0.3.0-alpha: chapter 2, Bogolessky Gorge (contested meadows, soil, granary) and inherited
-  starts for Rust Pit / глава 2 и наследство старта.
+NEW IN 0.3.2-alpha / НОВОЕ В 0.3.2-alpha
+  Chapter 4, Big Nyupa: a League district on a low river bank. Opens after any Quarry finale.
+  30 days: Low Water, Flood, Rot. The river level at the top of the screen rises in the Flood;
+  from 60 the water covers the floodplain (green cells by the river) and wrecks whatever stands
+  there without a levee next to it or stilts. Levees, stilt houses, a fishing pier that must
+  stand by the water; the boat people of the Reaches dislike levees. Placeholder art.
+  Глава 4, Большая Нюпа: район Лиги на низком берегу. Открывается после любого финала
+  Карьера. 30 дней: Малая вода, Паводок, Гниль. Уровень реки вверху экрана растёт в Паводок;
+  от 60 вода заливает заливные луга (зелёные клетки у реки) и ломает всё, что стоит там без
+  дамбы рядом и не на сваях. Дамбы, дома на сваях, рыбацкий причал только у воды; лодочники
+  Плёсов дамб не любят. Арт пока заглушки.
+  0.3.1-alpha: chapter 3, the Black Quarry (metal, smoke, the Engineers' Union) /
+  глава 3, металл и дым. 0.3.0-alpha: chapter 2 and inherited starts / глава 2 и наследства.
 
 WINDOWS
   Run MandateCities.exe. If SmartScreen warns "Windows protected your PC":
