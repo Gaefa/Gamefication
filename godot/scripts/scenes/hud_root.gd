@@ -10,6 +10,8 @@ var _resource_bar: PanelContainer
 var _city_label: Label          # season chip (click → season panel)
 var _utility_label: Label       # water chip (click → water panel)
 var _res_chips: Dictionary = {}  # res_id → {"value": Label, "delta": Label, "panel": Control}
+var _smoke_label: Label
+var _smoke_chip: Control
 var _pop_label: Label
 var _happy_label: Label
 var _level_label: Label
@@ -212,6 +214,12 @@ func _build_resource_bar() -> void:
 	_happy_label = _chip_text(_chip(top, func() -> String: return Localization.ru_en(
 		"Счастье жителей: вода, еда, жильё. От %d%% приезжают новые жители; аудит требует не ниже %d%%.",
 		"Residents' happiness: water, food, housing. From %d%% newcomers arrive; the audit requires at least %d%%.") % [int(ProgressionSystem.CONTENT_HAPPINESS), int(MandateManager.HAPPINESS_OK)]), 14, Color(0.97, 0.95, 0.88))
+	# The district's smoke (chapter mechanic): shown only where the chapter keeps the count.
+	var smoke_box: HBoxContainer = _chip(top, _smoke_tooltip)
+	_chip_icon(smoke_box, "waste")
+	_smoke_label = _chip_text(smoke_box, 14, Color(0.97, 0.95, 0.88))
+	_smoke_chip = smoke_box.get_parent() as Control
+	_smoke_chip.visible = false
 	_level_label = _chip_text(_chip(top, func() -> String: return Localization.ru_en(
 		"Уровень поселения. Условия следующего уровня — кнопка «Город».",
 		"Settlement level. The next level's requirements are under the City button.")), 12, Color(0.9, 0.85, 0.6))
@@ -621,6 +629,8 @@ func _top_resource_ids() -> Array[String]:
 		var preferred: String = pair[0] as String
 		var fallback: String = pair[1] as String
 		ids.append(preferred if not ContentDB.get_resource_def(preferred).is_empty() else fallback)
+	if not ContentDB.get_resource_def("res_metal").is_empty():
+		ids.append("res_metal")  # the Quarry's own resource (chapter 3+)
 	return ids
 
 
@@ -671,6 +681,12 @@ func _update_resource_bar() -> void:
 		else "%s %d" % [Localization.t("ui.resource.population", "Pop"), pop]
 	_happy_label.text = "%s %d%%" % [Localization.t("ui.resource.happiness", "Happy"), int(happiness)]
 	(_happy_label.get_parent().get_parent() as Control).tooltip_text = _mood_tooltip(happiness)
+	var smoke_on: bool = (ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary).get("waste", false) as bool
+	_smoke_chip.visible = smoke_on
+	if smoke_on:
+		var smoke: float = WasteSystem.level()
+		_smoke_label.text = "%s %d" % [Localization.ru_en("Дым", "Smoke"), int(smoke)]
+		_smoke_label.add_theme_color_override("font_color", UiStyle.BAD if smoke >= 60.0 else (UiStyle.WARN if smoke >= 30.0 else UiStyle.TEXT))
 	_happy_label.add_theme_color_override("font_color", _level_color(happiness, 40.0, 55.0))
 	var city_lv: int = GameStateStore.progression().city_level as int
 	var lv_name: String = Localization.content_text(ContentDB.get_level_def(city_lv), "name", "?")
@@ -736,7 +752,7 @@ func _update_resource_bar() -> void:
 	# The patron half names the actual patron and disappears for a founder, who has none.
 	var patron_id: String = GameStateStore.mandate().get("patron_id", "") as String
 	var has_patron: bool = patron_id != ""
-	_patron_label.text = Localization.ru_en("Директорат", "Directorate") if patron_id == "civic_directorate" else Localization.ru_en("Лига", "League")
+	_patron_label.text = MandateManager.patron_name(true)
 	for part: Control in [_patron_label, _trust_bar, _trust_value, _masters_arrow]:
 		part.visible = has_patron
 	(_rival_label.get_parent().get_parent() as Control).visible = has_patron
@@ -1565,6 +1581,15 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 		var soil: int = int(round((bld.get("soil", 1.0) as float) * 100.0))
 		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD if soil >= 70 else UiStyle.WARN),
 			Localization.ru_en("Почва: %d%%. Обычная земля устаёт, спорный луг нет; дожди и семенной склад рядом берегут её.", "Soil: %d%%. Plain ground wears out, contested meadows do not; rains and a seed vault nearby spare it.") % soil])
+	var waste_out: float = def.get("waste_per_day", 0.0) as float
+	var waste_in: float = def.get("waste_sink", 0.0) as float
+	if waste_out > 0.0:
+		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN),
+			Localization.ru_en("Дым: +%d в день к отходам района. Фильтры и отвалы снимают, Смог усиливает.", "Smoke: +%d a day to the district's waste. Filters and heaps take it back; the Smog thickens it.") % int(waste_out)])
+	if waste_in > 0.0:
+		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD),
+			Localization.ru_en("Очистка: −%d отходов в день%s.", "Clearing: −%d waste a day%s.") % [int(waste_in),
+				Localization.ru_en(" (нужен ток)", " (needs power)") if (def.get("power_need", 0) as int) > 0 else ""]])
 	if bld.get("damaged", false) as bool:
 		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.BAD), Localization.ru_en("Повреждено: не работает, пока не починят.", "Damaged: out of action until repaired.")])
 	elif bld.get("has_issue", false) as bool:
@@ -1610,16 +1635,26 @@ func _money_tooltip() -> String:
 	return "\n" + "\n".join(lines)
 
 
+## The smoke chip: where the count stands, what feeds it and what takes it back.
+func _smoke_tooltip() -> String:
+	var mods: Dictionary = GameStateStore.climate().get("modifiers", {}) as Dictionary
+	var gain: float = WasteSystem.daily_gain() * (mods.get("waste_mult", 1.0) as float)
+	var sink: float = WasteSystem.daily_sink() + WasteSystem.NATURAL_CLEARING
+	return Localization.ru_en(
+		"Отходы района: %d из 100. Карьеры и плавильни дают +%d в день, фильтры, отвалы и ветер снимают −%d. Каждые 4 единицы — минус 1%% к счастью; от 40 люди кашляют, от 70 болеют.",
+		"The district's waste: %d of 100. Pits and furnaces add +%d a day; filters, heaps and the wind take −%d. Every 4 points cost 1%% mood; from 40 people cough, from 70 they fall ill.") % [int(WasteSystem.level()), int(round(gain)), int(round(sink))]
+
+
 func _mood_tooltip(happiness: float) -> String:
 	var terms: Dictionary = GameStateStore.population().get("mood_terms", {}) as Dictionary
 	var names := {
 		"supply": Localization.ru_en("снабжение", "supply"), "power": Localization.ru_en("тёмные бараки", "dark barracks"),
 		"pressure": Localization.ru_en("слабый напор", "weak pressure"), "buildings": Localization.ru_en("здания", "buildings"),
 		"buffs": Localization.ru_en("решения", "decisions"), "governance": Localization.ru_en("политики", "policies"),
-		"neighbours": Localization.ru_en("соседство", "neighbours"),
+		"neighbours": Localization.ru_en("соседство", "neighbours"), "waste": Localization.ru_en("дым", "smoke"),
 	}
 	var parts: Array[String] = []
-	for key: String in ["supply", "power", "pressure", "buildings", "buffs", "governance", "neighbours"]:
+	for key: String in ["supply", "power", "pressure", "buildings", "buffs", "governance", "neighbours", "waste"]:
 		var value: float = terms.get(key, 0.0) as float
 		if absf(value) >= 0.5:
 			parts.append("%s %+d" % [names[key], roundi(value)])

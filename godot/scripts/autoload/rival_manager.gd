@@ -75,12 +75,31 @@ func player_score() -> float:
 
 func _raise_grant_card() -> void:
 	var directorate: bool = (GameStateStore.mandate().get("patron_id", "") as String) == "civic_directorate"
-	var patron: String = "Директорат" if directorate else "Лига"
-	var patron_en: String = "The Directorate" if directorate else "The League"
+	var own_patron: Dictionary = MandateManager.chapter_patron()
+	var patron: String = own_patron.get("name", "Директорат" if directorate else "Лига") as String
+	var patron_en: String = own_patron.get("name_en", "The Directorate" if directorate else "The League") as String
 	var ours: int = int(player_score())
 	var theirs: int = int(rival_score())
 	var card: Dictionary
-	if ours >= theirs:
+	if ContentDB.active_chapter != "rust_pit":
+		# Another chapter: the grant is the season's, the neighbour is the chapter's.
+		var chapter: Dictionary = ContentDB.get_chapter_def()
+		var rival: Dictionary = chapter.get("rival", {}) as Dictionary
+		var won: bool = ours >= theirs
+		card = {
+			"runtime_id": "rival.grant_result",
+			"title": ("Сезонный грант — %s" % chapter.get("title", "")) if won else ("Сезонный грант ушёл: %s" % rival.get("district", "")),
+			"title_en": ("The season's grant goes to %s" % chapter.get("title_en", "")) if won else ("The season's grant went to %s" % rival.get("district_en", "")),
+			"body": ("%s распределил сезонный грант: %d в казну района. Ваш показатель — %d, у района %s (%s) — %d.\n\nДеньги зачислены в казну района." % [patron, int(GRANT_MONEY), ours, rival.get("short", ""), rival.get("district", ""), theirs]) if won
+				else ("%s распределил сезонный грант: он уходит району %s (%s). Показатель соседа — %d, ваш — %d.\n\nВ докладе покровителю отмечено, что соседний район подготовлен лучше." % [patron, rival.get("short", ""), rival.get("district", ""), theirs, ours]),
+			"body_en": ("%s has awarded the season's grant: %d to the district treasury. Your score: %d; %s's district (%s): %d.\n\nThe money has been credited to the district treasury." % [patron_en, int(GRANT_MONEY), ours, rival.get("short_en", ""), rival.get("district_en", ""), theirs]) if won
+				else ("%s has awarded the season's grant to %s's district (%s). The neighbour's score: %d; yours: %d.\n\nThe report to your patron notes that the neighbouring district is better prepared." % [patron_en, rival.get("short_en", ""), rival.get("district_en", ""), theirs, ours]),
+			"options": [
+				{ "text": "Принять грант", "text_en": "Accept the grant", "effects": { "add_resources": { "res_money": GRANT_MONEY }, "stat_league_trust": 3, "message": "Грант получен.", "message_en": "The grant has been received." } } if won
+				else { "text": "Принять к сведению", "text_en": "Noted", "effects": { "stat_league_trust": -4, "message": "Грант получил соседний район.", "message_en": "The grant went to the neighbouring district." } },
+			],
+		}
+	elif ours >= theirs:
 		card = {
 			"runtime_id": "rival.grant_result",
 			"title": "Грант на Пыль — Ржавой Норе",

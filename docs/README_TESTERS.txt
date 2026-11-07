@@ -1,15 +1,18 @@
-Mandate Cities 0.3.0-alpha — playtest build / тестовая сборка
+Mandate Cities 0.3.1-alpha — playtest build / тестовая сборка
 
-NEW IN 0.3.0-alpha / НОВОЕ В 0.3.0-alpha
-  Chapter 2, Bogolessky Gorge: a green district where the Covenant claims the meadows. It opens
-  after any Rust Pit finale (the "Chapter" row on the mandate screen, or "Next chapter" at the
-  finale). 30 days, contested meadows, soil that wears out, a granary. Placeholder art: the
-  map is coloured hexes, two buildings are tinted stand-ins; real art is on its way.
-  Глава 2, Боголесское Ущелье: зелёный район, где Завет считает луга своими. Открывается после
-  любого финала Ржавой Норы (ряд «Глава» на экране мандата или «Следующая глава» в финале).
-  30 дней, спорные луга, усталость почвы, зернохранилище. Арт пока заглушки: карта цветными
-  шестиугольниками, два здания перекрашены; настоящий арт в работе.
-  Also: inherited starts for Rust Pit (what the previous administrator left) / наследство старта.
+NEW IN 0.3.1-alpha / НОВОЕ В 0.3.1-alpha
+  Chapter 3, the Black Quarry: an ore district of the Engineers' Union. Opens after any Gorge
+  finale. 30 days: Smog, Strike Autumn, Frost. New resource metal (ore pit, smelter), a smoke
+  count at the top of the screen that the pits feed and filters or slag heaps drain; smoke
+  weighs on mood and brings the doctor's letters. The Charters buy metal for cash, the Union
+  wants it for bridges. Placeholder art: tinted stand-ins, coloured hexes.
+  Глава 3, Чёрный Карьер: рудный район Союза Инженеров. Открывается после любого финала
+  Ущелья. 30 дней: Смог, Забастовочная осень, Мороз. Новый ресурс металл (карьер, плавильня),
+  счётчик дыма вверху экрана: карьеры его копят, фильтры и отвалы снимают; дым давит на
+  счастье и приводит письма врача. Хартии покупают металл за наличные, Союз хочет его на
+  мосты. Арт пока заглушки: перекрашенные здания, цветные шестиугольники.
+  0.3.0-alpha: chapter 2, Bogolessky Gorge (contested meadows, soil, granary) and inherited
+  starts for Rust Pit / глава 2 и наследство старта.
 
 WINDOWS
   Run MandateCities.exe. If SmartScreen warns "Windows protected your PC":

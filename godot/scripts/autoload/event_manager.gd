@@ -301,6 +301,8 @@ func _get_stat_value(stat_name: String) -> float:
 			return float(claims)
 		"stat_day":
 			return float(GameStateStore.climate().get("total_day", 1) as int)
+		"stat_waste":
+			return WasteSystem.level()
 	push_warning("EventManager: unknown stat '%s' in a trigger" % stat_name)
 	return 0.0
 
@@ -505,6 +507,10 @@ func _apply_stat_delta(stat_id: String, amount: float) -> void:
 				pressure_state["categories"] = {}
 			var cats: Dictionary = pressure_state["categories"] as Dictionary
 			cats["happiness"] = clampf((cats.get("happiness", 0.0) as float) + amount, 0.0, 100.0)
+		"stat_waste":
+			# A card can clear the air (slag hauled away) or foul it (the heaps set alight).
+			var climate_state: Dictionary = GameStateStore.climate()
+			climate_state["waste"] = clampf((climate_state.get("waste", 0.0) as float) + amount, 0.0, WasteSystem.MAX_WASTE)
 
 
 func _force_issues(count: int) -> void:

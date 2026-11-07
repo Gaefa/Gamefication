@@ -26,11 +26,11 @@ const CHAPTERS_ROOT := "res://content/chapters/"
 
 ## The vocabulary a card may use. _validate_content rejects anything else, so a typo in a
 ## trigger, season, patron, style or flag fails content_check instead of silently never firing.
-const PATRON_IDS := ["restoration_league", "civic_directorate"]
+const PATRON_IDS := ["restoration_league", "civic_directorate", "engineers_union"]
 const STYLE_IDS := ["loyal", "pragmatist", "protector", "autonomist"]
 const TRIGGER_STATS := ["stat_unrest_pressure", "stat_city_trust", "stat_league_trust", "stat_happiness",
 	"stat_population", "stat_low_pressure_housing", "stat_rival_score", "stat_rival_gap", "stat_water_days", "stat_day",
-	"stat_contested_fields"]
+	"stat_contested_fields", "stat_waste"]
 
 
 func _ready() -> void:
@@ -95,6 +95,7 @@ func _load_all() -> void:
 					resources[res_id] = d
 	elif res_raw is Dictionary:
 		resources = res_raw as Dictionary
+	_merge_keyed(resources, _chapter_file("resources.json"), "id")  # a chapter's own resource (metal)
 	var terrain_raw: Dictionary = _load_json(CONTENT_ROOT + "terrain.json")
 	terrain_types = (terrain_raw.get("types", terrain_raw) as Dictionary).duplicate(true)
 	_merge_keyed(terrain_types, _chapter_file("terrain.json"), "")  # a chapter's palette: types by id

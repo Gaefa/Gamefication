@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.3.0-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.3.1-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Storms: on day 22 (Dust) and day 32 (Heat) the lookout warns of a storm for tomorrow; unbraced (20 wood, 5 tools) it wrecks two buildings, braced it leaves one breakdown. A wrecked building does nothing until repaired (R). Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
@@ -153,3 +153,14 @@ Opens after any Rust Pit finale, in the "Chapter" row of the mandate screen. 30 
 - **Granary** (300 food) halves spoilage in the Harvest; without one, half the harvest rots.
 - **A letter from the previous chapter** arrives on the first evening: how Rust Pit ended is how they remember you.
 - Three legacies of Renn: fields on the meadows with an angry Covenant; a full granary with a League debt; empty shelters with a full store.
+
+## Chapter 3. The Black Quarry
+
+Opens after any Gorge finale. 30 days: Smog (1–10), Strike Autumn (11–22), Frost (23–30). Reviews on days 15 and 27, the grant on day 10. The patron is the Engineers' Union (Engineer-Auditor Matthias Holt), the rival Baron Otto Velm of Velm's Burn, the third powers the Outer Charters (agent Silva Kron) and the miners' committee (Danila Rech).
+
+- **Metal** is a new resource in the top bar. The ore pit gives it (2 a cycle, double on an ore seam, eats food) and the smelter (5 a cycle, eats wood and stone, needs power). Metal builds the filter station and upgrades; the Union asks for 30 for its bridges (day 18), the Charters buy 20 for 70 coins whenever 20 are in store.
+- **Smoke** is the counter at the top (0–100). The pit adds +3 a day, the smelter +5, the wind takes 1; in the Smog the gain is ×1.6, in the Frost ×1.3. Every 4 points of smoke cost 1% mood. From 40 the doctor writes (coughing), from 70 comes sickness: residents leave. The Union's standard is 40 or under.
+- **Filter station** (25 stone, 15 metal, 2 tools, 30 coins; needs power) takes 4 a day. **Slag heap** (8 wood, 5 stone) takes 2 without power but costs the district 2.5 mood. Velm hauls the slag away for 60 coins at once (−30).
+- **Strikes**: in the Strike Autumn the people pressure fills 1.6× faster; at mood ≤38 the committee sends demands, and the people crisis is a strike: settle (60 coins), break it (support −10, a wrecked shelter, a flag for the whole campaign) or wait. The Union offers a mediator if no Charters' guards stand at the gate.
+- **Frost**: the pump draws 70%, the fields 40%, wear ×1.4. On day 23 the engineer offers to burn wood (40) or slag (smoke +12); on day 25 a pipe bursts at the pump (15 coins now, or a breakdown).
+- Three legacies of Ida Kramer: a smelter with 45 smoke and a debt to Velm; filters with a 35-coin treasury; after a broken strike, three residents and support at 35.

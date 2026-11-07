@@ -8,6 +8,7 @@ const RESOURCES := {
 	"res_wood": "wood", "wood": "wood",
 	"res_stone": "stone", "stone": "stone",
 	"res_tools": "tools", "tools": "tools",
+	"res_metal": "metal",
 }
 const CATEGORIES := {
 	"Infrastructure": "infrastructure", "Residential": "residential",
@@ -21,6 +22,7 @@ const COLORS := {
 	"wood": Color("c8935c"), "stone": Color("b9b9c4"), "tools": Color("e0916a"),
 	"people": Color("e8c9a0"), "mandate": Color("d9c27a"), "power": Color("f2d84b"),
 	"storage": Color("c9a36b"), "residential": Color("e8c9a0"),
+	"metal": Color("a9b7c6"), "waste": Color("9a8f82"),
 }
 static var _cache: Dictionary = {}
 

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "ending.win.loyal",
+    "kind": "win",
+    "title": "Удержанный мандат — стандарт Союза",
+    "title_en": "Mandate Held — The Union's Standard",
+    "body": "Ревизия пройдена, мандат продлён. Чёрный Карьер пережил Смог и Мороз, забастовка не остановила печи, металл ушёл на мосты Союза. Хольт вписал район в реестр как «соответствующий стандарту».\n\nВельм прислал поздравление и прейскурант на следующий сезон. Союз предлагает вам следующий район: пойму, где воды слишком много.",
+    "body_en": "The review is passed and the mandate extended. The Black Quarry came through the Smog and the Frost, the strike did not stop the furnaces, the metal went to the Union's bridges. Holt entered the district in the register as \"meeting the standard.\"\n\nVelm sent congratulations and a price list for next season. The Union offers you the next district: a floodplain with too much water."
+  },
+  {
+    "id": "ending.win.protector",
+    "kind": "win",
+    "title": "Удержанный мандат — договор с комитетом",
+    "title_en": "Mandate Held — A Deal with the Committee",
+    "body": "Мандат продлён, хотя Хольт писал отчёт с оговорками. Карьер выжил, потому что комитет Реха сам встал к печам, когда ударил Мороз, и сам потушил отвалы, когда дым пошёл на бараки. Люди остались, и это оказалось важнее тонн.\n\nВельм не прислал ничего. Союз предлагает следующий район и просит «помнить, чей стандарт вы подписали».",
+    "body_en": "The mandate is extended, though Holt wrote his report with reservations. The Quarry survived because Rech's committee manned the furnaces itself when the Frost struck, and put out the heaps itself when the smoke turned on the housing. The people stayed, and that proved to matter more than the tonnage.\n\nVelm sent nothing. The Union offers you the next district and asks you \"to remember whose standard you signed.\""
+  },
+  {
+    "id": "ending.lose.isolation",
+    "kind": "lose",
+    "title": "Отзыв — Союз снял мастеров",
+    "title_en": "Recall — The Union Withdrew Its Engineers",
+    "body": "Доверие Союза кончилось. Хольт не устраивал сцен: утром уехали инженеры насосной, к вечеру перестали приходить запчасти, а на посту у дороги стоял человек с бляхой Союза, который вас не знал.\n\nЧерез неделю вы уехали сами. Печи остыли.",
+    "body_en": "The Union's trust ran out. Holt made no scene: in the morning the pump engineers left, by evening the spare parts stopped coming, and a man with a Union badge who did not know you stood at the post by the road.\n\nA week later you left on your own. The furnaces went cold."
+  },
+  {
+    "id": "ending.lose.riot",
+    "kind": "lose",
+    "title": "Бунт — печи потушили сами",
+    "title_en": "Riot — They Put Out the Furnaces Themselves",
+    "body": "Поддержка жителей кончилась. Ночью комитет вывел людей к плавильне и залил печи водой из цистерны; охрану Вельма, если она была, никто не видел. Утром у поста лежал ваш мандат с оторванной печатью.\n\nРех не пришёл. Ему не нужно было.",
+    "body_en": "The residents' backing ran out. At night the committee led the people to the smelter and doused the furnaces with water from the cistern; Velm's guards, if there were any, were nowhere to be seen. In the morning your mandate lay at the post with its seal torn off.\n\nRech did not come. He did not need to."
+  },
+  {
+    "id": "ending.lose.exodus",
+    "kind": "lose",
+    "title": "Исход — ушли на Гарь",
+    "title_en": "Exodus — Gone to the Burn",
+    "body": "Район опустел. Жила богатая, но люди ушли туда, где платят сегодня: на Вельмову Гарь, к барону, у которого есть охрана, вино и своя плавильня без фильтров.\n\nВ отчёте Союза вы значитесь как «администратор, не удержавший население».",
+    "body_en": "The district emptied. The seam is rich, but the people went where they are paid today: to Velm's Burn, to the baron with his guards, his wine and his own smelter without filters.\n\nIn the Union's report you are listed as \"an administrator who failed to hold the population.\""
+  },
+  {
+    "id": "ending.lose.not_renewed",
+    "kind": "lose",
+    "title": "Мандат не продлён — Карьер не вырос",
+    "title_en": "Mandate Not Renewed — The Quarry Did Not Grow",
+    "body": "Срок вышел, а в Карьере всё те же два барака и одна яма. Хольт записал: «Жила родит, администратор нет». Мандат на второй срок не продлён.\n\nВам вернули дорожные и пожелали удачи в менее дымном месте.",
+    "body_en": "The term ran out and the Quarry still has the same two shelters and one pit. Holt wrote: \"The seam bears; the administrator does not.\" The mandate was not renewed for a second term.\n\nYou were refunded your travel money and wished luck somewhere less smoky."
+  },
+  {
+    "id": "ending.lose.not_renewed_losses",
+    "kind": "lose",
+    "title": "Мандат не продлён — Карьер растерял людей",
+    "title_en": "Mandate Not Renewed — The Quarry Bled People",
+    "body": "Карьер рос, пока дым и забастовки не выгнали людей на Гарь. К ревизии район был меньше, чем на старте. Хольт не стал спорить с цифрами.\n\nМандат не продлён. Жила достанется следующему.",
+    "body_en": "The Quarry grew until the smoke and the strikes drove people to the Burn. By the review the district was smaller than at the start. Holt did not argue with the numbers.\n\nThe mandate was not renewed. The seam goes to the next one."
+  }
+]

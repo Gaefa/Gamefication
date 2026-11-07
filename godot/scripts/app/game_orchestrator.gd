@@ -76,6 +76,8 @@ func build() -> void:
 	var mechanics: Dictionary = ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary
 	if mechanics.get("soil", false) as bool:
 		tick_scheduler.add_system(SoilSystem.new())
+	if mechanics.get("waste", false) as bool:
+		tick_scheduler.add_system(WasteSystem.new())
 
 	# Command bus
 	command_bus = CommandBus.new()
@@ -92,6 +94,11 @@ func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator",
 	ContentDB.set_chapter(chapter_id if chapter_id != "" else ContentDB.default_chapter())
 	EventBus.run_reset.emit()
 	GameStateStore.reset(profile_id)
+	# The chapter's own patron (chapter.json "patron"): an appointed administrator answers to
+	# it instead of the profile's default; a founder still answers to no one.
+	var patron: Dictionary = ContentDB.get_chapter_def().get("patron", {}) as Dictionary
+	if (patron.get("id", "") as String) != "" and (GameStateStore.mandate().get("patron_id", "") as String) != "":
+		GameStateStore.mandate()["patron_id"] = patron.get("id", "") as String
 	GameStateStore.save_meta().rng_seed = seed_val
 	GameStateStore.save_meta().chapter_id = ContentDB.active_chapter
 	build()
@@ -188,6 +195,9 @@ func _apply_legacy(legacy_id: String) -> void:
 	for flag: Variant in legacy.get("flags", []) as Array:
 		flags[flag as String] = true
 	mandate_state["flags"] = flags
+	var climate_overrides: Dictionary = legacy.get("climate", {}) as Dictionary  # the smoke the last one left
+	for key: String in climate_overrides:
+		GameStateStore.climate()[key] = climate_overrides[key]
 
 
 ## The legacy's stores go in once the infrastructure tick has set the caps: a full cistern
