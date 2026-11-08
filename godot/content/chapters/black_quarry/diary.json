@@ -1,0 +1,48 @@
+{
+  "fragments": [
+    {
+      "id": "quarry.diary.01",
+      "order": 1,
+      "title": "Записки Иды Крамер — I",
+      "title_en": "Ida Kramer's Notes — I",
+      "body": "Принимаю Чёрный Карьер. Союз прислал ревизора Хольта с папкой стандартов; Хартии прислали барона Вельма с ящиком вина. Жила под восточным склоном богатая. Фильтры дорогие. Начну с карьера, фильтры потом.",
+      "body_en": "Taking over the Black Quarry. The Union sent Auditor Holt with a folder of standards; the Charters sent Baron Velm with a crate of wine. The seam under the east slope is rich. Filters are expensive. I start with the pit; filters later.",
+      "unlock": {
+        "day": 1
+      }
+    },
+    {
+      "id": "quarry.diary.02",
+      "order": 2,
+      "title": "Записки Иды Крамер — II",
+      "title_en": "Ida Kramer's Notes — II",
+      "body": "Плавильня дымит третью неделю. Вельм берёт весь металл и платит честно. Хольт пишет про «стандарт чистоты»; я пишу про казну. Дети у ворот кашляют. Врач говорит — Смог, пройдёт.",
+      "body_en": "The smelter has smoked for three weeks. Velm takes all the metal and pays fairly. Holt writes about the \"clean-air standard\"; I write about the treasury. The children at the gate cough. The doctor says it is the Smog, it will pass.",
+      "unlock": {
+        "day": 8
+      }
+    },
+    {
+      "id": "quarry.diary.03",
+      "order": 3,
+      "title": "Записки Иды Крамер — III",
+      "title_en": "Ida Kramer's Notes — III",
+      "body": "Забастовка. Комитет Реха встал у плавильни и не пускает смену. Вельм предложил охрану. Я согласилась. Утром у ворот было тихо, и половина бараков тоже.",
+      "body_en": "A strike. Rech's committee stood at the smelter and let no shift through. Velm offered guards. I agreed. In the morning the gate was quiet, and so was half the housing.",
+      "unlock": {
+        "season": "season_strike_autumn"
+      }
+    },
+    {
+      "id": "quarry.diary.04",
+      "order": 4,
+      "title": "Записки Иды Крамер — IV",
+      "title_en": "Ida Kramer's Notes — IV",
+      "body": "Мороз. Трубы лопнули, дрова ушли в печи, металл лежит на складе: Вельм сбил цену вдвое. Хольт не продлит. Тому, кто придёт: фильтры раньше плавильни, комитет раньше барона.",
+      "body_en": "The Frost. The pipes burst, the wood went into the stoves, the metal sits in store: Velm halved the price. Holt will not renew. To whoever comes next: filters before the smelter, the committee before the baron.",
+      "unlock": {
+        "season": "season_frost"
+      }
+    }
+  ]
+}

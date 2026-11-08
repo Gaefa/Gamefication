@@ -1,0 +1,225 @@
+{
+  "bld_ore_pit": {
+    "badge": "metal",
+    "category": "Production",
+    "name": "Рудный карьер",
+    "name_en": "Ore pit",
+    "description": "Открытая выработка: руду бьют кайлом и плавят на месте в ямах. Даёт металл и дым; на рудной жиле вдвое больше металла.",
+    "description_en": "An open cut: ore broken by pick and smelted on the spot in pits. Gives metal and smoke; on an ore seam, twice the metal.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/quarry_pit_t1_hex.png",
+      "res://assets/buildings/tiers/quarry_pit_t2_hex.png"
+    ],
+    "sprite_tint": "9a6a52",
+    "cost_build": {
+      "res_wood": 20,
+      "res_stone": 10,
+      "res_tools": 2
+    },
+    "outputs": {
+      "res_metal": 2
+    },
+    "consumes": {
+      "res_food": 1
+    },
+    "cycle_time": 12.0,
+    "terrain_bonus": {
+      "7": 1.0,
+      "3": 0.25
+    },
+    "waste_per_day": 3,
+    "levels": [
+      {
+        "stage": "Ручная выработка",
+        "stage_en": "Hand-dug pit",
+        "produces": {
+          "res_metal": 2
+        },
+        "consumes": {
+          "res_food": 1
+        }
+      },
+      {
+        "stage": "Карьер с воротом",
+        "stage_en": "Pit with a windlass",
+        "cost": {
+          "res_money": 40,
+          "res_stone": 15,
+          "res_tools": 2
+        },
+        "produces": {
+          "res_metal": 3.5
+        },
+        "consumes": {
+          "res_food": 1.5
+        }
+      }
+    ],
+    "tags": [
+      "production",
+      "needs_road",
+      "polluter"
+    ]
+  },
+  "bld_smelter": {
+    "badge": "metal",
+    "category": "Production",
+    "name": "Плавильня",
+    "name_en": "Smelter",
+    "description": "Печь на дереве и камне: много металла, много дыма. Без тока работает на треть. Главный источник отходов района.",
+    "description_en": "A furnace on wood and stone: much metal, much smoke. Without power it runs at a third. The district's main source of waste.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/tool_workshop_t1_hex.png",
+      "res://assets/buildings/tiers/tool_workshop_t2_hex.png"
+    ],
+    "sprite_tint": "7d6a66",
+    "cost_build": {
+      "res_wood": 30,
+      "res_stone": 30,
+      "res_tools": 3,
+      "res_money": 40
+    },
+    "outputs": {
+      "res_metal": 5
+    },
+    "consumes": {
+      "res_wood": 2,
+      "res_stone": 1
+    },
+    "cycle_time": 12.0,
+    "power_need": 4,
+    "waste_per_day": 5,
+    "storage": {
+      "res_metal": 60
+    },
+    "levels": [
+      {
+        "stage": "Печь",
+        "stage_en": "Furnace",
+        "produces": {
+          "res_metal": 5
+        },
+        "consumes": {
+          "res_wood": 2,
+          "res_stone": 1
+        },
+        "storage": {
+          "res_metal": 60
+        }
+      },
+      {
+        "stage": "Печь с дутьём",
+        "stage_en": "Blast furnace",
+        "cost": {
+          "res_money": 80,
+          "res_metal": 15,
+          "res_tools": 3
+        },
+        "produces": {
+          "res_metal": 8
+        },
+        "consumes": {
+          "res_wood": 3,
+          "res_stone": 1.5
+        },
+        "storage": {
+          "res_metal": 100
+        }
+      }
+    ],
+    "tags": [
+      "production",
+      "needs_road",
+      "polluter"
+    ]
+  },
+  "bld_filter_station": {
+    "badge": "waste",
+    "category": "Infrastructure",
+    "name": "Фильтровальная станция",
+    "name_en": "Filter station",
+    "description": "Мокрые фильтры и вытяжка: снимает 4 отходов в день со всего района. Нужен ток; без него — сарай. Стандарт Союза.",
+    "description_en": "Wet filters and a draught: takes 4 waste a day off the whole district. Needs power; without it, a shed. The Union's standard.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/well_pump_t1_hex.png"
+    ],
+    "sprite_tint": "8fb3c8",
+    "cost_build": {
+      "res_stone": 25,
+      "res_metal": 15,
+      "res_tools": 2,
+      "res_money": 30
+    },
+    "outputs": {},
+    "consumes": {},
+    "cycle_time": 0.0,
+    "power_need": 3,
+    "waste_sink": 4,
+    "levels": [
+      {
+        "stage": "Фильтровальная станция",
+        "stage_en": "Filter station"
+      }
+    ],
+    "tags": [
+      "infrastructure",
+      "needs_road",
+      "filter"
+    ]
+  },
+  "bld_slag_heap": {
+    "badge": "waste",
+    "category": "Infrastructure",
+    "name": "Отвал",
+    "name_en": "Slag heap",
+    "description": "Куча шлака за забором: дёшево снимает 2 отходов в день, но соседи смотрят на неё из окон. Хартии такое любят.",
+    "description_en": "A heap of slag behind a fence: cheaply takes 2 waste a day, but the neighbours look at it from their windows. The Charters' kind of answer.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/quarry_pit_t1_hex.png"
+    ],
+    "sprite_tint": "5e5652",
+    "cost_build": {
+      "res_wood": 8,
+      "res_stone": 5
+    },
+    "outputs": {},
+    "consumes": {},
+    "cycle_time": 0.0,
+    "waste_sink": 2,
+    "levels": [
+      {
+        "stage": "Отвал",
+        "stage_en": "Slag heap",
+        "happiness": -25
+      }
+    ],
+    "tags": [
+      "infrastructure",
+      "heap"
+    ]
+  }
+}

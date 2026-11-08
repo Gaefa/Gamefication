@@ -67,9 +67,18 @@
       "buildable": true,
       "cost_multiplier": 1,
       "color": "6f9a4a",
-      "label_key": "terrain.meadow.label",
       "description": "Плодородная земля, на которую у Зелёного Завета свои права. Поля здесь родят лучше, но каждое — повод для спора.",
       "description_en": "Fertile land the Green Covenant claims as its own. Fields bear better here, and every one is a quarrel."
+    },
+    "7": {
+      "id": "ore",
+      "label": "Рудная жила",
+      "label_en": "Ore seam",
+      "buildable": true,
+      "cost_multiplier": 1.2,
+      "color": "7a4632",
+      "description": "Выход руды к поверхности. Карьер здесь даёт вдвое больше металла и столько же дыма.",
+      "description_en": "Ore breaking the surface. A pit here gives twice the metal and the same smoke."
     }
   }
 }

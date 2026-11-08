@@ -139,11 +139,12 @@ func _update_happiness() -> void:
 		pressure_term *= 2.0
 		supply_term += heat_stress_term()
 	GameStateStore.population()["low_pressure_housing"] = weak_water_housing
-	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term + pressure_term + neighbour_mood, 0.0, 100.0)
+	var waste_term: float = WasteSystem.mood_term()  # smoke over the district (chapter mechanic; 0 elsewhere)
+	var target: float = clampf(50.0 + total_happiness * 0.1 + buff_happiness + governance_happiness + supply_term + power_term + pressure_term + neighbour_mood + waste_term, 0.0, 100.0)
 	# The breakdown the HUD shows on the happiness chip, so the number has reasons.
 	GameStateStore.population()["mood_terms"] = {
 		"target": target, "buildings": total_happiness * 0.1, "buffs": buff_happiness, "governance": governance_happiness,
-		"supply": supply_term, "power": power_term, "pressure": pressure_term, "neighbours": neighbour_mood,
+		"supply": supply_term, "power": power_term, "pressure": pressure_term, "neighbours": neighbour_mood, "waste": waste_term,
 	}
 	# Ease happiness toward the target instead of snapping. At the scarcity boundary the
 	# instantaneous supply term jitters tick-to-tick (food produced then eaten); a mood
