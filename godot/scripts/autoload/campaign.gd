@@ -9,7 +9,7 @@ const FILE_PATH := "user://campaign.cfg"
 const TOOLS_FILE_PATH := "user://campaign_tools.cfg"
 ## Decision flags worth carrying between chapters: the rest stay in their run.
 const CARRIED_FLAGS := ["ruben_burned", "unregistered_people", "forecaster_active", "strike_banned", "dried_rations",
-	"covenant_treaty", "charters_deal", "strike_broken", "union_standard"]
+	"covenant_treaty", "charters_deal", "strike_broken", "union_standard", "boat_pact", "levee_wall"]
 
 var pending_chapter: String = ""  # set by the finale's "next chapter" button for the title screen
 var _results: Dictionary = {}     # chapter id → result dictionary

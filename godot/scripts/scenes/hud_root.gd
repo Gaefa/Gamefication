@@ -10,8 +10,8 @@ var _resource_bar: PanelContainer
 var _city_label: Label          # season chip (click → season panel)
 var _utility_label: Label       # water chip (click → water panel)
 var _res_chips: Dictionary = {}  # res_id → {"value": Label, "delta": Label, "panel": Control}
-var _smoke_label: Label
-var _smoke_chip: Control
+var _gauge_label: Label
+var _gauge_chip: Control
 var _pop_label: Label
 var _happy_label: Label
 var _level_label: Label
@@ -214,12 +214,13 @@ func _build_resource_bar() -> void:
 	_happy_label = _chip_text(_chip(top, func() -> String: return Localization.ru_en(
 		"Счастье жителей: вода, еда, жильё. От %d%% приезжают новые жители; аудит требует не ниже %d%%.",
 		"Residents' happiness: water, food, housing. From %d%% newcomers arrive; the audit requires at least %d%%.") % [int(ProgressionSystem.CONTENT_HAPPINESS), int(MandateManager.HAPPINESS_OK)]), 14, Color(0.97, 0.95, 0.88))
-	# The district's smoke (chapter mechanic): shown only where the chapter keeps the count.
-	var smoke_box: HBoxContainer = _chip(top, _smoke_tooltip)
-	_chip_icon(smoke_box, "waste")
-	_smoke_label = _chip_text(smoke_box, 14, Color(0.97, 0.95, 0.88))
-	_smoke_chip = smoke_box.get_parent() as Control
-	_smoke_chip.visible = false
+	# The chapter's gauge (smoke in the Quarry, the river in Nyupa): shown only where the chapter keeps one.
+	var mechanics: Dictionary = ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary
+	var gauge_box: HBoxContainer = _chip(top, _gauge_tooltip)
+	_chip_icon(gauge_box, "water" if (mechanics.get("flood", false) as bool) else "waste")
+	_gauge_label = _chip_text(gauge_box, 14, Color(0.97, 0.95, 0.88))
+	_gauge_chip = gauge_box.get_parent() as Control
+	_gauge_chip.visible = false
 	_level_label = _chip_text(_chip(top, func() -> String: return Localization.ru_en(
 		"Уровень поселения. Условия следующего уровня — кнопка «Город».",
 		"Settlement level. The next level's requirements are under the City button.")), 12, Color(0.9, 0.85, 0.6))
@@ -681,12 +682,16 @@ func _update_resource_bar() -> void:
 		else "%s %d" % [Localization.t("ui.resource.population", "Pop"), pop]
 	_happy_label.text = "%s %d%%" % [Localization.t("ui.resource.happiness", "Happy"), int(happiness)]
 	(_happy_label.get_parent().get_parent() as Control).tooltip_text = _mood_tooltip(happiness)
-	var smoke_on: bool = (ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary).get("waste", false) as bool
-	_smoke_chip.visible = smoke_on
-	if smoke_on:
+	var chapter_mechanics: Dictionary = ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary
+	_gauge_chip.visible = (chapter_mechanics.get("waste", false) as bool) or (chapter_mechanics.get("flood", false) as bool)
+	if chapter_mechanics.get("waste", false) as bool:
 		var smoke: float = WasteSystem.level()
-		_smoke_label.text = "%s %d" % [Localization.ru_en("Дым", "Smoke"), int(smoke)]
-		_smoke_label.add_theme_color_override("font_color", UiStyle.BAD if smoke >= 60.0 else (UiStyle.WARN if smoke >= 30.0 else UiStyle.TEXT))
+		_gauge_label.text = "%s %d" % [Localization.ru_en("Дым", "Smoke"), int(smoke)]
+		_gauge_label.add_theme_color_override("font_color", UiStyle.BAD if smoke >= 60.0 else (UiStyle.WARN if smoke >= 30.0 else UiStyle.TEXT))
+	elif chapter_mechanics.get("flood", false) as bool:
+		var river: float = FloodSystem.level()
+		_gauge_label.text = "%s %d" % [Localization.ru_en("Река", "River"), int(river)]
+		_gauge_label.add_theme_color_override("font_color", UiStyle.BAD if FloodSystem.is_high() else (UiStyle.WARN if river >= 40.0 else UiStyle.TEXT))
 	_happy_label.add_theme_color_override("font_color", _level_color(happiness, 40.0, 55.0))
 	var city_lv: int = GameStateStore.progression().city_level as int
 	var lv_name: String = Localization.content_text(ContentDB.get_level_def(city_lv), "name", "?")
@@ -1581,6 +1586,17 @@ func _build_building_info_text(coord: Vector2i, bld: Dictionary) -> String:
 		var soil: int = int(round((bld.get("soil", 1.0) as float) * 100.0))
 		lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD if soil >= 70 else UiStyle.WARN),
 			Localization.ru_en("Почва: %d%%. Обычная земля устаёт, спорный луг нет; дожди и семенной склад рядом берегут её.", "Soil: %d%%. Plain ground wears out, contested meadows do not; rains and a seed vault nearby spare it.") % soil])
+	if (ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary).get("flood", false) as bool:
+		var flood_tags: Array = def.get("tags", []) as Array
+		if flood_tags.has("levee"):
+			lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD), Localization.ru_en("Дамба: соседние клетки не затопит, пока она цела.", "Levee: the cells next to it are not flooded while it stands.")])
+		elif GameStateStore.get_terrain(coord) == FloodSystem.FLOODPLAIN:
+			if flood_tags.has("flood_proof"):
+				lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD), Localization.ru_en("На сваях: паводок не страшен.", "On stilts: the flood does not reach it.")])
+			elif FloodSystem.has_levee(coord):
+				lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.GOOD), Localization.ru_en("Заливной луг под защитой дамбы.", "Floodplain, sheltered by a levee.")])
+			else:
+				lines.append("[color=%s]%s[/color]" % [UiStyle.hex(UiStyle.WARN), Localization.ru_en("Заливной луг: в Паводок (река от %d) затопит без дамбы рядом.", "Floodplain: the Flood (river from %d) wrecks it without a levee next to it.") % int(FloodSystem.FLOOD_LINE)])
 	var waste_out: float = def.get("waste_per_day", 0.0) as float
 	var waste_in: float = def.get("waste_sink", 0.0) as float
 	if waste_out > 0.0:
@@ -1635,9 +1651,15 @@ func _money_tooltip() -> String:
 	return "\n" + "\n".join(lines)
 
 
-## The smoke chip: where the count stands, what feeds it and what takes it back.
-func _smoke_tooltip() -> String:
+## The chapter's gauge chip: the smoke count or the river level, and what moves it.
+func _gauge_tooltip() -> String:
 	var mods: Dictionary = GameStateStore.climate().get("modifiers", {}) as Dictionary
+	if (ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary).get("flood", false) as bool:
+		var rise: float = mods.get("flood_rise", FloodSystem.DEFAULT_FALL) as float
+		var exposed: int = FloodSystem.exposed_coords().size()
+		return Localization.ru_en(
+			"Уровень реки: %d из 100, сегодня %+d в день. От %d вода заливает заливные луга (зелёные клетки у реки): здание там выходит из строя каждый день, если рядом нет дамбы и оно не на сваях. Сейчас под угрозой: %d.",
+			"River level: %d of 100, %+d a day now. From %d the water covers the floodplain (the green cells by the river): a building there is wrecked every day unless a levee stands next to it or it is on stilts. Exposed now: %d.") % [int(FloodSystem.level()), int(rise), int(FloodSystem.FLOOD_LINE), exposed]
 	var gain: float = WasteSystem.daily_gain() * (mods.get("waste_mult", 1.0) as float)
 	var sink: float = WasteSystem.daily_sink() + WasteSystem.NATURAL_CLEARING
 	return Localization.ru_en(

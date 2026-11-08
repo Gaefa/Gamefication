@@ -1,0 +1,1418 @@
+[
+  {
+    "id": "nyupa.league_welcome",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 1,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Лига Восстановления — назначение в Пойму",
+    "title_en": "Restoration League — Appointment to the Floodplain",
+    "body": "Лига Восстановления. Инспекция Поймы.\nАдминистратору района Большая Нюпа.\n\nУведомляю о назначении. Район речной: луга у воды родят лучше всего в Пойме, рыбы довольно, дерева по берегам хватает. Прежний администратор Галай уехал до аудита.\n\nЗадача на срок: к Гнили не меньше двенадцати жителей, запасы воды и еды, рыба в квоту Лиги. Паводок — дело известное: Лига ждёт дамб. Лодочники Плёсов ждут иного; они Лиге не подчиняются.\n\nИнспектор Агата Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\nTo the administrator of the Big Nyupa district.\n\nI notify you of your appointment. The district is river country: the meadows by the water bear best in the Floodplain, there is fish enough, timber enough along the banks. The previous administrator, Galai, left before the audit.\n\nYour task for the term: by the Rot, no fewer than twelve residents, water and food in reserve, fish for the League's quota. The Flood is a known matter: the League expects levees. The boat people of the Reaches expect otherwise; they do not answer to the League.\n\nInspector Agatha Mirosh.",
+    "options": [
+      {
+        "text": "Принять мандат",
+        "text_en": "Accept the mandate",
+        "effects": {
+          "message": "Печать поставлена. Нюпа ваша на тридцать дней.",
+          "message_en": "The seal is set. Nyupa is yours for thirty days."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.low_water_report",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_low_water",
+    "trigger_day": 2,
+    "tags": [
+      "report",
+      "flood"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — Малая вода",
+    "title_en": "Report — Low Water",
+    "body": "Сводка инженера насосной.\n\nРека в берегах, насос тянет на восемь десятых. Уровень реки виден вверху; к Паводку он пойдёт по 12 в день, и от 60 вода встанет на заливных лугах. Всё, что там стоит без дамбы рядом и не на сваях, будет выходить из строя каждый день.\n\nДамба: восемь дерева, шесть камня, защищает соседние клетки. Причал у воды даёт рыбу и воды не боится. Стройка в Малую воду дешевле.",
+    "body_en": "Report from the pump engineer.\n\nThe river keeps to its banks; the pump draws at eight tenths. The river level shows at the top; in the Flood it will rise 12 a day, and from 60 the water stands on the floodplain. Anything there without a levee next to it, and not on stilts, will be wrecked every day.\n\nA levee: eight wood, six stone, shelters the cells next to it. A pier by the water gives fish and fears no flood. Building is cheaper in Low Water.",
+    "options": [
+      {
+        "text": "Понятно. Готовить берег",
+        "text_en": "Understood. Prepare the bank",
+        "effects": {
+          "message": "Инженер отметил на карте луга и место под дамбы.",
+          "message_en": "The engineer marked the meadows and sites for levees on the map."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.ivel_intro",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 3,
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — старшина Ивель с Плёсов",
+    "title_en": "A Letter — Headman Ivel of the Reaches",
+    "body": "Письмо на бересте, перевязано леской.\n\n«Сосед. Плёсы живут на воде восемнадцать лет: дома на сваях, лодки, сети. Паводок нам не враг, он приносит рыбу и ил. Дамбы его злят, и злую воду он несёт к нам.\n\nГрант Лиги на сезон один на двоих: кто к десятому дню крепче стоит, тот и получит. Я стою на сваях. Они не тонут».\n\nИвель.",
+    "body_en": "A letter on birch bark, tied with fishing line.\n\n\"Neighbour. The Reaches have lived on the water eighteen years: houses on stilts, boats, nets. The Flood is no enemy to us; it brings fish and silt. Levees anger it, and it carries the angry water to us.\n\nThe League's grant this season is one for the two of us: whoever stands firmer by day ten takes it. I stand on stilts. They do not sink.\"\n\nIvel.",
+    "options": [
+      {
+        "text": "Принять к сведению",
+        "text_en": "Note it",
+        "effects": {
+          "message": "Письмо легло в ящик. Плёсы видны с гривы: сваи, лодки, дым над водой.",
+          "message_en": "The letter went into the drawer. The Reaches can be seen from the ridge: stilts, boats, smoke over the water."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.settlers_boats",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 4,
+    "tags": [
+      "petition",
+      "families"
+    ],
+    "cooldown_sec": 999999,
+    "title": "У причала — семьи на лодках",
+    "title_en": "At the Landing — Families in Boats",
+    "body": "К берегу пристали три лодки: семьи с верховьев, где Паводок прошлой весной снёс деревню.\n\nСтаршая, Марфа Сорока: «Мы рыбаки. Дайте койки и место у воды, причал поставим сами. Если нет, пойдём на Плёсы».",
+    "body_en": "Three boats put in at the bank: families from upstream, where last spring's Flood took the village.\n\nThe eldest, Marfa Soroka: \"We are fishers. Give us beds and a place by the water; we build the pier ourselves. If not, we go on to the Reaches.\"",
+    "options": [
+      {
+        "text": "Принять (+4 жителя, если есть места)",
+        "text_en": "Take them in (+4 residents if there is room)",
+        "effects": {
+          "add_residents": 4,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Семьи заняли свободные койки. Сорока уже чинит сеть на берегу.",
+          "message_en": "The families took the free beds. Soroka is already mending a net on the bank."
+        }
+      },
+      {
+        "text": "Отказать: мест нет",
+        "text_en": "Refuse: no room",
+        "effects": {
+          "stat_city_trust": -3,
+          "stat_rival_score": 2,
+          "style": "loyal",
+          "message": "Лодки ушли вниз по реке, к Плёсам.",
+          "message_en": "The boats went downriver, to the Reaches."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.league_levee_order",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 5,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Лига Восстановления — о дамбах",
+    "title_en": "Restoration League — On the Levees",
+    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. План Поймы считался с полями на заливных лугах, а луга без дамб — это поля на один сезон. Лига ждёт, что к Паводку восточный берег будет под дамбами.\n\nПрошу сообщить, сколько дамб стоит. Если ни одной, прошу объяснить, почему.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The Floodplain's plan was reckoned with fields on the meadows, and meadows without levees are fields for one season. The League expects the east bank behind levees by the Flood.\n\nState how many levees stand. If none, explain why.\n\nInspector Mirosh.",
+    "options": [
+      {
+        "text": "Обещать дамбы к Паводку",
+        "text_en": "Promise levees by the Flood",
+        "effects": {
+          "stat_league_trust": 5,
+          "set_flag": "promised_levees",
+          "style": "loyal",
+          "message": "Ответ ушёл. Инспектор приписала: «Проверю на аудите».",
+          "message_en": "The reply went out. The inspector added: \"I will check at the audit.\""
+        }
+      },
+      {
+        "text": "Объяснить: будем жить с рекой, на сваях",
+        "text_en": "Explain: we will live with the river, on stilts",
+        "effects": {
+          "stat_league_trust": -3,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Инспектор не ответила. В деле появилась закладка.",
+          "message_en": "The inspector did not reply. A bookmark appeared in the file."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.ivel_exchange",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 7,
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Ивель предлагает лодки",
+    "title_en": "A Letter — Ivel Offers Boats",
+    "body": "«Сосед. В Паводок дороги у вас уйдут под воду, а у меня лодки. За сорок монет мои люди будут возить ваши мешки и ваших людей, пока вода стоит. Условие одно: дамб поперёк проток не ставить».\n\nИвель.",
+    "body_en": "\"Neighbour. In the Flood your roads go under; I have boats. For forty coins my people will carry your sacks and your folk while the water stands. One condition: no levees across the channels.\"\n\nIvel.",
+    "options": [
+      {
+        "text": "Принять лодки (40 монет)",
+        "text_en": "Take the boats (40 coins)",
+        "cost": {
+          "res_money": 40
+        },
+        "effects": {
+          "set_flag": "boat_pact",
+          "add_buff": {
+            "id": "ivel_boats",
+            "name": "Лодки Плёсов",
+            "name_en": "The Reaches' boats",
+            "production_mult": 0.1,
+            "remaining": 12
+          },
+          "stat_city_trust": 2,
+          "stat_league_trust": -2,
+          "style": "pragmatist",
+          "message": "Лодочники причалили к посту. Ивель прислал весло в подарок.",
+          "message_en": "The boat people tied up at the post. Ivel sent an oar as a gift."
+        }
+      },
+      {
+        "text": "Отказать: дамбы будут",
+        "text_en": "Refuse: there will be levees",
+        "effects": {
+          "stat_league_trust": 2,
+          "stat_rival_score": 1,
+          "style": "loyal",
+          "message": "Ответ ушёл на Плёсы. Инспектор Мирош довольна.",
+          "message_en": "The reply went to the Reaches. Inspector Mirosh is pleased."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.boat_protest",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_condition": "stat_levees >= 3",
+    "excludes_flag": "boat_pact",
+    "tags": [
+      "report",
+      "rival"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — лодочники у дамб",
+    "title_en": "Report — Boat People at the Levees",
+    "body": "Сводка дежурного.\n\nЛодочники Ивеля стоят на воде напротив ваших дамб и не уходят: три дамбы, говорят они, перекрыли протоку, и злая вода пойдёт на Плёсы. С ними часть ваших рыбаков.\n\nСтаршина требует разобрать одну дамбу. Инженер говорит: без неё грядка у реки утонет.",
+    "body_en": "Duty officer's report.\n\nIvel's boat people sit on the water opposite your levees and will not leave: three levees, they say, have closed the channel, and the angry water will go to the Reaches. Some of your own fishers are with them.\n\nThe headman demands one levee be taken down. The engineer says: without it the plot by the river drowns.",
+    "options": [
+      {
+        "text": "Разобрать одну дамбу",
+        "text_en": "Take one levee down",
+        "effects": {
+          "demolish_building": "bld_levee",
+          "stat_city_trust": 3,
+          "stat_rival_score": -2,
+          "stat_league_trust": -3,
+          "style": "protector",
+          "message": "Дамбу разобрали при лодочниках. Протока открыта.",
+          "message_en": "The levee was taken down before the boat people. The channel is open."
+        }
+      },
+      {
+        "text": "Дамбы остаются",
+        "text_en": "The levees stay",
+        "effects": {
+          "set_flag": "levee_wall",
+          "stat_unrest_pressure": 6,
+          "stat_league_trust": 3,
+          "stat_rival_score": 2,
+          "style": "loyal",
+          "message": "Лодки ушли молча. На Плёсах об этом говорят.",
+          "message_en": "The boats left in silence. The Reaches talk of it."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.pact_broken",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "boat_pact",
+    "trigger_condition": "stat_levees >= 3",
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Записка — Ивель напоминает об уговоре",
+    "title_en": "A Note — Ivel Reminds You of the Pact",
+    "body": "«Сосед. Мы договорились: лодки за открытые протоки. Я вижу три дамбы. Либо одна из них завтра исчезнет, либо лодки уйдут, а с ними и те, кто вам верил».\n\nИвель.",
+    "body_en": "\"Neighbour. We agreed: boats for open channels. I see three levees. Either one of them is gone tomorrow, or the boats go, and with them those who trusted you.\"\n\nIvel.",
+    "options": [
+      {
+        "text": "Разобрать одну дамбу",
+        "text_en": "Take one levee down",
+        "effects": {
+          "demolish_building": "bld_levee",
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Дамбу разобрали. Лодки остались.",
+          "message_en": "The levee came down. The boats stayed."
+        }
+      },
+      {
+        "text": "Уговор был про протоки, не про берег",
+        "text_en": "The pact was about channels, not the bank",
+        "effects": {
+          "clear_flag": "boat_pact",
+          "add_residents": -2,
+          "stat_unrest_pressure": 5,
+          "stat_rival_score": 3,
+          "style": "loyal",
+          "message": "Лодки ушли ночью. Двое рыбаков ушли с ними.",
+          "message_en": "The boats left in the night. Two fishers went with them."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.flood_forecast",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_low_water",
+    "trigger_day": 9,
+    "tags": [
+      "report",
+      "flood"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — вода идёт",
+    "title_en": "Report — The Water Is Coming",
+    "body": "Сводка инженера.\n\nС верховьев идёт вода: через день Нюпа начнёт подниматься по 12 в день и к середине Паводка выйдет на луга. У кого грядки на заливных лугах без дамбы, тот будет чинить их каждое утро.\n\nПредлагаю снять ткань с лугов и перенести, что можно, повыше.",
+    "body_en": "Engineer's report.\n\nWater is coming from upstream: in a day the Nyupa starts rising 12 a day and by mid-Flood comes out onto the meadows. Whoever has plots on the floodplain without a levee will be repairing them every morning.\n\nI propose taking the cloth off the meadows and moving what we can higher up.",
+    "options": [
+      {
+        "text": "Перенести, что можно (20 дерева)",
+        "text_en": "Move what we can (20 wood)",
+        "cost": {
+          "res_wood": 20
+        },
+        "effects": {
+          "add_buff": {
+            "id": "flood_prep",
+            "name": "Берег готов",
+            "name_en": "The bank is ready",
+            "happiness_add": 3,
+            "remaining": 12
+          },
+          "stat_city_trust": 2,
+          "style": "pragmatist",
+          "message": "Склад подняли на козлы, ткань сняли. Берег ждёт.",
+          "message_en": "The store went up on trestles, the cloth came off. The bank waits."
+        }
+      },
+      {
+        "text": "Пусть идёт",
+        "text_en": "Let it come",
+        "effects": {
+          "style": "loyal",
+          "message": "Инженер пожал плечами и пошёл проверять насос.",
+          "message_en": "The engineer shrugged and went to check the pump."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.league_audit_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 12,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Лига Восстановления — аудит через три дня",
+    "title_en": "Restoration League — Audit in Three Days",
+    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Через три дня первая проверка: люди, запас воды, запас еды, поддержка района. Отдельно смотрю дамбы: план Поймы не ждёт.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The first inspection is in three days: people, the water reserve, the food reserve, the district's support. I look at the levees separately: the Floodplain's plan does not wait.\n\nInspector Mirosh.",
+    "options": [
+      {
+        "text": "Принято, готовимся",
+        "text_en": "Noted, we prepare",
+        "effects": {
+          "message": "Секретарь достал ведомости.",
+          "message_en": "The secretary got out the ledgers."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.flood_crest",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_flood",
+    "trigger_condition": "stat_flood >= 60",
+    "tags": [
+      "report",
+      "flood",
+      "crisis"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — вода на лугах",
+    "title_en": "Report — Water on the Meadows",
+    "body": "Сводка инженера.\n\nНюпа вышла на луга. Всё, что стоит там без дамбы и не на сваях, с сегодняшнего дня выходит из строя каждое утро, пока вода не уйдёт. Рыба идёт валом: причалы дают вдвое.\n\nМожно открыть старый шлюз Компании и сбросить часть воды на Плёсы: уровень упадёт, лодочники запомнят.",
+    "body_en": "Engineer's report.\n\nThe Nyupa is out on the meadows. Anything standing there without a levee and not on stilts is wrecked every morning from today until the water leaves. The fish come in shoals: the piers give double.\n\nWe can open the Company's old sluice and send part of the water onto the Reaches: the level drops, the boat people remember.",
+    "options": [
+      {
+        "text": "Открыть шлюз (река −20, Плёсы запомнят)",
+        "text_en": "Open the sluice (river −20, the Reaches remember)",
+        "effects": {
+          "stat_flood": -20,
+          "stat_rival_score": -4,
+          "stat_unrest_pressure": 4,
+          "set_flag": "sluice_opened",
+          "style": "pragmatist",
+          "message": "Шлюз скрипнул и открылся. Вода пошла на Плёсы.",
+          "message_en": "The sluice creaked open. The water went to the Reaches."
+        }
+      },
+      {
+        "text": "Держать шлюз закрытым",
+        "text_en": "Keep the sluice shut",
+        "effects": {
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Вода стоит. Дамбы держат, что могут.",
+          "message_en": "The water stands. The levees hold what they can."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.fish_run",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "season": "season_flood",
+    "trigger_day": 14,
+    "tags": [
+      "report",
+      "food"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — рыба идёт",
+    "title_en": "Report — The Fish Are Running",
+    "body": "Марфа Сорока с причала, мокрая до пояса.\n\n«Рыба идёт стеной. Если дадите людей на два дня, набьём бочки на всю Гниль. Если нет, возьмём, сколько унесём».",
+    "body_en": "Marfa Soroka from the pier, wet to the waist.\n\n\"The fish come in a wall. Give me people for two days and we fill barrels for the whole Rot. If not, we take what we can carry.\"",
+    "options": [
+      {
+        "text": "Дать людей на лов (добыча −20% на 2 дня, +60 еды)",
+        "text_en": "Send people to the catch (output −20% for 2 days, +60 food)",
+        "effects": {
+          "add_resources": {
+            "res_food": 60
+          },
+          "add_buff": {
+            "id": "fish_run",
+            "name": "Все на лов",
+            "name_en": "All hands fishing",
+            "production_mult": -0.2,
+            "remaining": 2
+          },
+          "stat_city_trust": 2,
+          "style": "pragmatist",
+          "message": "Бочки полны. На складе пахнет рекой.",
+          "message_en": "The barrels are full. The store smells of the river."
+        }
+      },
+      {
+        "text": "Пусть берут, сколько унесут (+20 еды)",
+        "text_en": "Let them take what they can carry (+20 food)",
+        "effects": {
+          "add_resources": {
+            "res_food": 20
+          },
+          "message": "Унесли двадцать корзин.",
+          "message_en": "They carried off twenty baskets."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.flood_shelters",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_flood",
+    "trigger_condition": "stat_flood >= 90",
+    "is_critical": true,
+    "tags": [
+      "crisis",
+      "flood"
+    ],
+    "cooldown_sec": 999999,
+    "title": "СРОЧНО — вода в бараках",
+    "title_en": "URGENT — Water in the Shelters",
+    "body": "Вода поднялась выше, чем ждали: в нижних бараках по колено. Люди стоят на крышах с узлами. Лодочники Ивеля на воде, ждут вашего слова; дорога к гриве под водой.",
+    "body_en": "The water rose higher than expected: knee-deep in the lower shelters. People stand on the roofs with bundles. Ivel's boat people are on the water, waiting for your word; the road to the ridge is under.",
+    "options": [
+      {
+        "text": "Просить лодочников вывезти людей (30 еды)",
+        "text_en": "Ask the boat people to ferry them out (30 food)",
+        "cost": {
+          "res_food": 30
+        },
+        "effects": {
+          "stat_unrest_pressure": -8,
+          "stat_city_trust": 3,
+          "stat_rival_score": 2,
+          "style": "protector",
+          "message": "Лодки сняли людей с крыш до темноты.",
+          "message_en": "The boats took the people off the roofs before dark."
+        }
+      },
+      {
+        "text": "Выводить своими силами по гриве",
+        "text_en": "Lead them out along the ridge ourselves",
+        "effects": {
+          "damage_building": "bld_shelter",
+          "stat_unrest_pressure": -3,
+          "add_residents": -1,
+          "style": "loyal",
+          "message": "Вышли к утру, промокшие. Один барак разнесло водой.",
+          "message_en": "They got out by morning, soaked. One shelter was broken up by the water."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.thanks",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 16,
+    "trigger_condition": "stat_happiness >= 68",
+    "tags": [
+      "petition",
+      "families"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Записка — спасибо с берега",
+    "title_en": "A Note — Thanks from the Bank",
+    "body": "Марфа Сорока, за всех рыбаков.\n\n«Администратору. Паводок прошли сухими, рыба в бочках, дети не кашляют. При Галае так не было. С Плёсов просятся ещё двое, мы за них ручаемся».",
+    "body_en": "Marfa Soroka, for all the fishers.\n\n\"To the administrator. We came through the Flood dry, the fish are in barrels, the children do not cough. It was not so under Galai. Two more ask to come from the Reaches; we vouch for them.\"",
+    "options": [
+      {
+        "text": "Принять двоих",
+        "text_en": "Take the two",
+        "effects": {
+          "add_residents": 2,
+          "stat_city_trust": 3,
+          "message": "Двое заняли койки.",
+          "message_en": "The two took beds."
+        }
+      },
+      {
+        "text": "Поблагодарить, мест нет",
+        "text_en": "Thank them; no room",
+        "effects": {
+          "stat_city_trust": 1,
+          "message": "Записку прочли у причала.",
+          "message_en": "The note was read out at the pier."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.ivel_grudge",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 19,
+    "trigger_condition": "stat_rival_gap < -6",
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Ивель напоминает",
+    "title_en": "A Letter — Ivel Reminds You",
+    "body": "«Сосед. Ваш показатель ниже моего, и Мирош это видит. На Плёсах нет дамб, а люди есть. Подумайте об этом, когда будете снова сыпать землю в реку».\n\nИвель.",
+    "body_en": "\"Neighbour. Your score is below mine, and Mirosh sees it. The Reaches have no levees, and they have people. Think about that when you next shovel earth into the river.\"\n\nIvel.",
+    "options": [
+      {
+        "text": "Принять к сведению",
+        "text_en": "Note it",
+        "effects": {
+          "stat_city_trust": -2,
+          "message": "Письмо легло в ящик.",
+          "message_en": "The letter went into the drawer."
+        }
+      },
+      {
+        "text": "Ответить: у нас сухие дети",
+        "text_en": "Reply: our children are dry",
+        "effects": {
+          "stat_city_trust": 3,
+          "stat_rival_score": -2,
+          "style": "protector",
+          "message": "Ответ ушёл на Плёсы. Сорока переписала его и прибила у причала.",
+          "message_en": "The reply went to the Reaches. Soroka copied it and nailed it up at the pier."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.ivel_favor",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 21,
+    "trigger_condition": "stat_rival_gap >= 6",
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Ивель просит об услуге",
+    "title_en": "A Letter — Ivel Asks a Favour",
+    "body": "«Сосед. Признаю: вы стоите крепче. У нас сорвало сети, рыбы на Гниль не хватит. Продайте сорок еды по честной цене, и я забуду про дамбы».\n\nИвель.",
+    "body_en": "\"Neighbour. I admit it: you stand firmer. Our nets were torn away; there will not be fish enough for the Rot. Sell us forty food at a fair price and I forget about the levees.\"\n\nIvel.",
+    "options": [
+      {
+        "text": "Продать 40 еды за 60 монет",
+        "text_en": "Sell 40 food for 60 coins",
+        "cost": {
+          "res_food": 40
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 60
+          },
+          "stat_rival_score": 3,
+          "style": "pragmatist",
+          "message": "Лодки увезли бочки. Ивель прислал расписку и сеть.",
+          "message_en": "The boats took the barrels. Ivel sent a receipt and a net."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "На Плёсах голодно. Мирош довольна.",
+          "message_en": "The Reaches go hungry. Mirosh is pleased."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.league_audit2_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 24,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Лига Восстановления — вторая проверка",
+    "title_en": "Restoration League — The Second Inspection",
+    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Вторая проверка на 27-й день, в Гниль: люди, вода, еда и сохранность запасов. Срок мандата — 30-й день.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The second inspection is on day 27, in the Rot: people, water, food and how the reserves were kept. The mandate ends on day 30.\n\nInspector Mirosh.",
+    "options": [
+      {
+        "text": "Принято",
+        "text_en": "Noted",
+        "effects": {
+          "message": "Три дня до проверки.",
+          "message_en": "Three days to the inspection."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.rot_report",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "season": "season_rot",
+    "trigger_day": 23,
+    "tags": [
+      "report",
+      "rot"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — Гниль",
+    "title_en": "Report — The Rot",
+    "body": "Сводка инженера.\n\nВода уходит по 15 в день, на лугах стоят лужи. Еда портится по 5% в день: без сухого склада половина бочек пропадёт. Фельдшер Крупа просит дров: кипятить воду, иначе лихорадка.",
+    "body_en": "Engineer's report.\n\nThe water leaves 15 a day; puddles stand on the meadows. Food spoils 5% a day: without a dry store half the barrels are lost. Medic Krupa asks for firewood: boil the water, or there will be fever.",
+    "options": [
+      {
+        "text": "Дать дрова на кипячение (30 дерева)",
+        "text_en": "Give firewood for boiling (30 wood)",
+        "cost": {
+          "res_wood": 30
+        },
+        "effects": {
+          "set_flag": "water_boiled",
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Котлы кипят у цистерны. Крупа кивнула.",
+          "message_en": "Cauldrons boil by the cistern. Krupa nodded."
+        }
+      },
+      {
+        "text": "Дрова нужны на стройку",
+        "text_en": "The wood is needed for building",
+        "effects": {
+          "style": "loyal",
+          "message": "Крупа записала отказ в тетрадь.",
+          "message_en": "Krupa wrote the refusal in her notebook."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.rot_fever",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_rot",
+    "trigger_condition": "stat_flood >= 30",
+    "excludes_flag": "water_boiled",
+    "is_critical": true,
+    "tags": [
+      "crisis",
+      "health"
+    ],
+    "cooldown_sec": 999999,
+    "title": "СРОЧНО — лихорадка",
+    "title_en": "URGENT — Fever",
+    "body": "Фельдшер Ян Крупа у поста.\n\n«Лихорадка. Трое слегли в нижнем бараке, у двоих детей жар. Это вода из луж. Нужен карантин и сухие койки на гриве, или хороните».",
+    "body_en": "Medic Yan Krupa at the post.\n\n\"Fever. Three down in the lower shelter, two children with a temperature. It is the puddle water. We need quarantine and dry beds on the ridge, or you bury.\"",
+    "options": [
+      {
+        "text": "Карантин и койки на гриве (40 монет)",
+        "text_en": "Quarantine and beds on the ridge (40 coins)",
+        "cost": {
+          "res_money": 40
+        },
+        "effects": {
+          "stat_unrest_pressure": -6,
+          "stat_city_trust": 4,
+          "add_residents": -1,
+          "style": "protector",
+          "message": "Больных перенесли на гриву. Крупа не спала две ночи.",
+          "message_en": "The sick were carried to the ridge. Krupa did not sleep for two nights."
+        }
+      },
+      {
+        "text": "Ничего: пройдёт",
+        "text_en": "Nothing: it will pass",
+        "effects": {
+          "add_residents": -4,
+          "stat_city_trust": -8,
+          "stat_unrest_pressure": 10,
+          "style": "loyal",
+          "message": "Двоих похоронили на гриве. Три семьи ушли на Плёсы.",
+          "message_en": "Two were buried on the ridge. Three families left for the Reaches."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.rot_fever_light",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_rot",
+    "requires_flag": "water_boiled",
+    "trigger_day": 25,
+    "tags": [
+      "petition",
+      "health"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Записка фельдшера — кашель",
+    "title_en": "The Medic's Note — Coughing",
+    "body": "Фельдшер Крупа.\n\n«Администратору. Воду кипятим, лихорадки нет, но дети кашляют от сырости. Двадцать дерева на печки в бараках, и обойдётся».",
+    "body_en": "Medic Krupa.\n\n\"To the administrator. We boil the water, there is no fever, but the children cough from the damp. Twenty wood for stoves in the shelters and it passes.\"",
+    "options": [
+      {
+        "text": "Дать дрова (20 дерева)",
+        "text_en": "Give the wood (20 wood)",
+        "cost": {
+          "res_wood": 20
+        },
+        "effects": {
+          "add_buff": {
+            "id": "dry_shelters",
+            "name": "Сухие бараки",
+            "name_en": "Dry shelters",
+            "happiness_add": 4,
+            "remaining": 6
+          },
+          "style": "protector",
+          "message": "Печки задымили. Кашель стих.",
+          "message_en": "The stoves smoked. The coughing eased."
+        }
+      },
+      {
+        "text": "Перетерпят",
+        "text_en": "They will bear it",
+        "effects": {
+          "stat_unrest_pressure": 4,
+          "style": "loyal",
+          "message": "Кашель остался.",
+          "message_en": "The coughing stayed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.league_fish_quota",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 20,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Лига Восстановления — квота рыбы",
+    "title_en": "Restoration League — The Fish Quota",
+    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Обоз Лиги у поста за квотой Поймы: сорок бочек рыбы для Сухих земель. Это и есть смысл вашего мандата.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The League's convoy is at the post for the Floodplain's quota: forty barrels of fish for the Dry Lands. That is what your mandate is for.\n\nInspector Mirosh.",
+    "options": [
+      {
+        "text": "Отдать квоту (40 еды)",
+        "text_en": "Hand over the quota (40 food)",
+        "cost": {
+          "res_food": 40
+        },
+        "effects": {
+          "stat_league_trust": 8,
+          "style": "loyal",
+          "message": "Обоз ушёл. Инспектор расписалась в получении.",
+          "message_en": "The convoy left. The inspector signed the receipt."
+        }
+      },
+      {
+        "text": "Просить отсрочки до конца Гнили",
+        "text_en": "Ask for a deferral to the end of the Rot",
+        "effects": {
+          "stat_league_trust": -5,
+          "stat_city_trust": 2,
+          "message": "Отсрочка дана. В деле пометка.",
+          "message_en": "The deferral is granted. A note in the file."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.league_term_report",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "restoration_league",
+    "trigger_day": 29,
+    "tags": [
+      "patron",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Лига Восстановления — к концу срока",
+    "title_en": "Restoration League — Toward the End of the Term",
+    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Срок мандата истекает на 30-й день. Решение о продлении Лига примет по итогам обеих проверок, по людям и по дамбам. Плёсы своё мнение прислали; оно к делу не приобщено.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The mandate expires on day 30. The League will decide on renewal by both inspections, by the people and by the levees. The Reaches have sent their opinion; it is not added to the file.\n\nInspector Mirosh.",
+    "options": [
+      {
+        "text": "Принято",
+        "text_en": "Noted",
+        "effects": {
+          "message": "Последние дни срока.",
+          "message_en": "The last days of the term."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.school_boat",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 8,
+    "tags": [
+      "petition",
+      "families"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Обращение — школа на барже",
+    "title_en": "Petition — A School on the Barge",
+    "body": "Учительница Вера Лаш, та самая, приехала вслед за вами на барже.\n\n«Дети опять сидят в бараках. Баржа стоит у причала пустая: двадцать досок на лавки, и будет школа на воде. Паводок ей не страшен».",
+    "body_en": "The teacher Vera Lash, the same one, came after you on a barge.\n\n\"The children sit in the shelters again. The barge stands empty at the pier: twenty planks for benches and there is a school on the water. The flood does not trouble it.\"",
+    "options": [
+      {
+        "text": "Дать доски (20 дерева)",
+        "text_en": "Give the planks (20 wood)",
+        "cost": {
+          "res_wood": 20
+        },
+        "effects": {
+          "add_buff": {
+            "id": "school_barge",
+            "name": "Школа на барже",
+            "name_en": "School on the barge",
+            "happiness_add": 4,
+            "remaining": 12
+          },
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Лавки сколотили. Дети шумят на барже.",
+          "message_en": "The benches were nailed up. The children are loud on the barge."
+        }
+      },
+      {
+        "text": "Доски нужны на дамбы",
+        "text_en": "The planks are for levees",
+        "effects": {
+          "stat_city_trust": -2,
+          "style": "loyal",
+          "message": "Дети остались в бараках.",
+          "message_en": "The children stayed in the shelters."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.crisis_happiness",
+    "category": "happiness",
+    "min_level": 1,
+    "driver": "pressure",
+    "is_critical": true,
+    "cooldown_sec": 2400,
+    "tags": [
+      "crisis",
+      "workers"
+    ],
+    "title": "СРОЧНО — сход у причала",
+    "title_en": "URGENT — An Assembly at the Pier",
+    "body": "Люди собрались у причала и не расходятся. Говорят о воде в бараках, о пайке, о том, что Галай тоже обещал. Ивель стоит в лодке поодаль и слушает.",
+    "body_en": "The people have gathered at the pier and will not disperse. They talk of water in the shelters, of rations, of how Galai promised too. Ivel sits in a boat a little way off and listens.",
+    "options": [
+      {
+        "text": "Выйти и говорить до ночи",
+        "text_en": "Go out and talk until night",
+        "effects": {
+          "stat_unrest_pressure": -10,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Разошлись за полночь. Лодка Ивеля ушла последней.",
+          "message_en": "They dispersed past midnight. Ivel's boat left last."
+        }
+      },
+      {
+        "text": "Раздать по бочке рыбы (30 еды)",
+        "text_en": "Hand out a barrel of fish each (30 food)",
+        "cost": {
+          "res_food": 30
+        },
+        "effects": {
+          "stat_unrest_pressure": -8,
+          "style": "pragmatist",
+          "message": "Бочки разобрали. Причал опустел.",
+          "message_en": "The barrels went. The pier emptied."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.crisis_food",
+    "category": "food",
+    "min_level": 1,
+    "driver": "pressure",
+    "cooldown_sec": 900,
+    "tags": [
+      "crisis",
+      "food"
+    ],
+    "title": "Срочно — толпа у склада",
+    "title_en": "Urgent — A Crowd at the Store",
+    "body": "Сводка дежурного.\n\nУ склада человек пятьдесят, требуют еды: бочки пусты, рыба не идёт. Двое выломали пустой лоток. Охрана просит указаний.\n\nПричина: запас еды в районе на исходе.",
+    "body_en": "Duty officer's report.\n\nSome fifty people at the store demanding food: the barrels are empty, the fish are not running. Two broke an empty stall. The guards ask for instructions.\n\nCause: the district's food reserve is nearly gone.",
+    "options": [
+      {
+        "text": "Купить рыбу у Плёсов (100 монет)",
+        "text_en": "Buy fish from the Reaches (100 coins)",
+        "cost": {
+          "res_money": 100
+        },
+        "effects": {
+          "add_resources": {
+            "res_food": 30
+          },
+          "stat_unrest_pressure": -10,
+          "stat_rival_score": 2,
+          "style": "protector",
+          "message": "Лодки привезли бочки. Толпа разошлась.",
+          "message_en": "The boats brought barrels. The crowd went home."
+        }
+      },
+      {
+        "text": "Разогнать силой",
+        "text_en": "Disperse them by force",
+        "effects": {
+          "stat_unrest_pressure": 12,
+          "stat_city_trust": -8,
+          "damage_building": "bld_warehouse",
+          "style": "pragmatist",
+          "message": "Толпу разогнали, ворота склада выломаны: нужен ремонт.",
+          "message_en": "The crowd was dispersed; the store gate is broken and needs repair."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.crisis_water",
+    "category": "water",
+    "min_level": 1,
+    "driver": "pressure",
+    "cooldown_sec": 900,
+    "tags": [
+      "crisis",
+      "water"
+    ],
+    "title": "Срочно — очередь у цистерны",
+    "title_en": "Urgent — A Queue at the Cistern",
+    "body": "Сводка дежурного.\n\nРека рядом, а пить нечего: цистерна пуста, насос тянет вполсилы, речную воду фельдшер пить запретил. У цистерны драка за вёдра.\n\nПричина: запас воды в районе на исходе.",
+    "body_en": "Duty officer's report.\n\nThe river is near and there is nothing to drink: the cistern is empty, the pump draws at half strength, the medic has forbidden river water. A fight over buckets at the cistern.\n\nCause: the district's water reserve is nearly gone.",
+    "options": [
+      {
+        "text": "Ввести выдачу по часам",
+        "text_en": "Water by the hour",
+        "effects": {
+          "set_policy": "water_hours",
+          "stat_unrest_pressure": -8,
+          "style": "pragmatist",
+          "message": "Расписание повесили у цистерны.",
+          "message_en": "The schedule went up by the cistern."
+        }
+      },
+      {
+        "text": "Кипятить речную воду (30 дерева)",
+        "text_en": "Boil river water (30 wood)",
+        "cost": {
+          "res_wood": 30
+        },
+        "effects": {
+          "add_resources": {
+            "res_water_stockpile": 80
+          },
+          "stat_unrest_pressure": -8,
+          "style": "protector",
+          "message": "Котлы кипят на берегу. Вёдра наполнены.",
+          "message_en": "Cauldrons boil on the bank. The buckets are filled."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.crisis_mandate",
+    "category": "mandate",
+    "min_level": 1,
+    "driver": "pressure",
+    "patron": "restoration_league",
+    "cooldown_sec": 960,
+    "tags": [
+      "crisis",
+      "mandate"
+    ],
+    "title": "Срочно — грант приостановлен",
+    "title_en": "Urgent — The Grant Is Suspended",
+    "body": "Лига Восстановления. Финансовый отдел.\nАдминистратору Большой Нюпы.\n\nОчередной транш гранта приостановлен до улучшения показателей района. Основание: доклад инспектора.\n\nДля возобновления выплат представьте план исправления. По вопросам обращайтесь к инспектору Мирош.",
+    "body_en": "Restoration League. Finance Office.\nTo the administrator of Big Nyupa.\n\nThe next installment of the grant is suspended until the district's figures improve. Grounds: the inspector's report.\n\nTo resume payments, submit a correction plan. Direct any questions to Inspector Mirosh.",
+    "options": [
+      {
+        "text": "Принять условия и исправлять",
+        "text_en": "Accept the terms and correct the figures",
+        "effects": {
+          "stat_city_trust": -5,
+          "stat_league_trust": 6,
+          "message": "Вы приняли условия. Лига отметила готовность.",
+          "message_en": "You accepted the terms. The League noted your willingness."
+        }
+      },
+      {
+        "text": "Продать рыбу Плёсам (30 еды → 50 монет)",
+        "text_en": "Sell fish to the Reaches (30 food → 50 coins)",
+        "cost": {
+          "res_food": 30
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 50
+          },
+          "stat_rival_score": 2,
+          "style": "pragmatist",
+          "message": "Лодки увезли бочки, Ивель заплатил.",
+          "message_en": "The boats took the barrels; Ivel paid."
+        }
+      },
+      {
+        "text": "Найти деньги в районе: сборы (+80 монет)",
+        "text_en": "Find the money in the district: levies (+80 coins)",
+        "effects": {
+          "add_resources": {
+            "res_money": 80
+          },
+          "stat_league_trust": -3,
+          "stat_unrest_pressure": 6,
+          "message": "Сборы собрали. У причала недовольны.",
+          "message_en": "The levies were collected. The pier is unhappy."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.recall_ultimatum",
+    "category": "mandate",
+    "min_level": 1,
+    "patron": "restoration_league",
+    "is_critical": true,
+    "trigger_condition": "stat_league_trust <= 25",
+    "cooldown_sec": 1800,
+    "tags": [
+      "crisis",
+      "mandate",
+      "recall"
+    ],
+    "title": "Срочно — последнее предупреждение Лиги",
+    "title_en": "Urgent — The League's Final Warning",
+    "body": "Лига Восстановления. Инспекция Поймы.\nАдминистратору Большой Нюпы. Лично в руки.\n\nДоверие Лиги к вам исчерпано. Я обязана либо показать наверху результат, либо подписать представление об отзыве.\n\nРезультат такой: 60 единиц еды и 40 монет из средств района передаются в распоряжение Лиги. Это подтвердит, что район управляем.\n\nДругого предложения не будет.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\nTo the administrator of Big Nyupa. By hand.\n\nThe League's trust in you is exhausted. I must either show a result to my superiors or sign a recommendation for your recall.\n\nThe result is this: 60 units of food and 40 coins from the district's funds are placed at the League's disposal. That will confirm the district is under control.\n\nThere will be no other offer.\n\nInspector Mirosh.",
+    "options": [
+      {
+        "text": "Передать 60 еды и 40 монет",
+        "text_en": "Hand over 60 food and 40 coins",
+        "cost": {
+          "res_food": 60,
+          "res_money": 40
+        },
+        "effects": {
+          "stat_league_trust": 12,
+          "style": "loyal",
+          "message": "Передано. Мирош отозвала представление.",
+          "message_en": "Handed over. Mirosh withdrew the recommendation."
+        }
+      },
+      {
+        "text": "Отказать, сославшись на нужды жителей",
+        "text_en": "Refuse, citing the residents' needs",
+        "effects": {
+          "stat_league_trust": -5,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Отказ записан. Представление ушло наверх.",
+          "message_en": "The refusal is on record. The recommendation went up."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.empty_treasury",
+    "category": "mandate",
+    "min_level": 1,
+    "trigger_condition": "res_money <= 25",
+    "trigger_day": 3,
+    "cooldown_sec": 2400,
+    "tags": [
+      "report",
+      "money"
+    ],
+    "title": "Докладная — казна пуста",
+    "title_en": "Memo — The Treasury Is Empty",
+    "body": "Докладная секретаря.\n\nВ казне меньше двадцати пяти монет: ремонт после воды встанет. Можно продать рыбу Плёсам сегодня или просить у Лиги аванс под дамбы.",
+    "body_en": "Secretary's memo.\n\nUnder twenty-five coins in the treasury: repairs after the water will stop. We can sell fish to the Reaches today, or ask the League for an advance against the levees.",
+    "options": [
+      {
+        "text": "Продать 30 еды Плёсам (+50 монет)",
+        "text_en": "Sell 30 food to the Reaches (+50 coins)",
+        "cost": {
+          "res_food": 30
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 50
+          },
+          "stat_rival_score": 2,
+          "style": "pragmatist",
+          "message": "Ивель заплатил.",
+          "message_en": "Ivel paid."
+        }
+      },
+      {
+        "text": "Просить аванс у Лиги (+40 монет)",
+        "text_en": "Ask the League for an advance (+40 coins)",
+        "effects": {
+          "add_resources": {
+            "res_money": 40
+          },
+          "stat_league_trust": -4,
+          "style": "loyal",
+          "message": "Аванс пришёл с пометкой «под дамбы».",
+          "message_en": "The advance came marked \"for levees.\""
+        }
+      },
+      {
+        "text": "Ждать аренды",
+        "text_en": "Wait for the rent",
+        "effects": {
+          "message": "Казна пуста до вечера.",
+          "message_en": "The treasury is empty until evening."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_nyupa.levees",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_levees",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — дамбы стоят, счёт идёт",
+    "title_en": "Handover Act — Levees Up, the Bill Pending",
+    "body": "Акт передачи района, подписан секретарём.\n\nГалай насыпал две дамбы у восточного берега на дерево Лиги: грядка на лугу защищена. Инспектор Мирош считает дерево долгом района, лодочники считают дамбы оскорблением.\n\nСекретарь: «Берег сухой. Счёт придёт».",
+    "body_en": "District handover act, signed by the secretary.\n\nGalai raised two levees on the east bank with the League's timber: the plot on the meadow is sheltered. Inspector Mirosh counts the timber as the district's debt; the boat people count the levees as an insult.\n\nThe secretary: \"The bank is dry. The bill will come.\"",
+    "options": [
+      {
+        "text": "Принять район. Дамбы остаются",
+        "text_en": "Take over. The levees stay",
+        "effects": {
+          "message": "Подписано. Вода пока в берегах.",
+          "message_en": "Signed. The water keeps to its banks for now."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_nyupa.timber_debt",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "league_timber_debt",
+    "patron": "restoration_league",
+    "trigger_day": 4,
+    "tags": [
+      "patron",
+      "letter",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Лига Восстановления — счёт за дерево",
+    "title_en": "Restoration League — The Bill for the Timber",
+    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Дерево на дамбы вашего предшественника отпущено в долг: шестьдесят единиц или сто монет. Баржа Лиги у причала.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The timber for your predecessor's levees was issued on credit: sixty units, or a hundred coins. The League's barge is at the pier.\n\nInspector Mirosh.",
+    "options": [
+      {
+        "text": "Отдать дерево (60 дерева)",
+        "text_en": "Hand over the timber (60 wood)",
+        "cost": {
+          "res_wood": 60
+        },
+        "effects": {
+          "clear_flag": "league_timber_debt",
+          "stat_league_trust": 6,
+          "style": "loyal",
+          "message": "Баржа ушла. Долг закрыт.",
+          "message_en": "The barge left. The debt is closed."
+        }
+      },
+      {
+        "text": "Заплатить 100 монет",
+        "text_en": "Pay 100 coins",
+        "cost": {
+          "res_money": 100
+        },
+        "effects": {
+          "clear_flag": "league_timber_debt",
+          "stat_league_trust": 4,
+          "message": "Расписка получена.",
+          "message_en": "Receipt in hand."
+        }
+      },
+      {
+        "text": "Просить отсрочки",
+        "text_en": "Ask for a deferral",
+        "effects": {
+          "stat_league_trust": -6,
+          "message": "Баржа ушла пустой. В деле появилась пометка «должник».",
+          "message_en": "The barge left empty. The file now says \"debtor.\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_nyupa.boats",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_boats",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — мир с Плёсами",
+    "title_en": "Handover Act — Peace with the Reaches",
+    "body": "Акт передачи района, подписан секретарём.\n\nГалай договорился с Ивелем: лодочники перевезли четыре семьи и рыбу, третий барак полон, поддержка района высокая. Взамен он обещал, что дамб на восточном берегу не будет.\n\nСекретарь: «Люди есть. Слово тоже».",
+    "body_en": "District handover act, signed by the secretary.\n\nGalai made terms with Ivel: the boat people brought four families and fish, a third shelter is full, the district's support is high. In return he promised there would be no levees on the east bank.\n\nThe secretary: \"There are people. There is also a word given.\"",
+    "options": [
+      {
+        "text": "Принять район и слово Галая",
+        "text_en": "Take over, and Galai's word with it",
+        "effects": {
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Подписано. Лодки у причала.",
+          "message_en": "Signed. The boats are at the pier."
+        }
+      },
+      {
+        "text": "Принять район; слово было его, не моё",
+        "text_en": "Take over; the word was his, not mine",
+        "effects": {
+          "clear_flag": "boat_pact",
+          "stat_league_trust": 2,
+          "stat_rival_score": 2,
+          "style": "loyal",
+          "message": "Подписано. Ивель об этом узнает.",
+          "message_en": "Signed. Ivel will hear of it."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_nyupa.fever",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_fever",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — после лихорадки",
+    "title_en": "Handover Act — After the Fever",
+    "body": "Акт передачи района, подписан секретарём.\n\nПрошлая Гниль принесла лихорадку: Галай уехал, люди разошлись по Плёсам, в двух бараках трое. Цистерна полна, фельдшер Крупа остался и просит дров на кипячение с первого дня.\n\nСекретарь: «Люди вернутся, если вода будет чистой».",
+    "body_en": "District handover act, signed by the secretary.\n\nThe last Rot brought fever: Galai left, the people scattered to the Reaches, three remain in two shelters. The cistern is full; Medic Krupa stayed and asks for firewood for boiling from day one.\n\nThe secretary: \"The people will come back if the water is clean.\"",
+    "options": [
+      {
+        "text": "Принять район. Кипятить с первого дня (20 дерева)",
+        "text_en": "Take over. Boil from day one (20 wood)",
+        "cost": {
+          "res_wood": 20
+        },
+        "effects": {
+          "set_flag": "water_boiled",
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Котлы кипят. Крупа кивнул.",
+          "message_en": "The cauldrons boil. Krupa nodded."
+        }
+      },
+      {
+        "text": "Принять район. Дрова на дамбы",
+        "text_en": "Take over. The wood goes to levees",
+        "effects": {
+          "style": "loyal",
+          "message": "Подписано. Крупа ушёл к цистерне молча.",
+          "message_en": "Signed. Krupa went to the cistern without a word."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_nyupa.return",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_fever",
+    "trigger_day": 6,
+    "tags": [
+      "petition",
+      "families",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "У причала — вернувшиеся",
+    "title_en": "At the Pier — Those Who Came Back",
+    "body": "Четыре семьи с Плёсов на лодках: те, кто ушёл при Галае.\n\n«Говорят, воду кипятят и бараки сухие. Если так, мы вернёмся. Если нет, не обижайтесь».",
+    "body_en": "Four families from the Reaches in boats: those who left under Galai.\n\n\"They say the water is boiled and the shelters dry. If so, we come back. If not, no offence.\"",
+    "options": [
+      {
+        "text": "Принять (+5 жителей, если есть места)",
+        "text_en": "Take them in (+5 residents if there is room)",
+        "effects": {
+          "add_residents": 5,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Семьи заняли койки. Крупа осмотрел каждого.",
+          "message_en": "The families took beds. Krupa looked each one over."
+        }
+      },
+      {
+        "text": "Пока нет мест",
+        "text_en": "No room yet",
+        "effects": {
+          "stat_city_trust": -2,
+          "message": "Лодки ушли обратно.",
+          "message_en": "The boats went back."
+        }
+      }
+    ]
+  }
+]

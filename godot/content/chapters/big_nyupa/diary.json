@@ -1,0 +1,48 @@
+{
+  "fragments": [
+    {
+      "id": "nyupa.diary.01",
+      "order": 1,
+      "title": "Тетрадь Петра Галая — I",
+      "title_en": "Pyotr Galai's Notebook — I",
+      "body": "Принял Нюпу в Малую воду. Инспектор Мирош показала на луга у реки: «Здесь родит лучше всего». Старшина Ивель с Плёсов показал на те же луга: «Здесь весной стоит вода». Оба правы. Поставлю грядки на лугах, дамбы потом.",
+      "body_en": "Took over Nyupa in Low Water. Inspector Mirosh pointed at the meadows by the river: \"This bears best.\" Headman Ivel of the Reaches pointed at the same meadows: \"The water stands here in spring.\" Both are right. I put the plots on the meadows; levees later.",
+      "unlock": {
+        "day": 1
+      }
+    },
+    {
+      "id": "nyupa.diary.02",
+      "order": 2,
+      "title": "Тетрадь Петра Галая — II",
+      "title_en": "Pyotr Galai's Notebook — II",
+      "body": "Паводок пришёл на два дня раньше. Три грядки под водой, склад подмочен. Лодочники вывозят людей за еду и смеются. Лига прислала дерево на дамбы в долг; насыпали две за ночь. Ивель обиделся.",
+      "body_en": "The Flood came two days early. Three plots under water, the store soaked. The boat people ferry folk out for food and laugh. The League sent timber for levees on credit; we raised two in a night. Ivel took offence.",
+      "unlock": {
+        "season": "season_flood"
+      }
+    },
+    {
+      "id": "nyupa.diary.03",
+      "order": 3,
+      "title": "Тетрадь Петра Галая — III",
+      "title_en": "Pyotr Galai's Notebook — III",
+      "body": "Вода ушла, лужи остались. Фельдшер Крупа говорит: кипятить всё. Дров нет, дамбы съели ивняк. Двое детей в жару. Рыба идёт, а причала я так и не поставил.",
+      "body_en": "The water left, the puddles stayed. Medic Krupa says: boil everything. No firewood; the levees ate the willow scrub. Two children with fever. The fish are running, and I never built a pier.",
+      "unlock": {
+        "season": "season_rot"
+      }
+    },
+    {
+      "id": "nyupa.diary.04",
+      "order": 4,
+      "title": "Тетрадь Петра Галая — IV",
+      "title_en": "Pyotr Galai's Notebook — IV",
+      "body": "Уезжаю до аудита. Тому, кто придёт: причал в первую неделю, дамбы до Паводка, дрова на Гниль. И поговорите с Ивелем раньше, чем он поговорит с вашими людьми.",
+      "body_en": "Leaving before the audit. To whoever comes next: a pier in the first week, levees before the Flood, firewood for the Rot. And talk to Ivel before he talks to your people.",
+      "unlock": {
+        "day": 26
+      }
+    }
+  ]
+}

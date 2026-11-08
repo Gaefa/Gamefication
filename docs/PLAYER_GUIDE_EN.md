@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.3.1-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.3.2-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Storms: on day 22 (Dust) and day 32 (Heat) the lookout warns of a storm for tomorrow; unbraced (20 wood, 5 tools) it wrecks two buildings, braced it leaves one breakdown. A wrecked building does nothing until repaired (R). Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
@@ -164,3 +164,15 @@ Opens after any Gorge finale. 30 days: Smog (1–10), Strike Autumn (11–22), F
 - **Strikes**: in the Strike Autumn the people pressure fills 1.6× faster; at mood ≤38 the committee sends demands, and the people crisis is a strike: settle (60 coins), break it (support −10, a wrecked shelter, a flag for the whole campaign) or wait. The Union offers a mediator if no Charters' guards stand at the gate.
 - **Frost**: the pump draws 70%, the fields 40%, wear ×1.4. On day 23 the engineer offers to burn wood (40) or slag (smoke +12); on day 25 a pipe bursts at the pump (15 coins now, or a breakdown).
 - Three legacies of Ida Kramer: a smelter with 45 smoke and a debt to Velm; filters with a 35-coin treasury; after a broken strike, three residents and support at 35.
+
+## Chapter 4. Big Nyupa
+
+Opens after any Quarry finale. 30 days: Low Water (1–10), Flood (11–22), Rot (23–30). Audits on days 15 and 27, the grant on day 10. The patron is the League (Inspector Agatha Mirosh), the rival Headman Tomas Ivel of the Reaches (the boat community); also on the bank, the fisher Marfa Soroka and the medic Yan Krupa.
+
+- **The river** is the gauge at the top (0–100). It falls 4 a day in Low Water, rises 12 in the Flood, falls 15 in the Rot. From 60 the water stands on the **floodplain** (the green cells along the river): every morning any building there is wrecked (repair, 10 coins) unless an intact levee stands next to it or it is on stilts. Roads are spared. A building's card says whether it is sheltered.
+- **Levee** (8 wood, 6 stone) shelters its six neighbours while it stands. Three levees bring the boat people's protest; under the pact with Ivel (his boats for 40 coins) a third levee breaks the pact.
+- **Stilt house** (18 wood, 1 tool; 5 residents) and **fishing pier** (15 wood, 1 tool; 3 food a cycle with no water or seed) ignore the flood. A pier can only be built next to the river.
+- **Floodplain plot** on the low bank bears a third better: the chapter's temptation.
+- On days 13–14 the fish run (+60 food for two days' work). With the river at 90 the water reaches the shelters: the boat people ferry people out for 30 food. The Company's sluice drops the level by 20 onto the Reaches; Ivel remembers.
+- **Rot**: food spoils 5% a day, the fields bear 70%. Firewood for boiling (30 wood on day 23) prevents fever; without it, with the river above 30, the medic brings quarantine (40 coins, −1 resident) or burials (−4 residents).
+- Three legacies of Pyotr Galai: two levees with a timber debt to the League; peace with the boat people and ten residents under a "no levees" promise; after a fever, three residents and a full cistern.

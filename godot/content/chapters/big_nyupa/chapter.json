@@ -1,0 +1,206 @@
+{
+  "id": "big_nyupa",
+  "order": 4,
+  "title": "Большая Нюпа",
+  "title_en": "Big Nyupa",
+  "region": "Пойма",
+  "region_en": "The Floodplain",
+  "blurb": "Район Лиги на низком берегу Нюпы. Воды слишком много: Паводок заливает низкие клетки, дамбы и сваи держат, причал кормит рыбой. Лодочники Плёсов живут паводком и не хотят дамб. Малая вода, Паводок, Гниль: 30 дней.",
+  "blurb_en": "A League district on the low bank of the Nyupa. Too much water: the Flood covers the low cells, levees and stilts hold, a pier feeds the district with fish. The boat people of the Reaches live by the flood and want no levees. Low Water, Flood, Rot: 30 days.",
+  "scenario": {
+    "season_order": [
+      "season_low_water",
+      "season_flood",
+      "season_rot"
+    ],
+    "win_day": 30,
+    "audit_days": [
+      15,
+      27
+    ],
+    "grant_day": 10
+  },
+  "rival": {
+    "name": "Старшина Томас Ивель",
+    "name_en": "Headman Tomas Ivel",
+    "short": "Ивель",
+    "short_en": "Ivel",
+    "district": "Плёсы",
+    "district_en": "The Reaches"
+  },
+  "tutorial_intro": "Вы — администратор [b]Большой Нюпы[/b]. Река рядом, и это главное: [b]заливные луга[/b] (зелёные клетки у воды) родят лучше, но в [b]Паводок[/b] (дни 11–22) вода их заливает, и всё, что стоит там без [b]дамбы[/b] рядом и не на сваях, выходит из строя. Уровень реки виден вверху: беда от 60. [b]Причал[/b] у воды даёт рыбу. [b]Гниль[/b] — дни 23–30: еда портится, лихорадка. Аудиты — дни 15 и 27. Продержитесь до 30-го дня с не меньше чем 12 жителями.\n\nВремя пока стоит — спокойно осмотримся.",
+  "tutorial_intro_en": "You are the administrator of [b]Big Nyupa[/b]. The river is close, and that is the point: the [b]floodplain[/b] (green cells by the water) bears better, but in the [b]Flood[/b] (days 11–22) the water covers it, and anything standing there without a [b]levee[/b] next to it, and not on stilts, is wrecked. The river level shows at the top: trouble from 60. A [b]pier[/b] by the water gives fish. The [b]Rot[/b] runs on days 23–30: food spoils, fever. Audits: days 15 and 27. Hold out until day 30 with at least 12 residents.\n\nTime is stopped for now — let's look around.",
+  "company_traces": false,
+  "mechanics": {
+    "flood": true
+  },
+  "terrain": {
+    "river": {
+      "cells": [
+        [
+          4,
+          -4
+        ],
+        [
+          4,
+          -3
+        ],
+        [
+          4,
+          -2
+        ],
+        [
+          4,
+          -1
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          0,
+          7
+        ]
+      ],
+      "bank_type": 8
+    }
+  },
+  "start_layout": [
+    {
+      "coord": [
+        0,
+        0
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        1,
+        -1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        2,
+        -1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        2,
+        0
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -1,
+        1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -1,
+        0
+      ],
+      "type": "bld_admin_post"
+    },
+    {
+      "coord": [
+        1,
+        0
+      ],
+      "type": "bld_main_cistern"
+    },
+    {
+      "coord": [
+        0,
+        -1
+      ],
+      "type": "bld_warehouse"
+    },
+    {
+      "coord": [
+        0,
+        1
+      ],
+      "type": "bld_well_pump"
+    },
+    {
+      "coord": [
+        -2,
+        1
+      ],
+      "type": "bld_shelter"
+    },
+    {
+      "coord": [
+        -1,
+        2
+      ],
+      "type": "bld_shelter"
+    },
+    {
+      "coord": [
+        1,
+        -2
+      ],
+      "type": "bld_field_strip"
+    },
+    {
+      "coord": [
+        3,
+        -1
+      ],
+      "type": "bld_field_strip"
+    },
+    {
+      "coord": [
+        3,
+        0
+      ],
+      "type": "bld_fishing_pier"
+    },
+    {
+      "coord": [
+        -1,
+        -1
+      ],
+      "type": "bld_solar_panel"
+    },
+    {
+      "coord": [
+        -2,
+        0
+      ],
+      "type": "bld_solar_panel"
+    }
+  ]
+}

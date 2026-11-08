@@ -30,7 +30,7 @@ const PATRON_IDS := ["restoration_league", "civic_directorate", "engineers_union
 const STYLE_IDS := ["loyal", "pragmatist", "protector", "autonomist"]
 const TRIGGER_STATS := ["stat_unrest_pressure", "stat_city_trust", "stat_league_trust", "stat_happiness",
 	"stat_population", "stat_low_pressure_housing", "stat_rival_score", "stat_rival_gap", "stat_water_days", "stat_day",
-	"stat_contested_fields", "stat_waste"]
+	"stat_contested_fields", "stat_waste", "stat_flood", "stat_levees"]
 
 
 func _ready() -> void:

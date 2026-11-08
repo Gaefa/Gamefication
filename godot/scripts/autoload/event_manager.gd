@@ -303,6 +303,10 @@ func _get_stat_value(stat_name: String) -> float:
 			return float(GameStateStore.climate().get("total_day", 1) as int)
 		"stat_waste":
 			return WasteSystem.level()
+		"stat_flood":
+			return FloodSystem.level()
+		"stat_levees":
+			return float(FloodSystem.levee_count())
 	push_warning("EventManager: unknown stat '%s' in a trigger" % stat_name)
 	return 0.0
 
@@ -511,6 +515,10 @@ func _apply_stat_delta(stat_id: String, amount: float) -> void:
 			# A card can clear the air (slag hauled away) or foul it (the heaps set alight).
 			var climate_state: Dictionary = GameStateStore.climate()
 			climate_state["waste"] = clampf((climate_state.get("waste", 0.0) as float) + amount, 0.0, WasteSystem.MAX_WASTE)
+		"stat_flood":
+			# A sluice opened, a dam blown: a card can move the river.
+			var river_state: Dictionary = GameStateStore.climate()
+			river_state["flood"] = clampf((river_state.get("flood", 0.0) as float) + amount, 0.0, FloodSystem.MAX_LEVEL)
 
 
 func _force_issues(count: int) -> void:

@@ -20,6 +20,17 @@ static func validate(coord: Vector2i, type_id: String, hex_grid: HexGrid = null)
 	if not tdef.is_empty() and not (tdef.get("buildable", true) as bool):
 		return _fail(Localization.t("ui.command.cannot_build_here", "Cannot build here"))
 
+	# A pier wants the river at its side: `requires_adjacent_terrain` lists the terrain ids.
+	var shore: Array = def.get("requires_adjacent_terrain", []) as Array
+	if not shore.is_empty():
+		var by_water: bool = false
+		for nb: Vector2i in HexCoords.neighbors_of(coord):
+			for shore_id: Variant in shore:  # JSON numbers arrive as floats
+				if int(shore_id) == GameStateStore.get_terrain(nb):
+					by_water = true
+		if not by_water:
+			return _fail(Localization.ru_en("Нужен берег: рядом должна быть вода", "Needs a shore: water must be next to it"))
+
 	var req_level: int = def.get("unlock_level", 1) as int
 	var city_level: int = GameStateStore.progression().city_level as int
 	if city_level < req_level:
