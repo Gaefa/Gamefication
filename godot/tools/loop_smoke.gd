@@ -19,6 +19,7 @@ var _desk: Control
 var _stuck: int = 0
 var _evenings: int = 0
 var _cards: int = 0
+var _pop_min: int = 999  # the smallest district seen at any evening (acceptance: never empty)
 var _ending: String = ""
 var _repairs: int = 0
 var _repair_money: float = 0.0
@@ -37,6 +38,7 @@ func _ready() -> void:
 		_ending = "%s (%s)" % [eid, kind])
 	EventBus.evening_started.connect(func(events: Array) -> void:
 		_evenings += 1
+		_pop_min = mini(_pop_min, GameStateStore.population().get("total", 0) as int)
 		_repair_issues()  # a player presses R on the "!" pins before the Desk
 		var prod: Dictionary = GameStateStore.economy().get("production", {}) as Dictionary
 		print("  вечер, день %d: %d карт. деньги %d (%+d/дн) · еда %d · вода %d · дерево %d · камень %d · инстр %d · жители %d · сч %d%s" % [
@@ -144,6 +146,11 @@ func _finish(result: String) -> void:
 	var entries: Array = GameStateStore.events().get("log", []) as Array
 	print("журнал событий: %d записей; последняя: %s" % [entries.size(), str(entries.back()) if not entries.is_empty() else "—"])
 	print("соперник: %s %.0f · вы %.0f; грант решён: %s" % [RivalManager.rival_short(), RivalManager.rival_score(), RivalManager.player_score(), str(GameStateStore.rival().get("grant_decided", false))])
+	# Chapter acceptance (plan §3, sprint 5): a hands-off run reaches the term's end with people still there.
+	var full_term: bool = SimulationRunner.day_count >= ContentDB.get_win_day()
+	var accepted: bool = full_term and _pop_min > 0 and _evenings >= ContentDB.get_win_day() - 1
+	print("CHAPTER ACCEPTANCE [%s]: %s (day %d of %d, smallest district %d, evenings %d)" % [
+		ContentDB.active_chapter, "PASS" if accepted else "NOT MET", SimulationRunner.day_count, ContentDB.get_win_day(), _pop_min, _evenings])
 	set_physics_process(false)
 	get_tree().quit()
 
