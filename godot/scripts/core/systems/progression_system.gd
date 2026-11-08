@@ -6,6 +6,7 @@ var _coverage: CoverageMap
 var _notified_upgrade_level: int = 0
 var _win_emitted: bool = false
 var _adjacency := AdjacencyCalculator.new()
+var _supply_trend: Dictionary = {}  # res_id → day-scale running average of the ledger net per tick
 
 # --- Population retention (tuning) ---
 const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick under duress
@@ -169,44 +170,51 @@ static func heat_stress_term() -> float:
 
 func _supply_happiness_term() -> float:
 	## Water/food effect on happiness. Empty stores hurt a lot; a draining trend hurts
-	## some; comfortable reserves help; a fully-provisioned city is "thriving".
-	var prod: Dictionary = GameStateStore.economy().get("production", {})
+	## some; comfortable reserves help; a fully-provisioned city is "thriving". "Draining"
+	## is judged on a day's running average of the net, not on this tick: a pump that
+	## breaks for an afternoon must not swing the mood by twenty points and back.
 	var term: float = 0.0
 
 	var water: float = GameStateStore.get_resource("res_water_stockpile")
 	var water_cap: float = maxf(GameStateStore.get_cap("res_water_stockpile"), 1.0)
-	var water_net: float = prod.get("res_water_stockpile", 0.0) as float
+	var water_drain: float = _trend_drain_share("res_water_stockpile")
 	if water <= 1.0:
 		term -= 30.0
-	elif water_net < 0.0:
+	else:
 		# Draining hurts in proportion to how fast: pumps covering most of the draw cost
 		# a point or two, dead pumps the full twelve. A cliff here made the mood jitter.
-		term -= 12.0 * _drain_share("res_water_stockpile", water_net)
-	elif water >= 0.5 * water_cap:
-		term += 6.0
+		# A comfortable reserve is a comfort only as far as it is not draining.
+		term -= 12.0 * water_drain
+		if water >= 0.5 * water_cap:
+			term += 6.0 * (1.0 - water_drain)
 
 	var food: float = GameStateStore.get_resource("res_food")
 	var food_cap: float = maxf(GameStateStore.get_cap("res_food"), 1.0)
-	var food_net: float = prod.get("res_food", 0.0) as float
+	var food_drain: float = _trend_drain_share("res_food")
 	if food <= 1.0:
 		term -= 30.0
-	elif food_net < 0.0:
-		term -= 10.0 * _drain_share("res_food", food_net)
-	elif food >= 0.5 * food_cap:
-		term += 6.0
+	else:
+		term -= 10.0 * food_drain
+		if food >= 0.5 * food_cap:
+			term += 6.0 * (1.0 - food_drain)
 
-	# Thriving: both comfortably stocked and not draining.
-	if water > 0.5 * water_cap and food > 0.5 * food_cap and water_net >= 0.0 and food_net >= 0.0:
-		term += 12.0
+	# Thriving: both comfortably stocked, in full when neither is draining.
+	if water > 0.5 * water_cap and food > 0.5 * food_cap:
+		term += 12.0 * (1.0 - maxf(water_drain, food_drain))
 
 	return term
 
 
-## How much of today's draw the reserve is covering out of its own stock: 0 when the
-## producers nearly keep up, 1 when nothing comes in and the stockpile carries it all.
-static func _drain_share(res_id: String, net_per_tick: float) -> float:
+## How much of today's draw the reserve is covering out of its own stock, judged on a day's
+## running average of the ledger net: 0 when the producers keep up, 1 when nothing has
+## come in for a day and the stockpile carries it all. Runtime only: a loaded game starts
+## the average from its first tick.
+func _trend_drain_share(res_id: String) -> float:
+	var net: float = (GameStateStore.economy().get("production", {}) as Dictionary).get(res_id, 0.0) as float
+	var trend: float = lerpf(_supply_trend.get(res_id, net) as float, net, 1.0 / float(SimulationRunner.TICKS_PER_DAY))
+	_supply_trend[res_id] = trend
 	var draw_per_tick: float = EconomySystem.daily_consumption(res_id) / float(SimulationRunner.TICKS_PER_DAY)
-	return clampf(-net_per_tick / maxf(draw_per_tick, 0.0001), 0.0, 1.0)
+	return clampf(-trend / maxf(draw_per_tick, 0.0001), 0.0, 1.0)
 
 
 func _update_support() -> void:
