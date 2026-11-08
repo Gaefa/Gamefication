@@ -31,6 +31,10 @@ static func validate(coord: Vector2i, type_id: String, hex_grid: HexGrid = null)
 		if not by_water:
 			return _fail(Localization.ru_en("Нужен берег: рядом должна быть вода", "Needs a shore: water must be next to it"))
 
+	# The Directorate's permits (chapter mechanic): without one the site stays a drawing.
+	if PermitSystem.needs_permit(type_id) and PermitSystem.available() < 1:
+		return _fail(Localization.ru_en("Нет разрешения Директората: стройка ждёт", "No Directorate permit: the build waits"))
+
 	var req_level: int = def.get("unlock_level", 1) as int
 	var city_level: int = GameStateStore.progression().city_level as int
 	if city_level < req_level:

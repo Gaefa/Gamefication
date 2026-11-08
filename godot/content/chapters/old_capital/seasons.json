@@ -1,0 +1,89 @@
+{
+  "order": [
+    "season_grey_winter",
+    "season_thaw",
+    "season_audit"
+  ],
+  "seasons": [
+    {
+      "id": "season_grey_winter",
+      "rival_target": 54,
+      "label": "Серая зима",
+      "label_en": "Grey Winter",
+      "description": "Серая зима. Низкое небо, панели тусклые, поля стоят, канцелярия выдаёт по разрешению в два дня. Время разбирать руины и копить камень.",
+      "description_en": "Grey Winter. A low sky, dim panels, idle fields, the office issuing a permit every two days. Time to salvage the ruins and stock stone.",
+      "length_days": 10,
+      "expert_faction": "",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "mild",
+      "tile_variant": "",
+      "modifiers": {
+        "water_mult": 1.0,
+        "water_supply_mult": 1.0,
+        "crop_mult": 0.6,
+        "solar_mult": 0.7,
+        "wear_mult": 1.2,
+        "build_cost_mult": 1.0,
+        "permit_rate": 0.5
+      },
+      "pressure_amplify": {
+        "food": 1.2,
+        "water": 1.0
+      }
+    },
+    {
+      "id": "season_thaw",
+      "rival_target": 50,
+      "label": "Оттепель",
+      "label_en": "Thaw",
+      "description": "Оттепель. Канцелярия работает в полную силу: разрешение в день. Поля родят, но тоннели текут, и Ассамблея ведёт сквоттеров к вашим воротам.",
+      "description_en": "The Thaw. The office works at full strength: a permit a day. The fields bear, but the tunnels leak and the Assembly leads squatters to your gate.",
+      "length_days": 12,
+      "expert_faction": "",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "mild",
+      "tile_variant": "",
+      "modifiers": {
+        "water_mult": 1.0,
+        "water_supply_mult": 1.1,
+        "crop_mult": 1.1,
+        "solar_mult": 1.0,
+        "wear_mult": 1.1,
+        "build_cost_mult": 1.0,
+        "permit_rate": 1.0
+      },
+      "pressure_amplify": {
+        "food": 1.0,
+        "water": 1.0,
+        "happiness": 1.3
+      }
+    },
+    {
+      "id": "season_audit",
+      "rival_target": 56,
+      "label": "Ревизия",
+      "label_en": "Audit",
+      "description": "Ревизия. Директорат считает всё: канцелярия почти не выдаёт разрешений, стройка дороже, давление мандата растёт в полтора раза быстрее. Что построено, то построено.",
+      "description_en": "The Audit. The Directorate counts everything: the office issues almost no permits, building is dearer, mandate pressure fills half again as fast. What is built is built.",
+      "length_days": 8,
+      "expert_faction": "",
+      "enabled_in_mvp": true,
+      "forecast_intensity": "harsh",
+      "tile_variant": "dust",
+      "modifiers": {
+        "water_mult": 1.0,
+        "water_supply_mult": 1.0,
+        "crop_mult": 1.0,
+        "solar_mult": 0.9,
+        "wear_mult": 1.2,
+        "build_cost_mult": 1.15,
+        "permit_rate": 0.25
+      },
+      "pressure_amplify": {
+        "food": 1.0,
+        "water": 1.0,
+        "mandate": 1.5
+      }
+    }
+  ]
+}

@@ -7,9 +7,7 @@ extends Node
 
 const FILE_PATH := "user://campaign.cfg"
 const TOOLS_FILE_PATH := "user://campaign_tools.cfg"
-## Decision flags worth carrying between chapters: the rest stay in their run.
-const CARRIED_FLAGS := ["ruben_burned", "unregistered_people", "forecaster_active", "strike_banned", "dried_rations",
-	"covenant_treaty", "charters_deal", "strike_broken", "union_standard", "boat_pact", "levee_wall"]
+## Decision flags worth carrying between chapters (ContentDB.CARRIED_FLAGS): the rest stay in their run.
 
 var pending_chapter: String = ""  # set by the finale's "next chapter" button for the title screen
 var _results: Dictionary = {}     # chapter id → result dictionary
@@ -56,7 +54,7 @@ func next_open_chapter() -> String:
 func record_result(chapter_id: String, ending_id: String, kind: String) -> void:
 	var flags: Dictionary = GameStateStore.mandate().get("flags", {}) as Dictionary
 	var carried: Dictionary = {}
-	for flag: String in CARRIED_FLAGS:
+	for flag: String in ContentDB.CARRIED_FLAGS:
 		if flags.get(flag, false) as bool:
 			carried[flag] = true
 	_results[chapter_id] = {
@@ -71,6 +69,15 @@ func record_result(chapter_id: String, ending_id: String, kind: String) -> void:
 		"flags": carried,
 	}
 	_save()
+
+
+## Every flag the finished chapters left behind, for the run that starts now.
+func carried_flags() -> Dictionary:
+	var flags: Dictionary = {}
+	for chapter_id: String in _results:
+		for flag: String in (_results[chapter_id] as Dictionary).get("flags", {}) as Dictionary:
+			flags[flag] = true
+	return flags
 
 
 func reset_campaign() -> void:

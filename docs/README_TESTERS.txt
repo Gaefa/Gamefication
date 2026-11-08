@@ -1,18 +1,20 @@
-Mandate Cities 0.3.2-alpha — playtest build / тестовая сборка
+Mandate Cities 0.3.3-alpha — playtest build / тестовая сборка
 
-NEW IN 0.3.2-alpha / НОВОЕ В 0.3.2-alpha
-  Chapter 4, Big Nyupa: a League district on a low river bank. Opens after any Quarry finale.
-  30 days: Low Water, Flood, Rot. The river level at the top of the screen rises in the Flood;
-  from 60 the water covers the floodplain (green cells by the river) and wrecks whatever stands
-  there without a levee next to it or stilts. Levees, stilt houses, a fishing pier that must
-  stand by the water; the boat people of the Reaches dislike levees. Placeholder art.
-  Глава 4, Большая Нюпа: район Лиги на низком берегу. Открывается после любого финала
-  Карьера. 30 дней: Малая вода, Паводок, Гниль. Уровень реки вверху экрана растёт в Паводок;
-  от 60 вода заливает заливные луга (зелёные клетки у реки) и ломает всё, что стоит там без
-  дамбы рядом и не на сваях. Дамбы, дома на сваях, рыбацкий причал только у воды; лодочники
-  Плёсов дамб не любят. Арт пока заглушки.
-  0.3.1-alpha: chapter 3, the Black Quarry (metal, smoke, the Engineers' Union) /
-  глава 3, металл и дым. 0.3.0-alpha: chapter 2 and inherited starts / глава 2 и наследства.
+NEW IN 0.3.3-alpha / НОВОЕ В 0.3.3-alpha
+  Chapter 5, the Old Capital's outer ring: the campaign's finale under the Civic Directorate.
+  Opens after any Nyupa finale. 30 days: Grey Winter, Thaw, Audit. Every building but a road
+  spends a permit (the counter at the top); the office issues them slowly, letters, filed
+  reports and a registry office give more. Salvage the Company's ruins (B) for stone, wood and
+  metal. The Assembly brings squatters, the Archive bargains for the Forecaster. What you decided
+  in the earlier chapters comes back as letters, and the last finale tells the whole road.
+  Глава 5, внешнее кольцо Старого Капитала: финал кампании под Гражданским Директоратом.
+  Открывается после любого финала Нюпы. 30 дней: Серая зима, Оттепель, Ревизия. Каждое здание,
+  кроме дорог, тратит разрешение (счётчик вверху); канцелярия выдаёт их медленно, письма,
+  отчётность и учётная контора дают ещё. Руины Компании разбираются (B) на камень, дерево и
+  металл. Ассамблея приводит сквоттеров, Архив торгуется за «Прогнозист». Решения прежних глав
+  возвращаются письмами, а последний финал рассказывает всю дорогу.
+  0.3.2: chapter 4, Big Nyupa (the river, levees, stilts). 0.3.1: chapter 3, the Black Quarry.
+  0.3.0: chapter 2 and inherited starts.
 
 WINDOWS
   Run MandateCities.exe. If SmartScreen warns "Windows protected your PC":

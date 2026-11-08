@@ -1,0 +1,66 @@
+[
+  {
+    "id": "ending.win.directorate_order",
+    "kind": "win",
+    "title": "Мандат продлён — кольцо в реестре",
+    "title_en": "Mandate Extended — The Ring in the Register",
+    "body": "Ревизия зачтена. Внешнее кольцо застроено по разрешениям, руины учтены, сквоттеры вписаны в реестр или выведены за него. Комиссар Хальт подписала заключение без замечаний: редкий документ.\n\nДиректорат предлагает вам кресло в Управлении зон восстановления. Пять районов за спиной, и у каждого своё мнение о вас.",
+    "body_en": "The audit is credited. The outer ring is built by permit, the ruins accounted for, the squatters entered in the register or moved beyond it. Commissar Halt signed the conclusion with no remarks: a rare document.\n\nThe Directorate offers you a seat in the Office of Recovery Zones. Five districts behind you, each with its own opinion of you."
+  },
+  {
+    "id": "ending.win.directorate_defiant",
+    "kind": "win",
+    "title": "Мандат продлён — кольцо само себе ордер",
+    "title_en": "Mandate Extended — The Ring Its Own Warrant",
+    "body": "Ревизия зачтена, хотя комиссар Хальт писала заключение с оговорками. Кольцо отстроено наполовину без бумаг: руины разобраны людьми Ассамблеи, дома подняты раньше разрешений, и Директорат предпочёл записать это задним числом, чем сносить.\n\nВейс прислала ключ от зала Ассамблеи. Директорат продлил мандат и просит «впредь согласовывать».",
+    "body_en": "The audit is credited, though Commissar Halt wrote the conclusion with reservations. The ring was half rebuilt without papers: the ruins salvaged by the Assembly's people, the houses raised ahead of the permits, and the Directorate chose to record it after the fact rather than demolish.\n\nWeiss sent the key to the Assembly hall. The Directorate extended the mandate and asks you \"to seek approval in future.\""
+  },
+  {
+    "id": "ending.win.autonomy",
+    "kind": "win",
+    "title": "Кольцо вышло из-под опеки",
+    "title_en": "The Ring Walked Out of Guardianship",
+    "body": "Срок вышел, и кольцо отказалось продлевать не мандат, а опеку. Ассамблея, Архив и ваши люди подписали устав района без печати Директората; комиссар Хальт уехала с папкой, в которой не хватало одной подписи.\n\nПять районов знают вас по-разному. Этот знает как своего.",
+    "body_en": "The term ran out, and the ring declined to renew not the mandate but the guardianship. The Assembly, the Archive and your people signed the district's charter without the Directorate's seal; Commissar Halt left with a folder missing one signature.\n\nFive districts know you in five ways. This one knows you as its own."
+  },
+  {
+    "id": "ending.lose.commissar",
+    "kind": "lose",
+    "title": "Чрезвычайный комиссар",
+    "title_en": "Emergency Commissar",
+    "body": "Доверие Директората кончилось. Комиссар Хальт не устраивала сцен: утром на посту сидел чрезвычайный комиссар с печатью, к вечеру ваши разрешения были аннулированы, а стройки опечатаны.\n\nВам выдали пропуск на выезд и форму для обжалования. Форму никто не читает.",
+    "body_en": "The Directorate's trust ran out. Commissar Halt made no scene: in the morning an emergency commissar with a seal sat at the post, by evening your permits were annulled and the building sites sealed.\n\nYou were issued an exit pass and an appeal form. Nobody reads the form."
+  },
+  {
+    "id": "ending.lose.riot",
+    "kind": "lose",
+    "title": "Бунт — печати в тоннель",
+    "title_en": "Riot — The Seals Down the Tunnel",
+    "body": "Поддержка жителей кончилась. Ночью люди Ассамблеи и ваши же сквоттеры вынесли из конторы бланки и печати и бросили их в затопленный тоннель. Утром у поста лежал ваш мандат с оторванной печатью.\n\nВейс не пришла. Ей не нужно было.",
+    "body_en": "The residents' backing ran out. At night the Assembly's people and your own squatters carried the forms and seals out of the registry and threw them down the flooded tunnel. In the morning your mandate lay at the post with its seal torn off.\n\nWeiss did not come. She did not need to."
+  },
+  {
+    "id": "ending.lose.exodus",
+    "kind": "lose",
+    "title": "Исход — ушли в Южное кольцо",
+    "title_en": "Exodus — Gone to the Southern Ring",
+    "body": "Район опустел. Руин хватало, камня тоже, но люди ушли туда, где дома строят без бумаг: в Южное кольцо, к Вейс, у которой Ассамблея и ни одного комиссара.\n\nВ отчёте Директората вы значитесь как «администратор, не удержавший население».",
+    "body_en": "The district emptied. There were ruins enough and stone enough, but the people went where houses rise without papers: to the Southern Ring, to Weiss, who has the Assembly and not a single commissar.\n\nIn the Directorate's report you are listed as \"an administrator who failed to hold the population.\""
+  },
+  {
+    "id": "ending.lose.not_renewed",
+    "kind": "lose",
+    "title": "Мандат не продлён — кольцо не отстроено",
+    "title_en": "Mandate Not Renewed — The Ring Unbuilt",
+    "body": "Срок вышел, а в кольце всё те же два барака среди руин. Комиссар Хальт записала: «Разрешения выданы, здания отсутствуют». Мандат на второй срок не продлён.\n\nВам вернули дорожные и пожелали удачи в менее бумажном месте.",
+    "body_en": "The term ran out and the ring still has the same two shelters among the ruins. Commissar Halt wrote: \"Permits issued, buildings absent.\" The mandate was not renewed for a second term.\n\nYou were refunded your travel money and wished luck somewhere with less paper."
+  },
+  {
+    "id": "ending.lose.not_renewed_losses",
+    "kind": "lose",
+    "title": "Мандат не продлён — кольцо растеряло людей",
+    "title_en": "Mandate Not Renewed — The Ring Bled People",
+    "body": "Кольцо росло, пока сквоттеры не ушли в Южное кольцо. К ревизии район был меньше, чем на старте. Комиссар Хальт не стала спорить с цифрами.\n\nМандат не продлён. Руины достались следующему.",
+    "body_en": "The ring grew until the squatters left for the Southern Ring. By the audit the district was smaller than at the start. Commissar Halt did not argue with the numbers.\n\nThe mandate was not renewed. The ruins went to the next one."
+  }
+]

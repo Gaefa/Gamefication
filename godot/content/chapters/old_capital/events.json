@@ -1,0 +1,1407 @@
+[
+  {
+    "id": "capital.directorate_welcome",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "civic_directorate",
+    "trigger_day": 1,
+    "tags": [
+      "patron",
+      "letter",
+      "directorate"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Директорат — предписание о назначении",
+    "title_en": "Directorate — Order of Appointment",
+    "body": "Гражданский Директорат. Управление зон восстановления.\nПредписание № 9/К\n\nЗона «Старый Капитал, внешнее кольцо» передаётся в ваше управление с сегодняшнего дня.\n\nСтроительство — только по разрешениям канцелярии (выдано два; далее по графику сезона). Разбор руин разрешения не требует, но учитывается. Требования к концу срока: не менее двенадцати жителей, запасы воды и еды, учёт населения без самостроя.\nПлановые проверки — на 15-й и 27-й день, проводит комиссар Ирен Хальт; проверка засчитывается только при выполнении всех норм. Срок — 30 дней.\n\nКанцелярия Директората",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\nOrder No. 9/C\n\nThe zone \"Old Capital, outer ring\" is placed under your administration as of today.\n\nConstruction only by the office's permits (two issued; further ones by the season's schedule). Salvaging ruins needs no permit but is recorded. Requirements by the end of the term: no fewer than twelve residents, water and food in reserve, a population register without unauthorised construction.\nScheduled inspections on days 15 and 27 by Commissar Irene Halt; an inspection is credited only when every target is met. The term is 30 days.\n\nDirectorate Chancellery",
+    "options": [
+      {
+        "text": "Принять предписание",
+        "text_en": "Accept the order",
+        "effects": {
+          "message": "Печать поставлена. Два бланка разрешений лежат на столе.",
+          "message_en": "The seal is set. Two permit forms lie on the desk."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.ruins_report",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 2,
+    "tags": [
+      "report",
+      "permits"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Докладная — руины кольца",
+    "title_en": "Memo — The Ring's Ruins",
+    "body": "Докладная инженера.\n\nВокруг поста семь остовов Компании. Каждый разбирается за день (выберите и нажмите B): камень, дерево, немного металла, и разрешения на это не нужно. Разрешения нужны на любое новое здание, кроме дороги; счётчик вверху. Учётная контора прибавит по разрешению в день и сама ставится без бумаги.",
+    "body_en": "Engineer's memo.\n\nSeven Company shells stand around the post. Each is salvaged in a day (select it and press B): stone, wood, a little metal, and no permit needed. Permits are needed for any new building but a road; the counter is at the top. A registry office adds a permit a day and is itself built without papers.",
+    "options": [
+      {
+        "text": "Понятно. Разбирать и считать",
+        "text_en": "Understood. Salvage and count",
+        "effects": {
+          "message": "Инженер отметил остовы на карте.",
+          "message_en": "The engineer marked the shells on the map."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.weiss_intro",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 3,
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — спикер Вейс из Южного кольца",
+    "title_en": "A Letter — Speaker Weiss of the Southern Ring",
+    "body": "Письмо на обороте бланка Директората.\n\n«Сосед. Южное кольцо строит без бумаг девять лет: Ассамблея кварталов решает, где дом, а комиссары считают потом. У нас людей больше, чем коек, у вас руин больше, чем людей. Сойдёмся.\n\nГрант Директората на сезон один на двоих: кто к десятому дню крепче стоит, тот и получит. Мы стоим без разрешений. Они не кончаются».\n\nВейс.",
+    "body_en": "A letter on the back of a Directorate form.\n\n\"Neighbour. The Southern Ring has built without papers for nine years: the Assembly of blocks decides where a house goes, the commissars count afterwards. We have more people than beds; you have more ruins than people. We shall get along.\n\nThe Directorate's grant this season is one for the two of us: whoever stands firmer by day ten takes it. We stand without permits. They do not run out.\"\n\nWeiss.",
+    "options": [
+      {
+        "text": "Принять к сведению",
+        "text_en": "Note it",
+        "effects": {
+          "message": "Письмо легло в ящик. Южное кольцо видно с насыпи: крыши из жести, флаги Ассамблеи.",
+          "message_en": "The letter went into the drawer. The Southern Ring can be seen from the embankment: tin roofs, Assembly flags."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.thorn_intro",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 4,
+    "tags": [
+      "archive",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Визит — архивариус Торн",
+    "title_en": "A Visit — Archivist Thorn",
+    "body": "Архивариус Элиас Торн, в перчатках, с папкой.\n\n«Архив хранит чертежи кольца: водоводы, тоннели, печи Компании. Архив меняет чертежи на то, чего у него нет: металл и машины. Говорят, у кого-то из администраторов Сухих земель был запущен „Прогнозист“. Если это вы, нам есть о чём говорить».",
+    "body_en": "Archivist Elias Thorn, gloved, with a folder.\n\n\"The Archive keeps the ring's drawings: conduits, tunnels, the Company's furnaces. The Archive trades drawings for what it lacks: metal and machines. They say one of the Dry Lands administrators had the Forecaster running. If that was you, we have things to talk about.\"",
+    "options": [
+      {
+        "text": "Выслушать",
+        "text_en": "Hear him out",
+        "effects": {
+          "message": "Торн оставил визитку: оттиск шестерни.",
+          "message_en": "Thorn left a card: the imprint of a gear."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.thorn_forecaster",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "forecaster_active",
+    "trigger_day": 6,
+    "tags": [
+      "archive",
+      "letter",
+      "campaign"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Архив — предложение за «Прогнозист»",
+    "title_en": "The Archive — An Offer for the Forecaster",
+    "body": "Торн пришёл без папки.\n\n«Вы запускали „Прогнозист“ в Ржавой Норе. Его ключи и журналы — у вас в бумагах. Архив даст за них чертежи насосов для тоннелей и три разрешения: у нас есть друзья в канцелярии. Директорат о машине не узнает».",
+    "body_en": "Thorn came without his folder.\n\n\"You switched on the Forecaster in the Rust Pit. Its keys and logs are in your papers. The Archive will give the drawings for tunnel pumps and three permits for them: we have friends in the chancellery. The Directorate will not hear of the machine.\"",
+    "options": [
+      {
+        "text": "Отдать ключи (разрешения +3, вода +100)",
+        "text_en": "Hand over the keys (permits +3, water +100)",
+        "effects": {
+          "stat_permits": 3,
+          "add_resources": {
+            "res_water_stockpile": 100
+          },
+          "clear_flag": "forecaster_active",
+          "set_flag": "archive_friend",
+          "style": "pragmatist",
+          "message": "Торн унёс ключи. Утром у насоса стояли новые трубы.",
+          "message_en": "Thorn took the keys. In the morning new pipes stood by the pump."
+        }
+      },
+      {
+        "text": "Отказать: машина принадлежит районам",
+        "text_en": "Refuse: the machine belongs to the districts",
+        "effects": {
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Торн поклонился и ушёл. Визитку не забрал.",
+          "message_en": "Thorn bowed and left. He did not take back his card."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.thorn_metal",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "excludes_flag": "forecaster_active",
+    "trigger_condition": "res_metal >= 20",
+    "trigger_day": 6,
+    "tags": [
+      "archive",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Архив — чертежи за металл",
+    "title_en": "The Archive — Drawings for Metal",
+    "body": "Торн с папкой.\n\n«У вас нет „Прогнозиста“, зато есть руины и в них металл. Двадцать единиц, и Архив передаст чертёж доходного дома с печатью канцелярии: два разрешения в придачу».",
+    "body_en": "Thorn with his folder.\n\n\"You have no Forecaster, but you have ruins and metal in them. Twenty units, and the Archive hands over the tenement drawing with the chancellery's stamp: two permits thrown in.\"",
+    "options": [
+      {
+        "text": "Отдать 20 металла (разрешения +2)",
+        "text_en": "Hand over 20 metal (permits +2)",
+        "cost": {
+          "res_metal": 20
+        },
+        "effects": {
+          "stat_permits": 2,
+          "set_flag": "archive_friend",
+          "style": "pragmatist",
+          "message": "Чертёж лёг на стол. Печать настоящая.",
+          "message_en": "The drawing lay on the desk. The stamp is real."
+        }
+      },
+      {
+        "text": "Металл нужен самим",
+        "text_en": "The metal is needed here",
+        "effects": {
+          "style": "loyal",
+          "message": "Торн записал что-то в папку.",
+          "message_en": "Thorn wrote something in his folder."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.directorate_reports",
+    "category": "mandate",
+    "min_level": 1,
+    "patron": "civic_directorate",
+    "trigger_day": 5,
+    "cooldown_sec": 2100,
+    "tags": [
+      "patron",
+      "letter",
+      "permits"
+    ],
+    "title": "Директорат — отчётность за неделю",
+    "title_en": "Directorate — The Week's Reports",
+    "body": "Гражданский Директорат. Канцелярия.\n\nАдминистратору. Форма № 4 (население), № 7 (запасы), № 12 (разбор руин) к сдаче. Полный комплект даёт право на внеочередные разрешения.",
+    "body_en": "Civic Directorate. Chancellery.\n\nTo the administrator. Forms No. 4 (population), No. 7 (reserves), No. 12 (salvage) are due. A full set entitles you to out-of-turn permits.",
+    "options": [
+      {
+        "text": "Подать полный комплект (20 монет писарям, разрешения +2)",
+        "text_en": "File the full set (20 coins to the clerks, permits +2)",
+        "cost": {
+          "res_money": 20
+        },
+        "effects": {
+          "stat_permits": 2,
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Формы ушли. Канцелярия вернула два бланка.",
+          "message_en": "The forms went in. The chancellery returned two forms."
+        }
+      },
+      {
+        "text": "Подать как есть (разрешение +1)",
+        "text_en": "File as is (permit +1)",
+        "effects": {
+          "stat_permits": 1,
+          "message": "Канцелярия вернула один бланк и замечание.",
+          "message_en": "The chancellery returned one form and a remark."
+        }
+      },
+      {
+        "text": "Не подавать",
+        "text_en": "Do not file",
+        "effects": {
+          "stat_league_trust": -3,
+          "stat_city_trust": 1,
+          "style": "protector",
+          "message": "Канцелярия записала пропуск.",
+          "message_en": "The chancellery recorded the omission."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.squatters",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 7,
+    "tags": [
+      "petition",
+      "families",
+      "assembly"
+    ],
+    "cooldown_sec": 999999,
+    "title": "У ворот — сквоттеры Ассамблеи",
+    "title_en": "At the Gate — The Assembly's Squatters",
+    "body": "Спикер Вейс привела шесть семей с узлами.\n\n«У вас руины пустые, у меня люди без крыши. Пустите их в остовы: Ассамблея обустроит сама. Директорат назовёт это самостроем. Назовите это людьми».",
+    "body_en": "Speaker Weiss brought six families with bundles.\n\n\"Your ruins stand empty; my people have no roof. Let them into the shells: the Assembly will fit them out. The Directorate will call it unauthorised construction. Call it people.\"",
+    "options": [
+      {
+        "text": "Пустить в руины (+5 жителей, если есть места, самострой)",
+        "text_en": "Let them into the ruins (+5 residents if there is room; unauthorised)",
+        "effects": {
+          "add_residents": 5,
+          "set_flag": "squatters_in",
+          "stat_city_trust": 4,
+          "stat_league_trust": -4,
+          "style": "protector",
+          "message": "Семьи заняли койки и остовы. Комиссар записала.",
+          "message_en": "The families took the beds and the shells. The commissar wrote it down."
+        }
+      },
+      {
+        "text": "Принять только в бараки по учёту (+3 жителя, если есть места)",
+        "text_en": "Take in only by the register, into the shelters (+3 residents if there is room)",
+        "effects": {
+          "add_residents": 3,
+          "stat_city_trust": 1,
+          "stat_rival_score": 1,
+          "style": "loyal",
+          "message": "Троих вписали в реестр. Остальные ушли в Южное кольцо.",
+          "message_en": "Three were entered in the register. The rest went to the Southern Ring."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "stat_city_trust": -4,
+          "stat_rival_score": 2,
+          "style": "pragmatist",
+          "message": "Вейс увела людей. На насыпи долго горел костёр.",
+          "message_en": "Weiss led the people away. A fire burned long on the embankment."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.permits_empty",
+    "category": "mandate",
+    "min_level": 1,
+    "trigger_condition": "stat_permits <= 0",
+    "trigger_day": 4,
+    "cooldown_sec": 1800,
+    "tags": [
+      "report",
+      "permits"
+    ],
+    "title": "Докладная — разрешений нет",
+    "title_en": "Memo — No Permits",
+    "body": "Докладная секретаря.\n\nСчётчик разрешений на нуле, стройка стоит. Канцелярия выдаст следующее по графику сезона. Можно ускорить: подарок писарям (40 монет), или подать отчётность, когда придёт форма.",
+    "body_en": "Secretary's memo.\n\nThe permit count is at zero; building stands. The office issues the next one by the season's schedule. We can hurry it: a gift to the clerks (40 coins), or file the reports when the form comes.",
+    "options": [
+      {
+        "text": "Подарок писарям (40 монет, разрешения +2)",
+        "text_en": "A gift to the clerks (40 coins, permits +2)",
+        "cost": {
+          "res_money": 40
+        },
+        "effects": {
+          "stat_permits": 2,
+          "stat_league_trust": -2,
+          "set_flag": "clerks_paid",
+          "style": "pragmatist",
+          "message": "Бланки пришли вечером. Кто-то в канцелярии улыбнулся.",
+          "message_en": "The forms came by evening. Someone in the chancellery smiled."
+        }
+      },
+      {
+        "text": "Ждать графика",
+        "text_en": "Wait for the schedule",
+        "effects": {
+          "message": "Стройка ждёт.",
+          "message_en": "The build waits."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.directorate_audit_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "civic_directorate",
+    "trigger_day": 12,
+    "tags": [
+      "patron",
+      "letter",
+      "directorate"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Директорат — уведомление о проверке",
+    "title_en": "Directorate — Notice of Inspection",
+    "body": "Гражданский Директорат. Управление зон восстановления.\n\nАдминистратору. Через три дня плановая проверка: запас воды, запас еды, население. Отдельно сверяется реестр строений с выданными разрешениями.\n\nКомиссар Хальт.",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\n\nTo the administrator. A scheduled inspection in three days: the water reserve, the food reserve, the population. The register of buildings is checked against the permits issued separately.\n\nCommissar Halt.",
+    "options": [
+      {
+        "text": "Принято",
+        "text_en": "Noted",
+        "effects": {
+          "message": "Секретарь сверяет реестр.",
+          "message_en": "The secretary checks the register."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.squat_inspection",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "civic_directorate",
+    "requires_flag": "squatters_in",
+    "trigger_day": 13,
+    "tags": [
+      "patron",
+      "letter",
+      "directorate"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Директорат — акт о самострое",
+    "title_en": "Directorate — Report on Unauthorised Construction",
+    "body": "Гражданский Директорат. Комиссар Хальт.\n\nАдминистратору. В руинах кольца учтены жильцы без разрешений. Предписываю: либо вписать их в реестр с уплатой сбора (60 монет), либо вывести за пределы зоны.",
+    "body_en": "Civic Directorate. Commissar Halt.\n\nTo the administrator. Residents without permits have been recorded in the ring's ruins. I order: either enter them in the register with the fee paid (60 coins), or move them beyond the zone.",
+    "options": [
+      {
+        "text": "Вписать и заплатить сбор (60 монет)",
+        "text_en": "Register them and pay the fee (60 coins)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "stat_league_trust": 5,
+          "clear_flag": "squatters_in",
+          "set_flag": "squatters_registered",
+          "style": "pragmatist",
+          "message": "Сквоттеры в реестре. Хальт поставила галочку.",
+          "message_en": "The squatters are in the register. Halt ticked the box."
+        }
+      },
+      {
+        "text": "Вывести за пределы зоны",
+        "text_en": "Move them beyond the zone",
+        "effects": {
+          "add_residents": -4,
+          "stat_league_trust": 4,
+          "stat_city_trust": -8,
+          "clear_flag": "squatters_in",
+          "stat_rival_score": 2,
+          "style": "loyal",
+          "message": "Семьи ушли в Южное кольцо. Вейс запомнит.",
+          "message_en": "The families left for the Southern Ring. Weiss will remember."
+        }
+      },
+      {
+        "text": "Оставить как есть",
+        "text_en": "Leave it as it is",
+        "effects": {
+          "stat_league_trust": -6,
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Акт подшит к делу.",
+          "message_en": "The report went into the file."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.thaw_tunnels",
+    "category": "water",
+    "min_level": 1,
+    "once": true,
+    "season": "season_thaw",
+    "trigger_day": 12,
+    "tags": [
+      "report",
+      "thaw"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — тоннели текут",
+    "title_en": "Report — The Tunnels Leak",
+    "body": "Сводка инженера.\n\nОттепель. Вода из старых тоннелей идёт в подвалы: насос качает грязь. Архивные чертежи показали бы, где перекрыть. Можно откачать своими силами (30 дерева на крепь) или просить Архив.",
+    "body_en": "Engineer's report.\n\nThe Thaw. Water from the old tunnels seeps into the cellars: the pump draws mud. The Archive's drawings would show where to seal. We can pump it out ourselves (30 wood for shoring) or ask the Archive.",
+    "options": [
+      {
+        "text": "Крепь и откачка (30 дерева)",
+        "text_en": "Shoring and pumping (30 wood)",
+        "cost": {
+          "res_wood": 30
+        },
+        "effects": {
+          "stat_city_trust": 2,
+          "style": "pragmatist",
+          "message": "Подвалы сухие. Насос качает чисто.",
+          "message_en": "The cellars are dry. The pump draws clean."
+        }
+      },
+      {
+        "text": "Просить чертежи у Архива (металл 10)",
+        "text_en": "Ask the Archive for the drawings (10 metal)",
+        "cost": {
+          "res_metal": 10
+        },
+        "effects": {
+          "set_flag": "archive_friend",
+          "stat_city_trust": 1,
+          "style": "pragmatist",
+          "message": "Торн прислал лист с красным крестом. Перекрыли за час.",
+          "message_en": "Thorn sent a sheet with a red cross. Sealed in an hour."
+        }
+      },
+      {
+        "text": "Пусть течёт",
+        "text_en": "Let it leak",
+        "effects": {
+          "damage_building": "bld_well_pump",
+          "stat_unrest_pressure": 4,
+          "style": "loyal",
+          "message": "Насос встал. Найдите «!» и почините.",
+          "message_en": "The pump stopped. Find the \"!\" and repair it."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.assembly_demand",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_thaw",
+    "trigger_condition": "stat_happiness <= 45",
+    "tags": [
+      "petition",
+      "assembly"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Ассамблея — требование жилья",
+    "title_en": "The Assembly — A Demand for Housing",
+    "body": "Собрание кварталов, протокол. Спикер Вейс.\n\n«Администратору. В кольце люди спят в остовах, а разрешения лежат в столе. Ассамблея требует: до конца Оттепели поднять жильё. Иначе кварталы поставят дома сами, а Директорату объясните вы».",
+    "body_en": "Assembly of blocks, minutes. Speaker Weiss.\n\n\"To the administrator. In the ring people sleep in the shells while permits lie in the desk. The Assembly demands: housing raised by the end of the Thaw. Otherwise the blocks will build the houses themselves, and you will explain to the Directorate.\"",
+    "options": [
+      {
+        "text": "Обещать жильё",
+        "text_en": "Promise housing",
+        "effects": {
+          "stat_city_trust": 4,
+          "set_flag": "housing_promised",
+          "style": "protector",
+          "message": "Протокол подписан. Вейс смотрит на счётчик разрешений.",
+          "message_en": "The minutes are signed. Weiss watches the permit count."
+        }
+      },
+      {
+        "text": "Жильё по разрешениям, не по требованиям",
+        "text_en": "Housing by permit, not by demand",
+        "effects": {
+          "stat_unrest_pressure": 6,
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Ассамблея разошлась молча.",
+          "message_en": "The Assembly dispersed in silence."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.assembly_builds",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "season": "season_thaw",
+    "requires_flag": "housing_promised",
+    "trigger_condition": "stat_permits <= 0",
+    "tags": [
+      "report",
+      "assembly",
+      "crisis"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Сводка — Ассамблея строит сама",
+    "title_en": "Report — The Assembly Builds on Its Own",
+    "body": "Сводка дежурного.\n\nНочью люди Вейс подняли стены в двух остовах без разрешений. Комиссар Хальт у поста с актом. Можно узаконить (подать как своё, разрешения −2), снести или оставить и спорить.",
+    "body_en": "Duty officer's report.\n\nOvernight Weiss's people raised walls in two shells without permits. Commissar Halt is at the post with a report. We can legalise it (file it as ours, permits −2), demolish it, or leave it and argue.",
+    "options": [
+      {
+        "text": "Узаконить (разрешения −2, +4 жителя, если есть места)",
+        "text_en": "Legalise it (permits −2, +4 residents if there is room)",
+        "effects": {
+          "stat_permits": -2,
+          "add_residents": 4,
+          "stat_city_trust": 3,
+          "style": "pragmatist",
+          "message": "Два бланка ушли на стены Ассамблеи. Люди въехали.",
+          "message_en": "Two forms went on the Assembly's walls. The people moved in."
+        }
+      },
+      {
+        "text": "Снести",
+        "text_en": "Demolish",
+        "effects": {
+          "stat_league_trust": 4,
+          "stat_city_trust": -8,
+          "stat_unrest_pressure": 8,
+          "stat_rival_score": 2,
+          "style": "loyal",
+          "message": "Стены снесли при людях. Хальт довольна, кольцо нет.",
+          "message_en": "The walls came down before the people. Halt is pleased, the ring is not."
+        }
+      },
+      {
+        "text": "Оставить и спорить с комиссаром",
+        "text_en": "Leave it and argue with the commissar",
+        "effects": {
+          "stat_league_trust": -6,
+          "stat_city_trust": 4,
+          "set_flag": "squatters_in",
+          "add_residents": 4,
+          "style": "protector",
+          "message": "Акт о самострое подшит. Стены стоят.",
+          "message_en": "The report on unauthorised construction is filed. The walls stand."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.weiss_grudge",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 19,
+    "trigger_condition": "stat_rival_gap < -6",
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Вейс напоминает",
+    "title_en": "A Letter — Weiss Reminds You",
+    "body": "«Сосед. Ваш показатель ниже моего, и Хальт это видит. В Южном кольце нет разрешений, а дома есть. Подумайте об этом, когда будете снова ждать бланк».\n\nВейс.",
+    "body_en": "\"Neighbour. Your score is below mine, and Halt sees it. The Southern Ring has no permits, and it has houses. Think about that when you next wait for a form.\"\n\nWeiss.",
+    "options": [
+      {
+        "text": "Принять к сведению",
+        "text_en": "Note it",
+        "effects": {
+          "stat_city_trust": -2,
+          "message": "Письмо легло в ящик.",
+          "message_en": "The letter went into the drawer."
+        }
+      },
+      {
+        "text": "Ответить: у нас дома не рушатся",
+        "text_en": "Reply: our houses do not fall down",
+        "effects": {
+          "stat_city_trust": 3,
+          "stat_rival_score": -2,
+          "style": "protector",
+          "message": "Ответ ушёл в Южное кольцо и был зачитан на Ассамблее.",
+          "message_en": "The reply went to the Southern Ring and was read out at the Assembly."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.weiss_favor",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 21,
+    "trigger_condition": "stat_rival_gap >= 6",
+    "tags": [
+      "rival",
+      "letter"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Вейс просит об услуге",
+    "title_en": "A Letter — Weiss Asks a Favour",
+    "body": "«Сосед. Признаю: вы стоите крепче. Комиссар пришла к нам с актами, и мне нужны бланки. Продайте два разрешения за восемьдесят монет, и Ассамблея забудет про ваши руины».\n\nВейс.",
+    "body_en": "\"Neighbour. I admit it: you stand firmer. The commissar came to us with reports, and I need forms. Sell two permits for eighty coins, and the Assembly forgets your ruins.\"\n\nWeiss.",
+    "options": [
+      {
+        "text": "Продать 2 разрешения за 80 монет",
+        "text_en": "Sell 2 permits for 80 coins",
+        "effects": {
+          "stat_permits": -2,
+          "add_resources": {
+            "res_money": 80
+          },
+          "stat_rival_score": 3,
+          "style": "pragmatist",
+          "message": "Бланки ушли в Южное кольцо. Хальт не узнала.",
+          "message_en": "The forms went to the Southern Ring. Halt did not find out."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Вейс ответила одним словом.",
+          "message_en": "Weiss answered with one word."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.directorate_audit2_warning",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "civic_directorate",
+    "trigger_day": 24,
+    "tags": [
+      "patron",
+      "letter",
+      "directorate"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Директорат — уведомление о ревизии",
+    "title_en": "Directorate — Notice of Audit",
+    "body": "Гражданский Директорат. Управление зон восстановления.\n\nАдминистратору. Вторая проверка на 27-й день, в Ревизию: вода, еда, население, сохранность запасов, реестр строений. Срок — 30-й день. Канцелярия на время Ревизии выдаёт разрешения по сокращённому графику.\n\nКомиссар Хальт.",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\n\nTo the administrator. The second inspection is on day 27, in the Audit: water, food, population, the keeping of reserves, the register of buildings. The term ends on day 30. During the Audit the chancellery issues permits on a reduced schedule.\n\nCommissar Halt.",
+    "options": [
+      {
+        "text": "Принято",
+        "text_en": "Noted",
+        "effects": {
+          "message": "Три дня до проверки.",
+          "message_en": "Three days to the inspection."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.directorate_term_report",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "patron": "civic_directorate",
+    "trigger_day": 29,
+    "tags": [
+      "patron",
+      "letter",
+      "directorate"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Директорат — к концу срока",
+    "title_en": "Directorate — Toward the End of the Term",
+    "body": "Гражданский Директорат. Управление зон восстановления.\n\nАдминистратору. Срок мандата истекает на 30-й день. Решение о продлении принимается по итогам обеих проверок и реестру строений. Мнения Ассамблеи и Архива к делу не приобщаются.\n\nКомиссар Хальт.",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\n\nTo the administrator. The mandate expires on day 30. The decision on renewal is taken by both inspections and the register of buildings. The opinions of the Assembly and the Archive are not added to the file.\n\nCommissar Halt.",
+    "options": [
+      {
+        "text": "Принято",
+        "text_en": "Noted",
+        "effects": {
+          "message": "Последние дни срока.",
+          "message_en": "The last days of the term."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.thanks",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "trigger_day": 16,
+    "trigger_condition": "stat_happiness >= 68",
+    "tags": [
+      "petition",
+      "families"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Записка — спасибо от кварталов",
+    "title_en": "A Note — Thanks from the Blocks",
+    "body": "Протокол Ассамблеи, короткий.\n\n«Администратору. Дома стоят, вода чистая, бумаги в порядке. При Марке так не было. Из Южного кольца просятся ещё двое, Ассамблея за них ручается».",
+    "body_en": "Assembly minutes, short.\n\n\"To the administrator. The houses stand, the water is clean, the papers are in order. It was not so under Mark. Two more ask to come from the Southern Ring; the Assembly vouches for them.\"",
+    "options": [
+      {
+        "text": "Принять двоих",
+        "text_en": "Take the two",
+        "effects": {
+          "add_residents": 2,
+          "stat_city_trust": 3,
+          "message": "Двое вписаны в реестр.",
+          "message_en": "The two are entered in the register."
+        }
+      },
+      {
+        "text": "Поблагодарить, мест нет",
+        "text_en": "Thank them; no room",
+        "effects": {
+          "stat_city_trust": 1,
+          "message": "Протокол подшит.",
+          "message_en": "The minutes are filed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.anchor_covenant",
+    "category": "food",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "covenant_treaty",
+    "trigger_day": 5,
+    "tags": [
+      "campaign",
+      "covenant"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Обоз — семена от Завета",
+    "title_en": "A Convoy — Seed from the Covenant",
+    "body": "У поста телега с зелёной веткой на борту. Возница: «Мать Ольха помнит договор у плотины. Семена и мёд, за так. Передай: луга стоят».",
+    "body_en": "A cart with a green branch on its side at the post. The driver: \"Mother Alder remembers the treaty at the dam. Seed and honey, for nothing. Tell them: the meadows stand.\"",
+    "options": [
+      {
+        "text": "Принять дар (+60 еды)",
+        "text_en": "Accept the gift (+60 food)",
+        "effects": {
+          "add_resources": {
+            "res_food": 60
+          },
+          "stat_city_trust": 2,
+          "message": "Мёд разошёлся по баракам к вечеру.",
+          "message_en": "The honey went round the shelters by evening."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.anchor_union",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "union_standard",
+    "trigger_day": 6,
+    "tags": [
+      "campaign",
+      "union"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Союз Инженеров — наладчик в кольцо",
+    "title_en": "Engineers' Union — A Fitter for the Ring",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Карьер держал стандарт, и Союз этого не забыл. В кольцо направлен инженер-наладчик на сезон; Директорату он не подчиняется.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The Quarry held the standard, and the Union has not forgotten. A fitter is sent to the ring for the season; he does not answer to the Directorate.\n\nEngineer-Auditor Holt.",
+    "options": [
+      {
+        "text": "Принять наладчика",
+        "text_en": "Take the fitter",
+        "effects": {
+          "add_buff": {
+            "id": "union_fitter_capital",
+            "name": "Наладчик Союза",
+            "name_en": "The Union's fitter",
+            "production_mult": 0.1,
+            "remaining": 10
+          },
+          "stat_city_trust": 2,
+          "message": "Наладчик осмотрел насос и панели.",
+          "message_en": "The fitter went over the pump and the panels."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.anchor_boats",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "boat_pact",
+    "trigger_day": 8,
+    "tags": [
+      "campaign",
+      "boats"
+    ],
+    "cooldown_sec": 999999,
+    "title": "У тоннеля — лодочники Плёсов",
+    "title_en": "At the Tunnel — The Boat People of the Reaches",
+    "body": "По затопленному тоннелю пришли две лодки: люди Ивеля. «Старшина сказал: кто держал слово о протоках, тому мы везём людей. Четыре семьи хотят к вам».",
+    "body_en": "Two boats came up the flooded tunnel: Ivel's people. \"The headman said: whoever kept their word about the channels, to them we bring people. Four families want to join you.\"",
+    "options": [
+      {
+        "text": "Принять (+4 жителя, если есть места)",
+        "text_en": "Take them in (+4 residents if there is room)",
+        "effects": {
+          "add_residents": 4,
+          "stat_city_trust": 3,
+          "message": "Семьи заняли койки. Лодки ушли обратно в тоннель.",
+          "message_en": "The families took beds. The boats went back down the tunnel."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.anchor_charters",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "charters_deal",
+    "trigger_condition": "res_metal >= 20",
+    "trigger_day": 9,
+    "tags": [
+      "campaign",
+      "charters"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Предложение — Хартии помнят цену",
+    "title_en": "An Offer — The Charters Remember Your Price",
+    "body": "Сильва Крон, агент Хартий, у поста с весами.\n\n«В Карьере вы продавали. В кольце металл в руинах, а у меня покупатели. Двадцать слитков — восемьдесят монет. Директорату не скажем, как и Союзу не говорили».",
+    "body_en": "Silva Kron, the Charters' agent, at the post with her scales.\n\n\"In the Quarry you sold. In the ring the metal is in the ruins, and I have buyers. Twenty ingots, eighty coins. We will not tell the Directorate, as we did not tell the Union.\"",
+    "options": [
+      {
+        "text": "Продать 20 металла за 80 монет",
+        "text_en": "Sell 20 metal for 80 coins",
+        "cost": {
+          "res_metal": 20
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 80
+          },
+          "stat_league_trust": -3,
+          "style": "pragmatist",
+          "message": "Слитки ушли. Крон приподняла шляпу.",
+          "message_en": "The ingots went. Kron tipped her hat."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "stat_league_trust": 1,
+          "style": "loyal",
+          "message": "Крон уехала. Весы на этот раз забрала.",
+          "message_en": "Kron left. This time she took the scales."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.anchor_strike",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "strike_broken",
+    "trigger_day": 10,
+    "tags": [
+      "campaign",
+      "assembly"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Листовка — комитеты помнят",
+    "title_en": "A Leaflet — The Committees Remember",
+    "body": "На стене конторы листовка Ассамблеи: «В Чёрном Карьере этот администратор разгонял забастовку дубинками. В кольце дубинок не будет».",
+    "body_en": "A leaflet of the Assembly on the registry wall: \"In the Black Quarry this administrator broke a strike with clubs. There will be no clubs in the ring.\"",
+    "options": [
+      {
+        "text": "Выйти к кварталам и ответить",
+        "text_en": "Go out to the blocks and answer",
+        "effects": {
+          "stat_city_trust": 2,
+          "stat_unrest_pressure": 3,
+          "style": "protector",
+          "message": "Говорили до ночи. Листовку не сняли.",
+          "message_en": "They talked until night. The leaflet stayed up."
+        }
+      },
+      {
+        "text": "Снять листовку",
+        "text_en": "Take the leaflet down",
+        "effects": {
+          "stat_city_trust": -4,
+          "stat_unrest_pressure": 6,
+          "style": "loyal",
+          "message": "Утром висела новая.",
+          "message_en": "In the morning a new one hung there."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.anchor_levees",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "levee_wall",
+    "excludes_flag": "boat_pact",
+    "trigger_day": 8,
+    "tags": [
+      "campaign",
+      "boats"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Письмо — Ивель о дамбах",
+    "title_en": "A Letter — Ivel on the Levees",
+    "body": "«Сосед, бывший. Плёсы помнят ваши дамбы: злая вода пришла к нам той весной. Людей мы к вам не повезём. Но если понадобятся лодки в тоннелях, цена двойная».\n\nИвель.",
+    "body_en": "\"Neighbour, former. The Reaches remember your levees: the angry water came to us that spring. We will not bring you people. But if you need boats in the tunnels, the price is double.\"\n\nIvel.",
+    "options": [
+      {
+        "text": "Принять к сведению",
+        "text_en": "Note it",
+        "effects": {
+          "stat_city_trust": -1,
+          "message": "Письмо легло в ящик.",
+          "message_en": "The letter went into the drawer."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.crisis_happiness",
+    "category": "happiness",
+    "min_level": 1,
+    "driver": "pressure",
+    "is_critical": true,
+    "cooldown_sec": 2400,
+    "tags": [
+      "crisis",
+      "assembly"
+    ],
+    "title": "СРОЧНО — сход у конторы",
+    "title_en": "URGENT — An Assembly at the Registry",
+    "body": "Люди собрались у учётной конторы и не расходятся. Говорят о койках, о пайке, о бланках в столе. Вейс стоит с краю и слушает.",
+    "body_en": "The people have gathered at the registry and will not disperse. They talk of beds, of rations, of the forms in the desk. Weiss stands at the edge and listens.",
+    "options": [
+      {
+        "text": "Выйти и говорить до ночи",
+        "text_en": "Go out and talk until night",
+        "effects": {
+          "stat_unrest_pressure": -10,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Разошлись за полночь. Вейс ушла последней.",
+          "message_en": "They dispersed past midnight. Weiss left last."
+        }
+      },
+      {
+        "text": "Раздать по мешку со склада (30 еды)",
+        "text_en": "Hand out a sack each from the store (30 food)",
+        "cost": {
+          "res_food": 30
+        },
+        "effects": {
+          "stat_unrest_pressure": -8,
+          "style": "pragmatist",
+          "message": "Мешки разобрали. У конторы пусто.",
+          "message_en": "The sacks went. The registry is empty."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.crisis_food",
+    "category": "food",
+    "min_level": 1,
+    "driver": "pressure",
+    "cooldown_sec": 900,
+    "tags": [
+      "crisis",
+      "food"
+    ],
+    "title": "Срочно — толпа у склада",
+    "title_en": "Urgent — A Crowd at the Store",
+    "body": "Сводка дежурного.\n\nУ склада человек пятьдесят, требуют еды: поля стоят, бочки пусты. Двое выломали пустой лоток. Охрана просит указаний.\n\nПричина: запас еды в районе на исходе.",
+    "body_en": "Duty officer's report.\n\nSome fifty people at the store demanding food: the fields stand idle, the barrels are empty. Two broke an empty stall. The guards ask for instructions.\n\nCause: the district's food reserve is nearly gone.",
+    "options": [
+      {
+        "text": "Купить паёк в Южном кольце (100 монет)",
+        "text_en": "Buy rations in the Southern Ring (100 coins)",
+        "cost": {
+          "res_money": 100
+        },
+        "effects": {
+          "add_resources": {
+            "res_food": 30
+          },
+          "stat_unrest_pressure": -10,
+          "stat_rival_score": 2,
+          "style": "protector",
+          "message": "Телега Ассамблеи привезла мешки. Толпа разошлась.",
+          "message_en": "The Assembly's cart brought sacks. The crowd went home."
+        }
+      },
+      {
+        "text": "Разогнать силой",
+        "text_en": "Disperse them by force",
+        "effects": {
+          "stat_unrest_pressure": 12,
+          "stat_city_trust": -8,
+          "damage_building": "bld_warehouse",
+          "style": "pragmatist",
+          "message": "Толпу разогнали, ворота склада выломаны: нужен ремонт.",
+          "message_en": "The crowd was dispersed; the store gate is broken and needs repair."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.crisis_water",
+    "category": "water",
+    "min_level": 1,
+    "driver": "pressure",
+    "cooldown_sec": 900,
+    "tags": [
+      "crisis",
+      "water"
+    ],
+    "title": "Срочно — очередь у цистерны",
+    "title_en": "Urgent — A Queue at the Cistern",
+    "body": "Сводка дежурного.\n\nЦистерна пуста, насос качает из тоннеля грязь. У цистерны драка за вёдра, двое в конторе с разбитыми головами.\n\nПричина: запас воды в районе на исходе.",
+    "body_en": "Duty officer's report.\n\nThe cistern is empty; the pump draws mud from the tunnel. A fight over buckets at the cistern; two in the registry with cracked heads.\n\nCause: the district's water reserve is nearly gone.",
+    "options": [
+      {
+        "text": "Ввести выдачу по часам",
+        "text_en": "Water by the hour",
+        "effects": {
+          "set_policy": "water_hours",
+          "stat_unrest_pressure": -8,
+          "style": "pragmatist",
+          "message": "Расписание повесили у цистерны.",
+          "message_en": "The schedule went up by the cistern."
+        }
+      },
+      {
+        "text": "Купить воду у Директората (60 монет)",
+        "text_en": "Buy water from the Directorate (60 coins)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "add_resources": {
+            "res_water_stockpile": 80
+          },
+          "stat_unrest_pressure": -8,
+          "stat_league_trust": -2,
+          "style": "loyal",
+          "message": "Цистерна Директората пришла к вечеру. В деле появилась строка.",
+          "message_en": "The Directorate's tanker came by evening. A line appeared in the file."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.crisis_mandate",
+    "category": "mandate",
+    "min_level": 1,
+    "driver": "pressure",
+    "patron": "civic_directorate",
+    "cooldown_sec": 960,
+    "tags": [
+      "crisis",
+      "mandate",
+      "directorate"
+    ],
+    "title": "Срочно — разрешения приостановлены",
+    "title_en": "Urgent — Permits Suspended",
+    "body": "Гражданский Директорат. Канцелярия.\nАдминистратору зоны «внешнее кольцо».\n\nВыдача разрешений приостановлена до улучшения показателей зоны. Основание: доклад комиссара.\n\nДля возобновления представьте план исправления.",
+    "body_en": "Civic Directorate. Chancellery.\nTo the administrator of the \"outer ring\" zone.\n\nThe issue of permits is suspended until the zone's figures improve. Grounds: the commissar's report.\n\nTo resume it, submit a correction plan.",
+    "options": [
+      {
+        "text": "Принять условия и исправлять",
+        "text_en": "Accept the terms and correct the figures",
+        "effects": {
+          "stat_city_trust": -5,
+          "stat_league_trust": 6,
+          "message": "Вы приняли условия. Директорат отметил готовность.",
+          "message_en": "You accepted the terms. The Directorate noted your willingness."
+        }
+      },
+      {
+        "text": "Купить бланки у Ассамблеи (60 монет, разрешения +2)",
+        "text_en": "Buy forms from the Assembly (60 coins, permits +2)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "stat_permits": 2,
+          "stat_league_trust": -3,
+          "stat_rival_score": 2,
+          "style": "pragmatist",
+          "message": "Бланки Южного кольца: печать почти настоящая.",
+          "message_en": "Forms from the Southern Ring: the stamp is almost real."
+        }
+      },
+      {
+        "text": "Найти деньги в районе: сборы (+80 монет)",
+        "text_en": "Find the money in the district: levies (+80 coins)",
+        "effects": {
+          "add_resources": {
+            "res_money": 80
+          },
+          "stat_league_trust": -3,
+          "stat_unrest_pressure": 6,
+          "message": "Сборы собрали. У конторы недовольны.",
+          "message_en": "The levies were collected. The registry is unhappy."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.recall_ultimatum",
+    "category": "mandate",
+    "min_level": 1,
+    "patron": "civic_directorate",
+    "is_critical": true,
+    "trigger_condition": "stat_league_trust <= 25",
+    "cooldown_sec": 1800,
+    "tags": [
+      "crisis",
+      "mandate",
+      "recall",
+      "directorate"
+    ],
+    "title": "Срочно — предписание о приостановке",
+    "title_en": "Urgent — Notice of Suspension",
+    "body": "Гражданский Директорат. Управление зон восстановления.\nАдминистратору зоны «внешнее кольцо». Под роспись.\n\nПоказатели зоны признаны неудовлетворительными. Комиссар уполномочена приостановить ваши полномочия.\n\nПриостановка откладывается при условии: 60 единиц еды и 40 монет передаются в резерв зоны сегодня, реестр строений — на проверку.\n\nПовторного предписания не будет.\n\nКомиссар Хальт.",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\nTo the administrator of the \"outer ring\" zone. Against signature.\n\nThe zone's figures are found unsatisfactory. The commissar is authorised to suspend your powers.\n\nThe suspension is deferred on one condition: 60 units of food and 40 coins are transferred to the zone reserve today, and the register of buildings handed over for inspection.\n\nThere will be no second notice.\n\nCommissar Halt.",
+    "options": [
+      {
+        "text": "Передать 60 еды и 40 монет",
+        "text_en": "Transfer 60 food and 40 coins",
+        "cost": {
+          "res_food": 60,
+          "res_money": 40
+        },
+        "effects": {
+          "stat_league_trust": 12,
+          "style": "loyal",
+          "message": "Передано. Хальт отозвала предписание.",
+          "message_en": "Transferred. Halt withdrew the notice."
+        }
+      },
+      {
+        "text": "Отказать, сославшись на нужды жителей",
+        "text_en": "Refuse, citing the residents' needs",
+        "effects": {
+          "stat_league_trust": -5,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Отказ записан. Предписание ушло наверх.",
+          "message_en": "The refusal is on record. The notice went up."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.empty_treasury",
+    "category": "mandate",
+    "min_level": 1,
+    "trigger_condition": "res_money <= 25",
+    "trigger_day": 3,
+    "cooldown_sec": 2400,
+    "tags": [
+      "report",
+      "money"
+    ],
+    "title": "Докладная — казна пуста",
+    "title_en": "Memo — The Treasury Is Empty",
+    "body": "Докладная секретаря.\n\nВ казне меньше двадцати пяти монет: ремонт и писари встанут. Можно продать металл из руин Архиву или просить у Директората аванс под отчётность.",
+    "body_en": "Secretary's memo.\n\nUnder twenty-five coins in the treasury: repairs and clerks stop. We can sell salvaged metal to the Archive, or ask the Directorate for an advance against the reports.",
+    "options": [
+      {
+        "text": "Продать 15 металла Архиву (+60 монет)",
+        "text_en": "Sell 15 metal to the Archive (+60 coins)",
+        "cost": {
+          "res_metal": 15
+        },
+        "effects": {
+          "add_resources": {
+            "res_money": 60
+          },
+          "style": "pragmatist",
+          "message": "Торн заплатил и записал.",
+          "message_en": "Thorn paid and made a note."
+        }
+      },
+      {
+        "text": "Просить аванс у Директората (+40 монет)",
+        "text_en": "Ask the Directorate for an advance (+40 coins)",
+        "effects": {
+          "add_resources": {
+            "res_money": 40
+          },
+          "stat_league_trust": -4,
+          "style": "loyal",
+          "message": "Аванс пришёл с формой № 19.",
+          "message_en": "The advance came with form No. 19."
+        }
+      },
+      {
+        "text": "Ждать аренды",
+        "text_en": "Wait for the rent",
+        "effects": {
+          "message": "Казна пуста до вечера.",
+          "message_en": "The treasury is empty until evening."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_capital.papers",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_papers",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — бумаги в порядке",
+    "title_en": "Handover Act — The Papers in Order",
+    "body": "Акт передачи зоны, подписан секретарём.\n\nЛеон Марк вёл отчётность безупречно: шесть разрешений в столе, казна полна, комиссар довольна. Руины он не тронул, людей не прибавил.\n\nСекретарь: «Бумаги есть. Стен нет».",
+    "body_en": "Zone handover act, signed by the secretary.\n\nLeon Mark kept flawless records: six permits in the desk, a full treasury, a pleased commissar. He left the ruins alone and added no people.\n\nThe secretary: \"There are papers. There are no walls.\"",
+    "options": [
+      {
+        "text": "Принять зону. Тратить бланки",
+        "text_en": "Take over. Spend the forms",
+        "effects": {
+          "message": "Подписано. Шесть бланков на столе.",
+          "message_en": "Signed. Six forms on the desk."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_capital.squatters",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_squatters",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — самострой",
+    "title_en": "Handover Act — Unauthorised Construction",
+    "body": "Акт передачи зоны, подписан секретарём.\n\nМарк пустил сквоттеров Ассамблеи в руины без разрешений: третий барак, двенадцать жителей, поддержка кварталов высокая. Директорат записал самострой: доверие ниже, бланков нет.\n\nСекретарь: «Люди есть. Комиссар тоже».",
+    "body_en": "Zone handover act, signed by the secretary.\n\nMark let the Assembly's squatters into the ruins without permits: a third shelter, twelve residents, high support of the blocks. The Directorate recorded unauthorised construction: lower trust, no forms.\n\nThe secretary: \"There are people. There is also the commissar.\"",
+    "options": [
+      {
+        "text": "Принять зону и людей",
+        "text_en": "Take over, people included",
+        "effects": {
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Подписано. Вейс передала поклон.",
+          "message_en": "Signed. Weiss sent her regards."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_capital.archive",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "legacy_archive",
+    "trigger_day": 1,
+    "tags": [
+      "report",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Акт передачи — долг Архиву",
+    "title_en": "Handover Act — A Debt to the Archive",
+    "body": "Акт передачи зоны, подписан секретарём.\n\nМарк взял у Архива металл и чертежи под доходный дом и уехал, не расплатившись. Металл на складе, чертежи в столе, архивариус придёт.\n\nСекретарь: «Чертёж хороший. Долг тоже».",
+    "body_en": "Zone handover act, signed by the secretary.\n\nMark took metal and drawings for a tenement from the Archive and left without paying. The metal is in store, the drawings in the desk, the archivist will come.\n\nThe secretary: \"A good drawing. A debt, too.\"",
+    "options": [
+      {
+        "text": "Принять зону",
+        "text_en": "Take over",
+        "effects": {
+          "message": "Подписано. Визитка с шестернёй лежит сверху.",
+          "message_en": "Signed. The card with the gear lies on top."
+        }
+      }
+    ]
+  },
+  {
+    "id": "legacy_capital.archive_due",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "requires_flag": "archive_debt",
+    "trigger_day": 3,
+    "tags": [
+      "archive",
+      "legacy"
+    ],
+    "cooldown_sec": 999999,
+    "title": "Визит — Архив за долгом",
+    "title_en": "A Visit — The Archive for the Debt",
+    "body": "Торн, в перчатках.\n\n«Ваш предшественник должен Архиву тридцать металла за чертежи. Его нет, чертежи есть, долг тоже. Металлом или разрешениями: двумя».",
+    "body_en": "Thorn, gloved.\n\n\"Your predecessor owes the Archive thirty metal for the drawings. He is gone; the drawings remain, so does the debt. In metal, or in permits: two.\"",
+    "options": [
+      {
+        "text": "Отдать 30 металла",
+        "text_en": "Hand over 30 metal",
+        "cost": {
+          "res_metal": 30
+        },
+        "effects": {
+          "clear_flag": "archive_debt",
+          "set_flag": "archive_friend",
+          "style": "pragmatist",
+          "message": "Торн пересчитал слитки. Долг закрыт.",
+          "message_en": "Thorn counted the ingots. The debt is closed."
+        }
+      },
+      {
+        "text": "Отдать 2 разрешения",
+        "text_en": "Hand over 2 permits",
+        "effects": {
+          "stat_permits": -2,
+          "clear_flag": "archive_debt",
+          "set_flag": "archive_friend",
+          "style": "pragmatist",
+          "message": "Бланки ушли в Архив. Долг закрыт.",
+          "message_en": "The forms went to the Archive. The debt is closed."
+        }
+      },
+      {
+        "text": "Отказать: долг Марка, не зоны",
+        "text_en": "Refuse: Mark's debt, not the zone's",
+        "effects": {
+          "set_flag": "archive_angry",
+          "stat_city_trust": 2,
+          "style": "protector",
+          "message": "Торн убрал перчатки в карман. Чертежей больше не будет.",
+          "message_en": "Thorn put his gloves in his pocket. There will be no more drawings."
+        }
+      }
+    ]
+  }
+]
