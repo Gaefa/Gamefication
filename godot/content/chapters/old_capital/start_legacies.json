@@ -1,0 +1,67 @@
+[
+  {
+    "id": "legacy_papers",
+    "label": "Отчётность в порядке",
+    "label_en": "The paperwork in order",
+    "description": "Прежний администратор Леон Марк вёл отчётность безупречно: шесть разрешений в столе, доверие Директората выше, казна полнее. Руины он не трогал.",
+    "description_en": "The previous administrator, Leon Mark, kept flawless records: six permits in the desk, higher Directorate trust, a fuller treasury. He left the ruins alone.",
+    "resources": {
+      "res_money": 160
+    },
+    "climate": {
+      "permits": 6.0
+    },
+    "mandate": {
+      "patron_trust": 62
+    },
+    "flags": [
+      "legacy_papers"
+    ]
+  },
+  {
+    "id": "legacy_squatters",
+    "label": "Самострой Ассамблеи",
+    "label_en": "The Assembly's squats",
+    "description": "Марк пустил сквоттеров Ассамблеи в руины без разрешений: третий барак, двенадцать жителей, поддержка города высокая. Директорат это записал: доверие ниже, разрешений нет.",
+    "description_en": "Mark let the Assembly's squatters into the ruins without permits: a third shelter, twelve residents, high city support. The Directorate wrote it down: lower trust, no permits.",
+    "buildings": [
+      {
+        "coord": [
+          -3,
+          3
+        ],
+        "type": "bld_shelter"
+      }
+    ],
+    "residents": 12,
+    "climate": {
+      "permits": 0.0
+    },
+    "mandate": {
+      "support": 64,
+      "patron_trust": 40
+    },
+    "flags": [
+      "legacy_squatters",
+      "squatters_in"
+    ]
+  },
+  {
+    "id": "legacy_archive",
+    "label": "Долг Архиву",
+    "label_en": "A debt to the Archive",
+    "description": "Марк взял у Архива металл и чертежи под доходный дом и уехал, не расплатившись: тридцать металла на складе, но архивариус придёт за долгом на третий день.",
+    "description_en": "Mark took metal and drawings for a tenement from the Archive and left without paying: thirty metal in store, but the archivist comes for the debt on day three.",
+    "resources": {
+      "res_metal": 30,
+      "res_stone": 60
+    },
+    "climate": {
+      "permits": 2.0
+    },
+    "flags": [
+      "legacy_archive",
+      "archive_debt"
+    ]
+  }
+]

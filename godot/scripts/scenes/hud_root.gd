@@ -217,7 +217,12 @@ func _build_resource_bar() -> void:
 	# The chapter's gauge (smoke in the Quarry, the river in Nyupa): shown only where the chapter keeps one.
 	var mechanics: Dictionary = ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary
 	var gauge_box: HBoxContainer = _chip(top, _gauge_tooltip)
-	_chip_icon(gauge_box, "water" if (mechanics.get("flood", false) as bool) else "waste")
+	var gauge_icon: String = "waste"
+	if mechanics.get("flood", false) as bool:
+		gauge_icon = "water"
+	elif mechanics.get("permits", false) as bool:
+		gauge_icon = "mandate"
+	_chip_icon(gauge_box, gauge_icon)
 	_gauge_label = _chip_text(gauge_box, 14, Color(0.97, 0.95, 0.88))
 	_gauge_chip = gauge_box.get_parent() as Control
 	_gauge_chip.visible = false
@@ -683,7 +688,7 @@ func _update_resource_bar() -> void:
 	_happy_label.text = "%s %d%%" % [Localization.t("ui.resource.happiness", "Happy"), int(happiness)]
 	(_happy_label.get_parent().get_parent() as Control).tooltip_text = _mood_tooltip(happiness)
 	var chapter_mechanics: Dictionary = ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary
-	_gauge_chip.visible = (chapter_mechanics.get("waste", false) as bool) or (chapter_mechanics.get("flood", false) as bool)
+	_gauge_chip.visible = (chapter_mechanics.get("waste", false) as bool) or (chapter_mechanics.get("flood", false) as bool) or (chapter_mechanics.get("permits", false) as bool)
 	if chapter_mechanics.get("waste", false) as bool:
 		var smoke: float = WasteSystem.level()
 		_gauge_label.text = "%s %d" % [Localization.ru_en("Дым", "Smoke"), int(smoke)]
@@ -692,6 +697,10 @@ func _update_resource_bar() -> void:
 		var river: float = FloodSystem.level()
 		_gauge_label.text = "%s %d" % [Localization.ru_en("Река", "River"), int(river)]
 		_gauge_label.add_theme_color_override("font_color", UiStyle.BAD if FloodSystem.is_high() else (UiStyle.WARN if river >= 40.0 else UiStyle.TEXT))
+	elif chapter_mechanics.get("permits", false) as bool:
+		var permits: int = PermitSystem.available()
+		_gauge_label.text = "%s %d" % [Localization.ru_en("Разрешения", "Permits"), permits]
+		_gauge_label.add_theme_color_override("font_color", UiStyle.BAD if permits <= 0 else (UiStyle.WARN if permits == 1 else UiStyle.TEXT))
 	_happy_label.add_theme_color_override("font_color", _level_color(happiness, 40.0, 55.0))
 	var city_lv: int = GameStateStore.progression().city_level as int
 	var lv_name: String = Localization.content_text(ContentDB.get_level_def(city_lv), "name", "?")
@@ -1654,6 +1663,11 @@ func _money_tooltip() -> String:
 ## The chapter's gauge chip: the smoke count or the river level, and what moves it.
 func _gauge_tooltip() -> String:
 	var mods: Dictionary = GameStateStore.climate().get("modifiers", {}) as Dictionary
+	if PermitSystem.enabled():
+		var rate: float = (mods.get("permit_rate", PermitSystem.DEFAULT_RATE) as float) + PermitSystem.registry_rate()
+		return Localization.ru_en(
+			"Разрешения Директората: %d (не больше %d). Каждое новое здание, кроме дорог, тратит одно. Канцелярия выдаёт %.1f в день в этот сезон; письма Директората, отчётность и руины дают ещё. Без разрешения стройка ждёт.",
+			"Directorate permits: %d (at most %d). Every new building but a road spends one. The office issues %.1f a day this season; the Directorate's letters, filed reports and the ruins give more. Without a permit the build waits.") % [PermitSystem.available(), int(PermitSystem.MAX_PERMITS), rate]
 	if (ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary).get("flood", false) as bool:
 		var rise: float = mods.get("flood_rise", FloodSystem.DEFAULT_FALL) as float
 		var exposed: int = FloodSystem.exposed_coords().size()

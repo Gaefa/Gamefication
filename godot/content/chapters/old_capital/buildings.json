@@ -1,0 +1,132 @@
+{
+  "bld_company_ruin": {
+    "name": "Руины квартала",
+    "name_en": "Block ruins",
+    "description": "Остов квартала Компании: бетон, арматура, ящики с логотипом-каплей. Разобрать (B) — даст камень, дерево и металл; разрешения на это не нужно.",
+    "description_en": "The shell of a Company block: concrete, rebar, crates with the droplet logo. Salvage it (B) for stone, wood and metal; no permit needed.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": false,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/company_ruin_t1_hex.png"
+    ],
+    "cost_build": {},
+    "outputs": {},
+    "consumes": {},
+    "cycle_time": 0.0,
+    "levels": [
+      {
+        "stage": "Остов",
+        "stage_en": "Shell"
+      }
+    ],
+    "tags": [
+      "landmark",
+      "ruin"
+    ],
+    "salvage": {
+      "res_stone": 25,
+      "res_wood": 10,
+      "res_metal": 6
+    }
+  },
+  "bld_registry": {
+    "badge": "mandate",
+    "category": "Infrastructure",
+    "name": "Учётная контора",
+    "name_en": "Registry office",
+    "description": "Стол, печати и очередь: канцелярия Директората выдаёт на одно разрешение в день больше, пока контора работает. Ставится без разрешения.",
+    "description_en": "A desk, stamps and a queue: the Directorate's office issues one more permit a day while the registry works. Built without a permit.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/admin_post_t1_hex.png"
+    ],
+    "sprite_tint": "c9c0a8",
+    "cost_build": {
+      "res_wood": 20,
+      "res_stone": 20,
+      "res_money": 40
+    },
+    "outputs": {},
+    "consumes": {
+      "res_money": 0.5
+    },
+    "cycle_time": 10.0,
+    "permit_rate": 1.0,
+    "levels": [
+      {
+        "stage": "Учётная контора",
+        "stage_en": "Registry office",
+        "consumes": {
+          "res_money": 0.5
+        }
+      }
+    ],
+    "tags": [
+      "infrastructure",
+      "needs_road",
+      "no_permit",
+      "registry"
+    ]
+  },
+  "bld_tenement": {
+    "badge": "people",
+    "category": "Residential",
+    "name": "Доходный дом",
+    "name_en": "Tenement",
+    "description": "Восстановленный блок старого квартала: много жильцов на одно разрешение. Дорог по камню и металлу.",
+    "description_en": "A restored block of the old quarter: many residents for one permit. Dear in stone and metal.",
+    "size": [
+      1,
+      1
+    ],
+    "player_buildable": true,
+    "footprint": "hex",
+    "sprites_by_level": [
+      "res://assets/buildings/tiers/shelter_t3_hex.png"
+    ],
+    "sprite_tint": "b8b0a4",
+    "cost_build": {
+      "res_wood": 20,
+      "res_stone": 30,
+      "res_metal": 10
+    },
+    "outputs": {
+      "res_money": 2
+    },
+    "consumes": {
+      "res_food": 2,
+      "res_water_stockpile": 2
+    },
+    "population": 10,
+    "power_need": 2,
+    "cycle_time": 10.0,
+    "levels": [
+      {
+        "stage": "Доходный дом",
+        "stage_en": "Tenement",
+        "produces": {
+          "res_money": 2
+        },
+        "consumes": {
+          "res_food": 2,
+          "res_water_stockpile": 2
+        },
+        "population": 10,
+        "happiness": 1
+      }
+    ],
+    "tags": [
+      "housing",
+      "needs_road"
+    ]
+  }
+}

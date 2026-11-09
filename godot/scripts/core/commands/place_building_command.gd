@@ -25,6 +25,8 @@ func execute(ctx: Dictionary) -> void:
 	# Spend & place
 	var build_cost: Dictionary = PlacementRules.build_cost_for(def)
 	GameStateStore.spend(build_cost)
+	if PermitSystem.needs_permit(type_id):
+		PermitSystem.spend_one()
 	var bld: Dictionary = {
 		"type": type_id,
 		"level": 0,

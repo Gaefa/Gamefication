@@ -80,6 +80,8 @@ func build() -> void:
 		tick_scheduler.add_system(WasteSystem.new())
 	if mechanics.get("flood", false) as bool:
 		tick_scheduler.add_system(FloodSystem.new())
+	if mechanics.get("permits", false) as bool:
+		tick_scheduler.add_system(PermitSystem.new())
 
 	# Command bus
 	command_bus = CommandBus.new()
@@ -103,6 +105,13 @@ func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator",
 		GameStateStore.mandate()["patron_id"] = patron.get("id", "") as String
 	GameStateStore.save_meta().rng_seed = seed_val
 	GameStateStore.save_meta().chapter_id = ContentDB.active_chapter
+	# What the finished chapters left behind: their decision flags open this chapter's cards.
+	var run_flags: Dictionary = GameStateStore.mandate().get("flags", {}) as Dictionary
+	run_flags.merge(Campaign.carried_flags())
+	GameStateStore.mandate()["flags"] = run_flags
+	var chapter_def: Dictionary = ContentDB.get_chapter_def()
+	if (chapter_def.get("mechanics", {}) as Dictionary).get("permits", false) as bool:
+		GameStateStore.climate()["permits"] = float(chapter_def.get("permits_start", 2) as int)
 	build()
 	_generate_terrain()
 	GameStateStore.save_meta().rng_state = rng.get_state()

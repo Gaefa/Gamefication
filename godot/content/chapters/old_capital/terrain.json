@@ -1,0 +1,78 @@
+{
+  "0": {
+    "id": "grass",
+    "label": "Пустырь",
+    "label_en": "Waste ground",
+    "buildable": true,
+    "cost_multiplier": 1,
+    "color": "8a8a72",
+    "label_key": "terrain.grass.label",
+    "description": "Пустырь между кварталами: трава по бетону.",
+    "description_en": "Waste ground between the blocks: grass over concrete."
+  },
+  "1": {
+    "id": "water",
+    "label": "Затопленный тоннель",
+    "label_en": "Flooded tunnel",
+    "buildable": false,
+    "cost_multiplier": 0,
+    "color": "4a5a66",
+    "label_key": "terrain.water.label",
+    "description": "Провал в старый тоннель, полный чёрной воды.",
+    "description_en": "A hole into an old tunnel, full of black water."
+  },
+  "2": {
+    "id": "sand",
+    "label": "Щебень",
+    "label_en": "Gravel",
+    "buildable": true,
+    "cost_multiplier": 1.1,
+    "color": "a8a292",
+    "label_key": "terrain.sand.label",
+    "description": "Щебень снесённых домов.",
+    "description_en": "Gravel of demolished houses."
+  },
+  "3": {
+    "id": "hill",
+    "label": "Насыпь",
+    "label_en": "Embankment",
+    "buildable": true,
+    "cost_multiplier": 1.5,
+    "color": "7e7a62",
+    "label_key": "terrain.hill.label",
+    "description": "Насыпь старой магистрали.",
+    "description_en": "The embankment of an old highway."
+  },
+  "4": {
+    "id": "forest",
+    "label": "Парк",
+    "label_en": "Park",
+    "buildable": true,
+    "cost_multiplier": 1.3,
+    "color": "5a7a46",
+    "label_key": "terrain.forest.label",
+    "description": "Одичавший городской парк: дерево есть.",
+    "description_en": "A city park gone wild: there is wood."
+  },
+  "5": {
+    "id": "rock",
+    "label": "Фундамент",
+    "label_en": "Foundation",
+    "buildable": true,
+    "cost_multiplier": 2,
+    "color": "66625c",
+    "label_key": "terrain.rock.label",
+    "description": "Фундамент башни, которой нет.",
+    "description_en": "The foundation of a tower that is gone."
+  },
+  "9": {
+    "id": "rubble",
+    "label": "Развалины",
+    "label_en": "Rubble",
+    "buildable": true,
+    "cost_multiplier": 1.3,
+    "color": "7a7670",
+    "description": "Битый бетон старого квартала. Строить дороже, зато камень под ногами.",
+    "description_en": "Broken concrete of an old block. Dearer to build on, but stone underfoot."
+  }
+}

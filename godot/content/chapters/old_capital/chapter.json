@@ -1,0 +1,255 @@
+{
+  "id": "old_capital",
+  "order": 5,
+  "title": "Старый Капитал, внешнее кольцо",
+  "title_en": "The Old Capital, Outer Ring",
+  "region": "Разбитый мегаполис",
+  "region_en": "The Broken Metropolis",
+  "blurb": "Внешнее кольцо Старого Капитала под Гражданским Директоратом. Строить можно только по разрешению, руины дают камень и металл, Архив торгуется за «Прогнозист», Ассамблея требует жильё для сквоттеров. Серая зима, Оттепель, Ревизия: 30 дней. Финал кампании.",
+  "blurb_en": "The outer ring of the Old Capital under the Civic Directorate. Building needs a permit, the ruins give stone and metal, the Archive bargains for the Forecaster, the Assembly demands housing for squatters. Grey Winter, Thaw, Audit: 30 days. The campaign's finale.",
+  "scenario": {
+    "season_order": [
+      "season_grey_winter",
+      "season_thaw",
+      "season_audit"
+    ],
+    "win_day": 30,
+    "audit_days": [
+      15,
+      27
+    ],
+    "grant_day": 10
+  },
+  "patron": {
+    "id": "civic_directorate",
+    "name": "Гражданский Директорат",
+    "name_en": "The Civic Directorate",
+    "short": "Директорат",
+    "short_en": "Directorate"
+  },
+  "rival": {
+    "name": "Спикер Нора Вейс",
+    "name_en": "Speaker Nora Weiss",
+    "short": "Вейс",
+    "short_en": "Weiss",
+    "district": "Южное кольцо",
+    "district_en": "The Southern Ring"
+  },
+  "tutorial_intro": "Вы — администратор [b]внешнего кольца Старого Капитала[/b], последний мандат кампании. Хозяин здесь Директорат: каждое здание, кроме дорог, тратит [b]разрешение[/b] (счётчик вверху); канцелярия выдаёт их медленно, письма и отчётность дают ещё. [b]Руины[/b] Компании вокруг можно разобрать (B) на камень и металл. [b]Серая зима[/b] — дни 1–10, [b]Оттепель[/b] — 11–22, [b]Ревизия[/b] — 23–30. Проверки комиссара — дни 15 и 27. Продержитесь до 30-го дня с не меньше чем 12 жителями.\n\nВремя пока стоит — спокойно осмотримся.",
+  "tutorial_intro_en": "You are the administrator of the [b]Old Capital's outer ring[/b], the campaign's last mandate. The master here is the Directorate: every building but a road spends a [b]permit[/b] (the counter at the top); the office issues them slowly, letters and filed reports give more. The Company's [b]ruins[/b] around you can be salvaged (B) for stone and metal. The [b]Grey Winter[/b] runs on days 1–10, the [b]Thaw[/b] on 11–22, the [b]Audit[/b] on 23–30. The commissar's inspections: days 15 and 27. Hold out until day 30 with at least 12 residents.\n\nTime is stopped for now — let's look around.",
+  "company_traces": false,
+  "mechanics": {
+    "permits": true
+  },
+  "permits_start": 2,
+  "terrain": {
+    "paint_type": 9,
+    "paint_cells": [
+      [
+        3,
+        -1
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        -3,
+        1
+      ],
+      [
+        -3,
+        2
+      ],
+      [
+        -2,
+        3
+      ],
+      [
+        1,
+        -3
+      ],
+      [
+        2,
+        -3
+      ],
+      [
+        0,
+        -3
+      ],
+      [
+        -1,
+        -2
+      ],
+      [
+        4,
+        -2
+      ],
+      [
+        -4,
+        3
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        -3,
+        0
+      ]
+    ]
+  },
+  "start_layout": [
+    {
+      "coord": [
+        0,
+        0
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        1,
+        -1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -1,
+        1
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -2,
+        2
+      ],
+      "type": "bld_road"
+    },
+    {
+      "coord": [
+        -1,
+        0
+      ],
+      "type": "bld_admin_post"
+    },
+    {
+      "coord": [
+        1,
+        0
+      ],
+      "type": "bld_main_cistern"
+    },
+    {
+      "coord": [
+        0,
+        -1
+      ],
+      "type": "bld_warehouse"
+    },
+    {
+      "coord": [
+        0,
+        1
+      ],
+      "type": "bld_well_pump"
+    },
+    {
+      "coord": [
+        -2,
+        1
+      ],
+      "type": "bld_shelter"
+    },
+    {
+      "coord": [
+        -1,
+        2
+      ],
+      "type": "bld_shelter"
+    },
+    {
+      "coord": [
+        2,
+        -1
+      ],
+      "type": "bld_field_strip"
+    },
+    {
+      "coord": [
+        -3,
+        2
+      ],
+      "type": "bld_field_strip"
+    },
+    {
+      "coord": [
+        -1,
+        -1
+      ],
+      "type": "bld_solar_panel"
+    },
+    {
+      "coord": [
+        -2,
+        0
+      ],
+      "type": "bld_solar_panel"
+    },
+    {
+      "coord": [
+        3,
+        -1
+      ],
+      "type": "bld_company_ruin"
+    },
+    {
+      "coord": [
+        2,
+        1
+      ],
+      "type": "bld_company_ruin"
+    },
+    {
+      "coord": [
+        -3,
+        1
+      ],
+      "type": "bld_company_ruin"
+    },
+    {
+      "coord": [
+        2,
+        -3
+      ],
+      "type": "bld_company_ruin"
+    },
+    {
+      "coord": [
+        -1,
+        -2
+      ],
+      "type": "bld_company_ruin"
+    },
+    {
+      "coord": [
+        4,
+        -2
+      ],
+      "type": "bld_company_ruin"
+    },
+    {
+      "coord": [
+        -4,
+        3
+      ],
+      "type": "bld_company_ruin"
+    }
+  ]
+}

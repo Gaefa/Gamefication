@@ -30,7 +30,10 @@ const PATRON_IDS := ["restoration_league", "civic_directorate", "engineers_union
 const STYLE_IDS := ["loyal", "pragmatist", "protector", "autonomist"]
 const TRIGGER_STATS := ["stat_unrest_pressure", "stat_city_trust", "stat_league_trust", "stat_happiness",
 	"stat_population", "stat_low_pressure_housing", "stat_rival_score", "stat_rival_gap", "stat_water_days", "stat_day",
-	"stat_contested_fields", "stat_waste", "stat_flood", "stat_levees"]
+	"stat_contested_fields", "stat_waste", "stat_flood", "stat_levees", "stat_permits"]
+## Decision flags a finished chapter hands to the next ones (Campaign carries them into the new run).
+const CARRIED_FLAGS := ["ruben_burned", "unregistered_people", "forecaster_active", "strike_banned", "dried_rations",
+	"covenant_treaty", "charters_deal", "strike_broken", "union_standard", "boat_pact", "levee_wall"]
 
 
 func _ready() -> void:
@@ -427,7 +430,7 @@ func _has_flows(def: Dictionary) -> bool:
 
 
 func _flags_set_by_cards() -> Array:
-	var flags: Array = []
+	var flags: Array = CARRIED_FLAGS.duplicate()  # an earlier chapter may have set these
 	for legacy_id: String in start_legacies:
 		flags.append_array((start_legacies[legacy_id] as Dictionary).get("flags", []) as Array)
 	for event_id: String in events:

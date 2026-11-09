@@ -1,0 +1,48 @@
+{
+  "fragments": [
+    {
+      "id": "capital.diary.01",
+      "order": 1,
+      "title": "Служебный журнал Леона Марка — I",
+      "title_en": "Leon Mark's Service Log — I",
+      "body": "Принял внешнее кольцо. Комиссар Хальт выдала две бланка разрешений и папку форм. Архивариус Торн спросил, не привёз ли я ключи от «Прогнозиста». Спикер Вейс спросила, сколько у меня коек. Руин вокруг больше, чем людей.",
+      "body_en": "Took over the outer ring. Commissar Halt issued two permit forms and a folder of blanks. Archivist Thorn asked whether I had brought the keys to the Forecaster. Speaker Weiss asked how many beds I had. There are more ruins around than people.",
+      "unlock": {
+        "day": 1
+      }
+    },
+    {
+      "id": "capital.diary.02",
+      "order": 2,
+      "title": "Служебный журнал Леона Марка — II",
+      "title_en": "Leon Mark's Service Log — II",
+      "body": "Разрешений нет, люди есть. Вейс привела сквоттеров, они сели в руины. Хальт записала «самострой». Я подал отчётность втрое; канцелярия выдала одно разрешение. Разобрал два квартала на камень, никто не спросил бумагу.",
+      "body_en": "No permits, plenty of people. Weiss brought squatters; they settled in the ruins. Halt wrote \"unauthorised construction.\" I filed three times the reports; the office issued one permit. Salvaged two blocks for stone; nobody asked for papers.",
+      "unlock": {
+        "day": 8
+      }
+    },
+    {
+      "id": "capital.diary.03",
+      "order": 3,
+      "title": "Служебный журнал Леона Марка — III",
+      "title_en": "Leon Mark's Service Log — III",
+      "body": "Оттепель. Тоннели потекли, Архив предложил насосы за ключи, которых у меня нет. Вейс грозит сходом, Хальт — ревизией. Разрешения кончаются быстрее, чем я их получаю.",
+      "body_en": "The Thaw. The tunnels leak; the Archive offered pumps for keys I do not have. Weiss threatens an assembly, Halt an audit. The permits run out faster than they come.",
+      "unlock": {
+        "season": "season_thaw"
+      }
+    },
+    {
+      "id": "capital.diary.04",
+      "order": 4,
+      "title": "Служебный журнал Леона Марка — IV",
+      "title_en": "Leon Mark's Service Log — IV",
+      "body": "Ревизия. Хальт считает каждую стену. Тому, кто придёт: разбирайте руины первой неделей, контору ставьте второй, с Вейс договоритесь до Оттепели, а Торну не верьте ни одного слова про Компанию.",
+      "body_en": "The Audit. Halt counts every wall. To whoever comes next: salvage the ruins in the first week, build the registry in the second, settle with Weiss before the Thaw, and do not believe a word Thorn says about the Company.",
+      "unlock": {
+        "season": "season_audit"
+      }
+    }
+  ]
+}

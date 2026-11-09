@@ -307,6 +307,8 @@ func _get_stat_value(stat_name: String) -> float:
 			return FloodSystem.level()
 		"stat_levees":
 			return float(FloodSystem.levee_count())
+		"stat_permits":
+			return float(PermitSystem.available())
 	push_warning("EventManager: unknown stat '%s' in a trigger" % stat_name)
 	return 0.0
 
@@ -519,6 +521,10 @@ func _apply_stat_delta(stat_id: String, amount: float) -> void:
 			# A sluice opened, a dam blown: a card can move the river.
 			var river_state: Dictionary = GameStateStore.climate()
 			river_state["flood"] = clampf((river_state.get("flood", 0.0) as float) + amount, 0.0, FloodSystem.MAX_LEVEL)
+		"stat_permits":
+			# The Directorate's office signs a stack, or tears one up.
+			var office: Dictionary = GameStateStore.climate()
+			office["permits"] = clampf((office.get("permits", 0.0) as float) + amount, 0.0, PermitSystem.MAX_PERMITS)
 
 
 func _force_issues(count: int) -> void:

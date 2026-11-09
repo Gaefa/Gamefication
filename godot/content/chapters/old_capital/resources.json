@@ -1,0 +1,11 @@
+[
+  {
+    "id": "res_metal",
+    "label": "Metal",
+    "icon": "M",
+    "transport": "road",
+    "default_cap": 120,
+    "starting": 0,
+    "label_key": "resource.metal.label"
+  }
+]

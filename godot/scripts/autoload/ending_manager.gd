@@ -272,7 +272,7 @@ func _show_finale(def: Dictionary, ending_id: String) -> void:
 	else:
 		_outcome_label.text = Localization.ru_en("МАНДАТ ПРОДЛЁН", "MANDATE EXTENDED") if kind == "win" else Localization.ru_en("МАНДАТ ПРЕКРАЩЁН", "MANDATE ENDED")
 	_outcome_label.add_theme_color_override("font_color", Color("3f6b2a") if kind == "win" else Color("8a3a2e"))
-	_body_label.text = Localization.content_text(def, "body", "") + _replacement_epilogue(ending_id) + _style_epilogue() + _chronicle()
+	_body_label.text = Localization.content_text(def, "body", "") + _replacement_epilogue(ending_id) + _style_epilogue() + _campaign_epilogue() + _chronicle()
 	_theses_label.text = _theses()
 	_layer.visible = true
 
@@ -336,6 +336,47 @@ func _style_epilogue() -> String:
 	if style == "" or not labels.has(style):
 		return ""
 	return Localization.ru_en("\n\n[i]Оттенок: %s.[/i]", "\n\n[i]Shade: %s.[/i]") % labels[style]
+
+
+## At the last chapter's finale: what the whole road amounted to, chapter by chapter, and
+## who walks out of it at the player's side (the carried decision flags).
+func _campaign_epilogue() -> String:
+	var here: String = GameStateStore.save_meta().get("chapter_id", ContentDB.active_chapter) as String
+	if ContentDB.next_chapter_id(here) != "":
+		return ""
+	var lines: Array[String] = ["", "", Localization.ru_en("[b]ДОРОГА[/b]", "[b]THE ROAD[/b]")]
+	for chapter_id: String in ContentDB.get_chapter_ids():
+		if chapter_id == here:
+			continue
+		var result: Dictionary = Campaign.result_of(chapter_id)
+		var title: String = Localization.content_text(ContentDB.get_chapter_def(chapter_id), "title", chapter_id)
+		if result.is_empty():
+			lines.append(Localization.ru_en("• %s: не пройдена", "• %s: not played") % title)
+			continue
+		var verdict: String = Localization.ru_en("мандат продлён", "mandate extended") if (result.get("kind", "") as String) == "win" else Localization.ru_en("мандат прекращён", "mandate ended")
+		lines.append("• %s: %s, %s" % [title, verdict, Localization.ru_en("день %d, жителей %d", "day %d, %d residents") % [result.get("day", 0) as int, result.get("population", 0) as int]])
+	var flags: Dictionary = GameStateStore.mandate().get("flags", {}) as Dictionary
+	var allies: Array[String] = []
+	var names := {
+		"covenant_treaty": Localization.ru_en("Зелёный Завет", "the Green Covenant"), "union_standard": Localization.ru_en("Союз Инженеров", "the Engineers' Union"),
+		"boat_pact": Localization.ru_en("лодочники Плёсов", "the boat people of the Reaches"), "forecaster_active": Localization.ru_en("«Прогнозист»", "the Forecaster"),
+	}
+	var grudges: Array[String] = []
+	var grudge_names := {
+		"charters_deal": Localization.ru_en("Крайние Хартии знают вашу цену", "the Outer Charters know your price"), "strike_broken": Localization.ru_en("комитеты рабочих помнят дубинки", "the workers' committees remember the clubs"),
+		"levee_wall": Localization.ru_en("лодочники помнят дамбы", "the boat people remember the levees"), "ruben_burned": Localization.ru_en("водовозы помнят Рубена", "the water carriers remember Ruben"),
+	}
+	for flag: String in names:
+		if flags.get(flag, false) as bool:
+			allies.append(names[flag] as String)
+	for flag: String in grudge_names:
+		if flags.get(flag, false) as bool:
+			grudges.append(grudge_names[flag] as String)
+	if not allies.is_empty():
+		lines.append(Localization.ru_en("• [b]С вами:[/b] %s", "• [b]At your side:[/b] %s") % ", ".join(allies))
+	if not grudges.is_empty():
+		lines.append(Localization.ru_en("• [b]Против:[/b] %s", "• [b]Against you:[/b] %s") % ", ".join(grudges))
+	return "\n".join(lines)
 
 
 ## Six lines the player will retell: the answers that left a mark, with their days.

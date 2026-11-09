@@ -177,6 +177,7 @@ func _ready() -> void:
 	_gorge_rules()
 	_quarry_rules()
 	_nyupa_rules()
+	_capital_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -541,6 +542,73 @@ func _nyupa_rules() -> void:
 	Campaign.reset_campaign()
 	_new_game("appointed_administrator")
 	_check(GameStateStore.get_terrain(Vector2i(4, 0)) != 1 or GameStateStore.get_terrain(Vector2i(3, -1)) != 8, "Rust Pit has no drawn river")
+
+
+## Chapter 5: the Directorate's permits gate every build but a road, the office and the registry add
+## them, the ruins salvage without one, the earlier chapters' decisions open this chapter's cards,
+## and the last finale tells the whole road.
+func _capital_rules() -> void:
+	Campaign.reset_campaign()
+	Campaign.record_result("rust_pit", "ending.win.loyal", "win")
+	# A finished Quarry that sold to the Charters and a Gorge that signed the treaty travel with the player.
+	Campaign._results["black_quarry"] = {"ending": "ending.win.loyal", "kind": "win", "day": 30, "style": "pragmatist", "patron_id": "engineers_union", "patron_trust": 60, "support": 50, "population": 14, "flags": {"charters_deal": true}}
+	Campaign._results["bogolessky_gorge"] = {"ending": "ending.win.protector", "kind": "win", "day": 30, "style": "protector", "patron_id": "restoration_league", "patron_trust": 55, "support": 60, "population": 13, "flags": {"covenant_treaty": true}}
+	EventManager.clear_pending()
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "old_capital")
+	SimulationRunner.start_run()
+	_check((GameStateStore.mandate().get("patron_id", "") as String) == "civic_directorate", "the Capital answers to the Directorate")
+	var flags: Dictionary = GameStateStore.mandate().get("flags", {}) as Dictionary
+	_check((flags.get("covenant_treaty", false) as bool) and (flags.get("charters_deal", false) as bool) and not (flags.get("strike_broken", false) as bool), "the earlier chapters' decisions travel into the run")
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("capital.anchor_covenant")) == false, "the Covenant's cart waits for its day")
+	GameStateStore.climate()["total_day"] = 5
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("capital.anchor_covenant")), "…and comes because the Gorge signed the treaty")
+	GameStateStore.climate()["total_day"] = 10
+	_check(not EventManager.call("_trigger_met", ContentDB.get_event_def("capital.anchor_strike")), "no leaflet for a strike that was never broken")
+	GameStateStore.climate()["total_day"] = 1
+	_check(PermitSystem.available() == 2 and EventManager.call("_get_stat_value", "stat_permits") == 2.0, "the chapter starts with two permits (%d)" % PermitSystem.available())
+	var ruins: int = 0
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		if GameStateStore.get_building(coord).get("type", "") == "bld_company_ruin":
+			ruins += 1
+	_check(ruins == 7 and GameStateStore.get_terrain(Vector2i(3, -1)) == 9, "seven ruins stand on the rubble")
+	GameStateStore.set_resource("res_wood", 300.0)
+	GameStateStore.set_resource("res_stone", 300.0)
+	GameStateStore.set_resource("res_money", 300.0)
+	var first: PlaceBuildingCommand = orch.command_bus.execute(PlaceBuildingCommand.new(Vector2i(-3, 3), "bld_shelter")) as PlaceBuildingCommand
+	var second: PlaceBuildingCommand = orch.command_bus.execute(PlaceBuildingCommand.new(Vector2i(-2, 3), "bld_shelter")) as PlaceBuildingCommand
+	_check(first.success and second.success and PermitSystem.available() == 0, "two shelters spend the two permits")
+	var third: PlaceBuildingCommand = orch.command_bus.execute(PlaceBuildingCommand.new(Vector2i(-3, 4), "bld_shelter")) as PlaceBuildingCommand
+	_check(not third.success and third.message.begins_with(Localization.ru_en("Нет разрешения", "No Directorate permit")), "the third waits for a permit (%s)" % third.message)
+	var road: PlaceBuildingCommand = orch.command_bus.execute(PlaceBuildingCommand.new(Vector2i(-3, 4), "bld_road")) as PlaceBuildingCommand
+	_check(road.success, "a road needs none")
+	var registry: PlaceBuildingCommand = orch.command_bus.execute(PlaceBuildingCommand.new(Vector2i(-4, 4), "bld_registry")) as PlaceBuildingCommand
+	_check(registry.success, "nor does the registry office")
+	var metal_before: float = GameStateStore.get_resource("res_metal")
+	orch.command_bus.execute(BulldozeCommand.new(Vector2i(3, -1)))
+	_check(not GameStateStore.has_building(Vector2i(3, -1)) and GameStateStore.get_resource("res_metal") > metal_before, "a ruin salvages for metal without a permit")
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("capital.permits_empty")) == false, "the empty-permits memo waits for day 4")
+	GameStateStore.climate()["total_day"] = 4
+	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("capital.permits_empty")), "…then comes")
+	# A day in the Grey Winter: the office's half plus the registry's one.
+	_ticks(1)
+	GameStateStore.climate()["total_day"] = 5
+	_ticks(1)
+	_check(is_equal_approx(GameStateStore.climate().get("permits", 0.0) as float, 1.5), "a day adds the season's half and the registry's one (%.1f)" % (GameStateStore.climate().get("permits", 0.0) as float))
+	EventManager.call("_apply_effects", {"stat_permits": 2})
+	_check(PermitSystem.available() == 3, "a card can sign a stack")
+	EndingManager.call("_show_finale", ContentDB.get_ending_def("ending.win.directorate_order"), "ending.win.directorate_order")
+	var body: String = (EndingManager.get("_body_label") as RichTextLabel).text
+	_check(body.find(Localization.ru_en("ДОРОГА", "THE ROAD")) >= 0 and body.find(Localization.content_text(ContentDB.get_chapter_def("rust_pit"), "title", "?")) >= 0 and body.find(Localization.ru_en("Зелёный Завет", "the Green Covenant")) >= 0, "the last finale tells the road and names the allies")
+	if EndingManager.get("_layer") != null:
+		(EndingManager.get("_layer") as CanvasLayer).visible = false
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_squatters", "old_capital")
+	SimulationRunner.start_run()
+	_check(PermitSystem.available() == 0 and (GameStateStore.population().get("total", 0) as int) == 12, "the squatters legacy starts with people and no permits")
+	Campaign.reset_campaign()
+	_new_game("appointed_administrator")
+	_check(not PermitSystem.enabled() and (GameStateStore.mandate().get("flags", {}) as Dictionary).is_empty(), "Rust Pit needs no permits and starts with no carried flags")
 
 
 func _content_contract_rules() -> void:

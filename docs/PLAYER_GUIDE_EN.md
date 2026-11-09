@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.3.2-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.3.3-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Storms: on day 22 (Dust) and day 32 (Heat) the lookout warns of a storm for tomorrow; unbraced (20 wood, 5 tools) it wrecks two buildings, braced it leaves one breakdown. A wrecked building does nothing until repaired (R). Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
@@ -176,3 +176,14 @@ Opens after any Quarry finale. 30 days: Low Water (1–10), Flood (11–22), Rot
 - On days 13–14 the fish run (+60 food for two days' work). With the river at 90 the water reaches the shelters: the boat people ferry people out for 30 food. The Company's sluice drops the level by 20 onto the Reaches; Ivel remembers.
 - **Rot**: food spoils 5% a day, the fields bear 70%. Firewood for boiling (30 wood on day 23) prevents fever; without it, with the river above 30, the medic brings quarantine (40 coins, −1 resident) or burials (−4 residents).
 - Three legacies of Pyotr Galai: two levees with a timber debt to the League; peace with the boat people and ten residents under a "no levees" promise; after a fever, three residents and a full cistern.
+
+## Chapter 5. The Old Capital, Outer Ring
+
+The campaign's finale. Opens after any Nyupa finale. 30 days: Grey Winter (1–10), Thaw (11–22), Audit (23–30). The commissar's inspections on days 15 and 27, the grant on day 10. The patron is the Civic Directorate (Commissar Irene Halt; an inspection is credited only with every target met), the rival Speaker Nora Weiss of the Southern Ring (the Assembly of blocks), the third power the Archive (Archivist Elias Thorn).
+
+- **Permits** are the counter at the top (at most 6). Every new building but a road spends one; without a permit the build waits. The office issues 0.5 a day in the Grey Winter, 1 in the Thaw, 0.25 in the Audit. More come from the Directorate's weekly reports (20 coins for the full set: +2), a gift to the clerks when the counter is empty (40 coins: +2), the Archive (for the Forecaster from chapter 1, or for 20 metal) and the **registry office** (+1 a day, built without a permit, 0.5 coin a cycle).
+- **Block ruins** (seven around the post): select one and press B for 25 stone, 10 wood and 6 metal, no permit needed.
+- **Tenement** (20 wood, 30 stone, 10 metal): 10 residents for one permit.
+- **The Assembly**: on day 7 Weiss brings squatters: let them into the ruins (unauthorised, Directorate trust −4), take them in by the register, or refuse. Unauthorised housing brings the commissar's report on day 13 (a 60-coin fee, eviction, or an argument). In the Thaw, at low mood, the Assembly demands housing; promise it and run out of permits, and the blocks build on their own.
+- **The road behind you**: the earlier chapters' decisions arrive as letters. The treaty with the Covenant brings seed, the Union's standard a fitter, the pact with the boat people more residents; deals with the Charters, a broken strike and a wall of levees come back as bills and leaflets. The final screen lists every chapter and who stands with you or against you.
+- Three legacies of Leon Mark: six permits with a full treasury; the Assembly's squats with twelve residents and no permits; a debt to the Archive with thirty metal.
