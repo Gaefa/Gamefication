@@ -144,6 +144,10 @@ Also: a screenshot of the ending screen ("SUMMARY") and the `analytics` folder �
 - The English localization is new: please report any untranslated or awkward text.
 - No mobile versions and no gamepad.
 
+## The campaign: five chapters
+
+The chapters run in order, each 30–40 days with the same core loop: the day on the map, the evening at the Desk, two inspections, a grant, a finale. Any finale opens the next chapter (the "Chapter" row on the mandate screen, or "Next chapter" at the finale); the campaign's state is kept apart from the run saves. On the first evening of a new chapter a letter tells how the last one ended. Decisions that mark the whole campaign (the treaty with the Covenant, the Union's standard, the pact with the boat people, deals with the Charters, a broken strike, a wall of levees, the Forecaster switched on) carry forward and come back as letters; the fifth chapter's finale recounts the whole road. Each chapter adds one mechanic: meadows and soil, metal and smoke, the river and levees, permits and ruins.
+
 ## Chapter 2. Bogolessky Gorge
 
 Opens after any Rust Pit finale, in the "Chapter" row of the mandate screen. 30 days: Rains (1–12), Drought (13–22), Harvest (23–30). Audits on days 15 and 27, the grant on day 10. The rival is Elder Jarven of the Upper Fields, the patron the League (Inspector Helin Varga), the third power the Green Covenant (Mother Alder).

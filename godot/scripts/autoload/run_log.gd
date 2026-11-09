@@ -85,6 +85,8 @@ func _snapshot() -> Dictionary:
 	var population: Dictionary = GameStateStore.population()
 	var mandate: Dictionary = GameStateStore.mandate()
 	return {
+		"chapter": GameStateStore.save_meta().get("chapter_id", ContentDB.active_chapter) as String,
+		"legacy": GameStateStore.save_meta().get("legacy_id", "") as String,
 		"day": GameStateStore.climate().get("total_day", 1) as int,
 		"season": GameStateStore.climate().get("season_id", "") as String,
 		"playtime": int(GameStateStore.save_meta().get("playtime_sec", 0.0) as float),  # game seconds
