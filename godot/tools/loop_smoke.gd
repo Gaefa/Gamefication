@@ -14,6 +14,7 @@ const STUCK_FRAMES := 600     # 10 sim seconds paused with no desk and no finale
 
 var _prepared: bool = false
 var _legacy: String = ""        # start_legacies.json id (override: -- legacy=legacy_cistern)
+var _world_seed: int = 12345    # the run's seed: map, breakdowns, card draws (override: -- seed=7)
 var _profile: String = "appointed_administrator"  # start_profiles.json id (override: -- profile=founder_rebel)
 var _main: Node
 var _desk: Control
@@ -37,6 +38,8 @@ func _ready() -> void:
 			_legacy = arg.trim_prefix("legacy=")
 		if arg.begins_with("profile="):
 			_profile = arg.trim_prefix("profile=")
+		if arg.begins_with("seed="):
+			_world_seed = arg.trim_prefix("seed=").to_int()
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
 		_ending = "%s (%s)" % [eid, kind])
 	EventBus.evening_started.connect(func(events: Array) -> void:
@@ -61,7 +64,7 @@ func _attach() -> void:
 	get_tree().current_scene = _main  # effects and HUD look the orchestrator up here
 	_desk = _main.get_node("HUDCanvas/DeskUI") as Control
 	# Behind the start menu nothing runs; start the run the way the menu button does.
-	seed(12345)  # compare speed runs against the same city and issue sequence
+	seed(_world_seed)  # new_game draws the run's seed from here: the same city and issue sequence every time
 	_main.get_node("HUDCanvas/HUD").set("_selected_legacy", _legacy)
 	_main.get_node("HUDCanvas/HUD").call("_start_new_run", _profile)
 	if _prepared:
