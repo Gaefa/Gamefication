@@ -518,6 +518,20 @@ func _quarry_rules() -> void:
 	Campaign.reset_campaign()
 	_new_game("appointed_administrator")
 	_check((GameStateStore.mandate().get("patron_id", "") as String) == "restoration_league" and ContentDB.get_resource_def("res_metal").is_empty(), "Rust Pit keeps the League and has no metal")
+	# Kramer's smelter is a hard start, not a dead one: it comes with the panel that feeds it.
+	# Without it the smelter starved the pump and the barracks of power, the mood opened at 18,
+	# and the district was empty on day four whatever the player did.
+	Campaign.reset_campaign()
+	EventManager.clear_pending()
+	_ended = ""
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "legacy_smelter", "black_quarry")
+	SimulationRunner.start_run()
+	_ticks(SimulationRunner.TICKS_PER_DAY)
+	var power_state: Dictionary = GameStateStore.power()
+	_check((power_state.get("generation", 0.0) as float) >= (power_state.get("demand", 0.0) as float), "the smelter legacy has the power its smelter needs (%.0f of %.0f)" % [power_state.get("generation", 0.0) as float, power_state.get("demand", 0.0) as float])
+	_check((GameStateStore.population().get("happiness", 0.0) as float) >= 30.0 and _ended == "", "…and its first day ends above misery (mood %.0f, finale '%s')" % [GameStateStore.population().get("happiness", 0.0) as float, _ended])
+
 
 
 ## Chapter 4: a river with low banks, a pier that needs the shore, a level the Flood pushes over

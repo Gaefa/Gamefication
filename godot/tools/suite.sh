@@ -10,6 +10,9 @@ runw() { perl -e 'alarm 900; exec @ARGV' "$G" --path godot "res://tools/$1.tscn"
 echo "content: $(run content_check --quit-after 2000 | grep -E '^=== CONTENT' | tr '\n' ' ')"
 echo "rules: $(run rules_smoke | grep -E '^=== RULES|FAIL' | tr '\n' ' ')"
 echo "save_roundtrip: $(run save_roundtrip | grep -E '^=== ROUND' | tr '\n' ' ')"
+for ch in bogolessky_gorge black_quarry big_nyupa old_capital; do
+  echo "save_roundtrip $ch: $(run save_roundtrip -- chapter=$ch | grep -E '^=== ROUND' | tr '\n' ' ')"
+done
 echo "run_state: $(run run_state_smoke | grep -E '^=== RUN|FAIL' | tr '\n' ' ')"
 echo "fuzz: $(run fuzz_smoke -- seed=1 | grep -E '^=== FUZZ' | tr '\n' ' ')"
 echo "i18n: $(run i18n_smoke -- prepared | grep -E '^=== I18N' | tr '\n' ' ')"

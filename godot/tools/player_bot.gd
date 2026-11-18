@@ -24,6 +24,9 @@ var _verbose: bool = false
 var _frame: int = 0
 var _built: Dictionary = {}     # type id → how many the bot placed
 var _built_today: Dictionary = {}  # type id → how many since the last evening
+var _adding_power: bool = false
+var _power_pending: float = 0.0
+var _power_seen_tick: int = -1
 var _upgrades: int = 0
 var _salvaged: int = 0
 var _net: Dictionary = {}       # res id → smoothed net per day
@@ -375,11 +378,25 @@ func _place(type_id: String, cell: Vector2i) -> bool:
 		return false
 	if (_built_today.get(type_id, 0) as int) >= PER_DAY * (3 if type_id == "bld_road" else 1):
 		return false
+	# Power first: a filter or a pump put up on a full grid darkens the houses instead.
+	var need: float = ContentDB.get_building_def(type_id).get("power_need", 0.0) as float
+	if need > 0.0 and not _adding_power:
+		var grid: Dictionary = GameStateStore.power()
+		# The grid's own figures are a tick old: count what was placed since.
+		if _power_seen_tick != GameStateStore.get_tick():
+			_power_seen_tick = GameStateStore.get_tick()
+			_power_pending = 0.0
+		if (grid.get("generation", 0.0) as float) - (grid.get("demand", 0.0) as float) - _power_pending < need:
+			_adding_power = true
+			var powered: bool = _place_scored("bld_solar_panel") or (_flow("res_money") > 30.0 and _place_scored("bld_generator"))
+			_adding_power = false
+			return powered
 	var command := PlaceBuildingCommand.new(cell, type_id)
 	_orch().command_bus.execute(command)
 	if command.success:
 		_built[type_id] = (_built.get(type_id, 0) as int) + 1
 		_built_today[type_id] = (_built_today.get(type_id, 0) as int) + 1
+		_power_pending += ContentDB.get_building_def(type_id).get("power_need", 0.0) as float
 		if _verbose:
 			print("    бот, день %d: строит %s на %s" % [SimulationRunner.day_count, type_id, str(cell)])
 	return command.success

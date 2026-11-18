@@ -6,7 +6,6 @@ var _coverage: CoverageMap
 var _notified_upgrade_level: int = 0
 var _win_emitted: bool = false
 var _adjacency := AdjacencyCalculator.new()
-var _supply_trend: Dictionary = {}  # res_id → day-scale running average of the ledger net per tick
 
 # --- Population retention (tuning) ---
 const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick under duress
@@ -212,12 +211,17 @@ func _supply_happiness_term() -> float:
 
 ## How much of today's draw the reserve is covering out of its own stock, judged on a day's
 ## running average of the ledger net: 0 when the producers keep up, 1 when nothing has
-## come in for a day and the stockpile carries it all. Runtime only: a loaded game starts
-## the average from its first tick.
+## come in for a day and the stockpile carries it all. The average lives in the economy
+## state and is saved with it: kept in memory only, a loaded game restarted it and its mood
+## ran up to two points off the unsaved game's for the next day.
 func _trend_drain_share(res_id: String) -> float:
-	var net: float = (GameStateStore.economy().get("production", {}) as Dictionary).get(res_id, 0.0) as float
-	var trend: float = lerpf(_supply_trend.get(res_id, net) as float, net, 1.0 / float(SimulationRunner.TICKS_PER_DAY))
-	_supply_trend[res_id] = trend
+	var economy: Dictionary = GameStateStore.economy()
+	var net: float = (economy.get("production", {}) as Dictionary).get(res_id, 0.0) as float
+	if not economy.has("supply_trend"):
+		economy["supply_trend"] = {}  # res_id → day-scale running average of the ledger net per tick
+	var trends: Dictionary = economy["supply_trend"] as Dictionary
+	var trend: float = lerpf(trends.get(res_id, net) as float, net, 1.0 / float(SimulationRunner.TICKS_PER_DAY))
+	trends[res_id] = trend
 	var draw_per_tick: float = EconomySystem.daily_consumption(res_id) / float(SimulationRunner.TICKS_PER_DAY)
 	return clampf(-trend / maxf(draw_per_tick, 0.0001), 0.0, 1.0)
 
