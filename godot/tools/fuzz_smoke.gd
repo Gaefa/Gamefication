@@ -85,7 +85,11 @@ func _random_action() -> void:
 			var cell: Vector2i = any + Vector2i(_rng.randi_range(-2, 2), _rng.randi_range(-2, 2))
 			if _rng.randi() % 5 == 0:
 				cell = Vector2i(_rng.randi_range(-45, 45), _rng.randi_range(-45, 45))
+			# Mostly what the build menu offers: a random id from the whole table is refused
+			# nine times in ten (landmarks, the post, the Cistern) and exercises nothing.
 			var ids: Array = ContentDB.get_building_ids()
+			if _rng.randi() % 6 != 0:
+				ids = ids.filter(func(id: String) -> bool: return ContentDB.get_building_def(id).get("player_buildable", true) as bool)
 			command = PlaceBuildingCommand.new(cell, ids[_rng.randi() % ids.size()] as String)
 		4, 5:
 			command = UpgradeBuildingCommand.new(any)

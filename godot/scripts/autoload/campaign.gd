@@ -15,10 +15,16 @@ var _path: String = FILE_PATH
 
 
 func _ready() -> void:
+	var tool_run: bool = false
 	for arg: String in OS.get_cmdline_args():
 		if arg.begins_with("res://tools/"):
 			_path = TOOLS_FILE_PATH
-	_load()
+			tool_run = true
+	# A tool starts with no road behind it: what the last tool run (or one running beside
+	# it) left in the file would hand this run carried flags it never earned. Dried rations
+	# from a campaign walk once failed the Heat rules of the next suite.
+	if not tool_run:
+		_load()
 	EventBus.ending_triggered.connect(_on_ending_triggered)
 
 

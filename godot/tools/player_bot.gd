@@ -8,16 +8,18 @@ extends "res://tools/loop_smoke.gd"
 ## It answers one question per chapter: can a careful player win it, and by what margin.
 ## It is a plain greedy player, not an optimiser: when it loses, read why before blaming it.
 ##
-## Run: Godot --headless --fixed-fps 60 --path <proj> res://tools/player_bot.tscn --quit-after 400000 -- chapter=<id> [seed=N] [lean=patron|city] [verbose]
+## Run: Godot --headless --fixed-fps 60 --path <proj> res://tools/player_bot.tscn --quit-after 400000 -- chapter=<id> [seed=N] [lean=patron|city] [pace=N] [verbose]
+## pace is decisions a day (default 30): pace=1 is a player who does one thing a day.
 ## Dev tool, not shipped.
 
-const STEP_EVERY := 2           # a day is 60 sim frames at this speed: about thirty decisions a day
+const FRAMES_PER_DAY := 60      # at loop_smoke's speed
 const TARGET_BEDS := 20         # the win asks for twelve people; aim past it
 const MONEY_FLOOR := 25.0       # never spend the treasury below this
 const PER_DAY := 2               # of one building type a day (roads: three times that): a new pump needs a day to show in the stores
 const RES_VALUE := {"res_money": 1.0, "res_food": 1.0, "res_water_stockpile": 1.0, "res_wood": 1.5, "res_stone": 1.5, "res_tools": 8.0, "res_metal": 4.0}
 
 var _lean: String = ""
+var _step_every: int = 2        # sim frames between two decisions: thirty decisions a day
 var _verbose: bool = false
 var _bot_seed: int = 12345
 var _frame: int = 0
@@ -38,6 +40,8 @@ func _ready() -> void:
 			_lean = arg.trim_prefix("lean=")
 		elif arg.begins_with("seed="):
 			_bot_seed = arg.trim_prefix("seed=").to_int()
+		elif arg.begins_with("pace="):
+			_step_every = maxi(1, FRAMES_PER_DAY / maxi(1, arg.trim_prefix("pace=").to_int()))
 		elif arg == "verbose":
 			_verbose = true
 	EventBus.evening_started.connect(func(_events: Array) -> void:
@@ -64,8 +68,8 @@ func _physics_process(delta: float) -> void:
 	if _desk == null or _ending != "" or _desk.visible or SimulationRunner.paused or not SimulationRunner.run_active:
 		return
 	_frame += 1
-	if _frame % STEP_EVERY == 0:
-		_sample_flows()
+	_sample_flows()
+	if _frame % _step_every == 0:
 		_bot_step()
 
 
@@ -79,7 +83,7 @@ func _sample_flows() -> void:
 	var prod: Dictionary = GameStateStore.economy().get("production", {}) as Dictionary
 	for res_id: String in prod:
 		var per_day: float = (prod[res_id] as float) * float(SimulationRunner.TICKS_PER_DAY)
-		_net[res_id] = lerpf(_net.get(res_id, per_day) as float, per_day, 0.2)
+		_net[res_id] = lerpf(_net.get(res_id, per_day) as float, per_day, 0.1)
 
 
 func _flow(res_id: String) -> float:
@@ -513,8 +517,8 @@ func _summary(result: String) -> String:
 	var built: Array[String] = []
 	for type_id: String in _built:
 		built.append("%s×%d" % [type_id.trim_prefix("bld_"), _built[type_id] as int])
-	return "BOT [%s] seed %d lean %s: %s | ур. города %d | жители %d (пик %d, 12 с дня %d) | сч %d | доверие %d · поддержка %d | деньги %d | голодных вечеров %d, сухих %d, хмурых %d | построил %s; улучшений %d, разобрано руин %d" % [
-		ContentDB.active_chapter, _bot_seed, _lean if _lean != "" else "—", _ending if _ending != "" else result, GameStateStore.progression().city_level as int,
+	return "BOT [%s] seed %d lean %s pace %d: %s | ур. города %d | жители %d (пик %d, 12 с дня %d) | сч %d | доверие %d · поддержка %d | деньги %d | голодных вечеров %d, сухих %d, хмурых %d | построил %s; улучшений %d, разобрано руин %d" % [
+		ContentDB.active_chapter, _bot_seed, _lean if _lean != "" else "—", FRAMES_PER_DAY / _step_every, _ending if _ending != "" else result, GameStateStore.progression().city_level as int,
 		pop.get("total", 0) as int, pop.get("peak", 0) as int, _day_twelve, int(pop.get("happiness", 0.0) as float),
 		int(mandate.get("patron_trust", 0) as float), int(mandate.get("support", 0) as float), int(GameStateStore.get_resource("res_money")),
 		_hungry_evenings, _dry_evenings, _low_mood_evenings, ", ".join(built), _upgrades, _salvaged]
