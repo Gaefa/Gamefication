@@ -1,18 +1,21 @@
-Mandate Cities 0.3.3-alpha — playtest build / тестовая сборка
+Mandate Cities 0.3.4-alpha — playtest build / тестовая сборка
 
-NEW IN 0.3.3-alpha / НОВОЕ В 0.3.3-alpha
-  Chapter 5, the Old Capital's outer ring: the campaign's finale under the Civic Directorate.
-  Opens after any Nyupa finale. 30 days: Grey Winter, Thaw, Audit. Every building but a road
-  spends a permit (the counter at the top); the office issues them slowly, letters, filed
-  reports and a registry office give more. Salvage the Company's ruins (B) for stone, wood and
-  metal. The Assembly brings squatters, the Archive bargains for the Forecaster. What you decided
-  in the earlier chapters comes back as letters, and the last finale tells the whole road.
-  Глава 5, внешнее кольцо Старого Капитала: финал кампании под Гражданским Директоратом.
-  Открывается после любого финала Нюпы. 30 дней: Серая зима, Оттепель, Ревизия. Каждое здание,
-  кроме дорог, тратит разрешение (счётчик вверху); канцелярия выдаёт их медленно, письма,
-  отчётность и учётная контора дают ещё. Руины Компании разбираются (B) на камень, дерево и
-  металл. Ассамблея приводит сквоттеров, Архив торгуется за «Прогнозист». Решения прежних глав
-  возвращаются письмами, а последний финал рассказывает всю дорогу.
+NEW IN 0.3.4-alpha / НОВОЕ В 0.3.4-alpha
+  Fixes found by an overnight test pass over all five chapters.
+  A storm that wrecks the homes no longer empties the district at once: people stay in a
+  wrecked house for a few days, and a repair (R) keeps them. Before, a small district could
+  get the "exodus" finale the morning after the storm letter, with no time to repair.
+  Chapters 2-5 offer one mandate, their own (the Directorate and founder starts belong to
+  chapter 1 and played the later chapters with half the letters missing). The start screen
+  names the chapter's patron, and the first hint speaks of this district and its term.
+  Исправления по ночному прогону всех пяти глав.
+  Буря, сломавшая дома, больше не опустошает район сразу: из сломанного дома люди уходят
+  несколько дней, ремонт (R) их удерживает. Раньше маленький район мог получить финал «исход»
+  утром после письма о буре, не успев починить.
+  В главах 2-5 мандат один, свой (мандат Директората и старты основателей относятся к главе 1
+  и в поздних главах шли с половиной писем). Стартовый экран называет покровителя главы,
+  первая подсказка говорит об этом районе и его сроке.
+  0.3.3: chapter 5, the Old Capital's outer ring (permits, ruins, the road behind).
   0.3.2: chapter 4, Big Nyupa (the river, levees, stilts). 0.3.1: chapter 3, the Black Quarry.
   0.3.0: chapter 2 and inherited starts.
 
