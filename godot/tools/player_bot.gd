@@ -503,14 +503,18 @@ func _need_weight(value: float) -> float:
 # --- the verdict ---------------------------------------------------------------------------
 
 func _finish(result: String) -> void:
+	print(_summary(result))
+	super._finish(result)
+
+
+func _summary(result: String) -> String:
 	var pop: Dictionary = GameStateStore.population()
 	var mandate: Dictionary = GameStateStore.mandate()
 	var built: Array[String] = []
 	for type_id: String in _built:
 		built.append("%s×%d" % [type_id.trim_prefix("bld_"), _built[type_id] as int])
-	print("BOT [%s] seed %d lean %s: %s | ур. города %d | жители %d (пик %d, 12 с дня %d) | сч %d | доверие %d · поддержка %d | деньги %d | голодных вечеров %d, сухих %d, хмурых %d | построил %s; улучшений %d, разобрано руин %d" % [
+	return "BOT [%s] seed %d lean %s: %s | ур. города %d | жители %d (пик %d, 12 с дня %d) | сч %d | доверие %d · поддержка %d | деньги %d | голодных вечеров %d, сухих %d, хмурых %d | построил %s; улучшений %d, разобрано руин %d" % [
 		ContentDB.active_chapter, _bot_seed, _lean if _lean != "" else "—", _ending if _ending != "" else result, GameStateStore.progression().city_level as int,
 		pop.get("total", 0) as int, pop.get("peak", 0) as int, _day_twelve, int(pop.get("happiness", 0.0) as float),
 		int(mandate.get("patron_trust", 0) as float), int(mandate.get("support", 0) as float), int(GameStateStore.get_resource("res_money")),
-		_hungry_evenings, _dry_evenings, _low_mood_evenings, ", ".join(built), _upgrades, _salvaged])
-	super._finish(result)
+		_hungry_evenings, _dry_evenings, _low_mood_evenings, ", ".join(built), _upgrades, _salvaged]

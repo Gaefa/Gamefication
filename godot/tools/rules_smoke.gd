@@ -254,6 +254,31 @@ func _storm_rules() -> void:
 	_ticks(SimulationRunner.TICKS_PER_DAY)
 	_check(EventManager.pending_events.any(func(e: Dictionary) -> bool: return e.get("runtime_id", "") == "report.storm_passed_braced"), "a braced district gets the milder verdict")
 
+	# A storm that wrecks every home does not empty the district in one tick. People hold on
+	# for a few days (with neighbours, in the yard): the time a repair takes. It used to be an
+	# instant exodus finale the morning after the storm card, before the player could repair.
+	_new_game("appointed_administrator")
+	_ticks(5)
+	var housed: int = GameStateStore.population().get("total", 0) as int
+	var homes: Array[Vector2i] = []
+	for coord: Vector2i in GameStateStore.get_all_building_coords():
+		var home: Dictionary = GameStateStore.get_building(coord)
+		if (ContentDB.building_level_data(home.get("type", "") as String, home.get("level", 0) as int).get("population", 0) as int) > 0:
+			home["damaged"] = true
+			GameStateStore.set_building(coord, home)
+			homes.append(coord)
+	orch.coverage.invalidate()
+	_ticks(1)
+	var after_tick: int = GameStateStore.population().get("total", 0) as int
+	_check(housed > 0 and after_tick >= housed - 1 and _ended == "", "wrecked homes do not empty the district the same tick (%d → %d, finale '%s')" % [housed, after_tick, _ended])
+	_ticks(SimulationRunner.TICKS_PER_DAY)
+	var after_day: int = GameStateStore.population().get("total", 0) as int
+	_check(after_day > 0 and after_day < housed and _ended == "", "after a day in wrecked homes some have left, not all (%d → %d, finale '%s')" % [housed, after_day, _ended])
+	for coord: Vector2i in homes:
+		orch.command_bus.execute(RepairBuildingCommand.new(coord))
+	_ticks(SimulationRunner.TICKS_PER_DAY)
+	_check((GameStateStore.population().get("total", 0) as int) >= after_day and _ended == "", "after the repair nobody else leaves (%d → %d)" % [after_day, GameStateStore.population().get("total", 0) as int])
+
 
 ## content_check knows the content's vocabulary: a card with a stat, season, patron, style or
 ## flag the game cannot read, a buff without a lifetime, a building with per-tick flows — all
@@ -357,6 +382,13 @@ func _campaign_rules() -> void:
 	_check(GameStateStore.get_all_building_coords().size() == 13 and not GameStateStore.has_building(Vector2i(2, 1)), "…its own layout without the Company's traces (%d)" % GameStateStore.get_all_building_coords().size())
 	_check(ContentDB.get_event_def("gorge.league_welcome").size() > 0 and ContentDB.get_event_def("report.storm_warning").is_empty(), "…its own cards, not Rust Pit's")
 	_check(RivalManager.rival_short() != Localization.ru_en("Восс", "Voss"), "…and its own rival")
+	# Outside chapter 1 only the chapter's own mandate is on offer, and the first hint speaks
+	# of this district and this term (it used to greet every chapter as the Rust Pit).
+	for chapter_id: String in ContentDB.get_chapter_ids(true):
+		var starts: Array = ContentDB.get_chapter_def(chapter_id).get("profiles", []) as Array
+		_check((chapter_id == "rust_pit") == starts.is_empty() and (starts.is_empty() or starts == ["appointed_administrator"]), "%s offers the starts it was written for (%s)" % [chapter_id, str(starts)])
+	var hello: String = OnboardingManager.call("_welcome_text") as String
+	_check(hello.find(Localization.content_text(ContentDB.get_chapter_def(), "title", "?")) >= 0 and hello.find("30") >= 0 and hello.find("Ржав") < 0 and hello.find("Rust") < 0, "the first hint names this chapter and its term (%s)" % hello.left(60))
 	_check(EventManager.call("_trigger_met", ContentDB.get_event_def("interlude.previous_chapter")), "the interlude letter arrives on its first evening")
 	EventManager.raise_event("interlude.previous_chapter")
 	var letter: Dictionary = EventManager.pending_events.back() if not EventManager.pending_events.is_empty() else {}
@@ -366,6 +398,7 @@ func _campaign_rules() -> void:
 	Campaign.reset_campaign()
 	_new_game("appointed_administrator")
 	_check(ContentDB.active_chapter == "rust_pit" and ContentDB.get_event_def("report.storm_warning").size() > 0, "switching back restores chapter 1's content")
+	_check((OnboardingManager.call("_welcome_text") as String).find(Localization.ru_en("Ржавой Норы", "Rust Pit")) >= 0, "chapter 1 keeps its hand-written first hint")
 
 
 ## Chapter 2: contested meadows, worn soil, the Covenant's letters, a dry granary.

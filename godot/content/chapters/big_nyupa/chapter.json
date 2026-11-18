@@ -1,5 +1,6 @@
 {
   "id": "big_nyupa",
+  "profiles": ["appointed_administrator"],
   "order": 4,
   "title": "Большая Нюпа",
   "title_en": "Big Nyupa",

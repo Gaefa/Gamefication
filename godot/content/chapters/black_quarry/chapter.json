@@ -1,5 +1,6 @@
 {
   "id": "black_quarry",
+  "profiles": ["appointed_administrator"],
   "order": 3,
   "title": "Чёрный Карьер",
   "title_en": "The Black Quarry",

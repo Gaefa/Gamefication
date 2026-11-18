@@ -39,17 +39,22 @@ func _update_population() -> void:
 	# "Served" housing is what people can really live in: water reaches it and a road serves
 	# it. A shelter outside the pump's radius stays empty — it must not add residents who
 	# then consume nothing.
+	# A wrecked home has no working beds, but its people do not vanish with the roof: they
+	# are unserved and move out over a few days, which is the time a repair takes. (They used
+	# to be gone in one tick, and a storm over a small district was an instant exodus finale.)
 	var capacity: int = 0
 	var served: int = 0
+	var roofs: int = 0  # beds in every home that stands, wrecked ones included
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
-		if bld.get("damaged", false) as bool:
-			continue
 		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 		var beds: int = ldata.get("population", 0) as int
 		if beds <= 0:
+			continue
+		roofs += beds
+		if bld.get("damaged", false) as bool:
 			continue
 		capacity += beds
 		if _coverage.is_water_covered(coord) and _coverage.road_efficiency(coord) >= 1.0:
@@ -68,7 +73,7 @@ func _update_population() -> void:
 	# The pace is set by the housing people actually live in. Spare barracks standing empty
 	# must not make the district drain faster (it used to: three empty barracks and one bad
 	# day emptied a district of four).
-	var lived_in: float = float(mini(capacity, maxi(served, ceili(residents))))
+	var lived_in: float = float(mini(roofs, maxi(served, ceili(residents))))
 	if under_duress:
 		residents -= lived_in * OUTFLOW_RATE
 	elif residents > float(served):
@@ -76,7 +81,7 @@ func _update_population() -> void:
 		residents = maxf(residents - lived_in * OUTFLOW_RATE, float(served))
 	elif residents < float(served) and happiness >= CONTENT_HAPPINESS:
 		residents += (float(served) - residents) * INFLOW_RATE
-	residents = clampf(residents, 0.0, float(capacity))
+	residents = clampf(residents, 0.0, float(roofs))
 
 	# Why people are leaving, for the HUD: thirst, hunger, misery, or housing cut off.
 	var leaving: String = ""

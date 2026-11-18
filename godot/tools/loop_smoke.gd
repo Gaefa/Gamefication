@@ -14,6 +14,7 @@ const STUCK_FRAMES := 600     # 10 sim seconds paused with no desk and no finale
 
 var _prepared: bool = false
 var _legacy: String = ""        # start_legacies.json id (override: -- legacy=legacy_cistern)
+var _profile: String = "appointed_administrator"  # start_profiles.json id (override: -- profile=founder_rebel)
 var _main: Node
 var _desk: Control
 var _stuck: int = 0
@@ -34,6 +35,8 @@ func _ready() -> void:
 			SPEED = arg.trim_prefix("speed=").to_float()
 		if arg.begins_with("legacy="):
 			_legacy = arg.trim_prefix("legacy=")
+		if arg.begins_with("profile="):
+			_profile = arg.trim_prefix("profile=")
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
 		_ending = "%s (%s)" % [eid, kind])
 	EventBus.evening_started.connect(func(events: Array) -> void:
@@ -60,7 +63,7 @@ func _attach() -> void:
 	# Behind the start menu nothing runs; start the run the way the menu button does.
 	seed(12345)  # compare speed runs against the same city and issue sequence
 	_main.get_node("HUDCanvas/HUD").set("_selected_legacy", _legacy)
-	_main.get_node("HUDCanvas/HUD").call("_start_new_run", "appointed_administrator")
+	_main.get_node("HUDCanvas/HUD").call("_start_new_run", _profile)
 	if _prepared:
 		# The prepared district of balance_sim's stand B: roads, two more barracks, a second
 		# plot, a generator, and the water infrastructure at L2. Twelve people, a win path.

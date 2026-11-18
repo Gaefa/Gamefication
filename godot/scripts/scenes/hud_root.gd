@@ -2109,6 +2109,11 @@ func _build_campaign_list(container: Control) -> void:
 
 	# Appointed (patron) starts first — that is the chapter; founder starts are experimental.
 	var ids: Array = ContentDB.get_start_profile_ids()
+	# A chapter names the starts it was written for (chapter.json "profiles"); the others
+	# would play it with half its letters missing and a finale about another district.
+	var allowed: Array = ContentDB.get_chapter_def(_selected_chapter).get("profiles", []) as Array
+	if not allowed.is_empty():
+		ids = ids.filter(func(profile_id: String) -> bool: return allowed.has(profile_id))
 	ids.sort_custom(func(a: String, b: String) -> bool:
 		return _profile_rank(a) < _profile_rank(b))
 	var experimental: Array = []
@@ -2163,7 +2168,8 @@ func _build_chapter_row(container: Control) -> void:
 		btn.button_pressed = chapter_id == _selected_chapter
 		btn.pressed.connect(func() -> void:
 			_selected_chapter = chapter_id
-			hint.text = _chapter_hint(chapter_id))
+			hint.text = _chapter_hint(chapter_id)
+			_rebuild_start_panel.call_deferred())  # the starts on offer depend on the chapter
 		row.add_child(btn)
 	hint.text = _chapter_hint(_selected_chapter)
 
@@ -2295,6 +2301,10 @@ func _build_start_profile_row(profile_id: String) -> Control:
 func _profile_playstyle(profile_id: String) -> String:
 	match profile_id:
 		"appointed_administrator":
+			# Outside the first chapter the mandate is the chapter's own: its patron, its land.
+			var chapter_def: Dictionary = ContentDB.get_chapter_def(_selected_chapter)
+			if not (chapter_def.get("profiles", []) as Array).is_empty():
+				return Localization.content_text(chapter_def, "blurb", "")
 			return Localization.ru_en("Мандат Лиги Восстановления. Покровитель мягкий, требует беречь людей. Игра о балансе между его просьбами и жителями.",
 				"A Restoration League mandate. A soft patron who wants the people kept safe. A game of balancing its requests against the residents.")
 		"directorate_administrator":

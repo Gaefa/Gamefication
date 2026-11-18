@@ -1,5 +1,6 @@
 {
   "id": "bogolessky_gorge",
+  "profiles": ["appointed_administrator"],
   "order": 2,
   "title": "Боголесское Ущелье",
   "title_en": "Bogolessky Gorge",
