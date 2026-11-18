@@ -8,6 +8,9 @@ NEW IN 0.3.4-alpha / НОВОЕ В 0.3.4-alpha
   Chapters 2-5 offer one mandate, their own (the Directorate and founder starts belong to
   chapter 1 and played the later chapters with half the letters missing). The start screen
   names the chapter's patron, and the first hint speaks of this district and its term.
+  The Black Quarry start "Kramer's smelter" was unwinnable (no power for the smelter, the
+  district emptied by day four): it now comes with a solar panel. A loaded game keeps the
+  same mood as the game that was saved.
   Исправления по ночному прогону всех пяти глав.
   Буря, сломавшая дома, больше не опустошает район сразу: из сломанного дома люди уходят
   несколько дней, ремонт (R) их удерживает. Раньше маленький район мог получить финал «исход»
@@ -15,6 +18,9 @@ NEW IN 0.3.4-alpha / НОВОЕ В 0.3.4-alpha
   В главах 2-5 мандат один, свой (мандат Директората и старты основателей относятся к главе 1
   и в поздних главах шли с половиной писем). Стартовый экран называет покровителя главы,
   первая подсказка говорит об этом районе и его сроке.
+  Старт «Плавильня Крамер» в Чёрном Карьере был непроходим (плавильне не хватало энергии,
+  район пустел к четвёртому дню): теперь рядом стоит солнечная панель. Загруженная игра
+  держит то же настроение, что и сохранённая.
   0.3.3: chapter 5, the Old Capital's outer ring (permits, ruins, the road behind).
   0.3.2: chapter 4, Big Nyupa (the river, levees, stilts). 0.3.1: chapter 3, the Black Quarry.
   0.3.0: chapter 2 and inherited starts.
