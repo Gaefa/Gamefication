@@ -19,6 +19,8 @@ echo "loop prepared: $(run loop_smoke --quit-after 400000 -- prepared | grep -E 
 for ch in bogolessky_gorge black_quarry big_nyupa old_capital; do
   echo "loop $ch: $(run loop_smoke --quit-after 400000 -- chapter=$ch | grep -E '^=== SMOKE|CHAPTER ACCEPTANCE|SCRIPT ERROR' | sort -u | tr '\n' ' ')"
 done
+# The campaign as a player walks it: a building bot wins or loses each chapter and presses "Next chapter".
+echo "campaign: $(run campaign_smoke --quit-after 2000000 | grep -E '^=== CAMPAIGN|^FAIL|^дорога' | tr '\n' ' ')"
 echo "ui_flow: $(runw ui_flow_smoke | grep -E 'UI FLOW SMOKE|FAIL' | tr '\n' ' ')"
 echo "ui_shots: $(runw ui_shots -- out=$OUT/ru | grep -E 'UI SHOTS|FAIL' | tr '\n' ' ')"
 echo "ui_shots en: $(runw ui_shots -- out=$OUT/en locale=en | grep -E 'UI SHOTS|FAIL' | tr '\n' ' ')"
