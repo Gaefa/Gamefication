@@ -49,7 +49,7 @@ func _ready() -> void:
 			int(GameStateStore.get_resource("res_money")), int(round((prod.get("res_money", 0.0) as float) * float(SimulationRunner.TICKS_PER_DAY))),
 			int(GameStateStore.get_resource("res_food")), int(GameStateStore.get_resource("res_water_stockpile")),
 			int(GameStateStore.get_resource("res_wood")), int(GameStateStore.get_resource("res_stone")), int(GameStateStore.get_resource("res_tools")),
-			GameStateStore.population().get("total", 0) as int, int(GameStateStore.population().get("happiness", 0.0) as float), _mood_terms_text()]))
+			GameStateStore.population().get("total", 0) as int, int(GameStateStore.population().get("happiness", 0.0) as float), _mood_terms_text() + _chapter_gauges_text()]))
 	EventBus.critical_event_started.connect(func(data: Dictionary) -> void:
 		print("  СРОЧНО, день %d: %s" % [SimulationRunner.day_count, data.get("runtime_id", "?") as String]))
 	_main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
@@ -101,6 +101,21 @@ func _physics_process(_delta: float) -> void:
 			_finish("БЛОКЕР: пауза без Стола и финала (день %d, фаза %d)" % [SimulationRunner.day_count, SimulationRunner.current_phase])
 	else:
 		_stuck = 0
+
+
+## The chapter's own numbers: metal where there is metal, and the gauge its mechanic keeps.
+func _chapter_gauges_text() -> String:
+	var parts: Array[String] = []
+	if ContentDB.get_resource_ids().has("res_metal"):
+		parts.append("металл %d/%d" % [int(GameStateStore.get_resource("res_metal")), int(GameStateStore.get_cap("res_metal"))])
+	var mechanics: Dictionary = ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary
+	if mechanics.get("waste", false) as bool:
+		parts.append("дым %d (+%.1f −%.1f/дн)" % [int(WasteSystem.level()), WasteSystem.daily_gain(), WasteSystem.daily_sink() + WasteSystem.NATURAL_CLEARING])
+	if mechanics.get("flood", false) as bool:
+		parts.append("река %d, дамб %d, под угрозой %d" % [int(FloodSystem.level()), FloodSystem.levee_count(), FloodSystem.exposed_coords().size()])
+	if mechanics.get("permits", false) as bool:
+		parts.append("разрешений %.1f" % float(PermitSystem.available()))
+	return "" if parts.is_empty() else " · " + " · ".join(parts)
 
 
 ## Why the mood is what it is: every term that moves it by a point or more (ProgressionSystem.mood_terms).

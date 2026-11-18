@@ -2090,6 +2090,9 @@ func _on_continue_pressed() -> void:
 func _build_campaign_list(container: Control) -> void:
 	var intro := Label.new()
 	intro.text = Localization.t("ui.start.campaign_intro", "Выберите, кто вас назначил. Для первой игры берите мандат Лиги.")
+	if not (ContentDB.get_chapter_def(_selected_chapter).get("profiles", []) as Array).is_empty():
+		# A later chapter has one mandate, its own: there is nobody to choose between.
+		intro.text = Localization.ru_en("Выберите главу и то, что оставил прежний администратор. Мандат у этой главы один.", "Pick the chapter and what the previous administrator left. This chapter has one mandate.")
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	intro.add_theme_font_size_override("font_size", 13)
 	intro.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
@@ -2237,6 +2240,7 @@ func _profile_rank(profile_id: String) -> int:
 func _build_start_profile_row(profile_id: String) -> Control:
 	var def: Dictionary = ContentDB.get_start_profile_def(profile_id)
 	var recommended: bool = profile_id == "appointed_administrator"
+	var only_start: bool = not (ContentDB.get_chapter_def(_selected_chapter).get("profiles", []) as Array).is_empty()
 	var panel := PanelContainer.new()
 	var card: StyleBoxFlat = UiStyle.card_box("active" if recommended else "normal")
 	card.set_content_margin_all(14)
@@ -2251,7 +2255,7 @@ func _build_start_profile_row(profile_id: String) -> Control:
 	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(text_box)
 
-	if recommended:
+	if recommended and not only_start:
 		var badge := Label.new()
 		badge.text = Localization.t("ui.start.recommended", "Рекомендуется для первой игры")
 		UiStyle.caption(badge)
@@ -2304,7 +2308,9 @@ func _profile_playstyle(profile_id: String) -> String:
 			# Outside the first chapter the mandate is the chapter's own: its patron, its land.
 			var chapter_def: Dictionary = ContentDB.get_chapter_def(_selected_chapter)
 			if not (chapter_def.get("profiles", []) as Array).is_empty():
-				return Localization.content_text(chapter_def, "blurb", "")
+				var patron: Dictionary = chapter_def.get("patron", {}) as Dictionary
+				var patron_name: String = Localization.content_text(patron, "name", Localization.ru_en("Лига Восстановления", "the Restoration League"))
+				return Localization.ru_en("Назначение на этот район. Покровитель: %s.", "The appointment to this district. Patron: %s.") % patron_name
 			return Localization.ru_en("Мандат Лиги Восстановления. Покровитель мягкий, требует беречь людей. Игра о балансе между его просьбами и жителями.",
 				"A Restoration League mandate. A soft patron who wants the people kept safe. A game of balancing its requests against the residents.")
 		"directorate_administrator":
