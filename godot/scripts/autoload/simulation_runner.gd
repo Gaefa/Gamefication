@@ -13,6 +13,11 @@ var run_active: bool = false
 ## A critical card (DeskUI "СРОЧНО") is open; Space must not resume the day under it.
 var card_open: bool = false
 var speed_scale: float = 1.0  # 1x, 2x, 3x
+## "To the evening": the rest of the day at the tick cap (about a second for a whole day).
+## Anything that stops the day stops the rush too: an urgent card, a pause, the evening.
+var rushing: bool = false
+const RUSH_SCALE := 600.0
+const MAX_TICKS_PER_FRAME := 5
 var _accumulator: float = 0.0
 
 ## Set by GameOrchestrator after creating the scheduler.
@@ -31,6 +36,7 @@ var day_count: int = 1
 
 func _physics_process(delta: float) -> void:
 	if not is_running() or tick_callback.is_null():
+		rushing = false
 		return
 	
 	# A day is 300 simulation ticks at every speed. Advancing the day from a second
@@ -38,9 +44,9 @@ func _physics_process(delta: float) -> void:
 	if current_phase == Phase.DAY and day_timer <= 0.0:
 		_transition_to_evening()
 		return
-	_accumulator += delta * speed_scale
+	_accumulator = minf(_accumulator + delta * (RUSH_SCALE if rushing else speed_scale), float(MAX_TICKS_PER_FRAME) * TICK_INTERVAL)
 	var ticks_this_frame: int = 0
-	while _accumulator >= TICK_INTERVAL and ticks_this_frame < 5:
+	while _accumulator >= TICK_INTERVAL and ticks_this_frame < MAX_TICKS_PER_FRAME:
 		_accumulator -= TICK_INTERVAL
 		ticks_this_frame += 1
 		day_timer = maxf(0.0, day_timer - TICK_INTERVAL)
@@ -56,6 +62,8 @@ func _physics_process(delta: float) -> void:
 func _transition_to_evening() -> void:
 	current_phase = Phase.EVENING
 	paused = true
+	rushing = false
+	_accumulator = 0.0
 	EventBus.phase_changed.emit("evening")
 	# EventManager слушает этот сигнал и отправляет pending_events в DeskUI
 
@@ -100,6 +108,7 @@ func start_run(saved_day_timer: float = -1.0) -> void:
 	day_timer = saved_day_timer if saved_day_timer > 0.0 else day_duration
 	_accumulator = 0.0
 	speed_scale = 1.0  # a new or loaded run never inherits ×3 from the previous one
+	rushing = false
 	paused = false
 	card_open = false
 	run_active = true
@@ -107,6 +116,15 @@ func start_run(saved_day_timer: float = -1.0) -> void:
 
 func set_speed(multiplier: float) -> void:
 	speed_scale = clampf(multiplier, 0.5, 5.0)
+	rushing = false  # picking a speed is picking to watch the day
+
+
+## The player has done what they wanted today: run the rest of the day and open the Desk.
+func rush_to_evening() -> void:
+	if not run_active or current_phase != Phase.DAY or card_open:
+		return
+	paused = false
+	rushing = true
 
 func toggle_pause() -> void:
 	# Не даём снять паузу вечером — только через DeskUI

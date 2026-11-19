@@ -179,6 +179,7 @@ func _ready() -> void:
 	_nyupa_rules()
 	_capital_rules()
 	_norm_rules()
+	_pace_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -386,6 +387,37 @@ func _norm_rules() -> void:
 	orch.new_game(12345, "founder_rebel", "", "black_quarry")
 	_check(not ChapterNorm.active(), "a founder has no norm")
 	Campaign.reset_campaign()
+
+
+## "To the evening" runs the rest of the day at the tick cap and stops where the day stops.
+func _pace_rules() -> void:
+	_new_game("appointed_administrator")
+	var day: int = SimulationRunner.day_count
+	var tick_before: int = GameStateStore.get_tick()
+	SimulationRunner.rush_to_evening()
+	var frames: int = 0
+	while SimulationRunner.current_phase == SimulationRunner.Phase.DAY and frames < 400:
+		SimulationRunner._physics_process(1.0 / 60.0)
+		frames += 1
+	_check(SimulationRunner.current_phase == SimulationRunner.Phase.EVENING and frames <= 62, "a rushed day reaches the evening in about a second (%d frames)" % frames)
+	_check(GameStateStore.get_tick() - tick_before == SimulationRunner.TICKS_PER_DAY and SimulationRunner.day_count == day, "…having played every tick of it (%d)" % (GameStateStore.get_tick() - tick_before))
+	_check(not SimulationRunner.rushing, "…and the rush ends with the day")
+	SimulationRunner.transition_to_morning()
+	# An urgent card stops the rush: the day does not run on under it.
+	SimulationRunner.rush_to_evening()
+	SimulationRunner._physics_process(1.0 / 60.0)
+	SimulationRunner.paused = true
+	SimulationRunner.card_open = true
+	SimulationRunner._physics_process(1.0 / 60.0)
+	_check(not SimulationRunner.rushing, "an urgent card stops the rush")
+	SimulationRunner.rush_to_evening()
+	_check(not SimulationRunner.rushing and SimulationRunner.paused, "…and it cannot be restarted under the card")
+	SimulationRunner.card_open = false
+	SimulationRunner.paused = false
+	SimulationRunner.rush_to_evening()
+	SimulationRunner.set_speed(2.0)
+	_check(not SimulationRunner.rushing, "picking a speed ends the rush")
+	SimulationRunner.set_speed(1.0)
 
 
 ## Twelve content people: enough housing, water and mood for the win check to call the district settled.

@@ -145,7 +145,8 @@ func _is_global_hotkey(ke: InputEventKey) -> bool:
 		or _matches_key(ke, KEY_SPACE) \
 		or _matches_key(ke, KEY_1) \
 		or _matches_key(ke, KEY_2) \
-		or _matches_key(ke, KEY_3)
+		or _matches_key(ke, KEY_3) \
+		or _matches_key(ke, KEY_4)
 
 
 func _matches_key(ke: InputEventKey, key: Key) -> bool:
@@ -230,6 +231,8 @@ func _handle_key(ke: InputEventKey) -> void:
 		SimulationRunner.set_speed(2.0)
 	elif _matches_key(ke, KEY_3):
 		SimulationRunner.set_speed(3.0)
+	elif _matches_key(ke, KEY_4):
+		SimulationRunner.rush_to_evening()
 
 
 ## Upgrade / repair / bulldoze act on the world, so they work only while the day is running:

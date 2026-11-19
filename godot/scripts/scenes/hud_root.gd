@@ -355,6 +355,7 @@ var _clock_panel: PanelContainer
 var _clock_day: Label
 var _clock_bar: ProgressBar
 var _clock_left: Label
+var _rush_button: Button
 var _clock_state: Array = []  # what the clock labels last showed; a still clock costs no relayout
 
 
@@ -362,10 +363,10 @@ func _build_day_clock() -> void:
 	_clock_panel = PanelContainer.new()
 	_clock_panel.anchor_left = 0.5
 	_clock_panel.anchor_right = 0.5
-	_clock_panel.offset_left = -190
-	_clock_panel.offset_right = 190
+	_clock_panel.offset_left = -225
+	_clock_panel.offset_right = 225
 	_clock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	_loc(_clock_panel, func() -> String: return Localization.ru_en("Клик или Пробел — пауза · 1 / 2 / 3 — скорость · Esc — меню", "Click or Space — pause · 1 / 2 / 3 — speed · Esc — menu"), "tooltip_text")
+	_loc(_clock_panel, func() -> String: return Localization.ru_en("Клик или Пробел — пауза · 1 / 2 / 3 — скорость · 4 — до вечера · Esc — меню", "Click or Space — pause · 1 / 2 / 3 — speed · 4 — to the evening · Esc — menu"), "tooltip_text")
 	_clock_panel.gui_input.connect(func(event: InputEvent) -> void:
 		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT and not UiModals.is_open():
 			SimulationRunner.toggle_pause())
@@ -412,6 +413,15 @@ func _build_day_clock() -> void:
 		btn.pressed.connect(func() -> void: SimulationRunner.set_speed(float(speed)))
 		row.add_child(btn)
 		_speed_buttons.append(btn)
+	# The day is done and the Desk is what the player wants: run the rest of it.
+	_rush_button = Button.new()
+	_rush_button.focus_mode = Control.FOCUS_NONE
+	_rush_button.custom_minimum_size = Vector2(0, 22)
+	_rush_button.add_theme_font_size_override("font_size", 11)
+	_loc(_rush_button, func() -> String: return Localization.ru_en("» вечер", "» evening"))
+	_loc(_rush_button, func() -> String: return Localization.ru_en("До вечера (4): остаток дня проходит за секунду. Срочное письмо остановит.", "To the evening (4): the rest of the day passes in a second. An urgent letter stops it."), "tooltip_text")
+	_rush_button.pressed.connect(func() -> void: SimulationRunner.rush_to_evening())
+	row.add_child(_rush_button)
 	_update_day_clock()
 
 
@@ -429,6 +439,8 @@ func _update_day_clock() -> void:
 	elif SimulationRunner.paused:
 		text = Localization.ru_en("⏸ Пауза (Пробел)", "⏸ Paused (Space)")
 		color = Color(0.95, 0.8, 0.3)
+	elif SimulationRunner.rushing:
+		text = Localization.ru_en("» к вечеру", "» to the evening")
 	else:
 		# Real seconds until the evening Desk at the current speed.
 		var left: int = int(ceil(maxf(SimulationRunner.day_timer, 0.0) / maxf(SimulationRunner.speed_scale, 0.1)))
