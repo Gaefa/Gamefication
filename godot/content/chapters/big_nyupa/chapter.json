@@ -32,6 +32,21 @@
   "tutorial_intro": "Вы — администратор [b]Большой Нюпы[/b]. Река рядом, и это главное: [b]заливные луга[/b] (зелёные клетки у воды) родят лучше, но в [b]Паводок[/b] (дни 11–22) вода их заливает, и всё, что стоит там без [b]дамбы[/b] рядом и не на сваях, выходит из строя. Уровень реки виден вверху: беда от 60. [b]Причал[/b] у воды даёт рыбу. [b]Гниль[/b] — дни 23–30: еда портится, лихорадка. Аудиты — дни 15 и 27. Продержитесь до 30-го дня с не меньше чем 12 жителями.\n\nВремя пока стоит — спокойно осмотримся.",
   "tutorial_intro_en": "You are the administrator of [b]Big Nyupa[/b]. The river is close, and that is the point: the [b]floodplain[/b] (green cells by the water) bears better, but in the [b]Flood[/b] (days 11–22) the water covers it, and anything standing there without a [b]levee[/b] next to it, and not on stilts, is wrecked. The river level shows at the top: trouble from 60. A [b]pier[/b] by the water gives fish. The [b]Rot[/b] runs on days 23–30: food spoils, fever. Audits: days 15 and 27. Hold out until day 30 with at least 12 residents.\n\nTime is stopped for now — let's look around.",
   "company_traces": false,
+  "mandate_start": {"patron_trust": 50},
+  "norm": {
+    "kind": "quota",
+    "resource": "res_food",
+    "keep": 250,
+    "wagon": 50,
+    "pay": {
+      "res_money": 10
+    },
+    "targets": [4500, 10000],
+    "label": "Рыба и зерно Лиге",
+    "label_en": "Fish and grain for the League",
+    "hint": "Лига забирает улов и зерно баржами по 50, когда на складе больше 250 еды, и платит 10 монет за баржу. Первая цифра спрашивается на первой ревизии, вторая на второй и в конце срока.",
+    "hint_en": "The League takes fish and grain in barges of 50 whenever the store holds more than 250 food, and pays 10 coins a barge. The first figure is asked at the first audit, the second at the second audit and at the end of the term."
+  },
   "mechanics": {
     "flood": true
   },

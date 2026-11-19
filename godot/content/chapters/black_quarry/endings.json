@@ -54,5 +54,13 @@
     "title_en": "Mandate Not Renewed — The Quarry Bled People",
     "body": "Карьер рос, пока дым и забастовки не выгнали людей на Гарь. К ревизии район был меньше, чем на старте. Хольт не стал спорить с цифрами.\n\nМандат не продлён. Жила достанется следующему.",
     "body_en": "The Quarry grew until the smoke and the strikes drove people to the Burn. By the review the district was smaller than at the start. Holt did not argue with the numbers.\n\nThe mandate was not renewed. The seam goes to the next one."
+  },
+  {
+    "id": "ending.lose.norm",
+    "kind": "lose",
+    "title": "Мандат не продлён — металл не вывезен",
+    "title_en": "Mandate Not Renewed — The Metal Was Not Hauled",
+    "body": "Срок вышел. Посёлок стоит, люди на месте, над бараками видно небо. В ведомости вагонов Союза против семи тысяч стоит другая цифра.\n\nХольт записал: «Район чистый. Мосты не построены». Мандат на второй срок передан инженеру, который считает слитки, а не кашель.\n\nКомитет посёлка вынес вам хлеб на дорогу.",
+    "body_en": "The term ran out. The settlement stands, the people are in place, there is sky over the shelters. In the Union's wagon ledger, against seven thousand, there is another figure.\n\nHolt wrote: \"The district is clean. The bridges are not built.\" The mandate for a second term went to an engineer who counts ingots, not coughs.\n\nThe settlement committee brought you bread for the road."
   }
 ]

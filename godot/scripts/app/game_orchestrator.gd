@@ -82,6 +82,8 @@ func build() -> void:
 		tick_scheduler.add_system(FloodSystem.new())
 	if mechanics.get("permits", false) as bool:
 		tick_scheduler.add_system(PermitSystem.new())
+	if not (ContentDB.get_chapter_def().get("norm", {}) as Dictionary).is_empty():
+		tick_scheduler.add_system(ChapterNorm.new())  # the patron's wagons (chapter.json "norm")
 
 	# Command bus
 	command_bus = CommandBus.new()
@@ -103,6 +105,13 @@ func new_game(seed_val: int = 0, profile_id: String = "appointed_administrator",
 	var patron: Dictionary = ContentDB.get_chapter_def().get("patron", {}) as Dictionary
 	if (patron.get("id", "") as String) != "" and (GameStateStore.mandate().get("patron_id", "") as String) != "":
 		GameStateStore.mandate()["patron_id"] = patron.get("id", "") as String
+	# A new patron does not know the administrator yet: a chapter may open on its own trust
+	# and support (chapter.json "mandate_start") instead of the profile's. A legacy start
+	# can still move them afterwards.
+	if (GameStateStore.mandate().get("patron_id", "") as String) != "":
+		var opening: Dictionary = ContentDB.get_chapter_def().get("mandate_start", {}) as Dictionary
+		for key: String in opening:
+			GameStateStore.mandate()[key] = opening[key]
 	GameStateStore.save_meta().rng_seed = seed_val
 	GameStateStore.save_meta().chapter_id = ContentDB.active_chapter
 	# What the finished chapters left behind: their decision flags open this chapter's cards.

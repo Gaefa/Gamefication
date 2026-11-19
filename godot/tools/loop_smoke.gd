@@ -118,6 +118,8 @@ func _chapter_gauges_text() -> String:
 		parts.append("река %d, дамб %d, под угрозой %d" % [int(FloodSystem.level()), FloodSystem.levee_count(), FloodSystem.exposed_coords().size()])
 	if mechanics.get("permits", false) as bool:
 		parts.append("разрешений %.1f" % float(PermitSystem.available()))
+	if ChapterNorm.active():
+		parts.append("норма %s" % ChapterNorm.figures(ChapterNorm.current_stage()).replace(" ", ""))
 	return "" if parts.is_empty() else " · " + " · ".join(parts)
 
 

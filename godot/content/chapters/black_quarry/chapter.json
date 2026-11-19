@@ -55,6 +55,21 @@
   "tutorial_intro": "Вы — администратор [b]Чёрного Карьера[/b]. [b]Рудные жилы[/b] (бурые клетки) дают металл, но карьер и плавильня копят [b]дым[/b] над районом: он виден вверху и давит на счастье. Фильтры и отвалы снимают его. [b]Смог[/b] — дни 1–10, [b]Забастовочная осень[/b] — 11–22, [b]Мороз[/b] — 23–30. Ревизии Союза — дни 15 и 27. Продержитесь до 30-го дня с не меньше чем 12 жителями.\n\nВремя пока стоит — спокойно осмотримся.",
   "tutorial_intro_en": "You are the administrator of the [b]Black Quarry[/b]. [b]Ore seams[/b] (brown cells) give metal, but the pit and the smelter pile up [b]smoke[/b] over the district: it shows at the top and weighs on mood. Filters and slag heaps take it back. The [b]Smog[/b] runs on days 1–10, the [b]Strike Autumn[/b] on 11–22, the [b]Frost[/b] on 23–30. Union reviews: days 15 and 27. Hold out until day 30 with at least 12 residents.\n\nTime is stopped for now — let's look around.",
   "company_traces": false,
+  "mandate_start": {"patron_trust": 50},
+  "norm": {
+    "kind": "quota",
+    "resource": "res_metal",
+    "keep": 20,
+    "wagon": 50,
+    "pay": {
+      "res_money": 15
+    },
+    "targets": [3000, 7000],
+    "label": "Металл Союзу",
+    "label_en": "Metal for the Union",
+    "hint": "Союз вывозит металл вагонами по 50, оставляя району 20, и платит 15 монет за вагон. Первая цифра спрашивается на первой ревизии, вторая на второй и в конце срока.",
+    "hint_en": "The Union hauls metal away in wagons of 50, leaving the district 20, and pays 15 coins a wagon. The first figure is asked at the first audit, the second at the second audit and at the end of the term."
+  },
   "mechanics": {
     "waste": true
   },

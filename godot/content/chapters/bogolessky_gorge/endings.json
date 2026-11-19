@@ -54,5 +54,13 @@
     "title_en": "Mandate Not Renewed — The Gorge Bled People",
     "body": "Ущелье росло, пока не пришла Сушь, а потом люди потянулись в Верхние Поля. К аудиту район был меньше, чем на старте. Инспектор Варга не стала спорить с цифрами.\n\nМандат не продлён. Луга достались следующему.",
     "body_en": "The Gorge grew until the Drought came, and then the people drifted to the Upper Fields. By the audit the district was smaller than at the start. Inspector Varga did not argue with the numbers.\n\nThe mandate was not renewed. The meadows went to the next one."
+  },
+  {
+    "id": "ending.lose.norm",
+    "kind": "lose",
+    "title": "Мандат не продлён — квота не сдана",
+    "title_en": "Mandate Not Renewed — The Quota Was Not Delivered",
+    "body": "Срок вышел. Район стоит, люди сыты, амбары не пусты. В ведомости обозов против плана Зелёного пояса стоит недостача.\n\nВарга написала в заключении: «Администратор накормил Ущелье. Сухие земли он не накормил». Мандат на второй срок передан другому: Лиге нужен хлеб, а не благодарный район.\n\nВас проводили до переправы всем посёлком.",
+    "body_en": "The term ran out. The district stands, the people are fed, the granaries are not empty. In the wagon ledger, against the Green Belt's plan, there is a shortfall.\n\nVarga wrote in her conclusion: \"The administrator fed the Gorge. He did not feed the Dry Lands.\" The mandate for a second term went to someone else: the League needs bread, not a grateful district.\n\nThe whole settlement walked you to the crossing."
   }
 ]

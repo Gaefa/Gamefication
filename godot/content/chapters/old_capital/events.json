@@ -14,8 +14,8 @@
     "cooldown_sec": 999999,
     "title": "Директорат — предписание о назначении",
     "title_en": "Directorate — Order of Appointment",
-    "body": "Гражданский Директорат. Управление зон восстановления.\nПредписание № 9/К\n\nЗона «Старый Капитал, внешнее кольцо» передаётся в ваше управление с сегодняшнего дня.\n\nСтроительство — только по разрешениям канцелярии (выдано два; далее по графику сезона). Разбор руин разрешения не требует, но учитывается. Требования к концу срока: не менее двенадцати жителей, запасы воды и еды, учёт населения без самостроя.\nПлановые проверки — на 15-й и 27-й день, проводит комиссар Ирен Хальт; проверка засчитывается только при выполнении всех норм. Срок — 30 дней.\n\nКанцелярия Директората",
-    "body_en": "Civic Directorate. Office of Recovery Zones.\nOrder No. 9/C\n\nThe zone \"Old Capital, outer ring\" is placed under your administration as of today.\n\nConstruction only by the office's permits (two issued; further ones by the season's schedule). Salvaging ruins needs no permit but is recorded. Requirements by the end of the term: no fewer than twelve residents, water and food in reserve, a population register without unauthorised construction.\nScheduled inspections on days 15 and 27 by Commissar Irene Halt; an inspection is credited only when every target is met. The term is 30 days.\n\nDirectorate Chancellery",
+    "body": "Гражданский Директорат. Управление зон восстановления.\nПредписание № 9/К\n\nЗона «Старый Капитал, внешнее кольцо» передаётся в ваше управление с сегодняшнего дня.\n\nСтроительство — только по разрешениям канцелярии (выдано два; далее по графику сезона). Разбор руин разрешения не требует, но учитывается. Требования к концу срока: не менее двенадцати жителей, запасы воды и еды, учёт населения без самостроя. По реестру: к первой проверке учётная контора, ко второй и к концу срока ещё два доходных дома.\nПлановые проверки — на 15-й и 27-й день, проводит комиссар Ирен Хальт; проверка засчитывается только при выполнении всех норм. Срок — 30 дней.\n\nКанцелярия Директората",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\nOrder No. 9/C\n\nThe zone \"Old Capital, outer ring\" is placed under your administration as of today.\n\nConstruction only by the office's permits (two issued; further ones by the season's schedule). Salvaging ruins needs no permit but is recorded. Requirements by the end of the term: no fewer than twelve residents, water and food in reserve, a population register without unauthorised construction. By the register: a registry office by the first inspection, two tenements as well by the second inspection and the end of the term.\nScheduled inspections on days 15 and 27 by Commissar Irene Halt; an inspection is credited only when every target is met. The term is 30 days.\n\nDirectorate Chancellery",
     "options": [
       {
         "text": "Принять предписание",
@@ -219,7 +219,6 @@
         "effects": {
           "stat_permits": 2,
           "stat_league_trust": 2,
-          "style": "loyal",
           "message": "Формы ушли. Канцелярия вернула два бланка.",
           "message_en": "The forms went in. The chancellery returned two forms."
         }
@@ -239,7 +238,6 @@
         "effects": {
           "stat_league_trust": -3,
           "stat_city_trust": 1,
-          "style": "protector",
           "message": "Канцелярия записала пропуск.",
           "message_en": "The chancellery recorded the omission."
         }
@@ -357,8 +355,8 @@
     "cooldown_sec": 999999,
     "title": "Директорат — уведомление о проверке",
     "title_en": "Directorate — Notice of Inspection",
-    "body": "Гражданский Директорат. Управление зон восстановления.\n\nАдминистратору. Через три дня плановая проверка: запас воды, запас еды, население. Отдельно сверяется реестр строений с выданными разрешениями.\n\nКомиссар Хальт.",
-    "body_en": "Civic Directorate. Office of Recovery Zones.\n\nTo the administrator. A scheduled inspection in three days: the water reserve, the food reserve, the population. The register of buildings is checked against the permits issued separately.\n\nCommissar Halt.",
+    "body": "Гражданский Директорат. Управление зон восстановления.\n\nАдминистратору. Через три дня плановая проверка: запас воды, запас еды, население. Четвёртой строкой реестр: учётная контора должна стоять и работать.\n\nКомиссар Хальт.",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\n\nTo the administrator. A scheduled inspection in three days: the water reserve, the food reserve, the population. The fourth line is the register: a registry office must stand and work.\n\nCommissar Halt.",
     "options": [
       {
         "text": "Принято",
@@ -1400,6 +1398,63 @@
           "style": "protector",
           "message": "Торн убрал перчатки в карман. Чертежей больше не будет.",
           "message_en": "Thorn put his gloves in his pocket. There will be no more drawings."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.tenement_order",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "patron": "civic_directorate",
+    "trigger_day": 17,
+    "tags": [
+      "patron",
+      "letter",
+      "norm"
+    ],
+    "title": "Гражданский Директорат — доходные дома",
+    "title_en": "Civic Directorate — The Tenements",
+    "body": "Гражданский Директорат. Управление зон восстановления.\n\nАдминистратору. Ко второй проверке по реестру кольца должны стоять два доходных дома. Сквоттеры в остовах в реестр не вносятся и нормой не считаются.\n\nСпикер Вейс прислала встречную записку: Ассамблея расселит людей в руинах сама, за неделю и без единого разрешения, если вы не станете мешать.\n\nКомиссар Хальт.",
+    "body_en": "Civic Directorate. Office of Recovery Zones.\n\nTo the administrator. By the second inspection two tenements must stand on the ring's register. Squatters in the shells are not entered in the register and do not count toward the norm.\n\nSpeaker Weiss sent a note in reply: the Assembly will house the people in the ruins itself, in a week and without a single permit, if you do not stand in the way.\n\nCommissar Halt.",
+    "options": [
+      {
+        "text": "Строить по реестру: просить разрешения вне очереди (30 монет, разрешения +2)",
+        "text_en": "Build by the register: ask for permits out of turn (30 coins, permits +2)",
+        "cost": {
+          "res_money": 30
+        },
+        "effects": {
+          "stat_permits": 2,
+          "stat_league_trust": 4,
+          "stat_city_trust": -4,
+          "style": "loyal",
+          "message": "Канцелярия подписала два бланка. Вейс сказала: «Бумага раньше людей. Запомним».",
+          "message_en": "The chancellery signed two forms. Weiss said: \"Paper before people. We will remember.\""
+        }
+      },
+      {
+        "text": "Пустить Ассамблею в руины (+4 жителя, если есть места)",
+        "text_en": "Let the Assembly into the ruins (+4 residents if there are beds)",
+        "effects": {
+          "add_residents": 4,
+          "set_flag": "squatters_in",
+          "stat_city_trust": 6,
+          "stat_league_trust": -6,
+          "style": "protector",
+          "message": "К вечеру в остовах горели окна. Хальт внесла в дело слово «самострой».",
+          "message_en": "By evening there were lit windows in the shells. Halt entered the word \"unauthorised\" in the file."
+        }
+      },
+      {
+        "text": "Ответить обоим: дома будут к сроку",
+        "text_en": "Answer both: the houses will be up in time",
+        "effects": {
+          "style": "pragmatist",
+          "message": "Обе записки легли в одну папку.",
+          "message_en": "Both notes went into one folder."
         }
       }
     ]
