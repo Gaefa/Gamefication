@@ -687,5 +687,81 @@
       { "text": "Обозы идут: квота кормит Сухие земли", "text_en": "The wagons go: the quota feeds the Dry Lands", "effects": { "stat_city_trust": -6, "stat_league_trust": 4, "style": "loyal", "message": "Бригады разошлись молча. Обоз ушёл по расписанию.", "message_en": "The crews left in silence. The wagon went on schedule." } },
       { "text": "Платить бригадам из денег Лиги (40 монет)", "text_en": "Pay the crews out of the League's money (40 coins)", "cost": { "res_money": 40 }, "effects": { "stat_city_trust": 3, "style": "pragmatist", "message": "Деньги за обозы пошли бригадам. Вел сказал: «Так честнее».", "message_en": "The wagon money went to the crews. Vel said: \"That is fairer.\"" } }
     ]
+  },
+  {
+    "id": "gorge.drovers",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_rains",
+    "trigger_day": 6,
+    "tags": ["rival", "trade"],
+    "title": "Обращение — гуртовщики Ярвена",
+    "title_en": "Petition — Jarven's Drovers",
+    "body": "У поста трое гуртовщиков из Верхних Полей, с ними воз тёсаного камня.\n\n«Староста Ярвен шлёт сорок камня даром. Просит одного: пустить наш скот на луга у реки до конца Дождей. Завету можно не говорить, они всё равно узнают».",
+    "body_en": "Three drovers from the Upper Fields stand at the post with a cart of dressed stone.\n\n\"Headman Jarven sends forty stone as a gift. He asks one thing: let our cattle onto the river meadows until the Rains end. No need to tell the Covenant; they will find out anyway.\"",
+    "options": [
+      { "text": "Пустить скот (+40 камня)", "text_en": "Let the cattle in (+40 stone)", "effects": { "add_resources": { "res_stone": 40 }, "stat_rival_score": 2, "stat_city_trust": -4, "style": "pragmatist", "message": "Скот пошёл на луга. К вечеру на бересте пришла одна строка от Ольхи: «Видели».", "message_en": "The cattle went onto the meadows. By evening one line came on birch bark from Alder: \"We saw.\"" } },
+      { "text": "Отказать: луга не пастбище", "text_en": "Refuse: the meadows are not pasture", "effects": { "stat_city_trust": 4, "stat_rival_score": -1, "style": "protector", "message": "Гуртовщики увезли камень. Завет прислал корзину мёда без записки.", "message_en": "The drovers took the stone away. The Covenant sent a basket of honey with no note." } },
+      { "text": "Купить камень по цене (30 монет, +40 камня)", "text_en": "Buy the stone at a price (30 coins, +40 stone)", "cost": { "res_money": 30 }, "effects": { "add_resources": { "res_stone": 40 }, "stat_league_trust": 2, "style": "loyal", "message": "Камень сгрузили, скот остался за оградой. В ведомости Лиги покупка записана как положено.", "message_en": "The stone was unloaded; the cattle stayed outside the fence. In the League's ledger the purchase is entered as it should be." } }
+    ]
+  },
+  {
+    "id": "gorge.drought_feast",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_drought",
+    "trigger_day": 14,
+    "tags": ["petition"],
+    "title": "Обращение — праздник перед Сушью",
+    "title_en": "Petition — A Feast Before the Drought",
+    "body": "Учительница Мира Соль пришла от всего посёлка.\n\n«Сушь будет долгая. Люди просят один вечер: общий стол у амбара, пока есть что на него поставить. Лига скажет, что это зерно из квоты. Скажет, конечно».",
+    "body_en": "The teacher Mira Sol came on behalf of the whole settlement.\n\n\"The Drought will be long. People ask for one evening: a common table by the granary, while there is something to put on it. The League will say that is quota grain. Of course it will.\"",
+    "options": [
+      { "text": "Накрыть стол из амбара (80 еды)", "text_en": "Lay the table from the granary (80 food)", "cost": { "res_food": 80 }, "effects": { "add_buff": { "id": "common_table", "name": "Общий стол", "name_en": "The common table", "happiness_add": 6, "remaining": 600 }, "stat_city_trust": 5, "stat_league_trust": -3, "style": "protector", "message": "Столы стояли до темноты. Варга узнала об этом из доноса, а не от вас.", "message_en": "The tables stood until dark. Varga learned of it from a report, not from you." } },
+      { "text": "Оплатить вечер из казны (40 монет)", "text_en": "Pay for the evening from the treasury (40 coins)", "cost": { "res_money": 40 }, "effects": { "add_buff": { "id": "common_table", "name": "Вечер у амбара", "name_en": "An evening by the granary", "happiness_add": 4, "remaining": 600 }, "stat_city_trust": 3, "style": "pragmatist", "message": "Купили у Ярвена сыр и свечи. Зерно квоты осталось в мешках.", "message_en": "Cheese and candles were bought from Jarven. The quota grain stayed in its sacks." } },
+      { "text": "Отказать: до Урожая каждый мешок на счету", "text_en": "Refuse: until the Harvest every sack is counted", "effects": { "stat_city_trust": -5, "stat_league_trust": 3, "style": "loyal", "message": "Соль кивнула и ушла. В школе в тот вечер рано погасили свет.", "message_en": "Sol nodded and left. The school put its lights out early that evening." } }
+    ]
+  },
+  {
+    "id": "gorge.varga_visit",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "patron": "restoration_league",
+    "trigger_day": 19,
+    "tags": ["patron", "visit"],
+    "title": "Инспектор Варга — без предупреждения",
+    "title_en": "Inspector Varga — Unannounced",
+    "body": "Инспектор Хелин Варга приехала сама, с одним писарем.\n\n«Я хочу видеть амбар, ведомость обозов и поля. В таком порядке. И хочу, чтобы мне не мешали разговаривать с людьми».",
+    "body_en": "Inspector Helin Varga came in person, with a single clerk.\n\n\"I want to see the granary, the wagon ledger and the fields. In that order. And I want nobody to stand between me and the people.\"",
+    "options": [
+      { "text": "Показать всё как есть", "text_en": "Show everything as it is", "effects": { "stat_league_trust": 2, "stat_city_trust": 1, "style": "pragmatist", "message": "Варга ходила до вечера и записывала. Уезжая, сказала: «Вижу район. Жду цифру».", "message_en": "Varga walked about until evening, writing. Leaving, she said: \"I see a district. I await the figure.\"" } },
+      { "text": "Собрать бригады на показ: мешки к воротам", "text_en": "Turn the crews out for show: sacks to the gate", "effects": { "stat_league_trust": 6, "stat_city_trust": -5, "style": "loyal", "message": "Амбар выглядел полным. Бригады до ночи таскали мешки обратно.", "message_en": "The granary looked full. The crews hauled the sacks back until night." } },
+      { "text": "Дать слово полевым бригадам", "text_en": "Let the field crews speak", "effects": { "stat_league_trust": -4, "stat_city_trust": 6, "style": "protector", "message": "Бригады рассказали ей про усталую землю и про обозы. Варга слушала молча.", "message_en": "The crews told her about the tired land and the wagons. Varga listened in silence." } }
+    ]
+  },
+  {
+    "id": "gorge.camp_hands",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_harvest",
+    "trigger_day": 24,
+    "tags": ["petition", "quota"],
+    "title": "Обращение — люди из лагеря",
+    "title_en": "Petition — People From the Camp",
+    "body": "С тракта пришли четверо: сезонные руки из лагеря переселенцев.\n\n«Нам сказали, в Ущелье Урожай. Мы работаем за еду и крышу. Лига платит за каждый обоз, так что мы вам ещё и выгодны. Возьмёте?»",
+    "body_en": "Four came in off the highway: seasonal hands from the settlers' camp.\n\n\"We were told the Gorge has a Harvest. We work for food and a roof. The League pays for every wagon, so we are worth your while as well. Will you take us?\"",
+    "options": [
+      { "text": "Взять на Урожай (+3 жителя, если есть места)", "text_en": "Take them for the Harvest (+3 residents if there are beds)", "effects": { "add_residents": 3, "stat_city_trust": 2, "style": "protector", "message": "Им нашли угол в бараке. К вечеру они уже были в поле.", "message_en": "A corner was found for them in a shelter. By evening they were in the field." } },
+      { "text": "Нанять подённо: в зачёт квоты (40 монет, +250)", "text_en": "Hire them by the day: toward the quota (40 coins, +250)", "cost": { "res_money": 40 }, "effects": { "stat_norm_shipped": 250, "stat_league_trust": 3, "style": "loyal", "message": "Четверо грузили обозы неделю и ушли дальше по тракту.", "message_en": "The four loaded wagons for a week and went on down the highway." } },
+      { "text": "Отказать: своих бы прокормить", "text_en": "Refuse: we can barely feed our own", "effects": { "stat_city_trust": -2, "style": "pragmatist", "message": "Они ушли к Ярвену. Там их взяли.", "message_en": "They went on to Jarven. He took them." } }
+    ]
   }
 ]
