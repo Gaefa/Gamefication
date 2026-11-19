@@ -6,7 +6,6 @@ var _coverage: CoverageMap
 var _notified_upgrade_level: int = 0
 var _win_emitted: bool = false
 var _adjacency := AdjacencyCalculator.new()
-var _supply_trend: Dictionary = {}  # res_id → day-scale running average of the ledger net per tick
 
 # --- Population retention (tuning) ---
 const OUTFLOW_RATE := 0.0012    # fraction of capacity that leaves per tick under duress
@@ -39,17 +38,22 @@ func _update_population() -> void:
 	# "Served" housing is what people can really live in: water reaches it and a road serves
 	# it. A shelter outside the pump's radius stays empty — it must not add residents who
 	# then consume nothing.
+	# A wrecked home has no working beds, but its people do not vanish with the roof: they
+	# are unserved and move out over a few days, which is the time a repair takes. (They used
+	# to be gone in one tick, and a storm over a small district was an instant exodus finale.)
 	var capacity: int = 0
 	var served: int = 0
+	var roofs: int = 0  # beds in every home that stands, wrecked ones included
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
 		var bld: Dictionary = GameStateStore.get_building(coord)
-		if bld.get("damaged", false) as bool:
-			continue
 		var type_id: String = bld.get("type", "") as String
 		var level: int = bld.get("level", 0) as int
 		var ldata: Dictionary = ContentDB.building_level_data(type_id, level)
 		var beds: int = ldata.get("population", 0) as int
 		if beds <= 0:
+			continue
+		roofs += beds
+		if bld.get("damaged", false) as bool:
 			continue
 		capacity += beds
 		if _coverage.is_water_covered(coord) and _coverage.road_efficiency(coord) >= 1.0:
@@ -68,7 +72,7 @@ func _update_population() -> void:
 	# The pace is set by the housing people actually live in. Spare barracks standing empty
 	# must not make the district drain faster (it used to: three empty barracks and one bad
 	# day emptied a district of four).
-	var lived_in: float = float(mini(capacity, maxi(served, ceili(residents))))
+	var lived_in: float = float(mini(roofs, maxi(served, ceili(residents))))
 	if under_duress:
 		residents -= lived_in * OUTFLOW_RATE
 	elif residents > float(served):
@@ -76,7 +80,7 @@ func _update_population() -> void:
 		residents = maxf(residents - lived_in * OUTFLOW_RATE, float(served))
 	elif residents < float(served) and happiness >= CONTENT_HAPPINESS:
 		residents += (float(served) - residents) * INFLOW_RATE
-	residents = clampf(residents, 0.0, float(capacity))
+	residents = clampf(residents, 0.0, float(roofs))
 
 	# Why people are leaving, for the HUD: thirst, hunger, misery, or housing cut off.
 	var leaving: String = ""
@@ -207,12 +211,17 @@ func _supply_happiness_term() -> float:
 
 ## How much of today's draw the reserve is covering out of its own stock, judged on a day's
 ## running average of the ledger net: 0 when the producers keep up, 1 when nothing has
-## come in for a day and the stockpile carries it all. Runtime only: a loaded game starts
-## the average from its first tick.
+## come in for a day and the stockpile carries it all. The average lives in the economy
+## state and is saved with it: kept in memory only, a loaded game restarted it and its mood
+## ran up to two points off the unsaved game's for the next day.
 func _trend_drain_share(res_id: String) -> float:
-	var net: float = (GameStateStore.economy().get("production", {}) as Dictionary).get(res_id, 0.0) as float
-	var trend: float = lerpf(_supply_trend.get(res_id, net) as float, net, 1.0 / float(SimulationRunner.TICKS_PER_DAY))
-	_supply_trend[res_id] = trend
+	var economy: Dictionary = GameStateStore.economy()
+	var net: float = (economy.get("production", {}) as Dictionary).get(res_id, 0.0) as float
+	if not economy.has("supply_trend"):
+		economy["supply_trend"] = {}  # res_id → day-scale running average of the ledger net per tick
+	var trends: Dictionary = economy["supply_trend"] as Dictionary
+	var trend: float = lerpf(trends.get(res_id, net) as float, net, 1.0 / float(SimulationRunner.TICKS_PER_DAY))
+	trends[res_id] = trend
 	var draw_per_tick: float = EconomySystem.daily_consumption(res_id) / float(SimulationRunner.TICKS_PER_DAY)
 	return clampf(-trend / maxf(draw_per_tick, 0.0001), 0.0, 1.0)
 

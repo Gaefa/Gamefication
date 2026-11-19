@@ -10,6 +10,9 @@ runw() { perl -e 'alarm 900; exec @ARGV' "$G" --path godot "res://tools/$1.tscn"
 echo "content: $(run content_check --quit-after 2000 | grep -E '^=== CONTENT' | tr '\n' ' ')"
 echo "rules: $(run rules_smoke | grep -E '^=== RULES|FAIL' | tr '\n' ' ')"
 echo "save_roundtrip: $(run save_roundtrip | grep -E '^=== ROUND' | tr '\n' ' ')"
+for ch in bogolessky_gorge black_quarry big_nyupa old_capital; do
+  echo "save_roundtrip $ch: $(run save_roundtrip -- chapter=$ch | grep -E '^=== ROUND' | tr '\n' ' ')"
+done
 echo "run_state: $(run run_state_smoke | grep -E '^=== RUN|FAIL' | tr '\n' ' ')"
 echo "fuzz: $(run fuzz_smoke -- seed=1 | grep -E '^=== FUZZ' | tr '\n' ' ')"
 echo "i18n: $(run i18n_smoke -- prepared | grep -E '^=== I18N' | tr '\n' ' ')"
@@ -19,6 +22,8 @@ echo "loop prepared: $(run loop_smoke --quit-after 400000 -- prepared | grep -E 
 for ch in bogolessky_gorge black_quarry big_nyupa old_capital; do
   echo "loop $ch: $(run loop_smoke --quit-after 400000 -- chapter=$ch | grep -E '^=== SMOKE|CHAPTER ACCEPTANCE|SCRIPT ERROR' | sort -u | tr '\n' ' ')"
 done
+# The campaign as a player walks it: a building bot wins or loses each chapter and presses "Next chapter".
+echo "campaign: $(run campaign_smoke --quit-after 2000000 | grep -E '^=== CAMPAIGN|^FAIL|^дорога' | tr '\n' ' ')"
 echo "ui_flow: $(runw ui_flow_smoke | grep -E 'UI FLOW SMOKE|FAIL' | tr '\n' ' ')"
 echo "ui_shots: $(runw ui_shots -- out=$OUT/ru | grep -E 'UI SHOTS|FAIL' | tr '\n' ' ')"
 echo "ui_shots en: $(runw ui_shots -- out=$OUT/en locale=en | grep -E 'UI SHOTS|FAIL' | tr '\n' ' ')"

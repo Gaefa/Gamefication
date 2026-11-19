@@ -149,7 +149,21 @@ func _apply_text() -> void:
 	_btn.text = Localization.ru_en("Понятно", "Got it")
 	if _active != "":
 		var pair: Array = HINTS[_active] as Array
-		_label.text = Localization.ru_en(pair[0] as String, pair[1] as String)
+		_label.text = _welcome_text() if _active == "welcome" else Localization.ru_en(pair[0] as String, pair[1] as String)
+
+
+## The first hint names the district, the term and the audit days. Only the Rust Pit has it
+## written by hand; every other chapter gets the same promise from its own scenario numbers.
+func _welcome_text() -> String:
+	var pair: Array = HINTS["welcome"] as Array
+	if ContentDB.active_chapter == (ContentDB.get_chapter_ids(true)[0] as String):
+		return Localization.ru_en(pair[0] as String, pair[1] as String)
+	var title: String = Localization.content_text(ContentDB.get_chapter_def(), "title", ContentDB.active_chapter)
+	var audits: Array = ContentDB.get_audit_days()
+	var audit_days: String = Localization.ru_en(" и ", " and ").join(audits.map(func(day: Variant) -> String: return str(int(day))))
+	return Localization.ru_en(
+		"Вы — администратор района «%s». Срок мандата — %d дней, ревизии на дни %s. Доживите до конца срока со счастьем не ниже 40 и не меньше чем с 12 жителями. Первый шаг: дорога от поста администрации." % [title, ContentDB.get_win_day(), audit_days],
+		"You are the administrator of %s. The mandate runs %d days, with audits on days %s. Reach the end of the term with mood at least 40 and at least 12 residents. First step: a road from the administration post." % [title, ContentDB.get_win_day(), audit_days])
 
 
 func _dismiss() -> void:

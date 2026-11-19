@@ -14,6 +14,8 @@ const STUCK_FRAMES := 600     # 10 sim seconds paused with no desk and no finale
 
 var _prepared: bool = false
 var _legacy: String = ""        # start_legacies.json id (override: -- legacy=legacy_cistern)
+var _world_seed: int = 12345    # the run's seed: map, breakdowns, card draws (override: -- seed=7)
+var _profile: String = "appointed_administrator"  # start_profiles.json id (override: -- profile=founder_rebel)
 var _main: Node
 var _desk: Control
 var _stuck: int = 0
@@ -34,6 +36,10 @@ func _ready() -> void:
 			SPEED = arg.trim_prefix("speed=").to_float()
 		if arg.begins_with("legacy="):
 			_legacy = arg.trim_prefix("legacy=")
+		if arg.begins_with("profile="):
+			_profile = arg.trim_prefix("profile=")
+		if arg.begins_with("seed="):
+			_world_seed = arg.trim_prefix("seed=").to_int()
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
 		_ending = "%s (%s)" % [eid, kind])
 	EventBus.evening_started.connect(func(events: Array) -> void:
@@ -46,7 +52,7 @@ func _ready() -> void:
 			int(GameStateStore.get_resource("res_money")), int(round((prod.get("res_money", 0.0) as float) * float(SimulationRunner.TICKS_PER_DAY))),
 			int(GameStateStore.get_resource("res_food")), int(GameStateStore.get_resource("res_water_stockpile")),
 			int(GameStateStore.get_resource("res_wood")), int(GameStateStore.get_resource("res_stone")), int(GameStateStore.get_resource("res_tools")),
-			GameStateStore.population().get("total", 0) as int, int(GameStateStore.population().get("happiness", 0.0) as float), _mood_terms_text()]))
+			GameStateStore.population().get("total", 0) as int, int(GameStateStore.population().get("happiness", 0.0) as float), _mood_terms_text() + _chapter_gauges_text()]))
 	EventBus.critical_event_started.connect(func(data: Dictionary) -> void:
 		print("  СРОЧНО, день %d: %s" % [SimulationRunner.day_count, data.get("runtime_id", "?") as String]))
 	_main = (load("res://scenes/main.tscn") as PackedScene).instantiate()
@@ -58,9 +64,9 @@ func _attach() -> void:
 	get_tree().current_scene = _main  # effects and HUD look the orchestrator up here
 	_desk = _main.get_node("HUDCanvas/DeskUI") as Control
 	# Behind the start menu nothing runs; start the run the way the menu button does.
-	seed(12345)  # compare speed runs against the same city and issue sequence
+	seed(_world_seed)  # new_game draws the run's seed from here: the same city and issue sequence every time
 	_main.get_node("HUDCanvas/HUD").set("_selected_legacy", _legacy)
-	_main.get_node("HUDCanvas/HUD").call("_start_new_run", "appointed_administrator")
+	_main.get_node("HUDCanvas/HUD").call("_start_new_run", _profile)
 	if _prepared:
 		# The prepared district of balance_sim's stand B: roads, two more barracks, a second
 		# plot, a generator, and the water infrastructure at L2. Twelve people, a win path.
@@ -98,6 +104,21 @@ func _physics_process(_delta: float) -> void:
 			_finish("БЛОКЕР: пауза без Стола и финала (день %d, фаза %d)" % [SimulationRunner.day_count, SimulationRunner.current_phase])
 	else:
 		_stuck = 0
+
+
+## The chapter's own numbers: metal where there is metal, and the gauge its mechanic keeps.
+func _chapter_gauges_text() -> String:
+	var parts: Array[String] = []
+	if ContentDB.get_resource_ids().has("res_metal"):
+		parts.append("металл %d/%d" % [int(GameStateStore.get_resource("res_metal")), int(GameStateStore.get_cap("res_metal"))])
+	var mechanics: Dictionary = ContentDB.get_chapter_def().get("mechanics", {}) as Dictionary
+	if mechanics.get("waste", false) as bool:
+		parts.append("дым %d (+%.1f −%.1f/дн)" % [int(WasteSystem.level()), WasteSystem.daily_gain(), WasteSystem.daily_sink() + WasteSystem.NATURAL_CLEARING])
+	if mechanics.get("flood", false) as bool:
+		parts.append("река %d, дамб %d, под угрозой %d" % [int(FloodSystem.level()), FloodSystem.levee_count(), FloodSystem.exposed_coords().size()])
+	if mechanics.get("permits", false) as bool:
+		parts.append("разрешений %.1f" % float(PermitSystem.available()))
+	return "" if parts.is_empty() else " · " + " · ".join(parts)
 
 
 ## Why the mood is what it is: every term that moves it by a point or more (ProgressionSystem.mood_terms).

@@ -1,5 +1,6 @@
 {
   "id": "old_capital",
+  "profiles": ["appointed_administrator"],
   "order": 5,
   "title": "Старый Капитал, внешнее кольцо",
   "title_en": "The Old Capital, Outer Ring",

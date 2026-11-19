@@ -12,6 +12,13 @@
           -2
         ],
         "type": "bld_smelter"
+      },
+      {
+        "coord": [
+          0,
+          -2
+        ],
+        "type": "bld_solar_panel"
       }
     ],
     "resources": {
