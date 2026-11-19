@@ -84,6 +84,8 @@ func _go_next(next: String) -> void:
 	_stuck = 0
 	_frame = 0
 	_built.clear()
+	_bought = 0
+	_feasts = 0
 	_built_today.clear()
 	_net.clear()
 	_upgrades = 0
