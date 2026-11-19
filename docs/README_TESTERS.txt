@@ -1,25 +1,30 @@
-Mandate Cities 0.3.5-alpha — playtest build / тестовая сборка
+Mandate Cities 0.4.0-alpha — playtest build / тестовая сборка
 
-NEW IN 0.3.5-alpha / НОВОЕ В 0.3.5-alpha
-  Chapters 2-5 now ask for what their patron sent you for. Each has a norm of its own: the
-  fourth line of both inspections and of the Goals list, and a condition of the mandate's
-  extension. Gorge: harvest for the League. Quarry: metal for the Union. Nyupa: fish and
-  grain for the League. Old Capital: a registry office and two tenements on the register.
-  A quota is hauled away by the patron's wagons on their own and paid for; click the norm's
-  line in Goals to hold or release them. A settled district that missed its norm is not
-  renewed (a new finale in each of the four chapters). Trust in these chapters opens at 50.
-  New letters put the quota against the residents: night shifts, short rations, a neighbour's
-  goods under your seal. The finale's side is now counted from your answers for the city
-  against your answers for the patron.
-  Главы 2-5 теперь спрашивают то, за чем вас прислал покровитель. У каждой своя норма:
-  четвёртая строка обеих проверок и списка «Цели», и условие продления мандата. Ущелье:
-  урожай Лиге. Карьер: металл Союзу. Нюпа: рыба и зерно Лиге. Старый Капитал: учётная
-  контора и два доходных дома по реестру. Квоту покровитель вывозит вагонами сам и платит
-  за неё; клик по строке нормы в «Целях» придерживает и отпускает вагоны. Район, который
-  устоял, но норму не закрыл, мандат не продлевает (новый финал в каждой из четырёх глав).
-  Доверие в этих главах начинается с 50. Новые письма ставят квоту против жителей: ночные
-  смены, урезанный паёк, чужой товар под вашей печатью. Сторона финала теперь считается
-  по вашим ответам за город и за покровителя.
+NEW IN 0.4.0-alpha / НОВОЕ В 0.4.0-alpha
+  Five chapters with teeth: this is the build to play as a campaign.
+  "To the evening": the "» evening" button by the clock (key 4) runs the rest of the day in a
+  second once you have done what you wanted; an urgent letter stops it.
+  The treasury has something to buy. The City button opens the neighbours' market (stone, wood,
+  tools, metal where there is metal; each lot of the same good in a day is a quarter dearer)
+  and a quarter's feast (mood +6 for two days). A Village buys a fifth cheaper.
+  Sixteen new letters in chapters 2-5: the patron's visit, the settlement's feast, a neighbour's
+  goods, each with three answers and a real price for each.
+  From 0.3.5: every chapter after the first has a norm of its own (harvest, metal, fish and
+  grain, the register) asked at both inspections and at the end of the term; the patron's
+  wagons take the quota on their own, click the norm's line in Goals to hold them; a new
+  finale for a district that missed its norm; trust in chapters 2-5 opens at 50.
+  Пять глав с зубами: это сборка, которую стоит играть как кампанию.
+  «До вечера»: кнопка «» вечер» у часов (клавиша 4) прогоняет остаток дня за секунду, когда
+  вы сделали всё, что хотели; срочное письмо её останавливает.
+  Казне есть на что тратиться. Кнопка «Город» открывает закупку у соседей (камень, дерево,
+  инструменты, металл там, где он есть; каждая партия того же товара за день на четверть
+  дороже) и праздник квартала (счастье +6 на два дня). Деревня покупает на пятую часть дешевле.
+  Шестнадцать новых писем в главах 2-5: визит покровителя, праздник посёлка, чужой товар,
+  у каждого три ответа и у каждого ответа настоящая цена.
+  Из 0.3.5: у каждой главы после первой своя норма (урожай, металл, рыба и зерно, реестр),
+  её спрашивают на обеих проверках и в конце срока; квоту покровитель вывозит вагонами сам,
+  клик по строке нормы в «Целях» их придерживает; новый финал для района, не закрывшего
+  норму; доверие в главах 2-5 начинается с 50.
   0.3.4: fixes from an overnight test pass (storm damage no longer empties a district at
   once; chapters 2-5 offer their own mandate; Kramer's smelter start; saved mood).
   0.3.3: chapter 5, the Old Capital's outer ring (permits, ruins, the road behind).

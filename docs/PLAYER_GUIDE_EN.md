@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.3.5-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.4.0-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Storms: on day 22 (Dust) and day 32 (Heat) the lookout warns of a storm for tomorrow; unbraced (20 wood, 5 tools) it wrecks two buildings, braced it leaves one breakdown. A wrecked building does nothing until repaired (R). Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
@@ -35,7 +35,7 @@ The ending screen explains why things ended the way they did: the two masters, t
 
 ## How a day goes
 
-1. **Day.** Build, repair, watch the map. Time runs; you can pause (Space) and change speed (1 / 2 / 3).
+1. **Day.** Build, repair, watch the map. Time runs; you can pause (Space) and change speed (1 / 2 / 3). When you have done what you wanted for the day, the "» evening" button by the clock or key 4 runs the rest of the day in a second; an urgent letter stops it.
 2. **Evening — the Administrator's Desk.** The game pauses and the secretary lays out patron letters and resident petitions. **Each answer has its consequences written under it** (trust, support, resources, pressure). Choose. Urgent items (audit, ultimatum) arrive in the middle of the day.
 3. **Morning.** A new day begins. Decisions take effect as soon as you make them. Everything you answered is in the log (T).
 
@@ -47,6 +47,7 @@ Under the minimap on the left is your list of **goals**: days until the next sea
 
 - **Resources:** money, food, water reserve, wood, stone, tools.
 - **Money:** only residents pay. A lived-in shelter brings about 30 a day, an empty one nothing; upkeep of the buildings eats a few coins a day. The treasury goes on technologies, policies, repairs (10 a breakdown, one or two a day on average) and Desk decisions. The League grant comes on day 14; raising the district to a Village pays 250. Hover the treasury at the top for the income and expense breakdown. The bookkeeper keeps a repair reserve (10 per building plus two days of upkeep): a technology or policy that would leave less in the till is not signed, so the start-up money cannot all go in one evening.
+- **What the treasury buys:** the City button opens the neighbours' market (stone, wood, tools, and metal in the chapters that have it) and a quarter's feast (mood +6 for two days). The market is dearer than making things yourself, and each lot of the same good in a day costs a quarter more than the last. A district at the Village level buys a fifth cheaper. One feast at a time, and each next one costs more.
 - **Water for N days** — the key number. Yellow below 5 days, red below 2.
 - **League ↕ City** — the two masters. A red meter means that master is about to remove you.
 - **Voss · you** — comparison with the neighboring district run by Mara Voss (the Directorate). Your patron compares you with her: on day 14 the better district gets the Dust grant, and at the audit the gap affects trust.
@@ -108,7 +109,7 @@ No more than three papers land on the Desk in an evening: urgent matters first, 
 | **L** | logistics lens (roads and delivery) |
 | WASD | camera · wheel — zoom |
 | LMB / RMB / Esc | select or build / cancel |
-| Space | pause · 1 / 2 / 3 — speed |
+| Space | pause · 1 / 2 / 3 — speed · 4 — to the evening |
 | U / R / B | upgrade / repair / bulldoze selected |
 
 Saving: autosave to a single slot; "Continue" in the main menu.
