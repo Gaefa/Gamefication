@@ -29,6 +29,10 @@ func execute(_ctx: Dictionary) -> void:
 	if GameStateStore.get_resource("res_money") < price:
 		message = Localization.ru_en("Не хватает денег: нужно %d", "Not enough money: %d needed") % int(price)
 		return
+	# The bookkeeper signs a feast the way he signs a policy: not out of the repair reserve.
+	if EconomySystem.reserve_shortfall({"res_money": price}) > 0.0:
+		message = Localization.ru_en("Счетовод не подпишет: после праздника не останется резерва на ремонт", "The bookkeeper will not sign: the feast would eat the repair reserve")
+		return
 	GameStateStore.spend({"res_money": price})
 	GameStateStore.add_buff({"id": BUFF_ID, "name": "Праздник квартала", "name_en": "A quarter's feast", "happiness_add": MOOD, "remaining": LASTS_TICKS})
 	GameStateStore.economy()["feasts_held"] = (GameStateStore.economy().get("feasts_held", 0) as int) + 1

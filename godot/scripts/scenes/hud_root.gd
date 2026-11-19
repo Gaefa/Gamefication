@@ -2596,7 +2596,7 @@ func _build_market_section(root: VBoxContainer) -> void:
 	var feast := Button.new()
 	feast.text = Localization.ru_en("Праздник квартала: счастье +%d на два дня  ·  %d монет", "A quarter's feast: mood +%d for two days  ·  %d coins") % [int(HoldFestivalCommand.MOOD), int(HoldFestivalCommand.cost())]
 	feast.add_theme_font_size_override("font_size", 13)
-	feast.disabled = money < HoldFestivalCommand.cost() or HoldFestivalCommand.running()
+	feast.disabled = money < HoldFestivalCommand.cost() or HoldFestivalCommand.running() or EconomySystem.reserve_shortfall({"res_money": HoldFestivalCommand.cost()}) > 0.0
 	if HoldFestivalCommand.running():
 		feast.text = Localization.ru_en("Праздник квартала идёт", "A quarter's feast is on")
 	feast.pressed.connect(_run_treasury_command.bind(HoldFestivalCommand.new()))
