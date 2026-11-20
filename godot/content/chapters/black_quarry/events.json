@@ -13,8 +13,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — назначение в Карьер",
     "title_en": "Engineers' Union — Appointment to the Quarry",
-    "body": "Союз Инженеров. Ревизионная служба промпояса.\nАдминистратору района Чёрный Карьер.\n\nУведомляю о назначении. Район рудный: жила под восточным склоном, старый карьер, остатки печей Компании. Прежний администратор Крамер отозвана по итогам ревизии.\n\nЗадача на срок: к Морозу не меньше двенадцати жителей, запасы воды и еды, металл для мостовых работ Союза: 3000 к первой ревизии, 7000 к концу срока. Вагоны Союза вывозят всё сверх двадцати слитков, по 50 за раз, и платят 15 монет за вагон. И стандарт чистоты: дым над районом не выше сорока. Хартии будут предлагать вам иное; это ваш выбор и ваша ревизия.\n\nИнженер-ревизор Матиас Хольт.",
-    "body_en": "Engineers' Union. Industrial Belt Review Service.\nTo the administrator of the Black Quarry district.\n\nI notify you of your appointment. The district is ore country: a seam under the east slope, an old pit, the remains of Company furnaces. The previous administrator, Kramer, was recalled after review.\n\nYour task for the term: by the Frost, no fewer than twelve residents, water and food in reserve, metal for the Union's bridge works: 3000 by the first review, 7000 by the end of the term. The Union's wagons haul away everything above twenty ingots, 50 at a time, and pay 15 coins a wagon. And the clean-air standard: smoke over the district no higher than forty. The Charters will offer you otherwise; that is your choice and your review.\n\nEngineer-Auditor Matthias Holt.",
+    "body": "Союз Инженеров. Ревизионная служба промпояса.\nАдминистратору района Чёрный Карьер.\n\nУведомляю о назначении. Район рудный: жила под восточным склоном, старый карьер, остатки печей Компании. Прежний администратор Крамер отозвана по итогам ревизии.\n\nЗадача на срок: к Морозу не меньше двенадцати жителей, запасы воды и еды, металл для мостовых работ Союза: 2200 к первой ревизии, 5500 к концу срока. Вагоны Союза вывозят всё сверх двадцати слитков, по 50 за раз, и платят 15 монет за вагон. И стандарт чистоты: дым над районом не выше сорока. Хартии будут предлагать вам иное; это ваш выбор и ваша ревизия.\n\nИнженер-ревизор Матиас Хольт.",
+    "body_en": "Engineers' Union. Industrial Belt Review Service.\nTo the administrator of the Black Quarry district.\n\nI notify you of your appointment. The district is ore country: a seam under the east slope, an old pit, the remains of Company furnaces. The previous administrator, Kramer, was recalled after review.\n\nYour task for the term: by the Frost, no fewer than twelve residents, water and food in reserve, metal for the Union's bridge works: 2200 by the first review, 5500 by the end of the term. The Union's wagons haul away everything above twenty ingots, 50 at a time, and pay 15 coins a wagon. And the clean-air standard: smoke over the district no higher than forty. The Charters will offer you otherwise; that is your choice and your review.\n\nEngineer-Auditor Matthias Holt.",
     "options": [
       {
         "text": "Принять мандат",
@@ -263,8 +263,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — ревизия через три дня",
     "title_en": "Engineers' Union — Review in Three Days",
-    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Через три дня первая ревизия: люди, запас воды, запас еды, поддержка района. Четвёртой строкой металл: 3000, вывезенных вагонами Союза. Дым смотрю отдельно: стандарт сорок.\n\nИнженер-ревизор Хольт.",
-    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The first review is in three days: people, the water reserve, the food reserve, the district's support. The fourth line is metal: 3000 hauled away by the Union's wagons. I look at the smoke separately: the standard is forty.\n\nEngineer-Auditor Holt.",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Через три дня первая ревизия: люди, запас воды, запас еды, поддержка района. Четвёртой строкой металл: 2200, вывезенных вагонами Союза. Дым смотрю отдельно: стандарт сорок.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The first review is in three days: people, the water reserve, the food reserve, the district's support. The fourth line is metal: 2200 hauled away by the Union's wagons. I look at the smoke separately: the standard is forty.\n\nEngineer-Auditor Holt.",
     "options": [
       {
         "text": "Принято, готовимся",
@@ -918,8 +918,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — металл на мосты",
     "title_en": "Engineers' Union — Metal for the Bridges",
-    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Мостовые работы на тракте стоят без металла Карьера. К концу срока по квоте семь тысяч, и это и есть смысл вашего мандата.\n\nЯма может работать в две смены. Дыма будет больше, людям тяжелее. Решение ваше.\n\nИнженер-ревизор Хольт.",
-    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The bridge works on the highway stand idle without the Quarry's metal. The quota by the end of the term is seven thousand, and that is what your mandate is for.\n\nThe pit can work two shifts. There will be more smoke, and it will be harder on the people. The decision is yours.\n\nEngineer-Auditor Holt.",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Мостовые работы на тракте стоят без металла Карьера. К концу срока по квоте пять с половиной тысяч, и это и есть смысл вашего мандата.\n\nЯма может работать в две смены. Дыма будет больше, людям тяжелее. Решение ваше.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The bridge works on the highway stand idle without the Quarry's metal. The quota by the end of the term is five and a half thousand, and that is what your mandate is for.\n\nThe pit can work two shifts. There will be more smoke, and it will be harder on the people. The decision is yours.\n\nEngineer-Auditor Holt.",
     "options": [
       {
         "text": "Ночная смена на яме (+400 в зачёт квоты, дым +8)",
@@ -1092,8 +1092,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — вторая ревизия",
     "title_en": "Engineers' Union — The Second Review",
-    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Вторая ревизия на 27-й день, в Мороз: люди, вода, еда и металл: 7000. Дым смотрю отдельно. Срок мандата — 30-й день.\n\nИнженер-ревизор Хольт.",
-    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The second review is on day 27, in the Frost: people, water, food and metal: 7000. I look at the smoke separately. The mandate ends on day 30.\n\nEngineer-Auditor Holt.",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Вторая ревизия на 27-й день, в Мороз: люди, вода, еда и металл: 5500. Дым смотрю отдельно. Срок мандата — 30-й день.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The second review is on day 27, in the Frost: people, water, food and metal: 5500. I look at the smoke separately. The mandate ends on day 30.\n\nEngineer-Auditor Holt.",
     "options": [
       {
         "text": "Принято",
@@ -1271,8 +1271,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — к концу срока",
     "title_en": "Engineers' Union — Toward the End of the Term",
-    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Срок мандата истекает на 30-й день. Решение о продлении Союз примет по итогам обеих ревизий, по людям и по металлу: 7000 вывезенных. Хартии своё мнение уже прислали; оно к делу не приобщено.\n\nИнженер-ревизор Хольт.",
-    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The mandate expires on day 30. The Union will decide on renewal by both reviews, by the people and by the metal: 7000 hauled away. The Charters have already sent their opinion; it is not added to the file.\n\nEngineer-Auditor Holt.",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Срок мандата истекает на 30-й день. Решение о продлении Союз примет по итогам обеих ревизий, по людям и по металлу: 5500 вывезенных. Хартии своё мнение уже прислали; оно к делу не приобщено.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The mandate expires on day 30. The Union will decide on renewal by both reviews, by the people and by the metal: 5500 hauled away. The Charters have already sent their opinion; it is not added to the file.\n\nEngineer-Auditor Holt.",
     "options": [
       {
         "text": "Принято",

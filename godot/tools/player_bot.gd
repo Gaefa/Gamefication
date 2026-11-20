@@ -31,6 +31,7 @@ var _built_today: Dictionary = {}  # type id → how many since the last evening
 var _adding_power: bool = false
 var _bought: int = 0
 var _feasts: int = 0
+var _norm_moved_today: bool = false
 var _mechanic_off: bool = false
 var _power_pending: float = 0.0
 var _power_seen_tick: int = -1
@@ -55,6 +56,7 @@ func _ready() -> void:
 			_verbose = true
 	EventBus.evening_started.connect(func(_events: Array) -> void:
 		_built_today.clear()
+		_norm_moved_today = false
 		var pop: Dictionary = GameStateStore.population()
 		if _day_twelve < 0 and (pop.get("total", 0) as int) >= EndingManager.WIN_PEOPLE:
 			_day_twelve = SimulationRunner.day_count
@@ -114,10 +116,17 @@ func _bot_step() -> void:
 	if _restock("res_stone", 25.0, "bld_quarry_pit") or _restock("res_wood", 30.0, "bld_lumber_yard"):
 		return
 	_spend_treasury()
+	# What the patron sent you for gets the day's first move: a player who reads the quota
+	# digs the second pit on day one, not after the pumps are upgraded. One move a day; the
+	# rest of the day is the district's (and the norm's again, further down, if time is left).
 	if _mechanic_off:
 		GameStateStore.climate()["norm_hold"] = true
-	elif _answer_chapter_threat():
-		return
+	else:
+		if not _norm_moved_today and _chase_norm():
+			_norm_moved_today = true
+			return
+		if _answer_chapter_threat():
+			return
 	if _keep_street_open():
 		return
 	# Water and food first: a district that grows past them empties in two days.
@@ -133,7 +142,8 @@ func _bot_step() -> void:
 			return
 	if _ease_weak_pressure():
 		return
-	if GameStateStore.get_resource("res_tools") < 3.0 and _count("bld_tool_workshop") == 0 and _place_scored("bld_tool_workshop"):
+	# At the upgrade floor and no workshop: with exactly three tools nothing moved at all.
+	if GameStateStore.get_resource("res_tools") <= TOOLS_FLOOR and _count("bld_tool_workshop") == 0 and _place_scored("bld_tool_workshop"):
 		return
 	if ContentDB.get_resource_ids().has("res_metal") and GameStateStore.get_resource("res_metal") < 15.0:
 		if _salvage_ruin() or (_count("bld_ore_pit") == 0 and _place_scored("bld_ore_pit")):
@@ -455,7 +465,7 @@ func _place(type_id: String, cell: Vector2i) -> bool:
 	var need: float = ContentDB.get_building_def(type_id).get("power_need", 0.0) as float
 	# The workshop is the one exception: with no tools there is no panel to feed it, and it
 	# makes tools at a third of its pace unpowered, which is how the knot is cut.
-	if need > 0.0 and not _adding_power and not (type_id == "bld_tool_workshop" and GameStateStore.get_resource("res_tools") < 1.0):
+	if need > 0.0 and not _adding_power and not (type_id == "bld_tool_workshop" and GameStateStore.get_resource("res_tools") <= TOOLS_FLOOR):
 		var grid: Dictionary = GameStateStore.power()
 		# The grid's own figures are a tick old: count what was placed since.
 		if _power_seen_tick != GameStateStore.get_tick():
