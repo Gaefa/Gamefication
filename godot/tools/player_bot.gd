@@ -29,6 +29,8 @@ var _frame: int = 0
 var _built: Dictionary = {}     # type id → how many the bot placed
 var _built_today: Dictionary = {}  # type id → how many since the last evening
 var _adding_power: bool = false
+var _bought: int = 0
+var _feasts: int = 0
 var _norm_moved_today: bool = false
 var _mechanic_off: bool = false
 var _power_pending: float = 0.0
@@ -113,6 +115,7 @@ func _bot_step() -> void:
 	# upgrade eats the last stone, and then there is no road to put a quarry by.
 	if _restock("res_stone", 25.0, "bld_quarry_pit") or _restock("res_wood", 30.0, "bld_lumber_yard"):
 		return
+	_spend_treasury()
 	# What the patron sent you for gets the day's first move: a player who reads the quota
 	# digs the second pit on day one, not after the pumps are upgraded. One move a day; the
 	# rest of the day is the district's (and the norm's again, further down, if time is left).
@@ -164,6 +167,27 @@ func _bot_step() -> void:
 	if GameStateStore.get_resource("res_money") > 150.0:
 		if _upgrade_tagged("housing") or _upgrade_tagged("food_source") or _upgrade_tagged("water_source"):
 			return
+
+
+## Coins that buy nothing are worth nothing: a lot of what the district lacks, a feast when
+## the mood sags. Only out of a comfortable treasury.
+func _spend_treasury() -> void:
+	var money: float = GameStateStore.get_resource("res_money")
+	if money < 150.0:
+		return
+	for res_id: String in BuyGoodsCommand.goods():
+		var floor_stock: float = 3.0 if res_id == "res_tools" else 25.0
+		if GameStateStore.get_resource(res_id) < floor_stock and _flow(res_id) <= 0.5 and BuyGoodsCommand.bought_today(res_id) < 2:
+			var buy := BuyGoodsCommand.new(res_id)
+			_orch().command_bus.execute(buy)
+			if buy.success:
+				_bought += 1
+				return
+	if (GameStateStore.population().get("happiness", 50.0) as float) < 48.0 and not HoldFestivalCommand.running() and money >= HoldFestivalCommand.cost() + 100.0:
+		var feast := HoldFestivalCommand.new()
+		_orch().command_bus.execute(feast)
+		if feast.success:
+			_feasts += 1
 
 
 ## Short when the store lasts under three days at today's draw, or is draining toward
@@ -602,4 +626,4 @@ func _summary(result: String) -> String:
 		ContentDB.active_chapter, _world_seed, _lean if _lean != "" else "—", FRAMES_PER_DAY / _step_every, " mechanic off" if _mechanic_off else "", _ending if _ending != "" else result, GameStateStore.progression().city_level as int,
 		pop.get("total", 0) as int, pop.get("peak", 0) as int, _day_twelve, int(pop.get("happiness", 0.0) as float),
 		int(mandate.get("patron_trust", 0) as float), int(mandate.get("support", 0) as float), int(GameStateStore.get_resource("res_money")),
-		_hungry_evenings, _dry_evenings, _low_mood_evenings, ", ".join(built), _upgrades, _salvaged] + norm_text + " | стиль %s" % str(GameStateStore.style_flags()).replace(" ", "")
+		_hungry_evenings, _dry_evenings, _low_mood_evenings, ", ".join(built), _upgrades, _salvaged] + norm_text + " | стиль %s" % str(GameStateStore.style_flags()).replace(" ", "") + " | закупок %d, праздников %d" % [_bought, _feasts]

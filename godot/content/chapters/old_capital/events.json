@@ -1458,5 +1458,240 @@
         }
       }
     ]
+  },
+  {
+    "id": "capital.clerk_bribe",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "trigger_day": 6,
+    "tags": [
+      "trade",
+      "permits"
+    ],
+    "title": "Предложение — писарь канцелярии",
+    "title_en": "An Offer — A Chancellery Clerk",
+    "body": "Писарь Директората задержался у поста после сдачи форм.\n\n«График выдачи разрешений составляю я. Сорок монет, и в вашей строке будет на два бланка больше. Комиссар подписывает не читая. Обычно».",
+    "body_en": "A Directorate clerk lingered at the post after the forms were handed in.\n\n\"I draw up the schedule of permits. Forty coins, and your line will have two more forms on it. The commissar signs without reading. Usually.\"",
+    "options": [
+      {
+        "text": "Заплатить (40 монет, разрешения +2)",
+        "text_en": "Pay (40 coins, permits +2)",
+        "cost": {
+          "res_money": 40
+        },
+        "effects": {
+          "stat_permits": 2,
+          "set_flag": "clerk_paid",
+          "style": "pragmatist",
+          "message": "Бланки пришли с утренней почтой. Писарь больше не здоровался.",
+          "message_en": "The forms came with the morning post. The clerk no longer said hello."
+        }
+      },
+      {
+        "text": "Доложить комиссару Хальт",
+        "text_en": "Report him to Commissar Halt",
+        "effects": {
+          "stat_league_trust": 5,
+          "stat_city_trust": -2,
+          "style": "loyal",
+          "message": "Писаря сменили. Новый принимает формы по часам и возвращает за каждую помарку.",
+          "message_en": "The clerk was replaced. The new one takes forms by the clock and returns them for every blot."
+        }
+      },
+      {
+        "text": "Отказать и предупредить Ассамблею",
+        "text_en": "Refuse and warn the Assembly",
+        "effects": {
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Вейс поблагодарила: у писаря уже покупали другие, и им это вышло боком.",
+          "message_en": "Weiss thanked you: others had already bought from that clerk, and it had cost them."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.winter_soup",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_grey_winter",
+    "trigger_day": 8,
+    "tags": [
+      "petition",
+      "assembly"
+    ],
+    "title": "Обращение — кухня Ассамблеи",
+    "title_en": "Petition — The Assembly's Kitchen",
+    "body": "Спикер Нора Вейс пришла с двумя поварихами.\n\n«В остовах холодно. Мы ставим общую кухню: один котёл на кольцо. Нужны еда и деньги на дрова. Директорат назовёт это несанкционированным собранием. Я называю это ужином».",
+    "body_en": "Speaker Nora Weiss came with two cooks.\n\n\"The shells are cold. We are setting up a common kitchen: one pot for the ring. It needs food and money for firewood. The Directorate will call it an unauthorised assembly. I call it supper.\"",
+    "options": [
+      {
+        "text": "Дать еду и дрова (60 еды, 30 монет)",
+        "text_en": "Give the food and firewood (60 food, 30 coins)",
+        "cost": {
+          "res_food": 60,
+          "res_money": 30
+        },
+        "effects": {
+          "add_buff": {
+            "id": "assembly_kitchen",
+            "name": "Кухня Ассамблеи",
+            "name_en": "The Assembly's kitchen",
+            "happiness_add": 6,
+            "remaining": 900
+          },
+          "stat_city_trust": 6,
+          "stat_league_trust": -3,
+          "style": "protector",
+          "message": "Котёл стоял у руин до Оттепели. Хальт внесла в дело слово «собрание».",
+          "message_en": "The pot stood by the ruins until the Thaw. Halt entered the word \"assembly\" in the file."
+        }
+      },
+      {
+        "text": "Оформить кухню по форме № 9 (20 монет)",
+        "text_en": "Register the kitchen under Form No. 9 (20 coins)",
+        "cost": {
+          "res_money": 20
+        },
+        "effects": {
+          "add_buff": {
+            "id": "assembly_kitchen",
+            "name": "Столовая по учёту",
+            "name_en": "A registered canteen",
+            "happiness_add": 3,
+            "remaining": 900
+          },
+          "stat_city_trust": 2,
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Кухня открылась с вывеской и списком едоков. Суп был тот же, очередь длиннее.",
+          "message_en": "The kitchen opened with a signboard and a list of diners. The soup was the same, the queue longer."
+        }
+      },
+      {
+        "text": "Отказать: запасы под проверку",
+        "text_en": "Refuse: the stores are under inspection",
+        "effects": {
+          "stat_city_trust": -5,
+          "stat_league_trust": 2,
+          "style": "pragmatist",
+          "message": "Вейс ушла не прощаясь. Кухню поставили всё равно, без вас.",
+          "message_en": "Weiss left without a goodbye. The kitchen went up anyway, without you."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.halt_visit",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "patron": "civic_directorate",
+    "trigger_day": 20,
+    "tags": [
+      "patron",
+      "visit"
+    ],
+    "title": "Комиссар Хальт — обход кольца",
+    "title_en": "Commissar Halt — A Round of the Ring",
+    "body": "Комиссар Ирен Хальт идёт по кольцу пешком, с планшетом и двумя понятыми.\n\n«Я сверяю реестр с тем, что стоит. Каждое строение без бумаги будет описано. Вы идёте со мной или остаётесь в конторе?»",
+    "body_en": "Commissar Irene Halt walks the ring on foot, with a clipboard and two witnesses.\n\n\"I am checking the register against what stands. Every structure without paper will be listed. Are you coming with me, or staying in the office?\"",
+    "options": [
+      {
+        "text": "Идти с ней и показывать бумаги",
+        "text_en": "Go with her and show the papers",
+        "effects": {
+          "stat_league_trust": 4,
+          "stat_city_trust": -2,
+          "style": "loyal",
+          "message": "Обход занял день. В реестре не осталось вопросов, в остовах остались.",
+          "message_en": "The round took a day. No questions were left in the register; some were left in the shells."
+        }
+      },
+      {
+        "text": "Послать вперёд мальчишку: предупредить остовы",
+        "text_en": "Send a boy ahead to warn the shells",
+        "effects": {
+          "stat_league_trust": -4,
+          "stat_city_trust": 6,
+          "style": "protector",
+          "message": "К её приходу в остовах было пусто и подметено. Хальт записала: «Слишком чисто».",
+          "message_en": "By the time she came the shells were empty and swept. Halt wrote: \"Too clean.\""
+        }
+      },
+      {
+        "text": "Остаться в конторе: реестр говорит сам",
+        "text_en": "Stay in the office: the register speaks for itself",
+        "effects": {
+          "style": "pragmatist",
+          "stat_league_trust": 1,
+          "message": "Хальт вернулась к вечеру с тремя замечаниями. Все три исправимы.",
+          "message_en": "Halt came back by evening with three remarks. All three can be fixed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "capital.archive_metal",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_thaw",
+    "trigger_day": 13,
+    "tags": [
+      "archive",
+      "trade"
+    ],
+    "title": "Предложение — металл из хранилища",
+    "title_en": "An Offer — Metal From the Vault",
+    "body": "Архивариус Элиас Торн пришёл без свиты.\n\n«В подвале Архива лежат стеллажи старой Компании: сталь, тонн на двадцать. Мне нужны полки под бумаги, а не под ржавчину. Заберите металл. Взамен мне нужны руки: двое на месяц, переносить фонды».",
+    "body_en": "The archivist Elias Thorn came without attendants.\n\n\"In the Archive's cellar stand the old Company's racks: steel, twenty tons or so. I need shelves for paper, not for rust. Take the metal. In return I need hands: two people for a month, to move the collections.\"",
+    "options": [
+      {
+        "text": "Дать двух человек (+20 металла)",
+        "text_en": "Give him two people (+20 metal)",
+        "effects": {
+          "add_resources": {
+            "res_metal": 20
+          },
+          "stat_city_trust": -3,
+          "style": "pragmatist",
+          "message": "Двое ушли в Архив. Сталь привезли на санях, её хватит на два дома.",
+          "message_en": "Two went to the Archive. The steel came on sledges, enough for two houses."
+        }
+      },
+      {
+        "text": "Купить металл за деньги (60 монет, +20 металла)",
+        "text_en": "Buy the metal for money (60 coins, +20 metal)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "add_resources": {
+            "res_metal": 20
+          },
+          "stat_league_trust": 2,
+          "style": "loyal",
+          "message": "Торн взял деньги и нанял носильщиков сам. Сделка внесена в реестр.",
+          "message_en": "Thorn took the money and hired porters himself. The deal is entered in the register."
+        }
+      },
+      {
+        "text": "Отказать: людей на бумаги не отдам",
+        "text_en": "Refuse: I will not give people away to paper",
+        "effects": {
+          "stat_city_trust": 3,
+          "style": "protector",
+          "message": "Торн сказал: «Бумаги переживут и вас, и меня». Сталь осталась в подвале.",
+          "message_en": "Thorn said: \"The papers will outlive you and me both.\" The steel stayed in the cellar."
+        }
+      }
+    ]
   }
 ]

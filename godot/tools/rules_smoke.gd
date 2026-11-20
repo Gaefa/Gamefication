@@ -179,6 +179,8 @@ func _ready() -> void:
 	_nyupa_rules()
 	_capital_rules()
 	_norm_rules()
+	_pace_rules()
+	_treasury_spend_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -386,6 +388,75 @@ func _norm_rules() -> void:
 	orch.new_game(12345, "founder_rebel", "", "black_quarry")
 	_check(not ChapterNorm.active(), "a founder has no norm")
 	Campaign.reset_campaign()
+
+
+## "To the evening" runs the rest of the day at the tick cap and stops where the day stops.
+func _pace_rules() -> void:
+	_new_game("appointed_administrator")
+	var day: int = SimulationRunner.day_count
+	var tick_before: int = GameStateStore.get_tick()
+	SimulationRunner.rush_to_evening()
+	var frames: int = 0
+	while SimulationRunner.current_phase == SimulationRunner.Phase.DAY and frames < 400:
+		SimulationRunner._physics_process(1.0 / 60.0)
+		frames += 1
+	_check(SimulationRunner.current_phase == SimulationRunner.Phase.EVENING and frames <= 62, "a rushed day reaches the evening in about a second (%d frames)" % frames)
+	_check(GameStateStore.get_tick() - tick_before == SimulationRunner.TICKS_PER_DAY and SimulationRunner.day_count == day, "…having played every tick of it (%d)" % (GameStateStore.get_tick() - tick_before))
+	_check(not SimulationRunner.rushing, "…and the rush ends with the day")
+	SimulationRunner.transition_to_morning()
+	# An urgent card stops the rush: the day does not run on under it.
+	SimulationRunner.rush_to_evening()
+	SimulationRunner._physics_process(1.0 / 60.0)
+	SimulationRunner.paused = true
+	SimulationRunner.card_open = true
+	SimulationRunner._physics_process(1.0 / 60.0)
+	_check(not SimulationRunner.rushing, "an urgent card stops the rush")
+	SimulationRunner.rush_to_evening()
+	_check(not SimulationRunner.rushing and SimulationRunner.paused, "…and it cannot be restarted under the card")
+	SimulationRunner.card_open = false
+	SimulationRunner.paused = false
+	SimulationRunner.rush_to_evening()
+	SimulationRunner.set_speed(2.0)
+	_check(not SimulationRunner.rushing, "picking a speed ends the rush")
+	SimulationRunner.set_speed(1.0)
+
+
+## What the treasury buys: lots from the neighbours and a quarter's feast.
+func _treasury_spend_rules() -> void:
+	_new_game("appointed_administrator")
+	_ticks(2)
+	_check(BuyGoodsCommand.goods().has("res_stone") and not BuyGoodsCommand.goods().has("res_metal"), "the market sells metal only where there is metal (%s)" % str(BuyGoodsCommand.goods()))
+	GameStateStore.set_resource("res_money", 200.0)
+	GameStateStore.set_resource("res_stone", 0.0)
+	var first_price: float = BuyGoodsCommand.price("res_stone")
+	orch.command_bus.execute(BuyGoodsCommand.new("res_stone"))
+	_check(is_equal_approx(GameStateStore.get_resource("res_stone"), 20.0) and is_equal_approx(GameStateStore.get_resource("res_money"), 200.0 - first_price), "a lot of stone costs what the panel says (%.0f for 20)" % first_price)
+	_check(BuyGoodsCommand.price("res_stone") > first_price and is_equal_approx(BuyGoodsCommand.price("res_wood"), 24.0), "the second lot the same day is dearer (%.0f), other goods are not" % BuyGoodsCommand.price("res_stone"))
+	GameStateStore.climate()["total_day"] = (GameStateStore.climate().get("total_day", 1) as int) + 1
+	_check(is_equal_approx(BuyGoodsCommand.price("res_stone"), first_price), "the next day the price is back")
+	GameStateStore.progression().city_level = 2
+	_check(BuyGoodsCommand.price("res_stone") < first_price, "a Village buys cheaper (%.0f)" % BuyGoodsCommand.price("res_stone"))
+	GameStateStore.progression().city_level = 1
+	GameStateStore.set_resource("res_money", 5.0)
+	var poor := BuyGoodsCommand.new("res_stone")
+	orch.command_bus.execute(poor)
+	_check(not poor.success and is_equal_approx(GameStateStore.get_resource("res_stone"), 20.0), "an empty treasury buys nothing")
+	GameStateStore.set_resource("res_money", 500.0)
+	GameStateStore.set_resource("res_stone", GameStateStore.get_cap("res_stone"))
+	var full := BuyGoodsCommand.new("res_stone")
+	orch.command_bus.execute(full)
+	_check(not full.success and is_equal_approx(GameStateStore.get_resource("res_money"), 500.0), "a full store takes no lot and no money")
+	var mood_before: float = GameStateStore.population().get("happiness", 50.0) as float
+	var feast_cost: float = HoldFestivalCommand.cost()
+	orch.command_bus.execute(HoldFestivalCommand.new())
+	_check(HoldFestivalCommand.running() and is_equal_approx(GameStateStore.get_resource("res_money"), 500.0 - feast_cost), "a feast is paid from the treasury (%.0f)" % feast_cost)
+	var twice := HoldFestivalCommand.new()
+	orch.command_bus.execute(twice)
+	_check(not twice.success, "two feasts do not run at once")
+	_ticks(120)
+	_check((GameStateStore.population().get("mood_terms", {}) as Dictionary).get("buffs", 0.0) as float >= HoldFestivalCommand.MOOD - 0.01, "the feast lifts the mood while it lasts (was %.0f)" % mood_before)
+	_ticks(int(HoldFestivalCommand.LASTS_TICKS))
+	_check(not HoldFestivalCommand.running() and HoldFestivalCommand.cost() > feast_cost, "it ends in two days, and the next one is dearer (%.0f)" % HoldFestivalCommand.cost())
 
 
 ## Twelve content people: enough housing, water and mood for the win check to call the district settled.

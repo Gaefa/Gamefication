@@ -1650,8 +1650,8 @@
     ],
     "title": "Обращение — вагоны и фильтры",
     "title_en": "Petition — The Wagons and the Filters",
-    "body": "Комитет посёлка, говорит Ида Сомова, медсестра.\n\n«Каждый вечер уходит вагон. На фильтровальную станцию надо пятнадцать слитков, и их никогда нет. Мы не просим остановить Союз. Мы просим один вагон оставить здесь: на трубы и на отвал, чтобы дети дышали».",
-    "body_en": "The settlement committee; the nurse Ida Somova speaks.\n\n\"Every evening a wagon leaves. A filter station takes fifteen ingots, and there are never any. We are not asking you to stop the Union. We are asking for one wagon to stay here: for the stacks and the heap, so the children can breathe.\"",
+    "body": "Комитет посёлка, говорит Зоя Сомова, медсестра.\n\n«Каждый вечер уходит вагон. На фильтровальную станцию надо пятнадцать слитков, и их никогда нет. Мы не просим остановить Союз. Мы просим один вагон оставить здесь: на трубы и на отвал, чтобы дети дышали».",
+    "body_en": "The settlement committee; the nurse Zoya Somova speaks.\n\n\"Every evening a wagon leaves. A filter station takes fifteen ingots, and there are never any. We are not asking you to stop the Union. We are asking for one wagon to stay here: for the stacks and the heap, so the children can breathe.\"",
     "options": [
       {
         "text": "Оставить вагон посёлку (квота −300, дым −12)",
@@ -1688,6 +1688,240 @@
           "style": "pragmatist",
           "message": "Деньги за вагоны разошлись по бригадам. Кашлять не перестали.",
           "message_en": "The wagon money went to the crews. The coughing did not stop."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.velm_coal",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_smog",
+    "trigger_day": 7,
+    "tags": [
+      "rival",
+      "trade",
+      "quota"
+    ],
+    "title": "Письмо — уголь барона Вельма",
+    "title_en": "A Letter — Baron Velm's Coal",
+    "body": "От барона Отто Вельма, с приказчиком.\n\n«Администратору. У меня уголь, у вас плавильня и норма Союза. С моим углём печь даст больше, дым будет гуще. Шестьдесят монет за воз. Хольту я не докладываю».",
+    "body_en": "From Baron Otto Velm, by his steward.\n\n\"To the administrator. I have coal; you have a smelter and the Union's norm. On my coal the furnace gives more and the smoke comes thicker. Sixty coins a cartload. I do not report to Holt.\"",
+    "options": [
+      {
+        "text": "Купить уголь (60 монет, +350 в зачёт квоты, дым +10)",
+        "text_en": "Buy the coal (60 coins, +350 toward the quota, smoke +10)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "stat_norm_shipped": 350,
+          "stat_waste": 10,
+          "stat_rival_score": 2,
+          "style": "pragmatist",
+          "message": "Печь гудела трое суток. Над бараками стояло чёрное небо.",
+          "message_en": "The furnace roared for three days. A black sky stood over the shelters."
+        }
+      },
+      {
+        "text": "Отказать и написать Хольту",
+        "text_en": "Refuse and write to Holt",
+        "effects": {
+          "stat_league_trust": 4,
+          "stat_rival_score": -1,
+          "style": "loyal",
+          "message": "Хольт ответил: «Принято. Гарь топит углём, Карьер будет топить по стандарту».",
+          "message_en": "Holt answered: \"Noted. The Burn fires on coal; the Quarry will fire to the standard.\""
+        }
+      },
+      {
+        "text": "Отказать: людям этим дышать",
+        "text_en": "Refuse: people have to breathe this",
+        "effects": {
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Приказчик уехал. Комитет посёлка узнал об отказе раньше, чем он доехал до Гари.",
+          "message_en": "The steward left. The settlement committee heard of the refusal before he reached the Burn."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.payday",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_strike_autumn",
+    "trigger_day": 13,
+    "tags": [
+      "petition",
+      "strike"
+    ],
+    "title": "Обращение — получка в Забастовочную осень",
+    "title_en": "Petition — Payday in the Strike Autumn",
+    "body": "От бригад ямы, говорит десятник Лев Чардаш.\n\n«Союз платит району за каждый вагон. Мы эти вагоны грузим. Люди хотят видеть эти деньги не в ведомости, а на столе: один вечер, общий котёл, получка на руки».",
+    "body_en": "From the pit crews; the foreman Lev Chardash speaks.\n\n\"The Union pays the district for every wagon. We load those wagons. People want to see that money on the table, not in a ledger: one evening, a common pot, pay in hand.\"",
+    "options": [
+      {
+        "text": "Получка и общий котёл (70 монет)",
+        "text_en": "Pay in hand and a common pot (70 coins)",
+        "cost": {
+          "res_money": 70
+        },
+        "effects": {
+          "add_buff": {
+            "id": "payday",
+            "name": "Получка",
+            "name_en": "Payday",
+            "happiness_add": 6,
+            "remaining": 600
+          },
+          "stat_city_trust": 6,
+          "style": "protector",
+          "message": "Котёл стоял у ямы до ночи. Утром на смену вышли все.",
+          "message_en": "The pot stood by the pit until night. In the morning everyone came on shift."
+        }
+      },
+      {
+        "text": "Премия десятникам (30 монет)",
+        "text_en": "A bonus to the foremen (30 coins)",
+        "cost": {
+          "res_money": 30
+        },
+        "effects": {
+          "stat_city_trust": 1,
+          "stat_unrest_pressure": -5,
+          "style": "pragmatist",
+          "message": "Десятники взяли премию. Бригады узнали об этом к обеду.",
+          "message_en": "The foremen took the bonus. The crews knew of it by midday."
+        }
+      },
+      {
+        "text": "Деньги Союза идут на район, а не на стол",
+        "text_en": "The Union's money goes to the district, not the table",
+        "effects": {
+          "stat_city_trust": -6,
+          "stat_league_trust": 3,
+          "stat_unrest_pressure": 8,
+          "style": "loyal",
+          "message": "Чардаш сказал: «Запомним». Хольту доложили, что казна цела.",
+          "message_en": "Chardash said: \"We will remember.\" Holt was told the treasury is intact."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.holt_visit",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "patron": "engineers_union",
+    "trigger_day": 17,
+    "tags": [
+      "patron",
+      "visit"
+    ],
+    "title": "Инженер Хольт — на месте",
+    "title_en": "Engineer Holt — On Site",
+    "body": "Инженер-ревизор Матиас Хольт приехал с замерщиком и ящиком стёкол для проб воздуха.\n\n«Я смотрю три вещи: яму, печь и то, чем дышат в бараках. Покажете сами или мне идти по списку?»",
+    "body_en": "Engineer-Auditor Matthias Holt arrived with a surveyor and a case of glass for air samples.\n\n\"I look at three things: the pit, the furnace, and what they breathe in the shelters. Will you show me yourself, or do I go by the list?\"",
+    "options": [
+      {
+        "text": "Показать яму и ведомость вагонов",
+        "text_en": "Show the pit and the wagon ledger",
+        "effects": {
+          "stat_league_trust": 2,
+          "style": "pragmatist",
+          "message": "Хольт пересчитал вагоны по ведомости и по колеям. Сошлось.",
+          "message_en": "Holt counted the wagons by the ledger and by the ruts. They matched."
+        }
+      },
+      {
+        "text": "Остановить печь на день замеров (квота −200, дым −8)",
+        "text_en": "Stop the furnace for the day of sampling (quota −200, smoke −8)",
+        "effects": {
+          "stat_norm_shipped": -200,
+          "stat_waste": -8,
+          "stat_league_trust": 5,
+          "stat_city_trust": 2,
+          "style": "loyal",
+          "message": "Пробы вышли чистыми. Хольт записал: «Стандарт соблюдается». Вагон в тот день не ушёл.",
+          "message_en": "The samples came out clean. Holt wrote: \"The standard is kept.\" No wagon left that day."
+        }
+      },
+      {
+        "text": "Отвести его в барак к кашляющим",
+        "text_en": "Take him to the shelter where they cough",
+        "effects": {
+          "stat_league_trust": -3,
+          "stat_city_trust": 5,
+          "style": "protector",
+          "message": "Хольт просидел в бараке час. Вышел молча и долго протирал очки.",
+          "message_en": "Holt sat in the shelter for an hour. He came out silent and wiped his glasses for a long time."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.pump_parts",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_frost",
+    "trigger_day": 26,
+    "tags": [
+      "petition",
+      "trade",
+      "frost"
+    ],
+    "title": "Обращение — запчасти к насосу",
+    "title_en": "Petition — Parts for the Pump",
+    "body": "Слесарь насосной Глеб Ворон пришёл с лопнувшей муфтой в руках.\n\n«Ещё одна такая ночь, и насос встанет. Детали есть на складе Союза, с клеймом и по цене клейма. Есть у Хартий: вдвое дешевле и без бумаг. Или сниму муфты с плавильни, но тогда печь простоит».",
+    "body_en": "The pump-house fitter Gleb Voron came with a burst coupling in his hands.\n\n\"One more night like that and the pump stops. There are parts in the Union's depot, stamped and priced for the stamp. The Charters have them: half the price and no papers. Or I take the couplings off the smelter, but then the furnace stands idle.\"",
+    "options": [
+      {
+        "text": "Купить на складе Союза (60 монет)",
+        "text_en": "Buy from the Union's depot (60 coins)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "stat_league_trust": 3,
+          "stat_city_trust": 2,
+          "style": "loyal",
+          "message": "Муфты пришли в промасленной бумаге, с накладной в трёх экземплярах.",
+          "message_en": "The couplings came in oiled paper, with a waybill in triplicate."
+        }
+      },
+      {
+        "text": "Купить у Хартий (25 монет)",
+        "text_en": "Buy from the Charters (25 coins)",
+        "cost": {
+          "res_money": 25
+        },
+        "effects": {
+          "set_flag": "charters_deal",
+          "stat_city_trust": 2,
+          "style": "pragmatist",
+          "message": "Крон привезла детали сама. Насос работает, накладной нет.",
+          "message_en": "Kron brought the parts herself. The pump works; there is no waybill."
+        }
+      },
+      {
+        "text": "Снять муфты с плавильни (квота −200)",
+        "text_en": "Take the couplings off the smelter (quota −200)",
+        "effects": {
+          "stat_norm_shipped": -200,
+          "stat_city_trust": 4,
+          "stat_league_trust": -3,
+          "style": "protector",
+          "message": "Печь простояла два дня. Вода в бараках шла всю ночь.",
+          "message_en": "The furnace stood idle for two days. Water ran in the shelters all night."
         }
       }
     ]

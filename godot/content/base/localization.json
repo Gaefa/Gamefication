@@ -176,16 +176,16 @@
     "ru": "Город"
   },
   "ui.city.tooltip": {
-    "en": "City level requirements and upgrade",
-    "ru": "Требования уровня города и повышение"
+    "en": "The neighbours' market, a quarter's feast, and the city level",
+    "ru": "Закупка у соседей, праздник квартала и уровень города"
   },
   "ui.city.open_hint": {
     "en": "(City)",
     "ru": "(Город)"
   },
   "ui.city.title": {
-    "en": "City Level",
-    "ru": "Уровень города"
+    "en": "City: Treasury and Level",
+    "ru": "Город: казна и уровень"
   },
   "ui.city.current": {
     "en": "Current",
@@ -208,8 +208,8 @@
     "ru": "Повысить город"
   },
   "ui.city.spend_note": {
-    "en": "Upgrade spends the required resources and unlocks the next building tier.",
-    "ru": "Повышение списывает требуемые ресурсы и открывает следующий уровень зданий."
+    "en": "Upgrade spends the required resources. A Village has a trading yard: the neighbours' market sells a fifth cheaper.",
+    "ru": "Повышение списывает требуемые ресурсы. У Деревни есть торговый двор: закупка у соседей на пятую часть дешевле."
   },
   "ui.city.max_level": {
     "en": "Max city level reached.",

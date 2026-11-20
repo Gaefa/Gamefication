@@ -355,6 +355,7 @@ var _clock_panel: PanelContainer
 var _clock_day: Label
 var _clock_bar: ProgressBar
 var _clock_left: Label
+var _rush_button: Button
 var _clock_state: Array = []  # what the clock labels last showed; a still clock costs no relayout
 
 
@@ -362,10 +363,10 @@ func _build_day_clock() -> void:
 	_clock_panel = PanelContainer.new()
 	_clock_panel.anchor_left = 0.5
 	_clock_panel.anchor_right = 0.5
-	_clock_panel.offset_left = -190
-	_clock_panel.offset_right = 190
+	_clock_panel.offset_left = -225
+	_clock_panel.offset_right = 225
 	_clock_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	_loc(_clock_panel, func() -> String: return Localization.ru_en("Клик или Пробел — пауза · 1 / 2 / 3 — скорость · Esc — меню", "Click or Space — pause · 1 / 2 / 3 — speed · Esc — menu"), "tooltip_text")
+	_loc(_clock_panel, func() -> String: return Localization.ru_en("Клик или Пробел — пауза · 1 / 2 / 3 — скорость · 4 — до вечера · Esc — меню", "Click or Space — pause · 1 / 2 / 3 — speed · 4 — to the evening · Esc — menu"), "tooltip_text")
 	_clock_panel.gui_input.connect(func(event: InputEvent) -> void:
 		if event is InputEventMouseButton and (event as InputEventMouseButton).pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT and not UiModals.is_open():
 			SimulationRunner.toggle_pause())
@@ -412,6 +413,15 @@ func _build_day_clock() -> void:
 		btn.pressed.connect(func() -> void: SimulationRunner.set_speed(float(speed)))
 		row.add_child(btn)
 		_speed_buttons.append(btn)
+	# The day is done and the Desk is what the player wants: run the rest of it.
+	_rush_button = Button.new()
+	_rush_button.focus_mode = Control.FOCUS_NONE
+	_rush_button.custom_minimum_size = Vector2(0, 22)
+	_rush_button.add_theme_font_size_override("font_size", 11)
+	_loc(_rush_button, func() -> String: return Localization.ru_en("» вечер", "» evening"))
+	_loc(_rush_button, func() -> String: return Localization.ru_en("До вечера (4): остаток дня проходит за секунду. Срочное письмо остановит.", "To the evening (4): the rest of the day passes in a second. An urgent letter stops it."), "tooltip_text")
+	_rush_button.pressed.connect(func() -> void: SimulationRunner.rush_to_evening())
+	row.add_child(_rush_button)
 	_update_day_clock()
 
 
@@ -429,6 +439,8 @@ func _update_day_clock() -> void:
 	elif SimulationRunner.paused:
 		text = Localization.ru_en("⏸ Пауза (Пробел)", "⏸ Paused (Space)")
 		color = Color(0.95, 0.8, 0.3)
+	elif SimulationRunner.rushing:
+		text = Localization.ru_en("» к вечеру", "» to the evening")
 	else:
 		# Real seconds until the evening Desk at the current speed.
 		var left: int = int(ceil(maxf(SimulationRunner.day_timer, 0.0) / maxf(SimulationRunner.speed_scale, 0.1)))
@@ -1116,7 +1128,7 @@ func _refresh_build_panel_labels() -> void:
 		_build_title_label.text = Localization.t("ui.build.title", "Build")
 	if _build_city_button:
 		_build_city_button.text = Localization.ru_en("Город", "City")
-		_build_city_button.tooltip_text = Localization.t("ui.city.tooltip", "City level requirements and upgrade")
+		_build_city_button.tooltip_text = Localization.t("ui.city.tooltip", "The neighbours' market, a quarter's feast, and the city level")
 	if _build_gov_button:
 		_build_gov_button.text = Localization.ru_en("Управление", "Governance")
 		_build_gov_button.tooltip_text = Localization.t("ui.governance.tooltip", "Governance (G): tech tree and policies")
@@ -2414,7 +2426,7 @@ func _build_city_panel() -> void:
 	var frame: Dictionary = UiStyle.modal(self)
 	_city_panel = frame["dim"] as Control
 	_city_body = frame["body"] as VBoxContainer
-	_loc(frame["title"] as Label, func() -> String: return Localization.t("ui.city.title", "City Level"))
+	_loc(frame["title"] as Label, func() -> String: return Localization.t("ui.city.title", "City: Treasury and Level"))
 	_loc(frame["close"] as Button, func() -> String: return Localization.ru_en("Закрыть (Esc)", "Close (Esc)"), "tooltip_text")
 	(frame["close"] as Button).pressed.connect(toggle_city_panel)
 	_rebuild_city_panel()
@@ -2453,6 +2465,8 @@ func _rebuild_city_panel() -> void:
 	root.custom_minimum_size.x = 576
 	root.add_theme_constant_override("separation", 10)
 	scroll.add_child(root)
+
+	_build_market_section(root)
 
 	var current_level: int = GameStateStore.progression().city_level as int
 	var current_def: Dictionary = ContentDB.get_level_def(current_level)
@@ -2520,7 +2534,7 @@ func _rebuild_city_panel() -> void:
 	root.add_child(upgrade_btn)
 
 	var note := Label.new()
-	note.text = Localization.t("ui.city.spend_note", "Upgrade spends the required resources and unlocks the next building tier.")
+	note.text = Localization.t("ui.city.spend_note", "Upgrade spends the required resources. A Village has a trading yard: the neighbours' market sells a fifth cheaper.")
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note.add_theme_font_size_override("font_size", 12)
 	note.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
@@ -2550,6 +2564,53 @@ func _rebuild_city_panel() -> void:
 	diag.add_theme_constant_override("line_spacing", 3)
 	diag.add_theme_color_override("font_color", Color(0.9, 0.95, 0.85))
 	root.add_child(diag)
+
+
+## What the treasury buys: lots from the neighbours' market and a quarter's feast.
+func _build_market_section(root: VBoxContainer) -> void:
+	var title := Label.new()
+	title.text = Localization.ru_en("Закупка у соседей", "The neighbours' market")
+	UiStyle.caption(title)
+	root.add_child(title)
+	var hint := Label.new()
+	hint.text = Localization.ru_en("Каждая партия одного товара за день дороже предыдущей на четверть. Казна: %d.", "Each lot of the same good in a day costs a quarter more than the last. Treasury: %d.") % int(GameStateStore.get_resource("res_money"))
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 12)
+	hint.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
+	root.add_child(hint)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 6)
+	root.add_child(grid)
+	var money: float = GameStateStore.get_resource("res_money")
+	for res_id: String in BuyGoodsCommand.goods():
+		var cost: float = BuyGoodsCommand.price(res_id)
+		var btn := Button.new()
+		btn.text = "%s +%d  ·  %d %s" % [Localization.content_text(ContentDB.get_resource_def(res_id), "label", res_id), int(BuyGoodsCommand.lot_amount(res_id)), int(cost), Localization.ru_en("монет", "coins")]
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.add_theme_font_size_override("font_size", 13)
+		btn.disabled = money < cost
+		btn.pressed.connect(_run_treasury_command.bind(BuyGoodsCommand.new(res_id)))
+		grid.add_child(btn)
+	var feast := Button.new()
+	feast.text = Localization.ru_en("Праздник квартала: счастье +%d на два дня  ·  %d монет", "A quarter's feast: mood +%d for two days  ·  %d coins") % [int(HoldFestivalCommand.MOOD), int(HoldFestivalCommand.cost())]
+	feast.add_theme_font_size_override("font_size", 13)
+	feast.disabled = money < HoldFestivalCommand.cost() or HoldFestivalCommand.running() or EconomySystem.reserve_shortfall({"res_money": HoldFestivalCommand.cost()}) > 0.0
+	if HoldFestivalCommand.running():
+		feast.text = Localization.ru_en("Праздник квартала идёт", "A quarter's feast is on")
+	feast.pressed.connect(_run_treasury_command.bind(HoldFestivalCommand.new()))
+	root.add_child(feast)
+	root.add_child(HSeparator.new())
+
+
+func _run_treasury_command(cmd: CommandBase) -> void:
+	var orch: GameOrchestrator = _get_orchestrator()
+	if orch == null:
+		return
+	orch.command_bus.execute(cmd)
+	_update_resource_bar()
+	_rebuild_city_panel()
 
 
 func _upgrade_city_level() -> void:

@@ -1554,5 +1554,243 @@
         }
       }
     ]
+  },
+  {
+    "id": "nyupa.salt_barge",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_low_water",
+    "trigger_day": 7,
+    "tags": [
+      "rival",
+      "trade",
+      "quota"
+    ],
+    "title": "Предложение — соль с Плёсов",
+    "title_en": "An Offer — Salt From the Reaches",
+    "body": "К причалу подошла плоскодонка Плёсов с мешками.\n\n«Соль. С ней бочка рыбы стоит до зимы, а не до Гнили. Тридцать монет за всё. Лиге мы соль не возим: она платит расписками».",
+    "body_en": "A flat-bottomed boat from the Reaches came to the pier with sacks.\n\n\"Salt. With it a barrel of fish keeps until winter, not until the Rot. Thirty coins for the lot. We carry no salt to the League: it pays in receipts.\"",
+    "options": [
+      {
+        "text": "Купить соль для посёлка (30 монет, +80 еды)",
+        "text_en": "Buy the salt for the settlement (30 coins, +80 food)",
+        "cost": {
+          "res_money": 30
+        },
+        "effects": {
+          "add_resources": {
+            "res_food": 80
+          },
+          "stat_city_trust": 3,
+          "stat_rival_score": 1,
+          "style": "protector",
+          "message": "Бочки засолили за ночь. Причал пах рассолом до утра.",
+          "message_en": "The barrels were salted overnight. The pier smelled of brine until morning."
+        }
+      },
+      {
+        "text": "Купить и пустить в зачёт квоты (30 монет, +200)",
+        "text_en": "Buy it and put it toward the quota (30 coins, +200)",
+        "cost": {
+          "res_money": 30
+        },
+        "effects": {
+          "stat_norm_shipped": 200,
+          "stat_league_trust": 3,
+          "style": "loyal",
+          "message": "Солёная рыба ушла на барже Лиги. Мирош отметила качество.",
+          "message_en": "The salted fish left on the League's barge. Mirosh noted the quality."
+        }
+      },
+      {
+        "text": "Отказать",
+        "text_en": "Refuse",
+        "effects": {
+          "style": "pragmatist",
+          "message": "Плоскодонка ушла вниз по течению.",
+          "message_en": "The flat-boat went on downstream."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.flood_night",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_flood",
+    "trigger_day": 18,
+    "trigger_condition": "stat_flood >= 60",
+    "tags": [
+      "crisis",
+      "flood",
+      "quota"
+    ],
+    "title": "Срочно — ночь большой воды",
+    "title_en": "Urgent — The Night of High Water",
+    "body": "Вода поднялась за вечер на ладонь. Шкипер баржи Лиги стоит у поста.\n\n«Баржа гружёная, отчалить надо сегодня. Но на ней можно вывезти людей с нижнего берега, если сбросить бочки. Или людей, или квоту. До утра не дотянет ни то, ни другое».",
+    "body_en": "The water rose a hand's breadth in one evening. The skipper of the League's barge stands at the post.\n\n\"The barge is loaded and must cast off today. But it can take the people off the lower bank if the barrels go over the side. People or quota. Neither will wait until morning.\"",
+    "options": [
+      {
+        "text": "Сбросить бочки, вывезти людей (квота −250)",
+        "text_en": "Dump the barrels, take the people off (quota −250)",
+        "effects": {
+          "stat_norm_shipped": -250,
+          "stat_city_trust": 7,
+          "stat_league_trust": -4,
+          "style": "protector",
+          "message": "Бочки ушли в реку. С нижнего берега сняли всех до полуночи.",
+          "message_en": "The barrels went into the river. Everyone was off the lower bank by midnight."
+        }
+      },
+      {
+        "text": "Баржа уходит с грузом: людей вывезут лодки Плёсов (40 еды)",
+        "text_en": "The barge leaves loaded: the Reaches' boats take the people (40 food)",
+        "cost": {
+          "res_food": 40
+        },
+        "effects": {
+          "stat_rival_score": 1,
+          "stat_city_trust": 1,
+          "style": "pragmatist",
+          "message": "Лодочники сняли людей за плату. Баржа ушла в срок.",
+          "message_en": "The boatmen took the people off for a fee. The barge left on time."
+        }
+      },
+      {
+        "text": "Баржа уходит с грузом: нижний берег ждёт утра",
+        "text_en": "The barge leaves loaded: the lower bank waits for morning",
+        "effects": {
+          "stat_city_trust": -7,
+          "stat_league_trust": 4,
+          "damage_buildings": 1,
+          "style": "loyal",
+          "message": "Утром нижний берег был под водой. Людей сняли с крыш.",
+          "message_en": "By morning the lower bank was under water. People were taken off the roofs."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.mirosh_visit",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "patron": "restoration_league",
+    "trigger_day": 14,
+    "tags": [
+      "patron",
+      "visit"
+    ],
+    "title": "Инспектор Мирош — на барже",
+    "title_en": "Inspector Mirosh — On the Barge",
+    "body": "Инспектор Агата Мирош сошла с баржи Лиги в резиновых сапогах.\n\n«Мне нужны три цифры: сколько сдано, сколько под водой и сколько людей спят сухими. Дамбы посмотрю сама».",
+    "body_en": "Inspector Agatha Mirosh stepped off the League's barge in rubber boots.\n\n\"I need three figures: how much is delivered, how much is under water, and how many people sleep dry. I will look at the levees myself.\"",
+    "options": [
+      {
+        "text": "Дать цифры и лодку",
+        "text_en": "Give her the figures and a boat",
+        "effects": {
+          "stat_league_trust": 2,
+          "style": "pragmatist",
+          "message": "Мирош объехала берег за день. Сказала: «Цифры сходятся. Это редкость».",
+          "message_en": "Mirosh went round the bank in a day. She said: \"The figures agree. That is rare.\""
+        }
+      },
+      {
+        "text": "Показать дамбы и сухие поля",
+        "text_en": "Show the levees and the dry fields",
+        "effects": {
+          "stat_league_trust": 5,
+          "stat_city_trust": -3,
+          "stat_rival_score": 1,
+          "style": "loyal",
+          "message": "Мирош осталась довольна. Лодочники смотрели с воды, как ей показывают стену.",
+          "message_en": "Mirosh was pleased. The boat people watched from the water as she was shown the wall."
+        }
+      },
+      {
+        "text": "Отвезти её к домам на сваях",
+        "text_en": "Take her to the stilt houses",
+        "effects": {
+          "stat_league_trust": -3,
+          "stat_city_trust": 5,
+          "style": "protector",
+          "message": "Она пила чай у Бродневых над водой. В отчёте написала: «Живут с рекой, а не против неё».",
+          "message_en": "She drank tea at the Brodnevs' above the water. In her report she wrote: \"They live with the river, not against it.\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.rot_smokehouse",
+    "category": "happiness",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_rot",
+    "trigger_day": 24,
+    "tags": [
+      "petition",
+      "quota"
+    ],
+    "title": "Обращение — коптильня на Гниль",
+    "title_en": "Petition — A Smokehouse for the Rot",
+    "body": "Артель просит денег на общую коптильню.\n\n«В Гниль сырая рыба живёт два дня. Копчёная живёт месяц. Поставим за вечер, если дадите на железо и соль. А можно коптить только то, что идёт Лиге: тогда людям останется сырое».",
+    "body_en": "The crew asks for money for a common smokehouse.\n\n\"In the Rot raw fish keeps two days. Smoked fish keeps a month. We can put it up in an evening if you pay for iron and salt. Or we can smoke only what goes to the League: then the people get the raw.\"",
+    "options": [
+      {
+        "text": "Коптильня для посёлка (50 монет, +120 еды)",
+        "text_en": "A smokehouse for the settlement (50 coins, +120 food)",
+        "cost": {
+          "res_money": 50
+        },
+        "effects": {
+          "add_resources": {
+            "res_food": 120
+          },
+          "add_buff": {
+            "id": "smoked_fish",
+            "name": "Копчёная рыба",
+            "name_en": "Smoked fish",
+            "happiness_add": 4,
+            "remaining": 900
+          },
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Дым стоял над причалом всю неделю, и это был хороший дым.",
+          "message_en": "Smoke stood over the pier all week, and it was the good kind."
+        }
+      },
+      {
+        "text": "Коптить только на баржу (50 монет, +300 в зачёт квоты)",
+        "text_en": "Smoke only for the barge (50 coins, +300 toward the quota)",
+        "cost": {
+          "res_money": 50
+        },
+        "effects": {
+          "stat_norm_shipped": 300,
+          "stat_league_trust": 4,
+          "stat_city_trust": -4,
+          "style": "loyal",
+          "message": "Копчёная рыба ушла Лиге. В посёлке варили уху из того, что осталось.",
+          "message_en": "The smoked fish went to the League. The settlement made soup from what was left."
+        }
+      },
+      {
+        "text": "Не сейчас: казна не тянет",
+        "text_en": "Not now: the treasury cannot carry it",
+        "effects": {
+          "stat_city_trust": -2,
+          "style": "pragmatist",
+          "message": "Артель разошлась. Рыбу солили по домам, кто как умел.",
+          "message_en": "The crew dispersed. People salted fish at home, each as best they could."
+        }
+      }
+    ]
   }
 ]
