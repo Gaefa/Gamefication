@@ -54,5 +54,13 @@
     "title_en": "Mandate Not Renewed — Nyupa Bled People",
     "body": "Нюпа росла, пока не пришла вода, а потом люди потянулись на Плёсы. К аудиту район был меньше, чем на старте. Инспектор Мирош не стала спорить с цифрами.\n\nМандат не продлён. Берег достался следующему.",
     "body_en": "Nyupa grew until the water came, and then the people drifted to the Reaches. By the audit the district was smaller than at the start. Inspector Mirosh did not argue with the numbers.\n\nThe mandate was not renewed. The bank went to the next one."
+  },
+  {
+    "id": "ending.lose.norm",
+    "kind": "lose",
+    "title": "Мандат не продлён — квота Поймы не сдана",
+    "title_en": "Mandate Not Renewed — The Floodplain's Quota Was Not Delivered",
+    "body": "Срок вышел. Посёлок пережил Паводок, люди на месте, на причале сохнут сети. В журнале барж Лиги против десяти тысяч стоит недостача.\n\nМирош написала: «Нюпа сыта. Сухие земли ждали её рыбу и не дождались». Мандат на второй срок передан тому, кто считает бочки.\n\nРыбаки проводили вас на двух лодках до большой воды.",
+    "body_en": "The term ran out. The settlement outlived the Flood, the people are in place, the nets are drying on the pier. In the League's barge log, against ten thousand, there is a shortfall.\n\nMirosh wrote: \"The Nyupa is fed. The Dry Lands waited for its fish and did not get it.\" The mandate for a second term went to someone who counts barrels.\n\nThe fishermen saw you off in two boats as far as the open water."
   }
 ]

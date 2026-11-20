@@ -13,8 +13,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — назначение в Карьер",
     "title_en": "Engineers' Union — Appointment to the Quarry",
-    "body": "Союз Инженеров. Ревизионная служба промпояса.\nАдминистратору района Чёрный Карьер.\n\nУведомляю о назначении. Район рудный: жила под восточным склоном, старый карьер, остатки печей Компании. Прежний администратор Крамер отозвана по итогам ревизии.\n\nЗадача на срок: к Морозу не меньше двенадцати жителей, запасы воды и еды, металл для мостовых работ Союза. И стандарт чистоты: дым над районом не выше сорока. Хартии будут предлагать вам иное; это ваш выбор и ваша ревизия.\n\nИнженер-ревизор Матиас Хольт.",
-    "body_en": "Engineers' Union. Industrial Belt Review Service.\nTo the administrator of the Black Quarry district.\n\nI notify you of your appointment. The district is ore country: a seam under the east slope, an old pit, the remains of Company furnaces. The previous administrator, Kramer, was recalled after review.\n\nYour task for the term: by the Frost, no fewer than twelve residents, water and food in reserve, metal for the Union's bridge works. And the clean-air standard: smoke over the district no higher than forty. The Charters will offer you otherwise; that is your choice and your review.\n\nEngineer-Auditor Matthias Holt.",
+    "body": "Союз Инженеров. Ревизионная служба промпояса.\nАдминистратору района Чёрный Карьер.\n\nУведомляю о назначении. Район рудный: жила под восточным склоном, старый карьер, остатки печей Компании. Прежний администратор Крамер отозвана по итогам ревизии.\n\nЗадача на срок: к Морозу не меньше двенадцати жителей, запасы воды и еды, металл для мостовых работ Союза: 2200 к первой ревизии, 5500 к концу срока. Вагоны Союза вывозят всё сверх двадцати слитков, по 50 за раз, и платят 15 монет за вагон. И стандарт чистоты: дым над районом не выше сорока. Хартии будут предлагать вам иное; это ваш выбор и ваша ревизия.\n\nИнженер-ревизор Матиас Хольт.",
+    "body_en": "Engineers' Union. Industrial Belt Review Service.\nTo the administrator of the Black Quarry district.\n\nI notify you of your appointment. The district is ore country: a seam under the east slope, an old pit, the remains of Company furnaces. The previous administrator, Kramer, was recalled after review.\n\nYour task for the term: by the Frost, no fewer than twelve residents, water and food in reserve, metal for the Union's bridge works: 2200 by the first review, 5500 by the end of the term. The Union's wagons haul away everything above twenty ingots, 50 at a time, and pay 15 coins a wagon. And the clean-air standard: smoke over the district no higher than forty. The Charters will offer you otherwise; that is your choice and your review.\n\nEngineer-Auditor Matthias Holt.",
     "options": [
       {
         "text": "Принять мандат",
@@ -263,8 +263,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — ревизия через три дня",
     "title_en": "Engineers' Union — Review in Three Days",
-    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Через три дня первая ревизия: люди, запас воды, запас еды, поддержка района. Отдельно смотрю дым: стандарт сорок.\n\nИнженер-ревизор Хольт.",
-    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The first review is in three days: people, the water reserve, the food reserve, the district's support. I will look at the smoke separately: the standard is forty.\n\nEngineer-Auditor Holt.",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Через три дня первая ревизия: люди, запас воды, запас еды, поддержка района. Четвёртой строкой металл: 2200, вывезенных вагонами Союза. Дым смотрю отдельно: стандарт сорок.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The first review is in three days: people, the water reserve, the food reserve, the district's support. The fourth line is metal: 2200 hauled away by the Union's wagons. I look at the smoke separately: the standard is forty.\n\nEngineer-Auditor Holt.",
     "options": [
       {
         "text": "Принято, готовимся",
@@ -918,30 +918,40 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — металл на мосты",
     "title_en": "Engineers' Union — Metal for the Bridges",
-    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Мостовые работы на тракте ждут металл Карьера: тридцать единиц до конца осени. Это и есть смысл вашего мандата.\n\nИнженер-ревизор Хольт.",
-    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The bridge works on the highway wait for the Quarry's metal: thirty units by the end of autumn. That is what your mandate is for.\n\nEngineer-Auditor Holt.",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Мостовые работы на тракте стоят без металла Карьера. К концу срока по квоте пять с половиной тысяч, и это и есть смысл вашего мандата.\n\nЯма может работать в две смены. Дыма будет больше, людям тяжелее. Решение ваше.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The bridge works on the highway stand idle without the Quarry's metal. The quota by the end of the term is five and a half thousand, and that is what your mandate is for.\n\nThe pit can work two shifts. There will be more smoke, and it will be harder on the people. The decision is yours.\n\nEngineer-Auditor Holt.",
     "options": [
       {
-        "text": "Отправить 30 металла",
-        "text_en": "Send 30 metal",
-        "cost": {
-          "res_metal": 30
-        },
+        "text": "Ночная смена на яме (+400 в зачёт квоты, дым +8)",
+        "text_en": "A night shift at the pit (+400 toward the quota, smoke +8)",
         "effects": {
-          "stat_league_trust": 8,
+          "stat_norm_shipped": 400,
+          "stat_waste": 8,
+          "stat_league_trust": 5,
+          "stat_city_trust": -6,
           "style": "loyal",
-          "message": "Обоз Союза ушёл с металлом. Хольт расписался в получении.",
-          "message_en": "The Union's convoy left with the metal. Holt signed the receipt."
+          "message": "Яма работала до рассвета всю неделю. Вагоны ушли полными, в бараках кашляли.",
+          "message_en": "The pit worked till dawn all week. The wagons left full; in the shelters people coughed."
         }
       },
       {
-        "text": "Просить отсрочки до Мороза",
-        "text_en": "Ask for a deferral until the Frost",
+        "text": "Работать как работаем",
+        "text_en": "Work as we work",
         "effects": {
-          "stat_league_trust": -5,
-          "stat_city_trust": 2,
-          "message": "Отсрочка дана. В деле пометка.",
-          "message_en": "The deferral is granted. A note in the file."
+          "style": "pragmatist",
+          "message": "Хольт ответил: «Цифру я увижу в ведомости вагонов».",
+          "message_en": "Holt answered: \"I will see the figure in the wagon ledger.\""
+        }
+      },
+      {
+        "text": "Сначала воздух: просить отсрочки по квоте",
+        "text_en": "The air first: ask for a deferral on the quota",
+        "effects": {
+          "stat_league_trust": -6,
+          "stat_city_trust": 5,
+          "style": "protector",
+          "message": "Отсрочки Союз не даёт. В деле пометка, в посёлке вас благодарили.",
+          "message_en": "The Union gives no deferrals. A note in the file; in the settlement they thanked you."
         }
       }
     ]
@@ -1082,8 +1092,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — вторая ревизия",
     "title_en": "Engineers' Union — The Second Review",
-    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Вторая ревизия на 27-й день, в Мороз: люди, вода, еда и сохранность запасов. Дым смотрю отдельно. Срок мандата — 30-й день.\n\nИнженер-ревизор Хольт.",
-    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The second review is on day 27, in the Frost: people, water, food and how the reserves were kept. I look at the smoke separately. The mandate ends on day 30.\n\nEngineer-Auditor Holt.",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Вторая ревизия на 27-й день, в Мороз: люди, вода, еда и металл: 5500. Дым смотрю отдельно. Срок мандата — 30-й день.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The second review is on day 27, in the Frost: people, water, food and metal: 5500. I look at the smoke separately. The mandate ends on day 30.\n\nEngineer-Auditor Holt.",
     "options": [
       {
         "text": "Принято",
@@ -1261,8 +1271,8 @@
     "cooldown_sec": 999999,
     "title": "Союз Инженеров — к концу срока",
     "title_en": "Engineers' Union — Toward the End of the Term",
-    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Срок мандата истекает на 30-й день. Решение о продлении Союз примет по итогам обеих ревизий, по людям и по дыму. Хартии своё мнение уже прислали; оно к делу не приобщено.\n\nИнженер-ревизор Хольт.",
-    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The mandate expires on day 30. The Union will decide on renewal by both reviews, by the people and by the smoke. The Charters have already sent their opinion; it is not added to the file.\n\nEngineer-Auditor Holt.",
+    "body": "Союз Инженеров. Ревизионная служба.\n\nАдминистратору. Срок мандата истекает на 30-й день. Решение о продлении Союз примет по итогам обеих ревизий, по людям и по металлу: 5500 вывезенных. Хартии своё мнение уже прислали; оно к делу не приобщено.\n\nИнженер-ревизор Хольт.",
+    "body_en": "Engineers' Union. Review Service.\n\nTo the administrator. The mandate expires on day 30. The Union will decide on renewal by both reviews, by the people and by the metal: 5500 hauled away. The Charters have already sent their opinion; it is not added to the file.\n\nEngineer-Auditor Holt.",
     "options": [
       {
         "text": "Принято",
@@ -1566,6 +1576,118 @@
           "style": "loyal",
           "message": "Рех надел шапку и ушёл.",
           "message_en": "Rech put on his cap and left."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.quota_behind",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "trigger_day": 10,
+    "trigger_condition": "stat_norm_gap >= 1200",
+    "tags": [
+      "charters",
+      "trade",
+      "quota"
+    ],
+    "title": "Предложение — слитки под печатью Союза",
+    "title_en": "An Offer — Ingots Under the Union's Seal",
+    "body": "Агент Хартий Сильва Крон пришла без весов, с накладной.\n\n«По вагонам вы отстаёте от Хольта на тысячу с лишним, это знает весь тракт. У меня пятьсот слитков с клеймом Карьера: старые, времён Компании. Сто монет, и они уйдут в ваших вагонах. Союз получит металл, вы получите цифру».",
+    "body_en": "The Charters' agent Silva Kron came without her scales, with a waybill.\n\n\"By the wagons you are over a thousand behind Holt, the whole highway knows it. I have five hundred ingots with the Quarry's mark: old ones, from the Company's time. A hundred coins, and they leave in your wagons. The Union gets its metal, you get your figure.\"",
+    "options": [
+      {
+        "text": "Взять слитки Хартий (100 монет, +500 в зачёт квоты)",
+        "text_en": "Take the Charters' ingots (100 coins, +500 toward the quota)",
+        "cost": {
+          "res_money": 100
+        },
+        "effects": {
+          "stat_norm_shipped": 500,
+          "set_flag": "charters_deal",
+          "style": "pragmatist",
+          "message": "Слитки ушли в вагонах Союза. Крон оставила накладную себе.",
+          "message_en": "The ingots left in the Union's wagons. Kron kept the waybill."
+        }
+      },
+      {
+        "text": "Отказать и доложить Хольту",
+        "text_en": "Refuse and report to Holt",
+        "effects": {
+          "stat_league_trust": 4,
+          "stat_rival_score": -1,
+          "style": "loyal",
+          "message": "Хольт ответил: «Принято. Металл всё равно нужен».",
+          "message_en": "Holt answered: \"Noted. The metal is still needed.\""
+        }
+      },
+      {
+        "text": "Отказать молча",
+        "text_en": "Refuse and say nothing",
+        "effects": {
+          "style": "protector",
+          "stat_city_trust": 2,
+          "message": "Крон пожала плечами. В посёлке сказали: правильно, чужим клеймом не торгуем.",
+          "message_en": "Kron shrugged. In the settlement they said: right, we do not trade on another's mark."
+        }
+      }
+    ]
+  },
+  {
+    "id": "quarry.quota_people",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_strike_autumn",
+    "trigger_day": 14,
+    "trigger_condition": "stat_norm_shipped >= 1500",
+    "tags": [
+      "petition",
+      "quota"
+    ],
+    "title": "Обращение — вагоны и фильтры",
+    "title_en": "Petition — The Wagons and the Filters",
+    "body": "Комитет посёлка, говорит Ида Сомова, медсестра.\n\n«Каждый вечер уходит вагон. На фильтровальную станцию надо пятнадцать слитков, и их никогда нет. Мы не просим остановить Союз. Мы просим один вагон оставить здесь: на трубы и на отвал, чтобы дети дышали».",
+    "body_en": "The settlement committee; the nurse Ida Somova speaks.\n\n\"Every evening a wagon leaves. A filter station takes fifteen ingots, and there are never any. We are not asking you to stop the Union. We are asking for one wagon to stay here: for the stacks and the heap, so the children can breathe.\"",
+    "options": [
+      {
+        "text": "Оставить вагон посёлку (квота −300, дым −12)",
+        "text_en": "Leave a wagon to the settlement (quota −300, smoke −12)",
+        "effects": {
+          "stat_norm_shipped": -300,
+          "stat_waste": -12,
+          "stat_city_trust": 7,
+          "stat_league_trust": -4,
+          "style": "protector",
+          "message": "Металл пошёл на трубы и на отвал. Сомова сама красила заслонки.",
+          "message_en": "The metal went into stacks and the heap. Somova painted the dampers herself."
+        }
+      },
+      {
+        "text": "Квота прежде: вагоны идут",
+        "text_en": "The quota first: the wagons go",
+        "effects": {
+          "stat_city_trust": -6,
+          "stat_league_trust": 4,
+          "style": "loyal",
+          "message": "Комитет ушёл молча. Вагон ушёл по расписанию.",
+          "message_en": "The committee left in silence. The wagon went on schedule."
+        }
+      },
+      {
+        "text": "Премия из денег Союза (60 монет)",
+        "text_en": "A bonus out of the Union's money (60 coins)",
+        "cost": {
+          "res_money": 60
+        },
+        "effects": {
+          "stat_city_trust": 3,
+          "style": "pragmatist",
+          "message": "Деньги за вагоны разошлись по бригадам. Кашлять не перестали.",
+          "message_en": "The wagon money went to the crews. The coughing did not stop."
         }
       }
     ]

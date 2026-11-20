@@ -158,8 +158,8 @@
     "badge": "food",
     "name": "Пойменная грядка",
     "name_en": "Floodplain plot",
-    "description": "Грядка под тканью. На заливном лугу родит на треть лучше, но в Паводок её заливает без дамбы рядом.",
-    "description_en": "A plot under cloth. On the floodplain it bears a third better, but the Flood takes it without a levee next to it.",
+    "description": "Грядка под тканью. На заливном лугу родит на треть лучше, но в Паводок её заливает без дамбы рядом. На сухой земле выше реки родит на треть хуже.",
+    "description_en": "A plot under cloth. On the floodplain it bears a third better, but the Flood takes it without a levee next to it. On the dry ground above the river it bears a third worse.",
     "size": [
       1,
       1
@@ -184,6 +184,7 @@
       "3": 0.15,
       "4": 0.1,
       "2": -0.25,
+      "0": -0.3,
       "8": 0.3
     },
     "levels": [

@@ -32,6 +32,21 @@
   "tutorial_intro": "Вы — администратор [b]Боголесского Ущелья[/b]. Земля здесь родит, но [b]спорные луга[/b] (зелёные клетки) считает своими Зелёный Завет: каждое поле на них — повод для письма. Обычная земля устаёт, луга нет. [b]Сушь[/b] — дни 13–22, [b]Урожай[/b] — 23–30. Аудиты — дни 15 и 27. Продержитесь до 30-го дня с не меньше чем 12 жителями.\n\nВремя пока стоит — спокойно осмотримся.",
   "tutorial_intro_en": "You are the administrator of [b]Bogolessky Gorge[/b]. The land bears here, but the [b]contested meadows[/b] (green cells) are claimed by the Green Covenant: every field on them is a letter waiting to happen. Plain ground wears out, the meadows do not. The [b]Drought[/b] runs on days 13–22, the [b]Harvest[/b] on 23–30. Audits: days 15 and 27. Hold out until day 30 with at least 12 residents.\n\nTime is stopped for now — let's look around.",
   "company_traces": false,
+  "mandate_start": {"patron_trust": 50},
+  "norm": {
+    "kind": "quota",
+    "resource": "res_food",
+    "keep": 250,
+    "wagon": 50,
+    "pay": {
+      "res_money": 10
+    },
+    "targets": [3500, 9000],
+    "label": "Урожай Лиге",
+    "label_en": "Harvest for the League",
+    "hint": "Лига забирает урожай обозами по 50, когда на складе больше 250 еды, и платит 10 монет за обоз. Первая цифра спрашивается на первой ревизии, вторая на второй и в конце срока.",
+    "hint_en": "The League takes the harvest in wagons of 50 whenever the store holds more than 250 food, and pays 10 coins a wagon. The first figure is asked at the first audit, the second at the second audit and at the end of the term."
+  },
   "mechanics": {
     "soil": true
   },

@@ -62,5 +62,13 @@
     "title_en": "Mandate Not Renewed — The Ring Bled People",
     "body": "Кольцо росло, пока сквоттеры не ушли в Южное кольцо. К ревизии район был меньше, чем на старте. Комиссар Хальт не стала спорить с цифрами.\n\nМандат не продлён. Руины достались следующему.",
     "body_en": "The ring grew until the squatters left for the Southern Ring. By the audit the district was smaller than at the start. Commissar Halt did not argue with the numbers.\n\nThe mandate was not renewed. The ruins went to the next one."
+  },
+  {
+    "id": "ending.lose.norm",
+    "kind": "lose",
+    "title": "Мандат не продлён — реестр пуст",
+    "title_en": "Mandate Not Renewed — The Register Is Empty",
+    "body": "Срок вышел. В кольце живут люди, есть вода и хлеб. В реестре Директората против зоны «Старый Капитал, внешнее кольцо» не хватает строк.\n\nХальт записала: «Население не учтено, жильё не зарегистрировано. Зона заселена, но не управляется». Мандат на второй срок передан комиссару с печатью.\n\nВейс сказала на прощание: «Для них нас нет. Для нас вы были».",
+    "body_en": "The term ran out. People live in the ring; there is water and bread. In the Directorate's register, against the zone \"Old Capital, outer ring\", lines are missing.\n\nHalt wrote: \"The population is not recorded, the housing is not registered. The zone is settled but not administered.\" The mandate for a second term went to a commissar with a seal.\n\nWeiss said at parting: \"For them we do not exist. For us you did.\""
   }
 ]

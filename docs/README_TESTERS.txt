@@ -1,26 +1,27 @@
-Mandate Cities 0.3.4-alpha — playtest build / тестовая сборка
+Mandate Cities 0.3.5-alpha — playtest build / тестовая сборка
 
-NEW IN 0.3.4-alpha / НОВОЕ В 0.3.4-alpha
-  Fixes found by an overnight test pass over all five chapters.
-  A storm that wrecks the homes no longer empties the district at once: people stay in a
-  wrecked house for a few days, and a repair (R) keeps them. Before, a small district could
-  get the "exodus" finale the morning after the storm letter, with no time to repair.
-  Chapters 2-5 offer one mandate, their own (the Directorate and founder starts belong to
-  chapter 1 and played the later chapters with half the letters missing). The start screen
-  names the chapter's patron, and the first hint speaks of this district and its term.
-  The Black Quarry start "Kramer's smelter" was unwinnable (no power for the smelter, the
-  district emptied by day four): it now comes with a solar panel. A loaded game keeps the
-  same mood as the game that was saved.
-  Исправления по ночному прогону всех пяти глав.
-  Буря, сломавшая дома, больше не опустошает район сразу: из сломанного дома люди уходят
-  несколько дней, ремонт (R) их удерживает. Раньше маленький район мог получить финал «исход»
-  утром после письма о буре, не успев починить.
-  В главах 2-5 мандат один, свой (мандат Директората и старты основателей относятся к главе 1
-  и в поздних главах шли с половиной писем). Стартовый экран называет покровителя главы,
-  первая подсказка говорит об этом районе и его сроке.
-  Старт «Плавильня Крамер» в Чёрном Карьере был непроходим (плавильне не хватало энергии,
-  район пустел к четвёртому дню): теперь рядом стоит солнечная панель. Загруженная игра
-  держит то же настроение, что и сохранённая.
+NEW IN 0.3.5-alpha / НОВОЕ В 0.3.5-alpha
+  Chapters 2-5 now ask for what their patron sent you for. Each has a norm of its own: the
+  fourth line of both inspections and of the Goals list, and a condition of the mandate's
+  extension. Gorge: harvest for the League. Quarry: metal for the Union. Nyupa: fish and
+  grain for the League. Old Capital: a registry office and two tenements on the register.
+  A quota is hauled away by the patron's wagons on their own and paid for; click the norm's
+  line in Goals to hold or release them. A settled district that missed its norm is not
+  renewed (a new finale in each of the four chapters). Trust in these chapters opens at 50.
+  New letters put the quota against the residents: night shifts, short rations, a neighbour's
+  goods under your seal. The finale's side is now counted from your answers for the city
+  against your answers for the patron.
+  Главы 2-5 теперь спрашивают то, за чем вас прислал покровитель. У каждой своя норма:
+  четвёртая строка обеих проверок и списка «Цели», и условие продления мандата. Ущелье:
+  урожай Лиге. Карьер: металл Союзу. Нюпа: рыба и зерно Лиге. Старый Капитал: учётная
+  контора и два доходных дома по реестру. Квоту покровитель вывозит вагонами сам и платит
+  за неё; клик по строке нормы в «Целях» придерживает и отпускает вагоны. Район, который
+  устоял, но норму не закрыл, мандат не продлевает (новый финал в каждой из четырёх глав).
+  Доверие в этих главах начинается с 50. Новые письма ставят квоту против жителей: ночные
+  смены, урезанный паёк, чужой товар под вашей печатью. Сторона финала теперь считается
+  по вашим ответам за город и за покровителя.
+  0.3.4: fixes from an overnight test pass (storm damage no longer empties a district at
+  once; chapters 2-5 offer their own mandate; Kramer's smelter start; saved mood).
   0.3.3: chapter 5, the Old Capital's outer ring (permits, ruins, the road behind).
   0.3.2: chapter 4, Big Nyupa (the river, levees, stilts). 0.3.1: chapter 3, the Black Quarry.
   0.3.0: chapter 2 and inherited starts.

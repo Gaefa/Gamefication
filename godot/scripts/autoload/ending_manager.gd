@@ -99,10 +99,20 @@ func _evaluate() -> void:
 		# trust-vs-support balance as a fallback when no strong style emerged.
 		var settled: bool = happiness >= WIN_HAPPINESS and pop >= WIN_PEOPLE \
 			and pop >= int(float(_peak_pop) * WIN_PEAK_KEEP)
-		if settled:
-			var style: String = GameStateStore.dominant_style("")
-			var protector_side: bool = style == "protector" or style == "autonomist" \
-				or (style == "" and support > trust)
+		if settled and ChapterNorm.active() and not ChapterNorm.met(ChapterNorm.last_stage()) \
+				and not ContentDB.get_ending_def("ending.lose.norm").is_empty():
+			# A settled district that did not do what its patron sent the administrator for
+			# (chapter.json "norm"): the people stay, the mandate goes to someone who will.
+			_trigger("ending.lose.norm")
+		elif settled:
+			# Which master the administrator sided with: the answers given for the city against
+			# the answers given for the patron. Equal counts (or none) fall to the two meters.
+			# (It used to take the first style to reach the top count, so a six-to-six run was
+			# decided by which card happened to come first.)
+			var styles: Dictionary = GameStateStore.style_flags()
+			var for_city: int = (styles.get("protector", 0) as int) + (styles.get("autonomist", 0) as int)
+			var for_patron: int = styles.get("loyal", 0) as int
+			var protector_side: bool = for_city > for_patron or (for_city == for_patron and support > trust)
 			_trigger(_patron_win_ending(protector_side))
 		elif has_patron:
 			# The term is over and the district is not what the mandate asked for: no extension.
@@ -309,6 +319,10 @@ func _theses() -> String:
 
 	var pop: int = GameStateStore.population().get("total", 0) as int
 	lines.append(Localization.ru_en("• [b]Жители:[/b] %d на пике, %d к концу срока", "• [b]Residents:[/b] %d at the peak, %d at the end of the term") % [maxi(_peak_pop, pop), pop])
+	if ChapterNorm.active():
+		var last: int = ChapterNorm.last_stage()
+		lines.append("• [b]%s:[/b] %s — %s" % [ChapterNorm.label(), ChapterNorm.figures(last),
+			Localization.ru_en("норма выполнена", "the norm is met") if ChapterNorm.met(last) else Localization.ru_en("норма не выполнена", "the norm is not met")])
 	return "\n\n".join(lines)
 
 

@@ -467,7 +467,7 @@ func _position_below_resource_bar() -> void:
 var _left_column: VBoxContainer
 var _goal_rows: Dictionary = {}  # id → {"row": Control, "mark": Label, "name": Label, "value": Label}
 const LEFT_W := 260.0
-const GOAL_ROWS := ["dust", "audit", "water", "food", "mood", "spoilage", "grant", "finish"]
+const GOAL_ROWS := ["dust", "audit", "water", "food", "mood", "spoilage", "norm", "grant", "finish"]
 
 ## Panels in the order of their keys: Q E T Y sit in one row next to WASD (W and R are taken).
 const PANEL_BUTTONS := [
@@ -499,6 +499,10 @@ func _build_left_column() -> void:
 	_goal_rows.clear()
 	for id: String in GOAL_ROWS:
 		_goal_rows[id] = _goal_row(box)
+	var norm_row: Control = (_goal_rows["norm"] as Dictionary)["row"] as Control
+	norm_row.mouse_filter = Control.MOUSE_FILTER_STOP
+	norm_row.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	norm_row.gui_input.connect(_on_norm_row_input)
 
 	var row: HBoxContainer = null
 	for entry: Array in PANEL_BUTTONS:
@@ -532,6 +536,24 @@ func _goal_row(parent: Control) -> Dictionary:
 	value.add_theme_font_size_override("font_size", 12)
 	row.add_child(value)
 	return { "row": row, "mark": mark, "name": title, "value": value }
+
+
+## The quota's wagons leave on their own; a click on the norm's line holds them (a district
+## that needs its grain or metal for a week) and a second click lets them go.
+func _on_norm_row_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+		toggle_norm_hold()
+
+
+func toggle_norm_hold() -> void:
+	if not ChapterNorm.active() or not ChapterNorm.is_quota():
+		return
+	var climate: Dictionary = GameStateStore.climate()
+	climate["norm_hold"] = not ChapterNorm.holding()
+	EventBus.toast_requested.emit(
+		Localization.ru_en("Отгрузка остановлена: запас остаётся в районе", "Shipments held: the stock stays in the district") if ChapterNorm.holding()
+		else Localization.ru_en("Отгрузка идёт: вагоны уходят покровителю", "Shipments resumed: the wagons leave for the patron"), 3.0)
+	_update_goals()
 
 
 ## "2.4 дн. / 1 дн." for the reserve goals; an endless reserve shows as a dash.
@@ -607,8 +629,19 @@ func _update_goals() -> void:
 	var incoming: float = climate.get("heat_food_start", 0.0) as float
 	var spoiled: float = climate.get("heat_food_spoiled", 0.0) as float
 	var loss_percent: float = 100.0 * spoiled / incoming if incoming > 0.0 else 0.0
-	_set_goal("spoilage", checking and climate.has("heat_food_start"), MandateManager.food_preserved(),
+	_set_goal("spoilage", checking and climate.has("heat_food_start") and not ChapterNorm.active(), MandateManager.food_preserved(),
 		Localization.ru_en("Порча еды", "Food spoiled"), "%.1f%% / <25%%" % loss_percent)
+	# The chapter's own norm stays on the list to the last day: the mandate's extension asks for it too.
+	var norm_stage: int = ChapterNorm.current_stage()
+	var norm_value: String = ChapterNorm.figures(norm_stage) if ChapterNorm.active() else ""
+	if ChapterNorm.active() and ChapterNorm.holding():
+		norm_value += Localization.ru_en(" · стоп", " · held")
+	_set_goal("norm", ChapterNorm.active(), ChapterNorm.active() and ChapterNorm.met(norm_stage), ChapterNorm.label(), norm_value)
+	if ChapterNorm.active():
+		var norm_tip: String = Localization.content_text(ChapterNorm.def(), "hint", "")
+		if ChapterNorm.is_quota():
+			norm_tip += Localization.ru_en("\nКлик — придержать или отпустить вагоны.", "\nClick to hold or release the wagons.")
+		((_goal_rows["norm"] as Dictionary)["row"] as Control).tooltip_text = norm_tip
 
 	# 3. The grant contest with the neighbour.
 	var ours: int = int(RivalManager.player_score())
@@ -2279,7 +2312,9 @@ func _build_start_profile_row(profile_id: String) -> Control:
 	text_box.add_child(desc)
 
 	# The two meters the whole game is about — each explains itself on hover.
-	var mandate_data: Dictionary = def.get("mandate", {})
+	var mandate_data: Dictionary = (def.get("mandate", {}) as Dictionary).duplicate()
+	if (mandate_data.get("patron_id", def.get("patron_id", "")) as String) != "" or profile_id == "appointed_administrator":
+		mandate_data.merge(ContentDB.get_chapter_def(_selected_chapter).get("mandate_start", {}) as Dictionary, true)  # the chapter's opening figures
 	var stats := HBoxContainer.new()
 	stats.add_theme_constant_override("separation", 14)
 	text_box.add_child(stats)

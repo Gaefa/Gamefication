@@ -10,8 +10,8 @@
     "tags": ["patron", "letter"],
     "title": "Лига Восстановления — назначение в Ущелье",
     "title_en": "Restoration League — Appointment to the Gorge",
-    "body": "Лига Восстановления. Инспекция Зелёного пояса.\nАдминистратору района Боголесское Ущелье.\n\nУведомляю о вашем назначении. Район плодородный и спокойный, прежний администратор Ренн уехал по собственному желанию. Ваша задача на срок: к Урожаю не меньше двенадцати жителей, амбары полные, квота Лиги сдана.\n\nЛуга вдоль реки по реестру числятся за районом. Что об этом думает Зелёный Завет, Лигу не интересует.\n\nИнспектор Хелин Варга.",
-    "body_en": "Restoration League. Green Belt Inspectorate.\nTo the administrator of the Bogolessky Gorge district.\n\nI notify you of your appointment. The district is fertile and quiet; the previous administrator, Renn, left of his own accord. Your task for the term: by the Harvest, no fewer than twelve residents, full barns, the League's quota delivered.\n\nThe meadows along the river are registered to the district. What the Green Covenant thinks of that is of no interest to the League.\n\nInspector Helin Varga.",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\nАдминистратору района Боголесское Ущелье.\n\nУведомляю о вашем назначении. Район плодородный и спокойный, прежний администратор Ренн уехал по собственному желанию. Ваша задача на срок: к Урожаю не меньше двенадцати жителей, амбары полные, квота Лиги сдана.\n\nКвота по плану Зелёного пояса: 3500 продовольствия к первой проверке, 9000 к концу срока. Обозы Лиги ходят сами: забирают по 50, когда на складе больше 250, и платят 10 монет за обоз.\n\nЛуга вдоль реки по реестру числятся за районом. Что об этом думает Зелёный Завет, Лигу не интересует.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\nTo the administrator of the Bogolessky Gorge district.\n\nI notify you of your appointment. The district is fertile and quiet; the previous administrator, Renn, left of his own accord. Your task for the term: by the Harvest, no fewer than twelve residents, full barns, the League's quota delivered.\n\nThe quota under the Green Belt plan: 3500 food by the first inspection, 9000 by the end of the term. The League's wagons run on their own: they take 50 whenever the store holds more than 250, and pay 10 coins a wagon.\n\nThe meadows along the river are registered to the district. What the Green Covenant thinks of that is of no interest to the League.\n\nInspector Helin Varga.",
     "options": [
       { "text": "Принять мандат", "text_en": "Accept the mandate", "effects": { "message": "Печать поставлена. Ущелье ваше на тридцать дней.", "message_en": "The seal is set. The Gorge is yours for thirty days." } }
     ]
@@ -183,8 +183,8 @@
     "tags": ["patron", "letter"],
     "title": "Лига Восстановления — аудит через три дня",
     "title_en": "Restoration League — Audit in Three Days",
-    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Через три дня первая проверка: люди, запас воды на Сушь, поддержка района. Отдельно смотрю на поля: план Зелёного пояса не ждёт.\n\nИнспектор Хелин Варга.",
-    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. The first inspection is in three days: people, the water reserve for the Drought, the district's support. I will look at the fields separately: the Green Belt's plan does not wait.\n\nInspector Helin Varga.",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Через три дня первая проверка: люди, запас воды на Сушь, поддержка района. Четвёртой строкой квота: 3500 продовольствия, сданных обозам. План Зелёного пояса не ждёт.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. The first inspection is in three days: people, the water reserve for the Drought, the district's support. The fourth line is the quota: 3500 food handed to the wagons. The Green Belt's plan does not wait.\n\nInspector Helin Varga.",
     "options": [
       { "text": "Принято, готовимся", "text_en": "Noted, we prepare", "effects": { "message": "Секретарь достал ведомости.", "message_en": "The secretary got out the ledgers." } }
     ]
@@ -356,12 +356,12 @@
     "tags": ["patron", "letter"],
     "title": "Лига Восстановления — квота Урожая",
     "title_en": "Restoration League — The Harvest Quota",
-    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Урожай начался. Квота района по плану Зелёного пояса: сто единиц продовольствия до второй проверки. Обоз Лиги придёт за ними сам.\n\nИнспектор Хелин Варга.",
-    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. The Harvest has begun. The district's quota under the Green Belt plan: one hundred units of food before the second inspection. The League's convoy will collect.\n\nInspector Helin Varga.",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. Урожай начался. До конца срока квота района должна быть закрыта: 9000. Сухие земли ждут этот хлеб, и я не могу объяснить им, что Ущелье придержало его для себя.\n\nЕсли на складе есть лишнее, сдайте сейчас, сверх обычных обозов.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. The Harvest has begun. By the end of the term the district's quota must be closed: 9000. The Dry Lands are waiting for this bread, and I cannot explain to them that the Gorge kept it for itself.\n\nIf the store holds any surplus, hand it over now, on top of the usual wagons.\n\nInspector Helin Varga.",
     "options": [
-      { "text": "Сдать квоту (100 еды)", "text_en": "Deliver the quota (100 food)", "cost": { "res_food": 100 }, "effects": { "stat_league_trust": 8, "style": "loyal", "message": "Обоз ушёл с сотней мешков. Инспектор расписалась.", "message_en": "The convoy left with a hundred sacks. The inspector signed." } },
-      { "text": "Сдать половину: остальное людям (50 еды)", "text_en": "Deliver half: the rest is for the people (50 food)", "cost": { "res_food": 50 }, "effects": { "stat_league_trust": -2, "stat_city_trust": 4, "style": "protector", "message": "Полсотни ушло. Инспектор записала недостачу.", "message_en": "Fifty went. The inspector noted the shortfall." } },
-      { "text": "Отказать: квота задушит район", "text_en": "Refuse: the quota would strangle the district", "effects": { "stat_league_trust": -8, "stat_city_trust": 6, "style": "autonomist", "message": "Обоз ушёл пустым. Письмо из Инспекции придёт.", "message_en": "The convoy left empty. A letter from the Inspectorate will come." } }
+      { "text": "Сдать со склада сверх пайка (150 еды в зачёт квоты)", "text_en": "Hand over stock beyond the ration (150 food toward the quota)", "cost": { "res_food": 150 }, "effects": { "stat_norm_shipped": 150, "stat_league_trust": 5, "stat_city_trust": -4, "style": "loyal", "message": "Три обоза ушли вне очереди. У амбара смотрели молча.", "message_en": "Three wagons left out of turn. At the granary people watched in silence." } },
+      { "text": "По норме: обозы и так ходят", "text_en": "By the norm: the wagons run as it is", "effects": { "style": "pragmatist", "message": "Варга ответила одной строкой: «Жду цифру».", "message_en": "Varga answered in one line: \"I await the figure.\"" } },
+      { "text": "Вернуть один обоз людям на Сушь (квота −150)", "text_en": "Give one wagon back to the people for the Drought (quota −150)", "effects": { "stat_norm_shipped": -150, "add_resources": { "res_food": 150 }, "stat_league_trust": -6, "stat_city_trust": 6, "style": "protector", "message": "Мешки сняли с обоза у всех на глазах. В Инспекцию ушла докладная.", "message_en": "The sacks came off the wagon in front of everyone. A report went to the Inspectorate." } }
     ]
   },
   {
@@ -646,6 +646,46 @@
     "body_en": "District handover act, signed by the secretary.\n\nAfter Renn the people left for the Upper Fields: two old folk in two shelters. But the store is full: Renn hauled in wood and stone for a build he never began.\n\nThe secretary: \"The people will come back if there is somewhere and someone to come back to.\"",
     "options": [
       { "text": "Принять район. Строить и звать", "text_en": "Take over. Build and call them back", "effects": { "message": "Подписано. Склад открыт для стройки.", "message_en": "Signed. The store is open for building." } }
+    ]
+  },
+  {
+    "id": "gorge.quota_behind",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "patron": "restoration_league",
+    "trigger_day": 10,
+    "trigger_condition": "stat_norm_gap >= 1200",
+    "tags": ["patron", "letter", "quota"],
+    "title": "Лига Восстановления — отставание по квоте",
+    "title_en": "Restoration League — Behind on the Quota",
+    "body": "Лига Восстановления. Инспекция Зелёного пояса.\n\nАдминистратору. По ведомости обозов район отстаёт от плана больше чем на тысячу. До проверки считанные дни.\n\nЯрвен из Завета продаёт зерно возами и не спрашивает, под чьей печатью оно уйдёт. Я этого письма не писала.\n\nИнспектор Хелин Варга.",
+    "body_en": "Restoration League. Green Belt Inspectorate.\n\nTo the administrator. By the wagon ledger the district is more than a thousand behind the plan. The inspection is days away.\n\nJarven of the Covenant sells grain by the cartload and does not ask under whose seal it leaves. I did not write this letter.\n\nInspector Helin Varga.",
+    "options": [
+      { "text": "Купить зерно у Завета (90 монет, +400 в зачёт квоты)", "text_en": "Buy grain from the Covenant (90 coins, +400 toward the quota)", "cost": { "res_money": 90 }, "effects": { "stat_norm_shipped": 400, "stat_rival_score": 2, "style": "pragmatist", "message": "Возы Завета ушли под печатью района. Ярвен пересчитал монеты дважды.", "message_en": "The Covenant's carts left under the district's seal. Jarven counted the coins twice." } },
+      { "text": "Урезать паёк на неделю (+300 в зачёт квоты)", "text_en": "Cut the ration for a week (+300 toward the quota)", "effects": { "stat_norm_shipped": 300, "stat_league_trust": 4, "stat_city_trust": -7, "add_buff": { "id": "short_ration", "name": "Урезанный паёк", "name_en": "A short ration", "happiness_add": -5, "remaining": 2100 }, "style": "loyal", "message": "Паёк урезали. Обозы ушли полными, очередь у амбара стала длиннее.", "message_en": "The ration was cut. The wagons left full; the line at the granary grew longer." } },
+      { "text": "Ответить: земля устала, больше не родит", "text_en": "Answer: the land is tired and bears no more", "effects": { "stat_league_trust": -5, "stat_city_trust": 4, "style": "protector", "message": "Варга приложила ваш ответ к делу без пометок.", "message_en": "Varga filed your answer without a note." } }
+    ]
+  },
+  {
+    "id": "gorge.quota_people",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_drought",
+    "trigger_day": 17,
+    "trigger_condition": "stat_norm_shipped >= 1000",
+    "tags": ["petition", "quota"],
+    "title": "Обращение — обозы и Сушь",
+    "title_en": "Petition — The Wagons and the Drought",
+    "body": "У поста староста полевых бригад Данко Вел и с ним человек десять.\n\n«Обозы уходят каждый день, а Сушь только началась. Мы не против Лиги. Мы против того, чтобы наши дети считали мешки на чужих телегах. Придержите обозы, пока не пойдёт дождь».",
+    "body_en": "At the post stands Danko Vel, the field crews' elder, and ten people with him.\n\n\"The wagons leave every day, and the Drought has only begun. We are not against the League. We are against our children counting sacks on other people's carts. Hold the wagons until the rain comes.\"",
+    "options": [
+      { "text": "Раздать два обоза по дворам (квота −200)", "text_en": "Share two wagons among the households (quota −200)", "effects": { "stat_norm_shipped": -200, "add_resources": { "res_food": 200 }, "stat_city_trust": 7, "stat_league_trust": -5, "style": "protector", "message": "Мешки разошлись по дворам к вечеру. Вел снял шапку.", "message_en": "The sacks reached the households by evening. Vel took off his cap." } },
+      { "text": "Обозы идут: квота кормит Сухие земли", "text_en": "The wagons go: the quota feeds the Dry Lands", "effects": { "stat_city_trust": -6, "stat_league_trust": 4, "style": "loyal", "message": "Бригады разошлись молча. Обоз ушёл по расписанию.", "message_en": "The crews left in silence. The wagon went on schedule." } },
+      { "text": "Платить бригадам из денег Лиги (40 монет)", "text_en": "Pay the crews out of the League's money (40 coins)", "cost": { "res_money": 40 }, "effects": { "stat_city_trust": 3, "style": "pragmatist", "message": "Деньги за обозы пошли бригадам. Вел сказал: «Так честнее».", "message_en": "The wagon money went to the crews. Vel said: \"That is fairer.\"" } }
     ]
   }
 ]

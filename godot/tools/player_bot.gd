@@ -8,13 +8,17 @@ extends "res://tools/loop_smoke.gd"
 ## It answers one question per chapter: can a careful player win it, and by what margin.
 ## It is a plain greedy player, not an optimiser: when it loses, read why before blaming it.
 ##
-## Run: Godot --headless --fixed-fps 60 --path <proj> res://tools/player_bot.tscn --quit-after 400000 -- chapter=<id> [seed=N] [lean=patron|city] [pace=N] [verbose]
+## Run: Godot --headless --fixed-fps 60 --path <proj> res://tools/player_bot.tscn --quit-after 400000 -- chapter=<id> [seed=N] [lean=patron|city] [pace=N] [mechanic=off] [verbose]
 ## pace is decisions a day (default 30): pace=1 is a player who does one thing a day.
+## mechanic=off is a player who plays every chapter like the first one: no levees, filters or
+## registry, no building toward the chapter's norm, the patron's wagons held. A chapter with
+## teeth is one this player loses.
 ## Dev tool, not shipped.
 
 const FRAMES_PER_DAY := 60      # at loop_smoke's speed
 const TARGET_BEDS := 20         # the win asks for twelve people; aim past it
 const MONEY_FLOOR := 25.0       # never spend the treasury below this
+const TOOLS_FLOOR := 3.0        # upgrades leave this many tools for the buildings that need them
 const PER_DAY := 2               # of one building type a day (roads: three times that): a new pump needs a day to show in the stores
 const RES_VALUE := {"res_money": 1.0, "res_food": 1.0, "res_water_stockpile": 1.0, "res_wood": 1.5, "res_stone": 1.5, "res_tools": 8.0, "res_metal": 4.0}
 
@@ -25,6 +29,8 @@ var _frame: int = 0
 var _built: Dictionary = {}     # type id → how many the bot placed
 var _built_today: Dictionary = {}  # type id → how many since the last evening
 var _adding_power: bool = false
+var _norm_moved_today: bool = false
+var _mechanic_off: bool = false
 var _power_pending: float = 0.0
 var _power_seen_tick: int = -1
 var _upgrades: int = 0
@@ -40,12 +46,15 @@ func _ready() -> void:
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("lean="):
 			_lean = arg.trim_prefix("lean=")
+		elif arg == "mechanic=off":
+			_mechanic_off = true
 		elif arg.begins_with("pace="):
 			_step_every = maxi(1, FRAMES_PER_DAY / maxi(1, arg.trim_prefix("pace=").to_int()))
 		elif arg == "verbose":
 			_verbose = true
 	EventBus.evening_started.connect(func(_events: Array) -> void:
 		_built_today.clear()
+		_norm_moved_today = false
 		var pop: Dictionary = GameStateStore.population()
 		if _day_twelve < 0 and (pop.get("total", 0) as int) >= EndingManager.WIN_PEOPLE:
 			_day_twelve = SimulationRunner.day_count
@@ -104,7 +113,18 @@ func _bot_step() -> void:
 	# upgrade eats the last stone, and then there is no road to put a quarry by.
 	if _restock("res_stone", 25.0, "bld_quarry_pit") or _restock("res_wood", 30.0, "bld_lumber_yard"):
 		return
-	if _answer_chapter_threat() or _keep_street_open():
+	# What the patron sent you for gets the day's first move: a player who reads the quota
+	# digs the second pit on day one, not after the pumps are upgraded. One move a day; the
+	# rest of the day is the district's (and the norm's again, further down, if time is left).
+	if _mechanic_off:
+		GameStateStore.climate()["norm_hold"] = true
+	else:
+		if not _norm_moved_today and _chase_norm():
+			_norm_moved_today = true
+			return
+		if _answer_chapter_threat():
+			return
+	if _keep_street_open():
 		return
 	# Water and food first: a district that grows past them empties in two days.
 	var water_short: bool = _running_out("res_water_stockpile")
@@ -119,11 +139,14 @@ func _bot_step() -> void:
 			return
 	if _ease_weak_pressure():
 		return
-	if GameStateStore.get_resource("res_tools") < 3.0 and _count("bld_tool_workshop") == 0 and _place_scored("bld_tool_workshop"):
+	# At the upgrade floor and no workshop: with exactly three tools nothing moved at all.
+	if GameStateStore.get_resource("res_tools") <= TOOLS_FLOOR and _count("bld_tool_workshop") == 0 and _place_scored("bld_tool_workshop"):
 		return
 	if ContentDB.get_resource_ids().has("res_metal") and GameStateStore.get_resource("res_metal") < 15.0:
 		if _salvage_ruin() or (_count("bld_ore_pit") == 0 and _place_scored("bld_ore_pit")):
 			return
+	if not _mechanic_off and _chase_norm():
+		return
 	# Grow while people are content, the beds are full, and the stores can carry one more house.
 	var beds_full: bool = total >= served - 1
 	if beds_full and capacity < TARGET_BEDS and happiness >= 45.0:
@@ -190,6 +213,36 @@ func _keep_street_open() -> bool:
 		if _by_road(cell) and orch.hex_grid.is_valid(cell) and (ContentDB.get_terrain_def(GameStateStore.get_terrain(cell)).get("buildable", true) as bool):
 			open_cells += 1
 	return open_cells <= 2 and _extend_road(false)
+
+
+## The chapter's norm (chapter.json "norm"): build what the next figure still lacks. For a
+## quota that is more of the shipped resource whenever today's surplus would not reach the
+## figure by its day; for a buildings norm, the buildings themselves.
+func _chase_norm() -> bool:
+	if not ChapterNorm.active() or ChapterNorm.met(ChapterNorm.last_stage()):
+		return false
+	var norm: Dictionary = ChapterNorm.def()
+	var stage: int = ChapterNorm.current_stage()
+	if not ChapterNorm.is_quota():
+		var wanted: Dictionary = (norm.get("stages", []) as Array)[ChapterNorm.last_stage()] as Dictionary
+		for type_id: String in wanted:
+			if _count(type_id) < (wanted[type_id] as int) and _place_scored(type_id):
+				return true
+		return false
+	var audits: Array = ContentDB.get_audit_days()
+	var done: int = GameStateStore.mandate().get("audits_done", 0) as int
+	var deadline: int = int(audits[done]) if done < audits.size() else ContentDB.get_win_day()
+	var days_left: float = maxf(float(deadline - SimulationRunner.day_count), 1.0)
+	var res_id: String = norm.get("resource", "") as String
+	if _flow(res_id) >= ChapterNorm.gap(stage) / days_left:
+		return false
+	if res_id == "res_food":
+		return _place_food() or _upgrade_tagged("food_source")
+	if res_id == "res_metal":
+		if _count("bld_smelter") * 2 < _count("bld_ore_pit") and _place_scored("bld_smelter"):
+			return true
+		return _place_scored("bld_ore_pit")
+	return false
 
 
 ## Levees by buildings the river reaches, filters and heaps against smoke, a registry for permits.
@@ -378,9 +431,17 @@ func _place(type_id: String, cell: Vector2i) -> bool:
 		return false
 	if (_built_today.get(type_id, 0) as int) >= PER_DAY * (3 if type_id == "bld_road" else 1):
 		return false
+	# The last permit is kept for what the chapter's norm still asks to be built.
+	if not _mechanic_off and PermitSystem.enabled() and PermitSystem.needs_permit(type_id) and ChapterNorm.active() \
+			and not ChapterNorm.is_quota() and not ChapterNorm.met(ChapterNorm.last_stage()):
+		var wanted: Dictionary = (ChapterNorm.def().get("stages", []) as Array)[ChapterNorm.last_stage()] as Dictionary
+		if not wanted.has(type_id) and PermitSystem.available() < 2:
+			return false
 	# Power first: a filter or a pump put up on a full grid darkens the houses instead.
 	var need: float = ContentDB.get_building_def(type_id).get("power_need", 0.0) as float
-	if need > 0.0 and not _adding_power:
+	# The workshop is the one exception: with no tools there is no panel to feed it, and it
+	# makes tools at a third of its pace unpowered, which is how the knot is cut.
+	if need > 0.0 and not _adding_power and not (type_id == "bld_tool_workshop" and GameStateStore.get_resource("res_tools") <= TOOLS_FLOOR):
 		var grid: Dictionary = GameStateStore.power()
 		# The grid's own figures are a tick old: count what was placed since.
 		if _power_seen_tick != GameStateStore.get_tick():
@@ -412,6 +473,9 @@ func _upgrade_tagged(tag: String) -> bool:
 			continue
 		var cost: Dictionary = ContentDB.building_level_data(type_id, (bld.get("level", 0) as int) + 1).get("cost", {}) as Dictionary
 		if not _can_pay(cost):
+			continue
+		# Tools build what cannot be had otherwise (a panel, a smelter): an upgrade does not get the last three.
+		if cost.has("res_tools") and GameStateStore.get_resource("res_tools") - (cost["res_tools"] as float) < TOOLS_FLOOR:
 			continue
 		var command := UpgradeBuildingCommand.new(coord)
 		_orch().command_bus.execute(command)
@@ -484,15 +548,20 @@ func _option_score(effects: Dictionary, cost: Dictionary) -> float:
 	var support: float = mandate.get("support", 50) as float
 	var d_trust: float = effects.get("stat_league_trust", 0.0) as float
 	var d_support: float = effects.get("stat_city_trust", 0.0) as float
-	var score: float = d_trust * _need_weight(trust) * (1.5 if _lean == "patron" else 1.0) \
-		+ d_support * _need_weight(support) * (1.5 if _lean == "city" else 1.0)
+	# A leaning player sides with one master whenever the other is not about to walk out.
+	var score: float = d_trust * _need_weight(trust) * (3.0 if _lean == "patron" else (0.5 if _lean == "city" else 1.0)) \
+		+ d_support * _need_weight(support) * (3.0 if _lean == "city" else (0.5 if _lean == "patron" else 1.0))
 	if trust + d_trust <= 8.0 or support + d_support <= 8.0:
 		score -= 100.0  # one step from recall or riot
 	score -= 0.5 * (effects.get("stat_unrest_pressure", 0.0) as float)
 	score -= 0.3 * (effects.get("stat_rival_score", 0.0) as float)
 	score += 4.0 * (effects.get("add_residents", 0.0) as float)
-	score += 4.0 * (effects.get("stat_permits", 0.0) as float)
+	# A player on the city's side builds with the Assembly, not with the office's forms.
+	score += (1.5 if _lean == "city" else 4.0) * (effects.get("stat_permits", 0.0) as float)
 	score -= 0.5 * (effects.get("stat_waste", 0.0) as float)
+	# A wagon toward the chapter's norm is worth something only while the norm is unmet.
+	if ChapterNorm.active() and not _mechanic_off and not ChapterNorm.met(ChapterNorm.last_stage()):
+		score += 0.02 * (effects.get("stat_norm_shipped", 0.0) as float)
 	score -= 0.3 * (effects.get("stat_flood", 0.0) as float)
 	for key: String in ["damage_building", "damage_buildings", "demolish_building", "force_issues"]:
 		if effects.has(key):
@@ -526,8 +595,11 @@ func _summary(result: String) -> String:
 	var built: Array[String] = []
 	for type_id: String in _built:
 		built.append("%s×%d" % [type_id.trim_prefix("bld_"), _built[type_id] as int])
-	return "BOT [%s] seed %d lean %s pace %d: %s | ур. города %d | жители %d (пик %d, 12 с дня %d) | сч %d | доверие %d · поддержка %d | деньги %d | голодных вечеров %d, сухих %d, хмурых %d | построил %s; улучшений %d, разобрано руин %d" % [
-		ContentDB.active_chapter, _world_seed, _lean if _lean != "" else "—", FRAMES_PER_DAY / _step_every, _ending if _ending != "" else result, GameStateStore.progression().city_level as int,
+	var norm_text: String = ""
+	if ChapterNorm.active():
+		norm_text = " | норма главы %s %s" % ["ok" if ChapterNorm.met(ChapterNorm.last_stage()) else "нет", ChapterNorm.figures(ChapterNorm.last_stage()).replace(" ", "")]
+	return "BOT [%s] seed %d lean %s pace %d%s: %s | ур. города %d | жители %d (пик %d, 12 с дня %d) | сч %d | доверие %d · поддержка %d | деньги %d | голодных вечеров %d, сухих %d, хмурых %d | построил %s; улучшений %d, разобрано руин %d" % [
+		ContentDB.active_chapter, _world_seed, _lean if _lean != "" else "—", FRAMES_PER_DAY / _step_every, " mechanic off" if _mechanic_off else "", _ending if _ending != "" else result, GameStateStore.progression().city_level as int,
 		pop.get("total", 0) as int, pop.get("peak", 0) as int, _day_twelve, int(pop.get("happiness", 0.0) as float),
 		int(mandate.get("patron_trust", 0) as float), int(mandate.get("support", 0) as float), int(GameStateStore.get_resource("res_money")),
-		_hungry_evenings, _dry_evenings, _low_mood_evenings, ", ".join(built), _upgrades, _salvaged]
+		_hungry_evenings, _dry_evenings, _low_mood_evenings, ", ".join(built), _upgrades, _salvaged] + norm_text + " | стиль %s" % str(GameStateStore.style_flags()).replace(" ", "")

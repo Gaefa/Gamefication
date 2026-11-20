@@ -13,8 +13,8 @@
     "cooldown_sec": 999999,
     "title": "Лига Восстановления — назначение в Пойму",
     "title_en": "Restoration League — Appointment to the Floodplain",
-    "body": "Лига Восстановления. Инспекция Поймы.\nАдминистратору района Большая Нюпа.\n\nУведомляю о назначении. Район речной: луга у воды родят лучше всего в Пойме, рыбы довольно, дерева по берегам хватает. Прежний администратор Галай уехал до аудита.\n\nЗадача на срок: к Гнили не меньше двенадцати жителей, запасы воды и еды, рыба в квоту Лиги. Паводок — дело известное: Лига ждёт дамб. Лодочники Плёсов ждут иного; они Лиге не подчиняются.\n\nИнспектор Агата Мирош.",
-    "body_en": "Restoration League. Floodplain Inspectorate.\nTo the administrator of the Big Nyupa district.\n\nI notify you of your appointment. The district is river country: the meadows by the water bear best in the Floodplain, there is fish enough, timber enough along the banks. The previous administrator, Galai, left before the audit.\n\nYour task for the term: by the Rot, no fewer than twelve residents, water and food in reserve, fish for the League's quota. The Flood is a known matter: the League expects levees. The boat people of the Reaches expect otherwise; they do not answer to the League.\n\nInspector Agatha Mirosh.",
+    "body": "Лига Восстановления. Инспекция Поймы.\nАдминистратору района Большая Нюпа.\n\nУведомляю о назначении. Район речной: луга у воды родят лучше всего в Пойме, рыбы довольно, дерева по берегам хватает. Прежний администратор Галай уехал до аудита.\n\nЗадача на срок: к Гнили не меньше двенадцати жителей, запасы воды и еды, рыба и зерно в квоту Лиги: 4500 к первой проверке, 10000 к концу срока. Баржи Лиги ходят сами: забирают по 50, когда на складе больше 250, и платят 10 монет за баржу. Паводок — дело известное: Лига ждёт дамб. Лодочники Плёсов ждут иного; они Лиге не подчиняются.\n\nИнспектор Агата Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\nTo the administrator of the Big Nyupa district.\n\nI notify you of your appointment. The district is river country: the meadows by the water bear best in the Floodplain, there is fish enough, timber enough along the banks. The previous administrator, Galai, left before the audit.\n\nYour task for the term: by the Rot, no fewer than twelve residents, water and food in reserve, fish and grain for the League's quota: 4500 by the first inspection, 10000 by the end of the term. The League's barges run on their own: they take 50 whenever the store holds more than 250, and pay 10 coins a barge. The Flood is a known matter: the League expects levees. The boat people of the Reaches expect otherwise; they do not answer to the League.\n\nInspector Agatha Mirosh.",
     "options": [
       {
         "text": "Принять мандат",
@@ -361,8 +361,8 @@
     "cooldown_sec": 999999,
     "title": "Лига Восстановления — аудит через три дня",
     "title_en": "Restoration League — Audit in Three Days",
-    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Через три дня первая проверка: люди, запас воды, запас еды, поддержка района. Отдельно смотрю дамбы: план Поймы не ждёт.\n\nИнспектор Мирош.",
-    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The first inspection is in three days: people, the water reserve, the food reserve, the district's support. I look at the levees separately: the Floodplain's plan does not wait.\n\nInspector Mirosh.",
+    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Через три дня первая проверка: люди, запас воды, запас еды, поддержка района. Четвёртой строкой квота: 4500, сданных баржам. Дамбы смотрю отдельно: план Поймы не ждёт.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The first inspection is in three days: people, the water reserve, the food reserve, the district's support. The fourth line is the quota: 4500 handed to the barges. I look at the levees separately: the Floodplain's plan does not wait.\n\nInspector Mirosh.",
     "options": [
       {
         "text": "Принято, готовимся",
@@ -816,30 +816,46 @@
     "cooldown_sec": 999999,
     "title": "Лига Восстановления — квота рыбы",
     "title_en": "Restoration League — The Fish Quota",
-    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Обоз Лиги у поста за квотой Поймы: сорок бочек рыбы для Сухих земель. Это и есть смысл вашего мандата.\n\nИнспектор Мирош.",
-    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The League's convoy is at the post for the Floodplain's quota: forty barrels of fish for the Dry Lands. That is what your mandate is for.\n\nInspector Mirosh.",
+    "body": "Лига Восстановления. Инспекция Поймы.\n\nАдминистратору. Паводок стоит, а Сухие земли едят каждый день. К концу срока по квоте десять тысяч, и это и есть смысл вашего мандата.\n\nЕсли на складе есть рыба сверх пайка, грузите её на баржу сегодня.\n\nИнспектор Мирош.",
+    "body_en": "Restoration League. Floodplain Inspectorate.\n\nTo the administrator. The Flood stands, and the Dry Lands eat every day. The quota by the end of the term is ten thousand, and that is what your mandate is for.\n\nIf the store holds fish beyond the ration, load it on the barge today.\n\nInspector Mirosh.",
     "options": [
       {
-        "text": "Отдать квоту (40 еды)",
-        "text_en": "Hand over the quota (40 food)",
+        "text": "Грузить сверх пайка (150 еды в зачёт квоты)",
+        "text_en": "Load beyond the ration (150 food toward the quota)",
         "cost": {
-          "res_food": 40
+          "res_food": 150
         },
         "effects": {
-          "stat_league_trust": 8,
+          "stat_norm_shipped": 150,
+          "stat_league_trust": 5,
+          "stat_city_trust": -4,
           "style": "loyal",
-          "message": "Обоз ушёл. Инспектор расписалась в получении.",
-          "message_en": "The convoy left. The inspector signed the receipt."
+          "message": "Баржа ушла гружёной по борт. На причале считали бочки вслух.",
+          "message_en": "The barge left loaded to the rail. On the pier they counted the barrels aloud."
         }
       },
       {
-        "text": "Просить отсрочки до конца Гнили",
-        "text_en": "Ask for a deferral to the end of the Rot",
+        "text": "По норме: баржи и так ходят",
+        "text_en": "By the norm: the barges run as it is",
         "effects": {
-          "stat_league_trust": -5,
-          "stat_city_trust": 2,
-          "message": "Отсрочка дана. В деле пометка.",
-          "message_en": "The deferral is granted. A note in the file."
+          "style": "pragmatist",
+          "message": "Мирош ответила: «Жду цифру к проверке».",
+          "message_en": "Mirosh answered: \"I await the figure at the inspection.\""
+        }
+      },
+      {
+        "text": "Снять с баржи бочки на время Паводка (квота −150)",
+        "text_en": "Take barrels off the barge for the Flood (quota −150)",
+        "effects": {
+          "stat_norm_shipped": -150,
+          "add_resources": {
+            "res_food": 150
+          },
+          "stat_league_trust": -6,
+          "stat_city_trust": 6,
+          "style": "protector",
+          "message": "Бочки вернули на склад. Шкипер Лиги записал это в журнал.",
+          "message_en": "The barrels went back to the store. The League's skipper wrote it in his log."
         }
       }
     ]
@@ -1411,6 +1427,130 @@
           "stat_city_trust": -2,
           "message": "Лодки ушли обратно.",
           "message_en": "The boats went back."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.quota_behind",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "trigger_day": 10,
+    "trigger_condition": "stat_norm_gap >= 1500",
+    "tags": [
+      "rival",
+      "trade",
+      "quota"
+    ],
+    "title": "Предложение — улов Плёсов",
+    "title_en": "An Offer — The Reaches' Catch",
+    "body": "Староста Плёсов Томас Ивель приплыл сам, на двух лодках.\n\n«Ваши баржи ходят полупустые, это видно с воды. У нас улов лежит: Лиге мы не продаём, а вам продадим. Восемьдесят монет, и четыреста бочек уйдут под вашей печатью. Взамен одно: о дамбах на нашем берегу больше ни слова».",
+    "body_en": "Tomas Ivel, headman of the Reaches, came himself, in two boats.\n\n\"Your barges run half empty; it shows from the water. We have a catch lying idle: we do not sell to the League, but we will sell to you. Eighty coins, and four hundred barrels leave under your seal. One thing in return: not another word about levees on our bank.\"",
+    "options": [
+      {
+        "text": "Купить улов Плёсов (80 монет, +400 в зачёт квоты)",
+        "text_en": "Buy the Reaches' catch (80 coins, +400 toward the quota)",
+        "cost": {
+          "res_money": 80
+        },
+        "effects": {
+          "stat_norm_shipped": 400,
+          "stat_rival_score": 2,
+          "set_flag": "boat_pact",
+          "style": "pragmatist",
+          "message": "Бочки перегрузили ночью. Ивель пожал руку и уплыл без огней.",
+          "message_en": "The barrels were shifted by night. Ivel shook hands and left without lights."
+        }
+      },
+      {
+        "text": "Урезать паёк на неделю (+300 в зачёт квоты)",
+        "text_en": "Cut the ration for a week (+300 toward the quota)",
+        "effects": {
+          "stat_norm_shipped": 300,
+          "stat_league_trust": 4,
+          "stat_city_trust": -7,
+          "add_buff": {
+            "id": "short_ration",
+            "name": "Урезанный паёк",
+            "name_en": "A short ration",
+            "happiness_add": -5,
+            "remaining": 2100
+          },
+          "style": "loyal",
+          "message": "Паёк урезали. Баржа ушла полной, на причале молчали.",
+          "message_en": "The ration was cut. The barge left full; the pier was silent."
+        }
+      },
+      {
+        "text": "Отказать: сколько река даст, столько и сдадим",
+        "text_en": "Refuse: we hand over what the river gives",
+        "effects": {
+          "stat_league_trust": -5,
+          "stat_city_trust": 4,
+          "style": "protector",
+          "message": "Ивель уплыл с уловом. Мирош приложила ваш ответ к делу.",
+          "message_en": "Ivel left with his catch. Mirosh filed your answer."
+        }
+      }
+    ]
+  },
+  {
+    "id": "nyupa.quota_people",
+    "category": "mandate",
+    "min_level": 1,
+    "once": true,
+    "cooldown_sec": 999999,
+    "season": "season_flood",
+    "trigger_day": 16,
+    "trigger_condition": "stat_norm_shipped >= 1500",
+    "tags": [
+      "petition",
+      "quota"
+    ],
+    "title": "Обращение — баржи в Паводок",
+    "title_en": "Petition — The Barges in the Flood",
+    "body": "На причале артель рыбаков, говорит Устин Броднев.\n\n«Вода у порога, поля под ней, а баржа Лиги каждый день берёт своё. Мы рыбу ловим руками, а не планом. Оставьте два улова в посёлке, пока река не сойдёт».",
+    "body_en": "On the pier stands the fishermen's crew; Ustin Brodnev speaks.\n\n\"The water is at the door, the fields are under it, and the League's barge takes its share every day. We catch fish with our hands, not with a plan. Leave two catches in the settlement until the river falls.\"",
+    "options": [
+      {
+        "text": "Оставить два улова посёлку (квота −200)",
+        "text_en": "Leave two catches to the settlement (quota −200)",
+        "effects": {
+          "stat_norm_shipped": -200,
+          "add_resources": {
+            "res_food": 200
+          },
+          "stat_city_trust": 7,
+          "stat_league_trust": -5,
+          "style": "protector",
+          "message": "Бочки разошлись по домам на сваях. Броднев кивнул.",
+          "message_en": "The barrels went round the stilt houses. Brodnev nodded."
+        }
+      },
+      {
+        "text": "Баржи идут: квота кормит Сухие земли",
+        "text_en": "The barges go: the quota feeds the Dry Lands",
+        "effects": {
+          "stat_city_trust": -6,
+          "stat_league_trust": 4,
+          "style": "loyal",
+          "message": "Артель разошлась по лодкам. Баржа ушла по расписанию.",
+          "message_en": "The crew went back to their boats. The barge left on schedule."
+        }
+      },
+      {
+        "text": "Платить артели из денег Лиги (40 монет)",
+        "text_en": "Pay the crew out of the League's money (40 coins)",
+        "cost": {
+          "res_money": 40
+        },
+        "effects": {
+          "stat_city_trust": 3,
+          "style": "pragmatist",
+          "message": "Деньги за баржи пошли артели. Броднев сказал: «Хоть так».",
+          "message_en": "The barge money went to the crew. Brodnev said: \"That, at least.\""
         }
       }
     ]

@@ -61,17 +61,26 @@ func _run_audit() -> void:
 	var people_ok: bool = people_staying(second)
 	var score: int = (1 if water_ok else 0) + (1 if food_ok else 0) + (1 if people_ok else 0)
 
+	# The fourth line. A chapter with a norm of its own (chapter.json "norm") is asked for it
+	# at both audits; the Rust Pit's second audit asks what the Heat left of the food.
 	var trust_delta: float
 	var spoilage_ok: bool = food_preserved()
-	if second:
+	var norm_on: bool = ChapterNorm.active()
+	var total: int = 3
+	if norm_on:
+		total = 4
+		score += 1 if ChapterNorm.met(1 if second else 0) else 0
+	elif second:
+		total = 4
 		score += 1 if spoilage_ok else 0
+	var missed: int = total - score
 	# The Directorate pays better for a clean sheet and forgives nothing short of it:
 	# a missed norm is a failed inspection and costs trust, where the League still nods.
 	var directorate: bool = (mandate.get("patron_id", "") as String) == "civic_directorate"
-	match score - (1 if second else 0):
-		3: trust_delta = 15 if directorate else 12
-		2: trust_delta = -8 if directorate else 5
-		1: trust_delta = -12 if directorate else -6
+	match missed:
+		0: trust_delta = 15 if directorate else 12
+		1: trust_delta = -8 if directorate else 5
+		2: trust_delta = -12 if directorate else -6
 		_: trust_delta = -20 if directorate else -15
 	# The patron measures against the neighbour (RivalManager): a clear gap moves trust too.
 	var gap: float = RivalManager.player_score() - RivalManager.rival_score()
@@ -83,14 +92,15 @@ func _run_audit() -> void:
 		trust_delta *= 1.5
 	else:
 		mandate["first_audit_score"] = score
+		mandate["first_audit_total"] = total
 	mandate["patron_trust"] = clampf((mandate.get("patron_trust", 50) as float) + float(trust_delta), 0.0, 100.0)
 
-	var passed: bool = score >= (4 if second else 3) if directorate else score >= (3 if second else 2)
+	var passed: bool = missed == 0 if directorate else missed <= 1
 	EventBus.audit_completed.emit(passed, score)
 
 	# Pause and show the dynamic result card through the critical-card path.
 	SimulationRunner.paused = true
-	EventBus.critical_event_started.emit(_build_card(score, water_ok, food_ok, people_ok, trust_delta))
+	EventBus.critical_event_started.emit(_build_card(score, total, water_ok, food_ok, people_ok, trust_delta))
 
 
 ## The people norm: morale holds, the district is of some size and has not lost a quarter of its people.
@@ -119,39 +129,40 @@ func _mark(ok: bool) -> String:
 	return "✔" if ok else "[color=#8a3a2e][b]✘[/b][/color]"
 
 
-func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, trust_delta: float) -> Dictionary:
+func _build_card(score: int, total: int, water_ok: bool, food_ok: bool, people_ok: bool, trust_delta: float) -> Dictionary:
+	var missed: int = total - score
 	var directorate: bool = (GameStateStore.mandate().get("patron_id", "") as String) == "civic_directorate"
 	var own: Dictionary = chapter_patron()  # a chapter's patron speaks in its own words (chapter.json "patron")
 	var verdict: String
 	var verdict_en: String
 	if own.has("verdicts"):
-		verdict = (own.get("verdicts", []) as Array)[clampi(3 - score, 0, 3)] as String
-		verdict_en = (own.get("verdicts_en", own.get("verdicts", [])) as Array)[clampi(3 - score, 0, 3)] as String
+		verdict = (own.get("verdicts", []) as Array)[clampi(missed, 0, 3)] as String
+		verdict_en = (own.get("verdicts_en", own.get("verdicts", [])) as Array)[clampi(missed, 0, 3)] as String
 	elif directorate:
-		match score:
-			3:
+		match missed:
+			0:
 				verdict = "Заключение комиссара: нормы выполнены, замечаний нет."
 				verdict_en = "Commissar's conclusion: the targets are met, no remarks."
-			2:
+			1:
 				verdict = "Заключение комиссара: одна норма не выполнена. Проверка не зачтена, запись внесена в дело."
 				verdict_en = "Commissar's conclusion: one target was missed. The inspection is not credited; a note goes in the file."
-			1:
+			2:
 				verdict = "Заключение комиссара: показатели ниже нормы. Объяснения к делу не приобщаются."
 				verdict_en = "Commissar's conclusion: figures below standard. Explanations are not added to the file."
 			_:
 				verdict = "Заключение комиссара: район не управляется. Вопрос передан комиссии Директората."
 				verdict_en = "Commissar's conclusion: the district is not under control. The matter goes to a Directorate commission."
 	else:
-		match score:
-			3:
+		match missed:
+			0:
 				verdict = "Заключение Койл: район готов. Наверх уходит доклад без замечаний."
 				verdict_en = "Coyle's conclusion: the district is ready. The report goes up with no remarks."
-			2:
+			1:
 				verdict = "Заключение Койл: приемлемо. Одна норма не выполнена; к следующей проверке её нужно закрыть."
 				verdict_en = "Coyle's conclusion: acceptable. One target was missed; it must be met by the next inspection."
-			1:
-				verdict = "Заключение Койл: две нормы из трёх не выполнены. В докладе она просит дать вам ещё срок."
-				verdict_en = "Coyle's conclusion: two targets out of three were missed. In her report she asks to give you more time."
+			2:
+				verdict = "Заключение Койл: две нормы не выполнены. В докладе она просит дать вам ещё срок."
+				verdict_en = "Coyle's conclusion: two targets were missed. In her report she asks to give you more time."
 			_:
 				verdict = "Заключение Койл: ни одна норма не выполнена. Защищать ваш мандат наверху ей нечем."
 				verdict_en = "Coyle's conclusion: none of the targets is met. She has nothing to defend your mandate with."
@@ -167,14 +178,22 @@ func _build_card(score: int, water_ok: bool, food_ok: bool, people_ok: bool, tru
 		"%s Food reserve: %s" % [_mark(food_ok), "OK" if food_ok else "under a day's draw"],
 		"%s People are staying: %s" % [_mark(people_ok), "yes" if people_ok else _people_verdict(second, true)],
 	])
-	if second:
+	if ChapterNorm.active():
+		# The chapter's own norm, at both audits: the figure the patron sent the administrator for.
+		var stage: int = 1 if second else 0
+		var norm_def: Dictionary = ChapterNorm.def()
+		checklist += "\n%s %s: %s" % [_mark(ChapterNorm.met(stage)), norm_def.get("label", "Норма главы") as String, ChapterNorm.figures(stage)]
+		checklist_en += "\n%s %s: %s" % [_mark(ChapterNorm.met(stage)), norm_def.get("label_en", norm_def.get("label", "Chapter norm")) as String, ChapterNorm.figures(stage)]
+	elif second:
 		checklist += "\n%s Потери еды <25%% начального запаса: %s" % [_mark(food_preserved()), "да" if food_preserved() else "нет"]
 		checklist_en += "\n%s Food lost <25%% of starting reserve: %s" % [_mark(food_preserved()), "yes" if food_preserved() else "no"]
+	if second:
 		var first: Variant = GameStateStore.mandate().get("first_audit_score", null)
-		var prior: String = "%d/3" % int(first) if first != null else "результат в прежнем деле"
-		var prior_en: String = "%d/3" % int(first) if first != null else "result in the previous file"
-		verdict = "Повторная проверка: выполнено %d из 4 норм. Первый аудит: %s." % [score, prior]
-		verdict_en = "Second inspection: %d of 4 targets met. First audit: %s." % [score, prior_en]
+		var first_total: int = GameStateStore.mandate().get("first_audit_total", 3) as int
+		var prior: String = "%d/%d" % [int(first), first_total] if first != null else "результат в прежнем деле"
+		var prior_en: String = "%d/%d" % [int(first), first_total] if first != null else "result in the previous file"
+		verdict = "Повторная проверка: выполнено %d из %d норм. Первый аудит: %s." % [score, total, prior]
+		verdict_en = "Second inspection: %d of %d targets met. First audit: %s." % [score, total, prior_en]
 	var authority: String = own.get("genitive", "Директората" if directorate else "Лиги") as String
 	var authority_en: String = own.get("genitive_en", "Directorate" if directorate else "League") as String
 	# The second audit weighs 1.5×, so its change can be fractional; whole numbers stay whole.

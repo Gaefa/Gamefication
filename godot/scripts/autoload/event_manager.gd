@@ -309,6 +309,11 @@ func _get_stat_value(stat_name: String) -> float:
 			return float(FloodSystem.levee_count())
 		"stat_permits":
 			return float(PermitSystem.available())
+		"stat_norm_shipped":
+			return ChapterNorm.shipped()
+		"stat_norm_gap":
+			# How far the district is behind the figure of the audit ahead (0 once it is met).
+			return ChapterNorm.gap(ChapterNorm.current_stage())
 	push_warning("EventManager: unknown stat '%s' in a trigger" % stat_name)
 	return 0.0
 
@@ -521,6 +526,10 @@ func _apply_stat_delta(stat_id: String, amount: float) -> void:
 			# A sluice opened, a dam blown: a card can move the river.
 			var river_state: Dictionary = GameStateStore.climate()
 			river_state["flood"] = clampf((river_state.get("flood", 0.0) as float) + amount, 0.0, FloodSystem.MAX_LEVEL)
+		"stat_norm_shipped":
+			# A card can credit the quota (a neighbour's wagons under your seal) or strike from it.
+			var ledger: Dictionary = GameStateStore.climate()
+			ledger["norm_shipped"] = maxf(ChapterNorm.shipped() + amount, 0.0)
 		"stat_permits":
 			# The Directorate's office signs a stack, or tears one up.
 			var office: Dictionary = GameStateStore.climate()

@@ -39,6 +39,23 @@
   "tutorial_intro": "Вы — администратор [b]внешнего кольца Старого Капитала[/b], последний мандат кампании. Хозяин здесь Директорат: каждое здание, кроме дорог, тратит [b]разрешение[/b] (счётчик вверху); канцелярия выдаёт их медленно, письма и отчётность дают ещё. [b]Руины[/b] Компании вокруг можно разобрать (B) на камень и металл. [b]Серая зима[/b] — дни 1–10, [b]Оттепель[/b] — 11–22, [b]Ревизия[/b] — 23–30. Проверки комиссара — дни 15 и 27. Продержитесь до 30-го дня с не меньше чем 12 жителями.\n\nВремя пока стоит — спокойно осмотримся.",
   "tutorial_intro_en": "You are the administrator of the [b]Old Capital's outer ring[/b], the campaign's last mandate. The master here is the Directorate: every building but a road spends a [b]permit[/b] (the counter at the top); the office issues them slowly, letters and filed reports give more. The Company's [b]ruins[/b] around you can be salvaged (B) for stone and metal. The [b]Grey Winter[/b] runs on days 1–10, the [b]Thaw[/b] on 11–22, the [b]Audit[/b] on 23–30. The commissar's inspections: days 15 and 27. Hold out until day 30 with at least 12 residents.\n\nTime is stopped for now — let's look around.",
   "company_traces": false,
+  "mandate_start": {"patron_trust": 50},
+  "norm": {
+    "kind": "buildings",
+    "stages": [
+      {
+        "bld_registry": 1
+      },
+      {
+        "bld_registry": 1,
+        "bld_tenement": 2
+      }
+    ],
+    "label": "Реестр и доходные дома",
+    "label_en": "The register and the tenements",
+    "hint": "Директорат проверяет то, что стоит по бумагам: к первой ревизии учётная контора, ко второй и к концу срока ещё два доходных дома.",
+    "hint_en": "The Directorate checks what stands on paper: a registry office by the first audit, two tenements as well by the second audit and the end of the term."
+  },
   "mechanics": {
     "permits": true
   },

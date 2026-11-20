@@ -178,6 +178,7 @@ func _ready() -> void:
 	_quarry_rules()
 	_nyupa_rules()
 	_capital_rules()
+	_norm_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -278,6 +279,133 @@ func _storm_rules() -> void:
 		orch.command_bus.execute(RepairBuildingCommand.new(coord))
 	_ticks(SimulationRunner.TICKS_PER_DAY)
 	_check((GameStateStore.population().get("total", 0) as int) >= after_day and _ended == "", "after the repair nobody else leaves (%d → %d)" % [after_day, GameStateStore.population().get("total", 0) as int])
+
+
+## The chapter's own norm (chapter.json "norm"): the patron's wagons, the fourth line of both
+## audits, and a condition of the mandate's extension. The Rust Pit has none.
+func _norm_rules() -> void:
+	Campaign.reset_campaign()
+	_new_game("appointed_administrator")
+	_check(not ChapterNorm.active(), "the Rust Pit has no chapter norm")
+
+	# A quota: wagons leave whenever the store holds the reserve plus a wagon, and pay.
+	EventManager.clear_pending()
+	_ended = ""
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "black_quarry")
+	SimulationRunner.start_run()
+	var norm: Dictionary = ChapterNorm.def()
+	var targets: Array = norm.get("targets", []) as Array
+	_check(ChapterNorm.active() and ChapterNorm.is_quota() and targets.size() == 2, "the Black Quarry answers for a metal quota (%s)" % str(targets))
+	_check(is_equal_approx(GameStateStore.mandate().get("patron_trust", 0.0) as float, 50.0), "a new patron opens at its own trust (%.0f)" % (GameStateStore.mandate().get("patron_trust", 0.0) as float))
+	GameStateStore.set_resource("res_metal", 69.0)
+	var money: float = GameStateStore.get_resource("res_money")
+	_ticks(1)
+	_check(is_zero_approx(ChapterNorm.shipped()), "under the reserve plus a wagon nothing leaves (%.0f)" % ChapterNorm.shipped())
+	GameStateStore.set_resource("res_metal", 120.0)
+	money = GameStateStore.get_resource("res_money")
+	_ticks(1)
+	_check(is_equal_approx(ChapterNorm.shipped(), 100.0) and GameStateStore.get_resource("res_metal") < 70.0, "two wagons leave a full store (shipped %.0f, left %.0f)" % [ChapterNorm.shipped(), GameStateStore.get_resource("res_metal")])
+	_check(GameStateStore.get_resource("res_money") >= money + 29.0, "…and the Union pays for them (%+.0f)" % (GameStateStore.get_resource("res_money") - money))
+	# The administrator can hold the wagons.
+	GameStateStore.climate()["norm_hold"] = true
+	GameStateStore.set_resource("res_metal", 120.0)
+	_ticks(1)
+	_check(is_equal_approx(ChapterNorm.shipped(), 100.0), "held wagons stay (%.0f)" % ChapterNorm.shipped())
+	GameStateStore.climate()["norm_hold"] = false
+	# Past the last figure the patron takes no more.
+	GameStateStore.climate()["norm_shipped"] = (targets[1] as float) - 50.0
+	GameStateStore.set_resource("res_metal", 120.0)
+	_ticks(1)
+	_check(is_equal_approx(ChapterNorm.shipped(), targets[1] as float) and GameStateStore.get_resource("res_metal") >= 70.0, "the wagons stop at the last figure (shipped %.0f, left %.0f)" % [ChapterNorm.shipped(), GameStateStore.get_resource("res_metal")])
+	_check(ChapterNorm.met(0) and ChapterNorm.met(1) and is_zero_approx(ChapterNorm.gap(1)), "…and the norm reads as met")
+	# The audit asks for it as a fourth line.
+	GameStateStore.climate()["norm_shipped"] = 0.0
+	var audit_card: Dictionary = MandateManager.call("_build_card", 3, 4, true, true, true, 5.0) as Dictionary
+	_check((audit_card.get("body", "") as String).find(norm.get("label", "?") as String) >= 0 and (audit_card.get("body", "") as String).find("0 / %d" % int(targets[0] as float)) >= 0, "the audit sheet carries the chapter's norm with its figures")
+	_check((audit_card.get("body", "") as String).find("Потери еды") < 0, "…in place of the Rust Pit's spoilage line")
+	# A settled district that missed the norm is not renewed; one that met it is.
+	_place_district_for_win()
+	GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
+	SimulationRunner.day_timer = 0.0
+	_ended = ""
+	orch.tick_scheduler.run_tick()
+	_check(_ended == "ending.lose.norm", "a settled district without its quota is not renewed (%s)" % _ended)
+
+	EventManager.clear_pending()
+	_ended = ""
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "black_quarry")
+	SimulationRunner.start_run()
+	_place_district_for_win()
+	GameStateStore.climate()["norm_shipped"] = targets[1] as float
+	GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
+	SimulationRunner.day_timer = 0.0
+	orch.tick_scheduler.run_tick()
+	_check(_ended.begins_with("ending.win."), "with the quota shipped the mandate is extended (%s)" % _ended)
+
+	# The side of the finale: answers for the city against answers for the patron; a tie goes to the meters.
+	for case: Array in [[{"loyal": 3, "protector": 3}, 70.0, 40.0, "ending.win.loyal"], [{"loyal": 3, "protector": 3}, 40.0, 70.0, "ending.win.protector"], [{"loyal": 2, "protector": 4, "pragmatist": 6}, 90.0, 40.0, "ending.win.protector"]]:
+		EventManager.clear_pending()
+		_ended = ""
+		orch = GameOrchestrator.new()
+		orch.new_game(12345, "appointed_administrator", "", "black_quarry")
+		SimulationRunner.start_run()
+		_place_district_for_win()
+		GameStateStore.climate()["norm_shipped"] = targets[1] as float
+		GameStateStore.style_flags().clear()
+		for style_id: String in case[0] as Dictionary:
+			GameStateStore.add_style_flag(style_id, (case[0] as Dictionary)[style_id] as int)
+		GameStateStore.mandate()["patron_trust"] = case[1]
+		GameStateStore.mandate()["support"] = case[2]
+		GameStateStore.climate()["total_day"] = ContentDB.get_win_day()
+		SimulationRunner.day_timer = 0.0
+		orch.tick_scheduler.run_tick()
+		_check(_ended == (case[3] as String), "styles %s with trust %.0f and support %.0f end as %s (%s)" % [str(case[0]), case[1], case[2], case[3], _ended])
+
+	# A buildings norm: the Old Capital's register.
+	EventManager.clear_pending()
+	_ended = ""
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "old_capital")
+	SimulationRunner.start_run()
+	_check(ChapterNorm.active() and not ChapterNorm.is_quota() and not ChapterNorm.met(0), "the Old Capital answers for what stands on the register (%s)" % ChapterNorm.figures(0))
+	_place(_free_neighbour(_first("bld_admin_post")), "bld_registry")
+	_check(ChapterNorm.met(0) and not ChapterNorm.met(1), "a registry office meets the first figure, not the second (%s)" % ChapterNorm.figures(1))
+	var house: Vector2i = _free_neighbour(_first("bld_main_cistern"))
+	_place(house, "bld_tenement")
+	_place(_free_neighbour(house), "bld_tenement")
+	_check(ChapterNorm.met(1), "two tenements meet the second (%s)" % ChapterNorm.figures(1))
+	var wrecked: Dictionary = GameStateStore.get_building(house)
+	wrecked["damaged"] = true
+	GameStateStore.set_building(house, wrecked)
+	_check(not ChapterNorm.met(1), "a wrecked tenement does not stand on the register (%s)" % ChapterNorm.figures(1))
+
+	# A founder answers to no one.
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "founder_rebel", "", "black_quarry")
+	_check(not ChapterNorm.active(), "a founder has no norm")
+	Campaign.reset_campaign()
+
+
+## Twelve content people: enough housing, water and mood for the win check to call the district settled.
+func _place_district_for_win() -> void:
+	var anchor: Vector2i = _first("bld_shelter")
+	var placed: int = 0
+	for cell: Vector2i in HexCoords.disk(anchor, 3):
+		if placed >= 3:
+			break
+		if not GameStateStore.has_building(cell) and (ContentDB.get_terrain_def(GameStateStore.get_terrain(cell)).get("buildable", true) as bool):
+			_place(cell, "bld_shelter")
+			placed += 1
+	var pop: Dictionary = GameStateStore.population()
+	pop["residents"] = 16.0
+	pop["total"] = 16
+	pop["peak"] = 16
+	pop["happiness"] = 60.0
+	GameStateStore.set_resource("res_food", 400.0)
+	GameStateStore.set_resource("res_water_stockpile", 600.0)
+	EndingManager.set("_peak_pop", 16)
 
 
 ## content_check knows the content's vocabulary: a card with a stat, season, patron, style or
