@@ -181,6 +181,7 @@ func _ready() -> void:
 	_norm_rules()
 	_pace_rules()
 	_treasury_spend_rules()
+	_report_rules()
 	_content_contract_rules()
 
 	_check(AudioManager.missing().is_empty(), "the sound pack is complete (missing: %s)" % str(AudioManager.missing()))
@@ -457,6 +458,46 @@ func _treasury_spend_rules() -> void:
 	_check((GameStateStore.population().get("mood_terms", {}) as Dictionary).get("buffs", 0.0) as float >= HoldFestivalCommand.MOOD - 0.01, "the feast lifts the mood while it lasts (was %.0f)" % mood_before)
 	_ticks(int(HoldFestivalCommand.LASTS_TICKS))
 	_check(not HoldFestivalCommand.running() and HoldFestivalCommand.cost() > feast_cost, "it ends in two days, and the next one is dearer (%.0f)" % HoldFestivalCommand.cost())
+
+
+## The tester's report is one archive: the play logs, the engine's logs and a line about the machine.
+func _report_rules() -> void:
+	_new_game("appointed_administrator")
+	EventBus.run_started.emit(false)  # RunLog opens its file the way a started run does
+	SimulationRunner.rush_to_evening()
+	orch.command_bus.execute(BuyGoodsCommand.new("res_wood"))
+	EventBus.phase_changed.emit("evening")
+	var folder: String = ProjectSettings.globalize_path("user://report_test")
+	DirAccess.make_dir_recursive_absolute(folder)
+	var path: String = RunLog.pack_report(folder)
+	_check(path != "" and FileAccess.file_exists(path) and path.begins_with(folder), "the report is written where it was asked for (%s)" % path.get_file())
+	var reader := ZIPReader.new()
+	var names: PackedStringArray = PackedStringArray()
+	if reader.open(path) == OK:
+		names = reader.get_files()
+	var has_log: bool = false
+	var log_text: String = ""
+	for entry: String in names:
+		if entry.begins_with("analytics/") and entry.ends_with(".jsonl"):
+			has_log = true
+			log_text += reader.read_file(entry).get_string_from_utf8()
+	_check(names.has("info.txt") and has_log, "…with the machine line and the play log inside (%d files)" % names.size())
+	_check(log_text.find("\"rushes\":1") >= 0 and log_text.find("\"lots_bought\":1") >= 0, "the play log records the evening rush and the market")
+	reader.close()
+	DirAccess.remove_absolute(path)
+	DirAccess.remove_absolute(folder)
+	SimulationRunner.rushing = false
+
+	# The hints for the 0.4 mechanics speak from the chapter's own data.
+	EventManager.clear_pending()
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "bogolessky_gorge")
+	SimulationRunner.start_run()
+	var norm_hint: String = OnboardingManager.call("_hint_text", "chapter_norm", ["", ""]) as String
+	_check(norm_hint.find(ChapterNorm.label()) >= 0 and norm_hint.find("0 / 3500") >= 0 and norm_hint.find(Localization.ru_en("придерживает", "holds")) >= 0, "the norm hint names the norm, its figure and the wagons (%s)" % norm_hint.left(70))
+	var rush_hint: String = OnboardingManager.call("_hint_text", "rush", OnboardingManager.HINTS["rush"]) as String
+	_check(rush_hint.find("4") >= 0 and OnboardingManager.HINTS.has("treasury"), "the rush and treasury hints exist")
+	Campaign.reset_campaign()
 
 
 ## Twelve content people: enough housing, water and mood for the win check to call the district settled.

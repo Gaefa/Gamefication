@@ -25,6 +25,7 @@ var _title_label: Label
 var _outcome_label: Label
 var _body_label: RichTextLabel
 var _theses_label: RichTextLabel
+var _report_btn: Button
 var _menu_btn: Button
 var _next_btn: Button
 
@@ -268,6 +269,13 @@ func _build_ui() -> void:
 	_next_btn.custom_minimum_size.y = 44
 	vbox.add_child(_next_btn)
 	vbox.add_child(_menu_btn)
+	# A playtest ends here: the report is one press away from the finale, not three menus deep.
+	_report_btn = Button.new()
+	_report_btn.flat = true
+	_report_btn.add_theme_font_size_override("font_size", 12)
+	_report_btn.add_theme_color_override("font_color", UiStyle.INK_DIM)
+	_report_btn.pressed.connect(_on_report_pressed)
+	vbox.add_child(_report_btn)
 
 
 func _show_finale(def: Dictionary, ending_id: String) -> void:
@@ -275,6 +283,7 @@ func _show_finale(def: Dictionary, ending_id: String) -> void:
 	_title_label.text = Localization.content_text(def, "title", Localization.ru_en("Финал", "Finale"))
 	_menu_btn.text = Localization.ru_en("В главное меню", "Main menu")
 	_next_btn.text = Localization.ru_en("Следующая глава", "Next chapter")
+	_report_btn.text = Localization.ru_en("Тестируете? Собрать отчёт на рабочий стол", "Playtesting? Pack a report to the Desktop")
 	# A finale ends a chapter, not the campaign: the next chapter opens from here.
 	_next_btn.visible = ContentDB.next_chapter_id(GameStateStore.save_meta().get("chapter_id", ContentDB.active_chapter) as String) != ""
 	if (GameStateStore.mandate().get("patron_id", "") as String) == "":
@@ -413,6 +422,14 @@ func _chronicle() -> String:
 		lines.append(Localization.ru_en("День %d. %s: %s", "Day %d. %s: %s") % [entry.get("day", 0) as int,
 			Localization.content_text(entry, "title", ""), Localization.content_text(entry, "choice", "")])
 	return "\n".join(lines)
+
+
+func _on_report_pressed() -> void:
+	var path: String = RunLog.pack_report()
+	_report_btn.text = Localization.ru_en("Не удалось записать архив: приложите папку из настроек", "Could not write the archive: attach the folder from Options") if path == "" \
+		else Localization.ru_en("Отчёт собран: %s", "Report packed: %s") % path.get_file()
+	if path != "":
+		OS.shell_open(path.get_base_dir())
 
 
 func _on_menu_pressed() -> void:

@@ -16,6 +16,7 @@ var speed_scale: float = 1.0  # 1x, 2x, 3x
 ## "To the evening": the rest of the day at the tick cap (about a second for a whole day).
 ## Anything that stops the day stops the rush too: an urgent card, a pause, the evening.
 var rushing: bool = false
+var rushes: int = 0  # how many times this run the player asked for the evening (RunLog)
 const RUSH_SCALE := 600.0
 const MAX_TICKS_PER_FRAME := 5
 var _accumulator: float = 0.0
@@ -109,6 +110,8 @@ func start_run(saved_day_timer: float = -1.0) -> void:
 	_accumulator = 0.0
 	speed_scale = 1.0  # a new or loaded run never inherits ×3 from the previous one
 	rushing = false
+	if saved_day_timer <= 0.0:
+		rushes = 0  # a new run; a loaded one keeps counting from where the session is
 	paused = false
 	card_open = false
 	run_active = true
@@ -124,6 +127,8 @@ func rush_to_evening() -> void:
 	if not run_active or current_phase != Phase.DAY or card_open:
 		return
 	paused = false
+	if not rushing:
+		rushes += 1
 	rushing = true
 
 func toggle_pause() -> void:

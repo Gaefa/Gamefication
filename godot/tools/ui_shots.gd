@@ -170,5 +170,29 @@ func _shot(shot_name: String, frames: int = 12) -> void:
 		print("%s: %s %s fits 1280x720" % ["PASS" if fits else "FAIL", _locale, shot_name])
 		if not fits:
 			_failures += 1
+	# Every screen: no visible window may run off the viewport. (A third button in one row
+	# once squeezed a note into a column a letter wide and the Options panel grew to three
+	# screens tall; the shot was saved and the tool said "0 failures".)
+	var off_screen: Array[String] = _panels_off_screen(get_tree().root, Rect2(Vector2.ZERO, get_viewport().get_visible_rect().size).grow(2.0))
+	if not off_screen.is_empty():
+		print("FAIL: %s %s has windows off the viewport: %s" % [_locale, shot_name, ", ".join(off_screen)])
+		_failures += 1
 	RenderingServer.force_draw(true)
 	get_viewport().get_texture().get_image().save_png(_dir.path_join("%s_%s.png" % [_locale, shot_name]))
+
+
+## Visible panels (the frames of windows, cards and menus) that do not fit the viewport.
+## Scroll areas are skipped with everything inside them: content there is meant to overflow.
+func _panels_off_screen(node: Node, viewport_rect: Rect2) -> Array[String]:
+	var out: Array[String] = []
+	if node is ScrollContainer:
+		return out
+	if node is CanvasItem and not (node as CanvasItem).is_visible_in_tree():
+		return out
+	if node is PanelContainer:
+		var rect: Rect2 = (node as Control).get_global_rect()
+		if rect.size.x > 1.0 and rect.size.y > 1.0 and not viewport_rect.encloses(rect):
+			out.append("%s %dx%d at %d,%d" % [node.name, int(rect.size.x), int(rect.size.y), int(rect.position.x), int(rect.position.y)])
+	for child: Node in node.get_children():
+		out.append_array(_panels_off_screen(child, viewport_rect))
+	return out

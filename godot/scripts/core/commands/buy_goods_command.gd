@@ -68,6 +68,7 @@ func execute(_ctx: Dictionary) -> void:
 		market = {"day": day, "bought": {}}
 	(market["bought"] as Dictionary)[res_id] = ((market["bought"] as Dictionary).get(res_id, 0) as int) + 1
 	GameStateStore.economy()["market"] = market
+	GameStateStore.economy()["lots_bought"] = (GameStateStore.economy().get("lots_bought", 0) as int) + 1
 	success = true
 	message = Localization.ru_en("Куплено: %s +%d за %d монет", "Bought: %s +%d for %d coins") % [
 		Localization.content_text(ContentDB.get_resource_def(res_id), "label", res_id), int(amount), int(cost)]
