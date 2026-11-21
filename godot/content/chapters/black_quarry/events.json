@@ -1654,10 +1654,10 @@
     "body_en": "The settlement committee; the nurse Zoya Somova speaks.\n\n\"Every evening a wagon leaves. A filter station takes fifteen ingots, and there are never any. We are not asking you to stop the Union. We are asking for one wagon to stay here: for the stacks and the heap, so the children can breathe.\"",
     "options": [
       {
-        "text": "Оставить вагон посёлку (квота −300, дым −12)",
-        "text_en": "Leave a wagon to the settlement (quota −300, smoke −12)",
+        "text": "Оставить вагон посёлку (квота −200, дым −12)",
+        "text_en": "Leave a wagon to the settlement (quota −200, smoke −12)",
         "effects": {
-          "stat_norm_shipped": -300,
+          "stat_norm_shipped": -200,
           "stat_waste": -12,
           "stat_city_trust": 7,
           "stat_league_trust": -4,
@@ -1913,15 +1913,15 @@
         }
       },
       {
-        "text": "Снять муфты с плавильни (квота −200)",
-        "text_en": "Take the couplings off the smelter (quota −200)",
+        "text": "Снять муфты с плавильни (квота −100)",
+        "text_en": "Take the couplings off the smelter (quota −100)",
         "effects": {
-          "stat_norm_shipped": -200,
+          "stat_norm_shipped": -100,
           "stat_city_trust": 4,
           "stat_league_trust": -3,
           "style": "protector",
-          "message": "Печь простояла два дня. Вода в бараках шла всю ночь.",
-          "message_en": "The furnace stood idle for two days. Water ran in the shelters all night."
+          "message": "Печь простояла день. Вода в бараках шла всю ночь.",
+          "message_en": "The furnace stood idle for a day. Water ran in the shelters all night."
         }
       }
     ]

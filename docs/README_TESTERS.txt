@@ -1,6 +1,16 @@
-Mandate Cities 0.4.1-alpha — playtest build / тестовая сборка
+Mandate Cities 0.4.2-alpha — playtest build / тестовая сборка
 
-NEW IN 0.4.1-alpha / НОВОЕ В 0.4.1-alpha
+NEW IN 0.4.2-alpha / НОВОЕ В 0.4.2-alpha
+  The city's side in the Black Quarry is playable: leaving a wagon to the settlement costs 200
+  of the quota (was 300), the couplings for the pump 100 (was 200, four days before the end).
+  A letter that returns every week (the Charters' buyer, the empty treasury) now counts toward
+  your stance once, not every time: the finale's side follows your real choices.
+  Сторона города в Чёрном Карьере стала проходимой: вагон посёлку стоит 200 квоты (было 300),
+  муфты для насоса 100 (было 200, за четыре дня до конца срока). Письмо, которое возвращается
+  каждую неделю (скупщик Хартий, пустая казна), теперь считается в вашу позицию один раз, а
+  не каждый раз: сторона финала следует вашим настоящим выборам.
+
+FROM 0.4.1-alpha / ИЗ 0.4.1-alpha
   The playtest build. "Pack a report" (Options, and on the finale screen) puts everything we
   ask you to send into one archive on the Desktop. Three new hints: the chapter's norm on its
   first day, the "» evening" button from day two, the treasury once it has money to spend.

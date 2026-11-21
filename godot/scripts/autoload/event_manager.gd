@@ -359,6 +359,16 @@ func _on_option_selected(event_id: String, option_index: int, effects: Dictionar
 	if not cost.is_empty() and not GameStateStore.spend(cost):
 		EventBus.toast_requested.emit(Localization.t("ui.command.not_enough_resources", "Not enough resources"), 4.0)
 		return
+	# A letter that comes back every week (the Charters' buyer, the empty treasury) speaks for
+	# the administrator's stance once, not every time: five refusals of the same offer used to
+	# outweigh every real choice of the chapter and decide the finale's side.
+	var counted: Array = GameStateStore.mandate().get("style_cards", []) as Array
+	if effects.has("style") and counted.has(event_id):
+		effects = effects.duplicate()
+		effects.erase("style")
+	elif effects.has("style"):
+		counted.append(event_id)
+		GameStateStore.mandate()["style_cards"] = counted
 	_apply_effects(effects)
 	_set_cooldown(event_id)
 	# Убираем обработанное событие

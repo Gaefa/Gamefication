@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.4.1-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.4.2-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Storms: on day 22 (Dust) and day 32 (Heat) the lookout warns of a storm for tomorrow; unbraced (20 wood, 5 tools) it wrecks two buildings, braced it leaves one breakdown. A wrecked building does nothing until repaired (R). Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
@@ -151,7 +151,7 @@ The chapters run in order, each 30–40 days with the same core loop: the day on
 
 **The chapter's norm.** In chapters 2–5 the patron sent you for a particular job, and it stands as the fourth line of both inspections and of the Goals list. A district that grew and is content but did not close the norm by the end of the term is not renewed. In three chapters it is a quota: the patron hauls the resource away in wagons whenever the store holds more than the reserve, and pays for each one. A click on the norm's line in Goals holds the wagons and releases them again. Past the last figure the wagons stop. A new patron does not know you: trust in these chapters opens at 50.
 
-**Whose side you took.** A chapter's finale counts your answers for the city against your answers for the patron. On a tie, whichever is higher at the end of the term decides: support or trust.
+**Whose side you took.** A chapter's finale counts your answers for the city against your answers for the patron. On a tie, whichever is higher at the end of the term decides: support or trust. A letter that comes again counts once.
 
 ## Chapter 2. Bogolessky Gorge
 
