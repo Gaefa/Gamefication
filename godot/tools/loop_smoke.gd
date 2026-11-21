@@ -25,6 +25,12 @@ var _pop_min: int = 999  # the smallest district seen at any evening (acceptance
 var _ending: String = ""
 var _repairs: int = 0
 var _repair_money: float = 0.0
+# How long a simulation tick takes, measured over each whole day (HUD refresh included):
+# the worst day of the run and how many buildings stood then.
+var _day_started_usec: int = 0
+var _worst_tick_ms: float = 0.0
+var _worst_tick_buildings: int = 0
+var _worst_tick_day: int = 0
 
 
 func _ready() -> void:
@@ -42,8 +48,17 @@ func _ready() -> void:
 			_world_seed = arg.trim_prefix("seed=").to_int()
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
 		_ending = "%s (%s)" % [eid, kind])
+	EventBus.phase_changed.connect(func(phase: String) -> void:
+		if phase == "day":
+			_day_started_usec = Time.get_ticks_usec())
 	EventBus.evening_started.connect(func(events: Array) -> void:
 		_evenings += 1
+		if _day_started_usec > 0:
+			var tick_ms: float = float(Time.get_ticks_usec() - _day_started_usec) / 1000.0 / float(SimulationRunner.TICKS_PER_DAY)
+			if tick_ms > _worst_tick_ms:
+				_worst_tick_ms = tick_ms
+				_worst_tick_buildings = GameStateStore.get_all_building_coords().size()
+				_worst_tick_day = SimulationRunner.day_count
 		_pop_min = mini(_pop_min, GameStateStore.population().get("total", 0) as int)
 		_repair_issues()  # a player presses R on the "!" pins before the Desk
 		var prod: Dictionary = GameStateStore.economy().get("production", {}) as Dictionary
@@ -172,6 +187,7 @@ func _finish(result: String) -> void:
 	# Chapter acceptance (plan §3, sprint 5): a hands-off run reaches the term's end with people still there.
 	var full_term: bool = SimulationRunner.day_count >= ContentDB.get_win_day()
 	var accepted: bool = full_term and _pop_min > 0 and _evenings >= ContentDB.get_win_day() - 1
+	print("TICK COST [%s]: %.2f ms a tick on the worst day (day %d, %d buildings)" % [ContentDB.active_chapter, _worst_tick_ms, _worst_tick_day, _worst_tick_buildings])
 	print("CHAPTER ACCEPTANCE [%s]: %s (day %d of %d, smallest district %d, evenings %d)" % [
 		ContentDB.active_chapter, "PASS" if accepted else "NOT MET", SimulationRunner.day_count, ContentDB.get_win_day(), _pop_min, _evenings])
 	set_physics_process(false)

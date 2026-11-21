@@ -1,6 +1,7 @@
 #!/bin/bash
 # Full QA for a version: the scenario matrix on top of suite.sh. Run before every tag.
 #   bash godot/tools/qa.sh [out_dir]        (GODOT=/path/to/Godot, QA_JOBS=6 workers, QA_SEEDS="1 2 3 4")
+# Every bot run also reports the cost of a simulation tick on its worst day (TICK COST).
 # Scenarios, per chapter: the building bot on several seeds, at four paces (1, 2, 4, 30
 # decisions a day) and with three answer styles; every legacy start hands-off and with the
 # bot; a bot that ignores the chapter's mechanic; fuzz on several seeds; save round-trip,
@@ -45,16 +46,16 @@ section() {
     ch=$SEC
     for seed in $SEEDS; do
       for pace in 1 2 4 30; do
-        n=bot_${ch}_s${seed}_p${pace}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch seed=$seed pace=$pace); line $n "^BOT \[" $c
+        n=bot_${ch}_s${seed}_p${pace}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch seed=$seed pace=$pace); line $n "^BOT \[|^TICK COST" $c
       done
       for lean in patron city; do
-        n=bot_${ch}_s${seed}_${lean}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch seed=$seed lean=$lean); line $n "^BOT \[" $c
+        n=bot_${ch}_s${seed}_${lean}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch seed=$seed lean=$lean); line $n "^BOT \[|^TICK COST" $c
       done
-      n=botoff_${ch}_s${seed}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch seed=$seed mechanic=off); line $n "^BOT \[" $c
+      n=botoff_${ch}_s${seed}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch seed=$seed mechanic=off); line $n "^BOT \[|^TICK COST" $c
     done
     for leg in $(legacies $ch); do
       n=loop_${ch}_${leg}; c=$(run $n loop_smoke --quit-after 400000 -- chapter=$ch legacy=$leg); line $n "^=== SMOKE|CHAPTER ACCEPTANCE|БЛОКЕР" $c
-      n=botleg_${ch}_${leg}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch legacy=$leg seed=5); line $n "^BOT \[" $c
+      n=botleg_${ch}_${leg}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch legacy=$leg seed=5); line $n "^BOT \[|^TICK COST" $c
     done ;;
   esac
   echo "## done" >> "$OUT/qa_$SEC.log"

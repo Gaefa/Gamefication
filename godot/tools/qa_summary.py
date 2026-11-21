@@ -6,12 +6,16 @@ out = sys.argv[1]
 BOT = re.compile(
     r"^(\w+) \| exit (\d+) \| errors (\d+) \| BOT \[(\w+)\] seed (\d+) lean (\S+) pace (\d+)(?: mechanic (\S+))?: (\S+) \((\w+)\)"
     r".*?жители (\d+) \(пик (\d+), 12 с дня (-?\d+)\) \| сч (\d+) \| доверие (\d+) · поддержка (\d+)(?:.*?норма главы (\S+))?")
-bots, other, bad = [], [], []
+TICK = re.compile(r"TICK COST \[(\w+)\]: ([\d.]+) ms a tick on the worst day \(day (\d+), (\d+) buildings\)")
+bots, other, bad, ticks = [], [], [], []
 for path in sorted(glob.glob(out + "/qa_*.log")):
     for raw in open(path, encoding="utf-8"):
         raw = raw.rstrip("\n")
         if raw.startswith("##") or not raw:
             continue
+        cost = TICK.search(raw)
+        if cost:
+            ticks.append((cost.group(1), float(cost.group(2)), int(cost.group(3)), int(cost.group(4)), raw.split(" | ")[0]))
         m = BOT.search(raw)
         if m:
             bots.append(m.groups())
@@ -45,6 +49,14 @@ for ch in chapters:
         rows = [b for b in bots if b[3] == ch and b[0].startswith("bot_") and b[6] == "30" and b[5] == style]
         ends = collections.Counter(r[8].replace("ending.", "") for r in rows)
         print("  %-18s %-7s %s" % (ch, style, dict(ends)))
+print()
+print("TICK COST: the worst day of the worst run per chapter (headless on this machine, HUD refresh included)")
+for ch in chapters:
+    rows = [t for t in ticks if t[0] == ch]
+    if rows:
+        worst = max(rows, key=lambda t: t[1])
+        typical = sorted(t[1] for t in rows)[len(rows) // 2]
+        print("  %-18s worst %.2f ms a tick (%d buildings, day %d, %s) · median of runs %.2f ms" % (ch, worst[1], worst[3], worst[2], worst[4], typical))
 print()
 print("LEGACIES with the bot")
 for b in bots:
