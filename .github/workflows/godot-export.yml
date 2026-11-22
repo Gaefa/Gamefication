@@ -295,13 +295,13 @@ jobs:
             sleep 60
             adb exec-out screencap -p > android_1_title.png
             # Two taps on a 2400x1080 landscape screen: "New game", then "Begin" on the mandate
-            # screen (the layout is 1280x720 scaled by 1.5 and centred). If the layout moves,
-            # the later shots show the wrong screen: this is a look, not a test.
+            # screen (the interface is the 1280x720 design at 1.5, centred). If the layout
+            # moves, the later shots show the wrong screen: this is a look, not a test.
             adb shell wm size
-            adb shell input tap 1200 655
+            adb shell input tap 1200 697
             sleep 6
             adb exec-out screencap -p > android_2_mandate.png
-            adb shell input tap 1804 787
+            adb shell input tap 1627 742
             sleep 20
             adb exec-out screencap -p > android_3_game.png
             adb logcat -d -s godot:V GodotEngine:V AndroidRuntime:E | grep -v "^$" | grep -E "OpenGL API|ERROR|FATAL|Godot Engine" | sort | uniq -c | sort -rn | head -15
