@@ -290,6 +290,7 @@ jobs:
             mv build/emulator-build.bin build/emulator.apk
             adb install -r build/emulator.apk
             adb logcat -c
+            adb shell settings put secure immersive_mode_confirmations confirmed
             adb shell monkey -p com.mandatecities.pixelcitybuilder -c android.intent.category.LAUNCHER 1
             sleep 60
             adb exec-out screencap -p > android_1_title.png
@@ -297,7 +298,7 @@ jobs:
             # screen (the layout is 1280x720 scaled by 1.5 and centred). If the layout moves,
             # the later shots show the wrong screen: this is a look, not a test.
             adb shell wm size
-            adb shell input tap 1200 620
+            adb shell input tap 1200 655
             sleep 6
             adb exec-out screencap -p > android_2_mandate.png
             adb shell input tap 1804 787
