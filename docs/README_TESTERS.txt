@@ -9,6 +9,10 @@ NEW IN 0.4.2-alpha / НОВОЕ В 0.4.2-alpha
   муфты для насоса 100 (было 200, за четыре дня до конца срока). Письмо, которое возвращается
   каждую неделю (скупщик Хартий, пустая казна), теперь считается в вашу позицию один раз, а
   не каждый раз: сторона финала следует вашим настоящим выборам.
+  Android: the interface now fills the screen's height (it was a quarter of a phone's screen
+  wide). Windows and macOS builds are started and played through by a bot on every build.
+  Android: интерфейс теперь растянут по высоте экрана (раньше занимал четверть ширины
+  телефона). Сборки для Windows и macOS запускает и проходит бот на каждой сборке.
 
 FROM 0.4.1-alpha / ИЗ 0.4.1-alpha
   The playtest build. "Pack a report" (Options, and on the finale screen) puts everything we
@@ -73,8 +77,8 @@ ANDROID (first look only / только посмотреть)
   No hotkeys: panels open from their buttons, pause from the clock.
   Установите .apk (разрешите «неизвестные источники»). Сначала удалите предыдущую сборку:
   у каждой своя подпись. Один палец тянет карту, два — зум, тап = клик. Раскладка рассчитана
-  на окно 1280x720: на планшете терпимо, на телефоне мелко. Горячих клавиш нет: панели
-  открываются кнопками, пауза — кликом по часам.
+  на окно 1280x720 и растягивается по высоте экрана: на планшете удобно, на телефоне читаемо,
+  но тесно. Горячих клавиш нет: панели открываются кнопками, пауза — кликом по часам.
 
 KNOWN / ИЗВЕСТНО
   Sound is a first procedural pack (volume in Options). One autosave slot, written every
