@@ -229,6 +229,79 @@ jobs:
           path: "${{ env.PROJECT_DIR }}/export/android/*.apk"
           if-no-files-found: error
 
+      # The same project built for x86_64, for the emulator job below: CI runners are x86 and
+      # the shipped APK is arm64 only. Kept under another extension so the release job's
+      # *.apk pattern never picks it up.
+      - name: Export an x86_64 build for the emulator check
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's|architectures/x86_64=false|architectures/x86_64=true|; s|architectures/arm64-v8a=true|architectures/arm64-v8a=false|' "${PROJECT_DIR}/export_presets.cfg"
+          mkdir -p "${PROJECT_DIR}/export/android-emu"
+          "./Godot_v${GODOT_VERSION}-${GODOT_STATUS}_linux.x86_64" --headless --path "${PROJECT_DIR}" --export-release "Android" "export/android-emu/emulator.apk"
+          mv "${PROJECT_DIR}/export/android-emu/emulator.apk" "${PROJECT_DIR}/export/android-emu/emulator-build.bin"
+          git checkout -- "${PROJECT_DIR}/export_presets.cfg"
+
+      - name: Upload the emulator build
+        uses: actions/upload-artifact@v4
+        with:
+          name: "emulator-build-${{ github.sha }}"
+          path: "${{ env.PROJECT_DIR }}/export/android-emu/emulator-build.bin"
+          if-no-files-found: error
+          retention-days: 3
+
+  # Nobody has started the Android build on a device. This job starts an x86_64 build of the
+  # same project in an emulator, waits for the title screen, checks the process is alive and
+  # no fatal exception was logged, and keeps a screenshot. It runs in its own job, without
+  # the signing secrets, and does not block a release: an emulator with software rendering
+  # is a weaker witness than a phone, and a flaky one.
+  android-run:
+    name: Android run check (emulator)
+    needs: android-apk
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Download the emulator build
+        uses: actions/download-artifact@v4
+        with:
+          name: "emulator-build-${{ github.sha }}"
+          path: build
+
+      - name: Enable KVM
+        shell: bash
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Start the game in an emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          disable-animations: true
+          script: |
+            mv build/emulator-build.bin build/emulator.apk
+            adb install -r build/emulator.apk
+            adb logcat -c
+            adb shell monkey -p com.mandatecities.pixelcitybuilder -c android.intent.category.LAUNCHER 1
+            sleep 60
+            adb exec-out screencap -p > android_title.png
+            adb logcat -d -s godot:V GodotEngine:V AndroidRuntime:E | tail -40
+            adb shell pidof com.mandatecities.pixelcitybuilder
+            if adb logcat -d -s AndroidRuntime:E | grep -q "FATAL EXCEPTION"; then echo "fatal exception in the log"; exit 1; fi
+
+      - name: Upload the title screen
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: "android-title-${{ github.sha }}"
+          path: android_title.png
+          if-no-files-found: warn
+          retention-days: 7
+
   # A pushed tag v* (e.g. v0.1.1) publishes the builds plus the tester guides as a
   # GitHub Release, so testers get one link instead of a 240 MB file share.
   release:
