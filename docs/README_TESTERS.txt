@@ -68,7 +68,8 @@ macOS
 ANDROID (first look only / только посмотреть)
   Install the .apk (allow "unknown sources" when asked). Uninstall the previous build first:
   each build is signed with a new key. One finger drags the map, two fingers zoom, tap = click.
-  The layout is made for a 1280x720 desktop window: usable on a tablet, small on a phone.
+  The layout is made for a 1280x720 desktop window and is scaled to the screen's height:
+  comfortable on a tablet, readable but tight on a phone.
   No hotkeys: panels open from their buttons, pause from the clock.
   Установите .apk (разрешите «неизвестные источники»). Сначала удалите предыдущую сборку:
   у каждой своя подпись. Один палец тянет карту, два — зум, тап = клик. Раскладка рассчитана
