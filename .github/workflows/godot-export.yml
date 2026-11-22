@@ -62,6 +62,46 @@ jobs:
           path: "${{ env.PROJECT_DIR }}/export/windows/*.exe"
           if-no-files-found: error
 
+  # The Windows build was exported on Linux and, for months, never started by anyone. This
+  # job starts the exported .exe on a real Windows machine: it must boot, read its own
+  # pack, pass the content and rules checks, and walk the whole campaign with the building
+  # bot. Headless (the runner has no GPU), so it says nothing about rendering.
+  windows-run:
+    name: Windows run check
+    needs: windows-exe
+    runs-on: windows-latest
+    steps:
+      - name: Download the exported build
+        uses: actions/download-artifact@v4
+        with:
+          name: "${{ env.EXPORT_NAME }}-windows-${{ github.sha }}"
+          path: build
+
+      - name: Run the exported game
+        shell: pwsh
+        run: |
+          $exe = (Get-ChildItem build -Filter *.exe | Select-Object -First 1).FullName
+          Write-Host "exe: $exe ($([math]::Round((Get-Item $exe).Length / 1MB)) MB)"
+          $runs = @(
+            @{ name = "content_check"; args = @("res://tools/content_check.tscn") },
+            @{ name = "rules_smoke"; args = @("res://tools/rules_smoke.tscn") },
+            @{ name = "campaign_smoke"; args = @("--fixed-fps", "60", "--quit-after", "2000000", "res://tools/campaign_smoke.tscn") }
+          )
+          $bad = 0
+          foreach ($r in $runs) {
+            $log = Join-Path $PWD "$($r.name).log"
+            $p = Start-Process -FilePath $exe -ArgumentList (@("--headless", "--log-file", $log) + $r.args) -Wait -PassThru
+            Write-Host "== $($r.name): exit $($p.ExitCode)"
+            if (Test-Path $log) {
+              Get-Content $log -Encoding UTF8 | Select-String -Pattern "^=== |^FAIL|SCRIPT ERROR|^дорога" | Select-Object -Last 12 | ForEach-Object { Write-Host $_.Line }
+            } else {
+              Write-Host "no log written"
+              $bad++
+            }
+            if ($p.ExitCode -ne 0) { $bad++ }
+          }
+          if ($bad -gt 0) { exit 1 }
+
   macos-dmg:
     name: macOS DMG
     runs-on: macos-latest
@@ -97,6 +137,17 @@ jobs:
           mkdir -p "${PROJECT_DIR}/export/macos/app"
           unzip -q "${PROJECT_DIR}/export/macos/${EXPORT_NAME}.zip" -d "${PROJECT_DIR}/export/macos/app"
           hdiutil create -volname "Mandate Cities" -srcfolder "${PROJECT_DIR}/export/macos/app" -ov -format UDZO "${PROJECT_DIR}/export/macos/${EXPORT_NAME}-${SHORT_SHA}.dmg"
+
+      # The same start-up check as on Windows, with the app that goes into the DMG.
+      - name: Run the exported app
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_BIN="$(find "${PROJECT_DIR}/export/macos/app" -path '*Contents/MacOS/*' -type f | head -1)"
+          echo "binary: ${APP_BIN}"
+          "$APP_BIN" --headless res://tools/content_check.tscn | grep -E "^=== |^FAIL|SCRIPT ERROR"
+          "$APP_BIN" --headless res://tools/rules_smoke.tscn | grep -E "^=== |^FAIL|SCRIPT ERROR"
+          "$APP_BIN" --headless --fixed-fps 60 --quit-after 2000000 res://tools/campaign_smoke.tscn | grep -E "^=== CAMPAIGN|^FAIL|SCRIPT ERROR|^дорога"
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
@@ -181,7 +232,7 @@ jobs:
   release:
     name: GitHub Release
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [windows-exe, macos-dmg, android-apk]
+    needs: [windows-exe, windows-run, macos-dmg, android-apk]
     runs-on: ubuntu-latest
     permissions:
       contents: write
