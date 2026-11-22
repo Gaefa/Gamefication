@@ -14,6 +14,8 @@ var _cursor_kind: String = ""
 
 
 func _ready() -> void:
+	if ContentDB.boot_selftest(get_tree()):
+		return  # an exported build was asked to run a dev tool: its scene takes this one's place
 	_apply_saved_window_mode()
 	get_window().size_changed.connect(_apply_ui_scale)
 	_apply_ui_scale()

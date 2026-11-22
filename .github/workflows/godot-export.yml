@@ -65,7 +65,9 @@ jobs:
   # The Windows build was exported on Linux and, for months, never started by anyone. This
   # job starts the exported .exe on a real Windows machine: it must boot, read its own
   # pack, pass the content and rules checks, and walk the whole campaign with the building
-  # bot. Headless (the runner has no GPU), so it says nothing about rendering.
+  # bot. Headless (the runner has no GPU), so it says nothing about rendering. An export
+  # template takes no scene path on the command line: `-- selftest=<tool>` makes the game
+  # hand over to the tool's scene itself (ContentDB.boot_selftest).
   windows-run:
     name: Windows run check
     needs: windows-exe
@@ -83,9 +85,9 @@ jobs:
           $exe = (Get-ChildItem build -Filter *.exe | Select-Object -First 1).FullName
           Write-Host "exe: $exe ($([math]::Round((Get-Item $exe).Length / 1MB)) MB)"
           $runs = @(
-            @{ name = "content_check"; args = @("res://tools/content_check.tscn") },
-            @{ name = "rules_smoke"; args = @("res://tools/rules_smoke.tscn") },
-            @{ name = "campaign_smoke"; args = @("--fixed-fps", "60", "--quit-after", "2000000", "res://tools/campaign_smoke.tscn") }
+            @{ name = "content_check"; args = @("--", "selftest=content_check") },
+            @{ name = "rules_smoke"; args = @("--", "selftest=rules_smoke") },
+            @{ name = "campaign_smoke"; args = @("--fixed-fps", "60", "--quit-after", "2000000", "--", "selftest=campaign_smoke") }
           )
           $bad = 0
           foreach ($r in $runs) {
@@ -145,9 +147,9 @@ jobs:
           set -euo pipefail
           APP_BIN="$(find "${PROJECT_DIR}/export/macos/app" -path '*Contents/MacOS/*' -type f | head -1)"
           echo "binary: ${APP_BIN}"
-          "$APP_BIN" --headless res://tools/content_check.tscn | grep -E "^=== |^FAIL|SCRIPT ERROR"
-          "$APP_BIN" --headless res://tools/rules_smoke.tscn | grep -E "^=== |^FAIL|SCRIPT ERROR"
-          "$APP_BIN" --headless --fixed-fps 60 --quit-after 2000000 res://tools/campaign_smoke.tscn | grep -E "^=== CAMPAIGN|^FAIL|SCRIPT ERROR|^дорога"
+          "$APP_BIN" --headless -- selftest=content_check | grep -E "^=== |^FAIL|SCRIPT ERROR"
+          "$APP_BIN" --headless -- selftest=rules_smoke | grep -E "^=== |^FAIL|SCRIPT ERROR"
+          "$APP_BIN" --headless --fixed-fps 60 --quit-after 2000000 -- selftest=campaign_smoke | grep -E "^=== CAMPAIGN|^FAIL|SCRIPT ERROR|^дорога"
 
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
