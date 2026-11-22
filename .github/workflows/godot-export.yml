@@ -280,7 +280,10 @@ jobs:
           api-level: 34
           arch: x86_64
           target: default
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          # swangle (ANGLE over SwiftShader's Vulkan), not swiftshader_indirect: the plain
+          # SwiftShader GLES translator cannot link Godot's canvas shader (it counts uniform
+          # blocks against GL_MAX_FRAGMENT_UNIFORM_VECTORS) and the screen stays grey.
+          emulator-options: -no-window -gpu swangle_indirect -noaudio -no-boot-anim -no-snapshot
           disable-animations: true
           script: |
             mv build/emulator-build.bin build/emulator.apk
@@ -289,7 +292,7 @@ jobs:
             adb shell monkey -p com.mandatecities.pixelcitybuilder -c android.intent.category.LAUNCHER 1
             sleep 60
             adb exec-out screencap -p > android_title.png
-            adb logcat -d -s godot:V GodotEngine:V AndroidRuntime:E | tail -40
+            adb logcat -d -s godot:V GodotEngine:V AndroidRuntime:E | grep -v "^$" | grep -E "OpenGL API|ERROR|FATAL|Godot Engine" | sort | uniq -c | sort -rn | head -15
             adb shell pidof com.mandatecities.pixelcitybuilder
             if adb logcat -d -s AndroidRuntime:E | grep -q "FATAL EXCEPTION"; then echo "fatal exception in the log"; exit 1; fi
 
