@@ -366,6 +366,20 @@ func _norm_rules() -> void:
 		orch.tick_scheduler.run_tick()
 		_check(_ended == (case[3] as String), "styles %s with trust %.0f and support %.0f end as %s (%s)" % [str(case[0]), case[1], case[2], case[3], _ended])
 
+	# A returning letter counts toward the administrator's stance once.
+	EventManager.clear_pending()
+	orch = GameOrchestrator.new()
+	orch.new_game(12345, "appointed_administrator", "", "black_quarry")
+	SimulationRunner.start_run()
+	GameStateStore.style_flags().clear()
+	var offer: Array = ContentDB.get_event_def("quarry.charters_offer").get("options", []) as Array
+	for _n: int in 4:
+		EventBus.desk_option_selected.emit("quarry.charters_offer", 1, (offer[1] as Dictionary).get("effects", {}), {})
+	_check((GameStateStore.style_flags().get("loyal", 0) as int) == 1, "four refusals of the same offer are one stance, not four (%s)" % str(GameStateStore.style_flags()))
+	var quota_card: Array = ContentDB.get_event_def("quarry.union_quota").get("options", []) as Array
+	EventBus.desk_option_selected.emit("quarry.union_quota", 2, (quota_card[2] as Dictionary).get("effects", {}), {})
+	_check((GameStateStore.style_flags().get("protector", 0) as int) == 1, "a different letter still counts (%s)" % str(GameStateStore.style_flags()))
+
 	# A buildings norm: the Old Capital's register.
 	EventManager.clear_pending()
 	_ended = ""
