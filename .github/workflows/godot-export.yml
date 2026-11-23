@@ -104,6 +104,58 @@ jobs:
           }
           if ($bad -gt 0) { exit 1 }
 
+  # The run check above is headless. This one opens the game's window on Windows and saves
+  # one picture per screen (tools/ui_shots), so somebody has seen what the Windows build
+  # draws before a tester does. The runner has no graphics card: the game falls back from
+  # OpenGL to ANGLE over Direct3D's software adapter, which is slower than any real PC but
+  # draws the same frames. Does not hold a release back: a hosted runner's display is not
+  # a player's machine, and the pictures are for a person to look at.
+  windows-picture:
+    name: Windows picture check
+    needs: windows-exe
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - name: Download the exported build
+        uses: actions/download-artifact@v4
+        with:
+          name: "${{ env.EXPORT_NAME }}-windows-${{ github.sha }}"
+          path: build
+
+      - name: Open the game and take the pictures
+        shell: pwsh
+        run: |
+          try { Set-DisplayResolution -Width 1920 -Height 1080 -Force } catch { Write-Host "display size left as is: $_" }
+          $exe = (Get-ChildItem build -Filter *.exe | Select-Object -First 1).FullName
+          $out = Join-Path $PWD "shots"
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $code = 1
+          foreach ($driver in @("", "opengl3_angle")) {
+            $log = Join-Path $PWD "ui_shots_$($driver -replace '^$', 'default').log"
+            $a = @("--log-file", $log, "--resolution", "1280x720")
+            if ($driver) { $a += @("--rendering-driver", $driver) }
+            $a += @("--", "selftest=ui_shots", "out=$($out -replace '\\', '/')")
+            $p = Start-Process -FilePath $exe -ArgumentList $a -PassThru
+            if (-not $p.WaitForExit(600000)) { $p.Kill(); Write-Host "== stopped after ten minutes" }
+            $shots = @(Get-ChildItem $out -Filter *.png).Count
+            Write-Host "== driver '$driver': exit $($p.ExitCode), pictures $shots"
+            if (Test-Path $log) {
+              Get-Content $log -Encoding UTF8 | Select-String -Pattern "^OpenGL|^Vulkan|^D3D|ANGLE|ERROR|^=== |^FAIL|^UI SHOTS" | Select-Object -First 30 | ForEach-Object { Write-Host $_.Line }
+            }
+            if ($shots -gt 0) { $code = $p.ExitCode; break }
+          }
+          exit $code
+
+      - name: Upload the pictures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: "windows-pictures-${{ github.sha }}"
+          path: |
+            shots/*.png
+            *.log
+          if-no-files-found: warn
+
   macos-dmg:
     name: macOS DMG
     runs-on: macos-latest
