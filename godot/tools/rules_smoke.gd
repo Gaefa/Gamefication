@@ -96,6 +96,17 @@ func _ready() -> void:
 	orch.coverage.invalidate()
 	_check(not orch.coverage.is_road_connected(site), "an isolated road tile does not connect a building")
 	_check(orch.coverage.is_road_connected(_first("bld_shelter")), "the starter shelter is connected through the hub roads")
+	# The player is told before building: a site that would stand idle is called out.
+	var beyond: Vector2i = site + Vector2i(2, 0)
+	_check(not orch.coverage.is_live_road(site + Vector2i(1, 0)) and orch.coverage.is_live_road(Vector2i(0, 0)), "the lone tile is a dead road, the starter street a live one")
+	_check(PlacementRules.warning(beyond, "bld_road", orch.coverage) != "", "a road continued from a dead stretch is called out")
+	_check(PlacementRules.warning(beyond, "bld_lumber_yard", orch.coverage) != "", "a building by a dead road is called out")
+	_check(PlacementRules.warning(Vector2i(2, -2), "bld_road", orch.coverage) == "", "a road grown from the starter street is not")
+	_check(PlacementRules.warning(Vector2i(0, -2), "bld_road", orch.coverage) == "", "a road laid against the warehouse is not")
+	_check(PlacementRules.warning(Vector2i(-1, 2), "bld_shelter", orch.coverage) == "", "a shelter by the street and a pump is not")
+	_check(PlacementRules.warning(Vector2i(2, -2), "bld_field_strip", orch.coverage) == "" and PlacementRules.warning(Vector2i(6, -6), "bld_field_strip", orch.coverage) != "", "a field is called out only beyond the pump's reach")
+	var dead_road: PlaceBuildingCommand = orch.command_bus.execute(PlaceBuildingCommand.new(beyond, "bld_road")) as PlaceBuildingCommand
+	_check(dead_road.success and dead_road.message == PlacementRules.warning(site + Vector2i(3, 0), "bld_road", orch.coverage), "the build toast says the road carries nothing")
 
 	# 10. A broken pump covers nothing; repairing it restores coverage.
 	_new_game("appointed_administrator")

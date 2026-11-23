@@ -52,4 +52,8 @@ func execute(ctx: Dictionary) -> void:
 
 	success = true
 	message = Localization.t("ui.command.built", "Built %s") % Localization.content_text(def, "label", type_id)
+	if coverage:
+		var idle: String = PlacementRules.warning(coord, type_id, coverage)
+		if idle != "":
+			message = idle
 	EventBus.building_placed.emit(coord, type_id)

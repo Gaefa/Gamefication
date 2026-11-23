@@ -1,6 +1,16 @@
-Mandate Cities 0.4.2-alpha — playtest build / тестовая сборка
+Mandate Cities 0.4.3-alpha — playtest build / тестовая сборка
 
-NEW IN 0.4.2-alpha / НОВОЕ В 0.4.2-alpha
+NEW IN 0.4.3-alpha / НОВОЕ В 0.4.3-alpha
+  The game tells you before you build where a building would stand idle. The cell under the
+  cursor is amber when a road would not reach the warehouse or the admin post, when no such
+  road is beside a building, or when no pump reaches a field or a house; the note after the
+  build says which. The logistics lens (L) shows roads that carry nothing in red.
+  Игра заранее говорит, где здание будет простаивать. Клетка под курсором жёлтая, если дорога
+  не дойдёт до склада или поста администратора, если такой дороги нет рядом со зданием или
+  если до грядки или барака не достаёт ни один насос; сообщение после постройки называет
+  причину. Линза логистики (L) показывает красным дороги, по которым ничего не возят.
+
+FROM 0.4.2-alpha / ИЗ 0.4.2-alpha
   The city's side in the Black Quarry is playable: leaving a wagon to the settlement costs 200
   of the quota (was 300), the couplings for the pump 100 (was 200, four days before the end).
   A letter that returns every week (the Charters' buyer, the empty treasury) now counts toward

@@ -103,6 +103,15 @@ func _run() -> void:
 	EventBus.building_placed.emit(_first("bld_field_strip"), "bld_field_strip")
 	EventBus.selection_changed.emit(Vector2i(-9999, -9999))
 	await _shot("20_pins", 4)  # early, while the flashes are still on screen
+	# A road that reaches no warehouse: the toast says so, the logistics lens shows it red.
+	var builder: GameOrchestrator = _main.call("get_orchestrator") as GameOrchestrator
+	_main.call("toggle_logistics_lens")
+	for cell: Vector2i in HexCoords.disk(Vector2i.ZERO, 4):
+		if (PlacementRules.validate(cell, "bld_road", builder.hex_grid).get("ok", false) as bool) and PlacementRules.warning(cell, "bld_road", builder.coverage) != "":
+			builder.command_bus.execute(PlaceBuildingCommand.new(cell, "bld_road"))
+			break
+	await _shot("20_dead_road")
+	_main.call("toggle_logistics_lens")
 	# Same map before/after Heat, plus the day-32 goals and spoilage forecast.
 	TutorialManager.enabled_for_next_run = false
 	hud.call("_start_new_run", "appointed_administrator")

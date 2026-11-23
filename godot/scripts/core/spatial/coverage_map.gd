@@ -3,6 +3,7 @@ class_name CoverageMap
 ## Dirty-flag driven: only recomputes when buildings change.
 
 var _road_connected: Dictionary = {}   # Vector2i → bool
+var _live_roads: Dictionary = {}       # Vector2i → true: road cells whose stretch reaches a hub
 var _water_covered: Dictionary = {}    # Vector2i → bool
 var _water_pressure: Dictionary = {}   # Vector2i → float, water consumers only
 var _power_covered: Dictionary = {}    # Vector2i → bool
@@ -45,6 +46,31 @@ func ensure_fresh() -> bool:
 func is_road_connected(coord: Vector2i) -> bool:
 	ensure_fresh()
 	return _road_connected.get(coord, false) as bool
+
+
+## A road cell that carries goods: its stretch reaches a warehouse or the admin post.
+func is_live_road(coord: Vector2i) -> bool:
+	ensure_fresh()
+	return _live_roads.has(coord)
+
+
+## Would a building put on this cell be served: a live road at its side.
+func has_live_road_beside(coord: Vector2i) -> bool:
+	ensure_fresh()
+	for nb: Vector2i in HexCoords.neighbors_of(coord):
+		if _live_roads.has(nb):
+			return true
+	return false
+
+
+## Would a road laid on this cell carry goods: it touches a live road or a hub itself.
+func road_would_carry(coord: Vector2i) -> bool:
+	if has_live_road_beside(coord):
+		return true
+	for nb: Vector2i in HexCoords.neighbors_of(coord):
+		if _is_hub(nb):
+			return true
+	return false
 
 
 func is_water_covered(coord: Vector2i) -> bool:
@@ -93,11 +119,11 @@ func _rebuild_road_coverage() -> void:
 		road_set[c] = true
 	# Only roads whose stretch reaches a hub (a warehouse or the admin post) carry goods:
 	# a lone road tile next to a workshop is not logistics.
-	var live: Dictionary = {}
+	_live_roads.clear()
+	var live: Dictionary = _live_roads
 	var frontier: Array[Vector2i] = []
 	for coord: Vector2i in GameStateStore.get_all_building_coords():
-		var tags: Array = ContentDB.get_building_def(GameStateStore.get_building(coord).get("type", "") as String).get("tags", []) as Array
-		if not (tags.has("storage") or tags.has("admin")):
+		if not _is_hub(coord):
 			continue
 		for nb: Vector2i in HexCoords.neighbors_of(coord):
 			if road_set.has(nb) and not live.has(nb):
@@ -115,6 +141,11 @@ func _rebuild_road_coverage() -> void:
 			if live.has(nb):
 				_road_connected[coord] = true
 				break
+
+
+func _is_hub(coord: Vector2i) -> bool:
+	var tags: Array = ContentDB.get_building_def(GameStateStore.get_building(coord).get("type", "") as String).get("tags", []) as Array
+	return tags.has("storage") or tags.has("admin")
 
 
 func _rebuild_water_coverage() -> void:
