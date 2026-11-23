@@ -168,8 +168,8 @@
   "bld_road": {
     "name": "Дорога",
     "name_en": "Road",
-    "description": "Логистическая артерия города. Базовый вариант — грунтовая колея, гравий появляется только после улучшения.",
-    "description_en": "The city's logistics artery. The base version is a dirt track; gravel comes only with an upgrade.",
+    "description": "Логистическая артерия города. Возит грузы только дорога, которая доходит до склада или поста администратора. Базовый вариант — грунтовая колея, гравий появляется только после улучшения.",
+    "description_en": "The city's logistics artery. Only a road that reaches the warehouse or the admin post carries goods. The base version is a dirt track; gravel comes only with an upgrade.",
     "size": [1, 1],
     "sprites_by_level": ["res://assets/buildings/road.svg"],
     "cost_build": {"res_stone": 2},

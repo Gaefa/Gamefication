@@ -97,6 +97,10 @@ func _draw() -> void:
 		var snap_center: Vector2 = HexCoords.axial_to_pixel(coord)
 		var validation: Dictionary = PlacementRulesRef.validate(coord, _build_preview, _hex_grid)
 		var color := Color(0.2, 0.9, 0.25, 0.45) if (validation.get("ok", false) as bool) else Color(1.0, 0.2, 0.12, 0.5)
+		# Amber: it can be built here and will stand idle (no live road, no water).
+		var coverage: CoverageMap = _coverage()
+		if (validation.get("ok", false) as bool) and coverage != null and PlacementRulesRef.warning(coord, _build_preview, coverage) != "":
+			color = Color(1.0, 0.72, 0.1, 0.55)
 		_draw_preview_hex(snap_center, color)
 		if _show_ranges:
 			_draw_type_range(coord, _build_preview, 0)
@@ -144,7 +148,12 @@ func _draw_logistics_lens() -> void:
 		var type_id: String = bld.get("type", "") as String
 		var def: Dictionary = ContentDB.get_building_def(type_id)
 		if _is_road_building(type_id, def):
-			_draw_hex_fill(coord, Color(0.2, 0.95, 0.35, 0.28), Color(0.55, 1.0, 0.65, 0.8))
+			# A stretch that reaches no warehouse and no admin post carries nothing: red.
+			var coverage: CoverageMap = _coverage()
+			if coverage == null or coverage.is_live_road(coord):
+				_draw_hex_fill(coord, Color(0.2, 0.95, 0.35, 0.28), Color(0.55, 1.0, 0.65, 0.8))
+			else:
+				_draw_hex_fill(coord, Color(1.0, 0.12, 0.08, 0.36), Color(1.0, 0.35, 0.25, 0.95))
 		elif _building_needs_road(def):
 			var connected := _has_road_neighbor(coord)
 			var fill_color := Color(0.25, 0.6, 1.0, 0.22) if connected else Color(1.0, 0.12, 0.08, 0.36)
@@ -330,6 +339,14 @@ func _is_road_building(type_id: String, def: Dictionary) -> bool:
 		return true
 	var tags: Array = def.get("tags", []) as Array
 	return tags.has("road")
+
+
+func _coverage() -> CoverageMap:
+	var scene: Node = get_tree().current_scene
+	if scene == null or not scene.has_method("get_orchestrator"):
+		return null
+	var orch: GameOrchestrator = scene.call("get_orchestrator") as GameOrchestrator
+	return orch.coverage if orch != null else null
 
 
 func _has_road_neighbor(coord: Vector2i) -> bool:

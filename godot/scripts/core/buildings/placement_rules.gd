@@ -50,6 +50,26 @@ static func validate(coord: Vector2i, type_id: String, hex_grid: HexGrid = null)
 	return {"ok": true, "message": Localization.t("ui.placement.valid", "Can build here")}
 
 
+## A valid site where the building would stand idle, in the player's words; "" when it
+## will work. The preview turns amber on it and the build toast repeats it.
+static func warning(coord: Vector2i, type_id: String, coverage: CoverageMap) -> String:
+	var def: Dictionary = ContentDB.get_building_def(type_id)
+	var tags: Array = def.get("tags", []) as Array
+	if tags.has("road"):
+		if not coverage.road_would_carry(coord):
+			return Localization.ru_en("Эта дорога не доходит до склада или поста администратора: по ней ничего не возят",
+				"This road reaches neither the warehouse nor the admin post: nothing moves along it")
+		return ""
+	if (def.get("requires_road", false) as bool) and not coverage.has_live_road_beside(coord):
+		return Localization.ru_en("Рядом нет дороги, которая доходит до склада: здание будет простаивать",
+			"No road beside it reaches the warehouse: the building will stand idle")
+	var drinks: bool = (ContentDB.building_level_data(type_id, 0).get("consumes", {}) as Dictionary).has("res_water_stockpile")
+	if (drinks or tags.has("housing")) and not coverage.is_water_covered(coord):
+		return Localization.ru_en("Сюда не достаёт ни один насос: без воды здание будет простаивать",
+			"No pump reaches this spot: without water the building will stand idle")
+	return ""
+
+
 ## What a building costs right now: the base price times the season's build_cost_mult
 ## (the Window makes construction 10% cheaper, as the season panel says).
 static func build_cost_for(def: Dictionary) -> Dictionary:
