@@ -106,6 +106,7 @@ func _run() -> void:
 	# A road that reaches no warehouse: the toast says so, the logistics lens shows it red.
 	var builder: GameOrchestrator = _main.call("get_orchestrator") as GameOrchestrator
 	_main.call("toggle_logistics_lens")
+	(OnboardingManager.get("_layer") as CanvasLayer).visible = false  # the pin hint would cover the toast
 	for cell: Vector2i in HexCoords.disk(Vector2i.ZERO, 4):
 		if (PlacementRules.validate(cell, "bld_road", builder.hex_grid).get("ok", false) as bool) and PlacementRules.warning(cell, "bld_road", builder.coverage) != "":
 			builder.command_bus.execute(PlaceBuildingCommand.new(cell, "bld_road"))
