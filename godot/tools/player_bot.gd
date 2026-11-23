@@ -207,10 +207,15 @@ func _spend_treasury() -> void:
 ## Short when the store lasts under three days at today's draw, or is draining toward
 ## empty within six (the Dust empties a full cistern in a week).
 func _running_out(res_id: String) -> bool:
-	if EconomySystem.days_of(res_id) < 3.0:
-		return true
 	var flow: float = _flow(res_id)
-	return flow < 0.0 and GameStateStore.get_resource(res_id) / -flow < 6.0
+	var stock: float = GameStateStore.get_resource(res_id)
+	if EconomySystem.days_of(res_id) < 3.0:
+		# A full store is not a shortage, however fast a big district draws it: one more field
+		# a day does not make it hold longer. Neither is an emptied store that is filling.
+		var cap: float = GameStateStore.get_cap(res_id)
+		if cap <= 0.0 or stock < cap * 0.85:
+			return flow < EconomySystem.daily_consumption(res_id) * 0.5
+	return flow < 0.0 and stock / -flow < 6.0
 
 
 ## Enough to carry one more house: the store is near its cap (a full store reads as zero
@@ -424,8 +429,15 @@ func _extend_road(watered: bool) -> bool:
 	var orch: GameOrchestrator = _orch()
 	var best := Vector2i(-9999, -9999)
 	var best_gain: int = 0
+	# Walled in: no free cell is left by any road. A road laid against the warehouse or the
+	# admin post carries goods as well (CoverageMap), and that is the way out.
+	var walled_in: bool = true
 	for cell: Vector2i in _frontier():
-		if not _by_road(cell) or not (PlacementRules.validate(cell, "bld_road", orch.hex_grid).get("ok", false) as bool):
+		if _by_road(cell) and (PlacementRules.validate(cell, "bld_road", orch.hex_grid).get("ok", false) as bool):
+			walled_in = false
+			break
+	for cell: Vector2i in _frontier():
+		if not (_by_road(cell) or (walled_in and _by_hub(cell))) or not (PlacementRules.validate(cell, "bld_road", orch.hex_grid).get("ok", false) as bool):
 			continue
 		var gain: int = 0
 		for nb: Vector2i in HexCoords.neighbors_of(cell):
@@ -454,6 +466,14 @@ func _frontier() -> Array[Vector2i]:
 func _by_road(cell: Vector2i) -> bool:
 	for nb: Vector2i in HexCoords.neighbors_of(cell):
 		if (GameStateStore.get_building(nb).get("type", "") as String) == "bld_road":
+			return true
+	return false
+
+
+func _by_hub(cell: Vector2i) -> bool:
+	for nb: Vector2i in HexCoords.neighbors_of(cell):
+		var tags: Array = ContentDB.get_building_def(GameStateStore.get_building(nb).get("type", "") as String).get("tags", []) as Array
+		if tags.has("storage") or tags.has("admin"):
 			return true
 	return false
 
