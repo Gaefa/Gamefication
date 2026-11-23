@@ -8,7 +8,11 @@ class_name AdjacencyCalculator
 ##   water_queue_a / _b      extra growth of the "water" pressure per such building
 ##   max_stack               how many neighbours of the other type count (default: all)
 ## Damaged buildings take no part in neighbour rules.
-## Stateless: everything is read from GameStateStore, so it needs no save data.
+## Holds no game state: everything is read from GameStateStore, so it needs no save data.
+## The one thing kept is which rules name a building type, which is content.
+
+var _rules_of: Dictionary = {}  # type id → [[rule, side, other type, max_stack], …]
+var _rules_source: Array = []   # the ContentDB.synergies array _rules_of was built from
 
 
 func calculate_adjacency_bonus(coord: Vector2i, type_id: String) -> Dictionary:
@@ -30,27 +34,41 @@ func value_at(coord: Vector2i, type_id: String, key: String) -> float:
 
 
 ## Rules currently in force for the building at coord: [{rule, side ("a"/"b"), count}].
+## Called for every building on every tick, so a type no rule names costs one lookup.
 func active_rules(coord: Vector2i, type_id: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
+	var rules: Array = _rules_naming(type_id)
+	if rules.is_empty():
+		return result
 	# A damaged building neither gets nor gives neighbour effects: it houses and produces nothing.
 	if GameStateStore.get_building(coord).get("damaged", false) as bool:
 		return result
-	var neighbors: Array[Vector2i] = HexCoords.neighbors_of(coord)
-	for syn: Dictionary in ContentDB.synergies:
-		var side: String = _side_of(syn, type_id)
-		if side == "":
-			continue
-		var other_type: String = (syn.get("pair", []) as Array)[1 if side == "a" else 0] as String
-		var count: int = 0
-		for nb: Vector2i in neighbors:
-			var nb_bld: Dictionary = GameStateStore.get_building(nb)
-			if not nb_bld.is_empty() and (nb_bld.get("type", "") as String) == other_type \
-					and not (nb_bld.get("damaged", false) as bool):
-				count += 1
-		count = mini(count, syn.get("max_stack", 6) as int)
+	var near: Array[String] = []  # types of the neighbours that stand undamaged
+	for nb: Vector2i in HexCoords.neighbors_of(coord):
+		var nb_bld: Dictionary = GameStateStore.get_building(nb)
+		if not nb_bld.is_empty() and not (nb_bld.get("damaged", false) as bool):
+			near.append(nb_bld.get("type", "") as String)
+	if near.is_empty():
+		return result
+	for named: Array in rules:
+		var count: int = mini(near.count(named[2] as String), named[3] as int)
 		if count > 0:
-			result.append({ "rule": syn, "side": side, "count": count })
+			result.append({ "rule": named[0], "side": named[1], "count": count })
 	return result
+
+
+func _rules_naming(type_id: String) -> Array:
+	if not is_same(_rules_source, ContentDB.synergies):
+		_rules_source = ContentDB.synergies
+		_rules_of.clear()
+	if not _rules_of.has(type_id):
+		var found: Array = []
+		for syn: Dictionary in ContentDB.synergies:
+			var side: String = _side_of(syn, type_id)
+			if side != "":
+				found.append([syn, side, (syn.get("pair", []) as Array)[1 if side == "a" else 0] as String, syn.get("max_stack", 6) as int])
+		_rules_of[type_id] = found
+	return _rules_of[type_id] as Array
 
 
 ## Rules that could apply to this building type — shown when the player picks it to build.
