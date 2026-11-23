@@ -2,7 +2,7 @@
 
 > English edition. The Russian original is [PLAYER_GUIDE.md](PLAYER_GUIDE.md).
 
-Version 0.4.0-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
+Version 0.4.1-alpha — "Rust Pit" test build (November 2026). 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk.
 
 Window: days 1–18. Dust: 19–29. Heat: 30–40. The term ends in the Heat; win on day 40 with mood ≥40 and at least 12 residents (having kept three quarters of the peak); otherwise the mandate is not renewed. Audits: days 20 and 36. Storms: on day 22 (Dust) and day 32 (Heat) the lookout warns of a storm for tomorrow; unbraced (20 wood, 5 tools) it wrecks two buildings, braced it leaves one breakdown. A wrecked building does nothing until repaired (R). Audit targets: water and food reserves of at least a day's current draw; people staying (mood ≥40, at least 8 residents at the first audit and 12 at the second, no more than a quarter lost). The League passes two targets of three; the Directorate only all of them. Heat spoils 4% of food once daily; each level 2+ warehouse cuts the rate by a quarter, to a minimum of 25%. Dried rations halve it again. Water below 30% of capacity costs 8 mood, a nearly empty cistern (under 5%) 20; weak pressure hurts twice as much. The second audit also requires spoilage below 25% of the incoming food reserve and changes trust by 1.5 times as much.
 
@@ -136,7 +136,7 @@ Play without outside hints. After the run, answer (short is fine, voice or text)
 6. What annoyed you in the controls or interface?
 7. Did you want to play again differently? How?
 
-Also: a screenshot of the ending screen ("SUMMARY") and the `analytics` folder — the log of your runs (Options → "Open folder"; it stays on your computer only and shows us where the game gets hard or dull). If the game broke — what you were doing just before and the newest file from the `logs` folder (see "How to run"). Send answers to whoever gave you the build, any way you like.
+Also: a screenshot of the ending screen ("SUMMARY") and the report archive — the log of your runs in one file (Options → "Pack a report", it lands on the Desktop; it stays on your computer only and shows us where the game gets hard or dull). If the game broke — what you were doing just before and the newest file from the `logs` folder (see "How to run"). Send answers to whoever gave you the build, any way you like.
 
 ## Known limitations of the test build
 

@@ -2809,18 +2809,23 @@ func _rebuild_settings_panel() -> void:
 	note.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
 	root.add_child(note)
 
-	# Play logs (RunLog): testers attach this folder to their feedback.
+	# Play logs (RunLog): testers send one archive. The note has its own line; in one row
+	# with three buttons it was squeezed into a column one letter wide.
+	var logs_note := Label.new()
+	logs_note.text = Localization.ru_en("Журнал партий хранится только на этом компьютере. «Собрать отчёт» кладёт его одним архивом на рабочий стол: приложите архив к отзыву.",
+		"Play logs stay on this computer. \"Pack a report\" puts them in one archive on the Desktop: attach it to your feedback.")
+	logs_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	logs_note.add_theme_font_size_override("font_size", 12)
+	logs_note.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
+	root.add_child(logs_note)
 	var logs_row := HBoxContainer.new()
 	logs_row.add_theme_constant_override("separation", 10)
 	root.add_child(logs_row)
-	var logs_note := Label.new()
-	logs_note.text = Localization.ru_en("Журнал партий хранится только на этом компьютере. Приложите папку к отзыву.",
-		"Play logs stay on this computer. Attach the folder to your feedback.")
-	logs_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	logs_note.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	logs_note.add_theme_font_size_override("font_size", 12)
-	logs_note.add_theme_color_override("font_color", UiStyle.TEXT_DIM)
-	logs_row.add_child(logs_note)
+	var report_btn := Button.new()
+	report_btn.text = Localization.ru_en("Собрать отчёт", "Pack a report")
+	UiStyle.primary(report_btn)
+	report_btn.pressed.connect(_pack_tester_report)
+	logs_row.add_child(report_btn)
 	var logs_btn := Button.new()
 	logs_btn.text = Localization.ru_en("Открыть папку", "Open folder")
 	logs_btn.pressed.connect(func() -> void: OS.shell_open(RunLog.folder()))
@@ -2830,6 +2835,16 @@ func _rebuild_settings_panel() -> void:
 	crash_btn.text = Localization.ru_en("Открыть папку логов", "Open logs folder")
 	crash_btn.pressed.connect(func() -> void: OS.shell_open(ProjectSettings.globalize_path("user://logs")))
 	logs_row.add_child(crash_btn)
+
+
+## The tester's whole report in one file, and the folder it landed in opened for them.
+func _pack_tester_report() -> void:
+	var path: String = RunLog.pack_report()
+	if path == "":
+		EventBus.toast_requested.emit(Localization.ru_en("Не удалось записать архив. Откройте папку и приложите её вручную.", "Could not write the archive. Open the folder and attach it by hand."), 6.0)
+		return
+	EventBus.toast_requested.emit(Localization.ru_en("Отчёт собран: %s", "Report packed: %s") % path.get_file(), 6.0)
+	OS.shell_open(path.get_base_dir())
 
 
 func _on_settings_language_selected(index: int) -> void:

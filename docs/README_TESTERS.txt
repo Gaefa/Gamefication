@@ -1,6 +1,14 @@
-Mandate Cities 0.4.0-alpha — playtest build / тестовая сборка
+Mandate Cities 0.4.1-alpha — playtest build / тестовая сборка
 
-NEW IN 0.4.0-alpha / НОВОЕ В 0.4.0-alpha
+NEW IN 0.4.1-alpha / НОВОЕ В 0.4.1-alpha
+  The playtest build. "Pack a report" (Options, and on the finale screen) puts everything we
+  ask you to send into one archive on the Desktop. Three new hints: the chapter's norm on its
+  first day, the "» evening" button from day two, the treasury once it has money to spend.
+  Сборка для плейтеста. «Собрать отчёт» (в настройках и на экране финала) кладёт всё, что мы
+  просим прислать, одним архивом на рабочий стол. Три новые подсказки: норма главы в первый
+  день, кнопка «» вечер» со второго дня, казна, когда в ней есть что тратить.
+
+FROM 0.4.0-alpha / ИЗ 0.4.0-alpha
   Five chapters with teeth: this is the build to play as a campaign.
   "To the evening": the "» evening" button by the clock (key 4) runs the rest of the day in a
   second once you have done what you wanted; an urgent letter stops it.
@@ -67,17 +75,25 @@ LANGUAGE / ЯЗЫК
   English / Русский buttons on the main menu (also in Options, O).
 
 CRASHED? / УПАЛА?
-  Send the WHOLE logs folder (Options -> "Open logs folder"), plus what you were doing:
+  Start the game again, Options -> "Pack a report": one archive lands on the Desktop with the
+  engine's logs inside. Send it, plus what you were doing. If the game does not start at all,
+  send the WHOLE logs folder:
   Windows: %APPDATA%\Godot\app_userdata\Mandate Cities\logs
   macOS:   ~/Library/Application Support/Godot/app_userdata/Mandate Cities/logs
-  Пришлите ВСЮ папку logs (Настройки -> «Открыть папку логов») и что делали перед этим.
+  Запустите игру снова, Настройки -> «Собрать отчёт»: на рабочем столе появится один архив,
+  логи движка внутри. Пришлите его и напишите, что делали перед падением. Если игра не
+  запускается совсем, пришлите ВСЮ папку logs.
 
 AFTER THE RUN / ПОСЛЕ ПАРТИИ
-  Send: a screenshot of the ending screen ("SUMMARY" / «ИТОГИ»), the analytics folder
-  (Options -> "Open folder"), and answers to the ten questions below. If "Continue" broke,
-  add saves/save_0.json from the same folder.
-  Пришлите: скриншот финала с «ИТОГАМИ», папку analytics (Настройки -> «Открыть папку»)
-  и ответы на десять вопросов ниже. Если сломалось «Продолжить», ещё saves/save_0.json.
+  Send three things: a screenshot of the ending screen ("SUMMARY" / «ИТОГИ»), the report
+  archive (Options -> "Pack a report": one zip on the Desktop with your play logs, the engine's
+  logs and a line about your machine; nothing is sent anywhere by the game), and answers to
+  the questions below. If "Continue" broke, add saves/save_0.json (Options -> "Open folder",
+  one level up).
+  Пришлите три вещи: скриншот финала с «ИТОГАМИ», архив отчёта (Настройки -> «Собрать отчёт»:
+  один zip на рабочем столе с журналом партий, логами движка и строкой о вашем компьютере;
+  сама игра никуда ничего не отправляет) и ответы на вопросы ниже. Если сломалось
+  «Продолжить», ещё saves/save_0.json (Настройки -> «Открыть папку», уровнем выше).
 
 TEN QUESTIONS / ДЕСЯТЬ ВОПРОСОВ
   1. OS, screen resolution, OS scale, graphics card. Did it start first time; what got in the way?
@@ -92,14 +108,22 @@ TEN QUESTIONS / ДЕСЯТЬ ВОПРОСОВ
      Вода: поняли ли разницу между запасом, покрытием и напором? Что помогло или мешало?
   6. The Desk: was it clear what each answer does? Was there a letter you answered wrongly?
      Стол: было ли ясно, что даёт каждый ответ? Было ли письмо, на которое ответили не так, как хотели?
-  7. Which speed did you play at and why? When did it get boring or too long?
-     На какой скорости играли и почему? Когда стало скучно или слишком долго?
+  7. Which speed did you play at, and did you use "» evening" (key 4)? When did it get boring or too long?
+     На какой скорости играли и пользовались ли «» вечер» (клавиша 4)? Когда стало скучно или слишком долго?
   8. Tutorial: finished, skipped (at which step), what was missing?
      Обучение: прошли, пропустили (на каком шаге), чего не хватило?
   9. What annoyed you in the controls and the interface (small text, windows, keys)?
      Что раздражало в управлении и интерфейсе (мелкий текст, окна, клавиши)?
   10. 1–10: "I would play again differently" — and how? Plus one bug you remember.
      1–10: «сыграл бы ещё раз иначе», и как именно? Плюс один запомнившийся баг.
+
+IF YOU PLAYED CHAPTER 2 OR LATER / ЕСЛИ ИГРАЛИ ГЛАВУ 2 И ДАЛЬШЕ
+  11. What did the patron send you for in that chapter, in your words? When did you notice the norm?
+      За чем вас прислал покровитель в этой главе, своими словами? Когда вы заметили норму?
+  12. Did you hold the wagons, buy at the market or hold a feast? Why, or why not?
+      Придерживали ли вагоны, покупали ли у соседей, устраивали ли праздник? Почему да или нет?
+  13. Was there a letter where you sided with the residents against the patron (or the other way)? What did it cost?
+      Было ли письмо, где вы встали на сторону жителей против покровителя (или наоборот)? Чего это стоило?
 
 Guide: PLAYER_GUIDE_EN.md (English) / PLAYER_GUIDE.md (русский).
 40 days take 200 minutes at ×1 or about 1 h 7 min at ×3, plus time at the Desk. Press H in game for help.

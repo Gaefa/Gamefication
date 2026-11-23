@@ -18,6 +18,12 @@ const HINTS := {
 		"Now a \"Well Pump\" by the road: it gives water within 4 tiles (V shows the range). A second pump is a second reserve for the Dust."],
 	"build_shelter": ["«Жильё» → «Барак» в зоне воды — приедут жители. Барак без воды пустует. Кликните по зданию — увидите, чего ему не хватает.",
 		"\"Residential\" → \"Shelter\" inside the water zone, and residents will arrive. A shelter without water stays empty. Click a building to see what it lacks."],
+	# --- The 0.4 mechanics: the chapter's norm, the evening rush, the treasury ---
+	"chapter_norm": ["", ""],  # written from the chapter's data in _hint_text
+	"rush": ["Сделали на сегодня всё, что хотели? Кнопка «» вечер» у часов или клавиша 4 прогонит остаток дня за секунду. Срочное письмо её остановит.",
+		"Done everything you wanted today? The \"» evening\" button by the clock, or key 4, runs the rest of the day in a second. An urgent letter stops it."],
+	"treasury": ["В казне копятся деньги. Кнопка «Город» открывает закупку у соседей (камень, дерево, инструменты) и праздник квартала: счастье +6 на два дня.",
+		"Money is piling up in the treasury. The City button opens the neighbours' market (stone, wood, tools) and a quarter's feast: mood +6 for two days."],
 	"first_desk": ["Так будет каждый вечер: письма и обращения на Столе, последствия написаны под каждым ответом. Всё, что вы ответили, хранится в журнале (T).",
 		"This happens every evening: letters and petitions on the Desk, with the consequences written under each answer. Everything you answered is kept in the log (T)."],
 	# --- Contextual: fire on the first occurrence of the situation ---
@@ -76,6 +82,14 @@ func _reset() -> void:
 
 func _on_tick_finished(_tick: int) -> void:
 	_advance_chain()
+	# The chapter's norm on the first day; the evening rush from the second; the treasury
+	# once there is something in it to spend.
+	if ChapterNorm.active() and _is_shown("welcome"):
+		_offer("chapter_norm")
+	if SimulationRunner.day_count >= 2 and SimulationRunner.rushes == 0 and SimulationRunner.day_timer < SimulationRunner.day_duration * 0.5:
+		_offer("rush")
+	if SimulationRunner.day_count >= 3 and GameStateStore.get_resource("res_money") >= 300.0 and (GameStateStore.economy().get("lots_bought", 0) as int) == 0:
+		_offer("treasury")
 	# Water-days hint: first time the reserve dips into "watch it" territory.
 	if GameStateStore.get_resource("res_water_stockpile") <= 70.0:
 		_offer("water_days")
@@ -149,7 +163,23 @@ func _apply_text() -> void:
 	_btn.text = Localization.ru_en("Понятно", "Got it")
 	if _active != "":
 		var pair: Array = HINTS[_active] as Array
-		_label.text = _welcome_text() if _active == "welcome" else Localization.ru_en(pair[0] as String, pair[1] as String)
+		_label.text = _hint_text(_active, pair)
+
+
+func _hint_text(hint_id: String, pair: Array) -> String:
+	match hint_id:
+		"welcome":
+			return _welcome_text()
+		"chapter_norm":
+			var norm: Dictionary = ChapterNorm.def()
+			var line: String = Localization.ru_en(
+				"У этой главы своя норма: «%s», сейчас %s. Она стоит в списке «Цели» слева и спрашивается на обеих проверках и в конце срока.",
+				"This chapter has a norm of its own: \"%s\", now %s. It is in the Goals list on the left and is asked at both inspections and at the end of the term.") % [ChapterNorm.label(), ChapterNorm.figures(ChapterNorm.current_stage())]
+			if ChapterNorm.is_quota():
+				line += Localization.ru_en(" Вагоны покровителя уходят сами; клик по строке нормы придерживает их.", " The patron's wagons leave on their own; a click on the norm's line holds them.")
+			var hint: String = Localization.content_text(norm, "hint", "")
+			return line if hint == "" else line + "\n" + hint
+	return Localization.ru_en(pair[0] as String, pair[1] as String)
 
 
 ## The first hint names the district, the term and the audit days. Only the Rust Pit has it
