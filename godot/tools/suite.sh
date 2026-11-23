@@ -22,6 +22,15 @@ echo "loop prepared: $(run loop_smoke --quit-after 400000 -- prepared | grep -E 
 for ch in bogolessky_gorge black_quarry big_nyupa old_capital; do
   echo "loop $ch: $(run loop_smoke --quit-after 400000 -- chapter=$ch | grep -E '^=== SMOKE|CHAPTER ACCEPTANCE|SCRIPT ERROR' | sort -u | tr '\n' ' ')"
 done
+# Saves made by the builds testers already have (tools/old_saves), continued in this one
+# through the menu's Continue button and played to the end of the chapter.
+old_ok=0; old_all=0
+for f in godot/tools/old_saves/*.json; do
+  old_all=$((old_all + 1))
+  res=$(run player_bot --quit-after 400000 -- "load=$PWD/$f" | grep -E '^OLD SAVE|^=== SMOKE|SCRIPT ERROR' | sort -u | tr '\n' ' ')
+  if [[ "$res" == *": loaded"* && "$res" == *"=== SMOKE: финал"* && "$res" != *"SCRIPT ERROR"* ]]; then old_ok=$((old_ok + 1)); else echo "old save FAIL $(basename "$f"): $res"; fi
+done
+echo "old saves: $old_ok of $old_all continue and reach a finale"
 # The campaign as a player walks it: a building bot wins or loses each chapter and presses "Next chapter".
 echo "campaign: $(run campaign_smoke --quit-after 2000000 | grep -E '^=== CAMPAIGN|^FAIL|^дорога' | tr '\n' ' ')"
 echo "ui_flow: $(runw ui_flow_smoke | grep -E 'UI FLOW SMOKE|FAIL' | tr '\n' ' ')"
