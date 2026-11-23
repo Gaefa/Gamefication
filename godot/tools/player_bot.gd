@@ -130,12 +130,16 @@ func _bot_step() -> void:
 	if _restock("res_stone", 25.0, "bld_quarry_pit") or _restock("res_wood", 30.0, "bld_lumber_yard"):
 		return
 	_spend_treasury()
-	# What the patron sent you for gets the day's first move: a player who reads the quota
-	# digs the second pit on day one, not after the pumps are upgraded. One move a day; the
-	# rest of the day is the district's (and the norm's again, further down, if time is left).
+	# Water and food first: a district that grows past them empties in two days, and a player
+	# with one move a day spends it on an emptying store before the patron's figure.
+	# Otherwise what the patron sent you for gets the day's first move: a player who reads the
+	# quota digs the second pit on day one, not after the pumps are upgraded. One move a day;
+	# the rest of the day is the district's (and the norm's again, further down, if time is left).
+	var water_short: bool = _running_out("res_water_stockpile")
+	var food_short: bool = _running_out("res_food")
 	if _mechanic_off:
 		GameStateStore.climate()["norm_hold"] = true
-	else:
+	elif not (water_short or food_short):
 		if not _norm_moved_today and _chase_norm():
 			_norm_moved_today = true
 			return
@@ -143,12 +147,9 @@ func _bot_step() -> void:
 			return
 	if _keep_street_open():
 		return
-	# Water and food first: a district that grows past them empties in two days.
-	var water_short: bool = _running_out("res_water_stockpile")
-	var food_short: bool = _running_out("res_food")
 	if water_short and (_upgrade_tagged("water_source") or _upgrade_tagged("water_storage") or _place_scored("bld_well_pump")):
 		return
-	if food_short and (_place_food() or _upgrade_tagged("food_source")):
+	if food_short and _grow_food():
 		return
 	# Panels cost nothing to run; a generator burns money every day, so only on a healthy income.
 	if (power.get("demand", 0.0) as float) > (power.get("generation", 0.0) as float):
@@ -171,7 +172,7 @@ func _bot_step() -> void:
 			if _upgrade_tagged("water_source") or _place_scored("bld_well_pump"):
 				return
 		elif not _plenty("res_food"):
-			if _place_food() or _upgrade_tagged("food_source"):
+			if _grow_food():
 				return
 		elif _place_housing() or _upgrade_tagged("housing"):
 			return
@@ -211,10 +212,10 @@ func _running_out(res_id: String) -> bool:
 	var stock: float = GameStateStore.get_resource(res_id)
 	if EconomySystem.days_of(res_id) < 3.0:
 		# A full store is not a shortage, however fast a big district draws it: one more field
-		# a day does not make it hold longer. Neither is an emptied store that is filling.
+		# a day does not make it hold longer.
 		var cap: float = GameStateStore.get_cap(res_id)
 		if cap <= 0.0 or stock < cap * 0.85:
-			return flow < EconomySystem.daily_consumption(res_id) * 0.5
+			return true
 	return flow < 0.0 and stock / -flow < 6.0
 
 
@@ -280,7 +281,7 @@ func _chase_norm() -> bool:
 	if _flow(res_id) >= ChapterNorm.gap(stage) / days_left:
 		return false
 	if res_id == "res_food":
-		return _place_food() or _upgrade_tagged("food_source")
+		return _grow_food()
 	if res_id == "res_metal":
 		if _count("bld_smelter") * 2 < _count("bld_ore_pit") and _place_scored("bld_smelter"):
 			return true
@@ -316,6 +317,12 @@ func _restock(res_id: String, floor_stock: float, producer: String) -> bool:
 		if (PlacementRules.validate(cell, producer, orch.hex_grid).get("ok", false) as bool) and _place(producer, cell):
 			return true
 	return false
+
+
+## A field, a better field, or, with no watered cell left by a road, a road toward watered
+## ground and then a pump for the ground the roads reach.
+func _grow_food() -> bool:
+	return _place_food() or _upgrade_tagged("food_source") or _extend_road(true) or _place_scored("bld_well_pump")
 
 
 func _place_food() -> bool:
@@ -400,7 +407,8 @@ func _best_cell(type_id: String, near: Vector2i = Vector2i(-9999, -9999)) -> Dic
 		return {}
 	var bonuses: Dictionary = def.get("terrain_bonus", {}) as Dictionary
 	var needs_road: bool = tags.has("needs_road")
-	var is_housing: bool = tags.has("housing")
+	# Whatever drinks stands idle outside a pump's reach: houses, and fields as well.
+	var needs_water: bool = tags.has("housing") or (ContentDB.building_level_data(type_id, 0).get("consumes", {}) as Dictionary).has("res_water_stockpile")
 	var is_pump: bool = tags.has("water_source")
 	var best: Dictionary = {}
 	for cell: Vector2i in _frontier():
@@ -411,7 +419,7 @@ func _best_cell(type_id: String, near: Vector2i = Vector2i(-9999, -9999)) -> Dic
 		var terrain: int = GameStateStore.get_terrain(cell)
 		if terrain == FloodSystem.FLOODPLAIN and not tags.has("flood_proof") and not tags.has("food_source"):
 			continue
-		if is_housing and not orch.coverage.is_water_covered(cell):
+		if needs_water and not orch.coverage.is_water_covered(cell):
 			continue
 		var score: float = bonuses.get(str(terrain), 0.0) as float
 		if is_pump:
