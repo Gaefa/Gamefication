@@ -16,9 +16,8 @@ var _session_start_ms: int = 0
 
 func _ready() -> void:
 	# Dev tools play real runs; keep their logs out of the player's folder.
-	for arg: String in OS.get_cmdline_args():
-		if arg.begins_with("res://tools/"):
-			_dir = "user://analytics_tools/"
+	if ContentDB.is_tool_run():
+		_dir = "user://analytics_tools/"
 	EventBus.run_started.connect(func(continued: bool) -> void: _open("run_continue" if continued else "run_start"))
 	EventBus.phase_changed.connect(func(phase: String) -> void:
 		if phase == "evening":

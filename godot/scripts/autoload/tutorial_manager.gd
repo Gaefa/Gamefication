@@ -44,10 +44,7 @@ var _has_target: bool = false
 
 func _ready() -> void:
 	# Dev tools drive the game themselves; a tutorial that pauses time would hang them.
-	var tool_run: bool = DisplayServer.get_name() == "headless"
-	for arg: String in OS.get_cmdline_args():
-		if arg.begins_with("res://tools/"):
-			tool_run = true
+	var tool_run: bool = DisplayServer.get_name() == "headless" or ContentDB.is_tool_run()
 	enabled_for_next_run = not tool_run and not _load_done()
 	_build_ui()
 	EventBus.new_game_started.connect(func() -> void:

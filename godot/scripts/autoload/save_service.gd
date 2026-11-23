@@ -11,9 +11,8 @@ var _autosave_timer: float = 0.0
 
 
 func _ready() -> void:
-	for arg: String in OS.get_cmdline_args():
-		if arg.begins_with("res://tools/"):
-			SAVE_DIR = "user://saves_tools/"
+	if ContentDB.is_tool_run():
+		SAVE_DIR = "user://saves_tools/"
 	if not DirAccess.dir_exists_absolute(SAVE_DIR):
 		DirAccess.make_dir_recursive_absolute(SAVE_DIR)
 	EventBus.run_reset.connect(func() -> void: _autosave_timer = 0.0)

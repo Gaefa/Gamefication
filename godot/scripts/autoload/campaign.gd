@@ -15,11 +15,9 @@ var _path: String = FILE_PATH
 
 
 func _ready() -> void:
-	var tool_run: bool = false
-	for arg: String in OS.get_cmdline_args():
-		if arg.begins_with("res://tools/"):
-			_path = TOOLS_FILE_PATH
-			tool_run = true
+	var tool_run: bool = ContentDB.is_tool_run()
+	if tool_run:
+		_path = TOOLS_FILE_PATH
 	# A tool starts with no road behind it: what the last tool run (or one running beside
 	# it) left in the file would hand this run carried flags it never earned. Dried rations
 	# from a campaign walk once failed the Heat rules of the next suite.

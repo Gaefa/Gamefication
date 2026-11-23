@@ -14,6 +14,8 @@ var _cursor_kind: String = ""
 
 
 func _ready() -> void:
+	if ContentDB.boot_selftest(get_tree()):
+		return  # an exported build was asked to run a dev tool: its scene takes this one's place
 	_apply_saved_window_mode()
 	get_window().size_changed.connect(_apply_ui_scale)
 	_apply_ui_scale()
@@ -34,7 +36,13 @@ func _apply_ui_scale() -> void:
 	var window: Window = get_window()
 	var size: Vector2i = window.size.max(Vector2i.ONE)  # a minimised window may report 0×0
 	@warning_ignore("integer_division")
-	var factor: float = ui_scale if ui_scale > 0.0 else float(maxi(1, mini(size.x / 1280, size.y / 720)))
+	var auto: float = float(maxi(1, mini(size.x / 1280, size.y / 720)))
+	# A desktop monitor gets whole multiples, so the pixel art stays crisp. A phone is small in
+	# the hand whatever its pixel count: there the interface fills the screen's height. (At
+	# whole multiples a 2400x1080 phone got ×1 and a title panel a quarter of the screen wide.)
+	if OS.has_feature("mobile"):
+		auto = maxf(1.0, minf(float(size.x) / 1280.0, float(size.y) / 720.0))
+	var factor: float = ui_scale if ui_scale > 0.0 else auto
 	var logical := Vector2(size) / factor
 	# A window smaller than the design size shows the whole interface scaled down, not cut off.
 	var shrink: float = minf(1.0, minf(logical.x / 1280.0, logical.y / 720.0))

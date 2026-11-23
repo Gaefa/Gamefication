@@ -37,6 +37,46 @@ const CARRIED_FLAGS := ["ruben_burned", "unregistered_people", "forecaster_activ
 	"covenant_treaty", "charters_deal", "strike_broken", "union_standard", "boat_pact", "levee_wall"]
 
 
+## A dev tool is running the game: a tools scene named on the command line (the editor
+## binary), or `-- selftest=<tool>` given to an exported build. Export templates refuse a
+## scene path on the command line, so an exported .exe is told which tool to run this way and
+## the main scene hands over to it (boot_selftest). Tool runs keep their saves, logs and
+## campaign apart from the player's.
+static var _selftest_started: bool = false
+
+
+static func tool_scene() -> String:
+	for arg: String in OS.get_cmdline_args():
+		if arg.begins_with("res://tools/"):
+			return arg
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("selftest="):
+			return "res://tools/%s.tscn" % arg.trim_prefix("selftest=")
+	return ""
+
+
+static func is_tool_run() -> bool:
+	return tool_scene() != ""
+
+
+## Called by the main scene first thing: true when this start was a `selftest=` request and
+## the tool's scene has been put in the main scene's place.
+static func boot_selftest(tree: SceneTree) -> bool:
+	if _selftest_started:
+		return false
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("selftest="):
+			_selftest_started = true
+			var path: String = tool_scene()
+			if not ResourceLoader.exists(path):
+				push_error("selftest: no such tool scene %s" % path)
+				tree.quit(2)
+				return true
+			tree.change_scene_to_file.call_deferred(path)
+			return true
+	return false
+
+
 func _ready() -> void:
 	_load_chapter_index()
 	for arg: String in OS.get_cmdline_user_args():
