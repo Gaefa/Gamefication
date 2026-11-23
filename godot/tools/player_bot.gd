@@ -10,6 +10,7 @@ extends "res://tools/loop_smoke.gd"
 ##
 ## Run: Godot --headless --fixed-fps 60 --path <proj> res://tools/player_bot.tscn --quit-after 400000 -- chapter=<id> [seed=N] [lean=patron|city] [pace=N] [mechanic=off] [verbose]
 ## pace is decisions a day (default 30): pace=1 is a player who does one thing a day.
+## load=/abs/save.json continues a save instead of starting a run; keep_save=/abs/file.json keeps one from day 12.
 ## mechanic=off is a player who plays every chapter like the first one: no levees, filters or
 ## registry, no building toward the chapter's norm, the patron's wagons held. A chapter with
 ## teeth is one this player loses.
@@ -54,6 +55,8 @@ func _ready() -> void:
 			_step_every = maxi(1, FRAMES_PER_DAY / maxi(1, arg.trim_prefix("pace=").to_int()))
 		elif arg == "verbose":
 			_verbose = true
+		elif arg.begins_with("keep_save="):
+			_keep_save = arg.trim_prefix("keep_save=")
 	EventBus.evening_started.connect(func(_events: Array) -> void:
 		_built_today.clear()
 		_norm_moved_today = false
@@ -96,7 +99,18 @@ func _flow(res_id: String) -> float:
 	return _net.get(res_id, 0.0) as float
 
 
+## -- keep_save=/abs/file.json: on day 12 the run is saved the way the game saves it and the
+## file is kept. This is how tools/old_saves gets a set from every released build.
+var _keep_save: String = ""
+
+
 func _bot_step() -> void:
+	if _keep_save != "" and SimulationRunner.day_count >= 12:
+		SaveService.save_game(3, true)
+		DirAccess.copy_absolute(SaveService.call("_slot_path", 3) as String, _keep_save)
+		SaveService.delete_save(3)
+		print("KEPT SAVE: day %d → %s" % [SimulationRunner.day_count, _keep_save])
+		_keep_save = ""
 	var orch: GameOrchestrator = _orch()
 	if orch == null:
 		return

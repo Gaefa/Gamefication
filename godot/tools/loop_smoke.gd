@@ -16,6 +16,7 @@ var _prepared: bool = false
 var _legacy: String = ""        # start_legacies.json id (override: -- legacy=legacy_cistern)
 var _world_seed: int = 12345    # the run's seed: map, breakdowns, card draws (override: -- seed=7)
 var _profile: String = "appointed_administrator"  # start_profiles.json id (override: -- profile=founder_rebel)
+var _load_path: String = ""     # a save file to continue instead of a new run (override: -- load=/abs/save.json)
 var _main: Node
 var _desk: Control
 var _stuck: int = 0
@@ -46,6 +47,8 @@ func _ready() -> void:
 			_profile = arg.trim_prefix("profile=")
 		if arg.begins_with("seed="):
 			_world_seed = arg.trim_prefix("seed=").to_int()
+		if arg.begins_with("load="):
+			_load_path = arg.trim_prefix("load=")
 	EventBus.ending_triggered.connect(func(eid: String, kind: String) -> void:
 		_ending = "%s (%s)" % [eid, kind])
 	EventBus.phase_changed.connect(func(phase: String) -> void:
@@ -80,6 +83,9 @@ func _attach() -> void:
 	_desk = _main.get_node("HUDCanvas/DeskUI") as Control
 	# Behind the start menu nothing runs; start the run the way the menu button does.
 	seed(_world_seed)  # new_game draws the run's seed from here: the same city and issue sequence every time
+	if _load_path != "":
+		_continue_save()
+		return
 	_main.get_node("HUDCanvas/HUD").set("_selected_legacy", _legacy)
 	_main.get_node("HUDCanvas/HUD").call("_start_new_run", _profile)
 	if _prepared:
@@ -100,6 +106,26 @@ func _attach() -> void:
 		orch.spatial.rebuild_from_state()
 		orch.coverage.invalidate()
 		orch.infrastructure_sys.process_tick()
+	SimulationRunner.speed_scale = SPEED
+
+
+## A save made by an older build, continued the way a tester does after updating: the file
+## goes into the first slot and the menu's Continue button is pressed.
+func _continue_save() -> void:
+	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(_load_path)) as Dictionary
+	var meta: Dictionary = saved.get("meta", {}) as Dictionary
+	var day: int = (saved.get("climate", {}) as Dictionary).get("total_day", 0) as int
+	var file := FileAccess.open(SaveService.call("_slot_path", 0) as String, FileAccess.WRITE)
+	file.store_string(FileAccess.get_file_as_string(_load_path))
+	file.close()
+	_main.get_node("HUDCanvas/HUD").call("_on_continue_pressed")
+	SaveService.delete_save(0)
+	var now_day: int = GameStateStore.climate().get("total_day", -1) as int
+	var ok: bool = SimulationRunner.run_active and now_day == day and ContentDB.active_chapter == (meta.get("chapter_id", "rust_pit") as String)
+	print("OLD SAVE [%s, build %s, day %d]: %s" % [meta.get("chapter_id", "rust_pit"), meta.get("game_version", "?"), day, "loaded" if ok else "DID NOT LOAD"])
+	if not ok:
+		_finish("старое сохранение не загрузилось")
+		return
 	SimulationRunner.speed_scale = SPEED
 
 
