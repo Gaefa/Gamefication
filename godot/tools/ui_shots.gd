@@ -120,11 +120,11 @@ func _run() -> void:
 	for want_warning: bool in [true, false]:
 		for cell: Vector2i in HexCoords.disk(Vector2i.ZERO, 4):
 			if (PlacementRules.validate(cell, "bld_lumber_yard", builder.hex_grid).get("ok", false) as bool) and (PlacementRules.warning(cell, "bld_lumber_yard", builder.coverage) != "") == want_warning:
-				overlay.set("preview_cell_for_tools", cell)
+				overlay.set("preview_cell", cell)
 				overlay.queue_redraw()
 				break
 		await _shot("20_preview_idle" if want_warning else "20_preview_works")
-	overlay.set("preview_cell_for_tools", null)
+	overlay.set("preview_cell", null)
 	EventBus.build_mode_changed.emit("")
 	# Same map before/after Heat, plus the day-32 goals and spoilage forecast.
 	TutorialManager.enabled_for_next_run = false

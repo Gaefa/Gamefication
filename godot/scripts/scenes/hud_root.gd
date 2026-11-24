@@ -1366,6 +1366,10 @@ func _update_build_list_affordability() -> void:
 
 
 func _on_build_button(type_id: String) -> void:
+	# A phone has no right button and no Escape: the same card again puts the tool down.
+	if type_id == _active_build_type and get_tree().current_scene.get("touch") == true:
+		EventBus.build_mode_changed.emit("")
+		return
 	_active_build_type = type_id
 	_drop_selection()
 	EventBus.build_mode_changed.emit(type_id)
@@ -1418,6 +1422,9 @@ func _build_build_mode_info_text(type_id: String) -> String:
 	var desc: String = Localization.content_text(def, "description", "")
 	if desc != "" and not has_rules:
 		lines.append(_dim_bb(desc))
+	if get_tree().current_scene.get("touch") == true:
+		lines.append(_dim_bb(Localization.ru_en("Коснитесь клетки, чтобы прицелиться, ещё раз, чтобы построить. Карточка здания ещё раз убирает инструмент.",
+			"Tap a cell to aim, tap it again to build. The building's card again puts the tool down.")))
 	return "\n".join(lines)
 
 

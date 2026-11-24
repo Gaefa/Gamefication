@@ -94,11 +94,17 @@ macOS
 ANDROID (first look only / только посмотреть)
   Install the .apk (allow "unknown sources" when asked). Uninstall the previous build first:
   each build is signed with a new key. One finger drags the map, two fingers zoom, tap = click.
+  Building takes two taps: the first tap on a cell shows what would stand there (green, amber
+  if it would stand idle, red if it cannot be built) and says why; the second tap on the same
+  cell builds. Tap the building's card again to put the tool down.
   The layout is made for a 1280x720 desktop window and is scaled to the screen's height:
   comfortable on a tablet, readable but tight on a phone.
   No hotkeys: panels open from their buttons, pause from the clock.
   Установите .apk (разрешите «неизвестные источники»). Сначала удалите предыдущую сборку:
-  у каждой своя подпись. Один палец тянет карту, два — зум, тап = клик. Раскладка рассчитана
+  у каждой своя подпись. Один палец тянет карту, два — зум, тап = клик.
+  Стройка в два касания: первое касание клетки показывает, что там встанет (зелёная клетка,
+  жёлтая, если здание будет простаивать, красная, если строить нельзя), и называет причину;
+  второе касание той же клетки строит. Карточка здания ещё раз убирает инструмент. Раскладка рассчитана
   на окно 1280x720 и растягивается по высоте экрана: на планшете удобно, на телефоне читаемо,
   но тесно. Горячих клавиш нет: панели открываются кнопками, пауза — кликом по часам.
 

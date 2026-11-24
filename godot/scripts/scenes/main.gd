@@ -6,6 +6,14 @@ const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules
 
 var _orchestrator: GameOrchestrator
 var _build_mode: String = ""  # "" = none, otherwise building type_id
+## Touch. A finger has no hover, so the first tap on a cell aims (the preview and a note say
+## what would be built and whether it would stand idle) and a second tap on it builds.
+## A finger that moved was dragging the map and is not a tap.
+const TAP_SLOP := 16.0
+var touch: bool = false  # the last pointer was a finger
+var _aim := Vector2i(-9999, -9999)
+var _tap_start := Vector2.ZERO
+var _tap_alive: bool = false
 var _hud: Control
 var _selected_coord: Vector2i = Vector2i(-9999, -9999)
 var _show_ranges: bool = false
@@ -126,13 +134,35 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
+	if event is InputEventScreenTouch:
+		var st := event as InputEventScreenTouch
+		_set_touch(true)
+		if st.index != 0:
+			_tap_alive = false  # a second finger: a pinch
+		elif st.pressed:
+			_tap_start = st.position
+			_tap_alive = not _is_click_on_ui(st.position)
+		elif _tap_alive:
+			_tap_alive = false
+			if not _is_click_on_ui(st.position):
+				_handle_tap(HexCoords.pixel_to_axial(get_canvas_transform().affine_inverse() * st.position))
+		return
+	if event is InputEventScreenDrag:
+		if ((event as InputEventScreenDrag).position - _tap_start).length() > TAP_SLOP:
+			_tap_alive = false
+		return
+
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
+		if mb.device == InputEvent.DEVICE_ID_EMULATION:
+			return  # the mouse event the engine makes of a finger: the tap above has it
+		_set_touch(false)
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 			# Use real hit-test: check if any MOUSE_FILTER_STOP Control is under cursor
 			if _is_click_on_ui(mb.position):
 				return
-			_handle_click()
+			# The cell under the press itself: the pointer may have moved on by now.
+			_act_on(HexCoords.pixel_to_axial(get_canvas_transform().affine_inverse() * mb.position))
 			get_viewport().set_input_as_handled()
 		elif mb.pressed and mb.button_index == MOUSE_BUTTON_RIGHT:
 			_build_mode = ""
@@ -183,10 +213,40 @@ func _check_control_hit(node: Node, pos: Vector2) -> bool:
 	return false
 
 
-func _handle_click() -> void:
-	var world_pos: Vector2 = get_global_mouse_position()
-	var coord: Vector2i = HexCoords.pixel_to_axial(world_pos)
+func _handle_tap(coord: Vector2i) -> void:
+	if _build_mode == "" or coord == _aim:
+		_act_on(coord)
+		_set_aim(Vector2i(-9999, -9999))
+		return
+	_set_aim(coord)
+	var validation: Dictionary = PlacementRulesRef.validate(coord, _build_mode, _orchestrator.hex_grid)
+	if not (validation.get("ok", false) as bool):
+		EventBus.toast_requested.emit(validation.get("message", Localization.t("ui.command.cannot_build_here", "Cannot build here")) as String, 4.0)
+		return
+	var again: String = Localization.ru_en("Коснитесь ещё раз, чтобы построить.", "Tap again to build.")
+	var idle: String = PlacementRulesRef.warning(coord, _build_mode, _orchestrator.coverage)
+	EventBus.toast_requested.emit(again if idle == "" else idle + " " + again, 5.0)
 
+
+func _set_aim(coord: Vector2i) -> void:
+	_aim = coord
+	var overlay: Node = get_node_or_null("World/OverlayLayer")
+	if overlay:
+		overlay.set("preview_cell", null if coord == Vector2i(-9999, -9999) else coord)
+
+
+func _set_touch(on: bool) -> void:
+	if touch == on:
+		return
+	touch = on
+	var overlay: Node = get_node_or_null("World/OverlayLayer")
+	if overlay:
+		overlay.set("touch", on)
+	if not on:
+		_set_aim(Vector2i(-9999, -9999))
+
+
+func _act_on(coord: Vector2i) -> void:
 	if _build_mode != "":
 		var cmd := PlaceBuildingCommand.new(coord, _build_mode)
 		_orchestrator.command_bus.execute(cmd)
@@ -309,6 +369,7 @@ func _request_bulldoze() -> void:
 
 func _on_build_mode_changed(type_id: String) -> void:
 	_build_mode = type_id
+	_set_aim(Vector2i(-9999, -9999))
 
 
 ## The cursor hit-tests the whole UI tree; do it only when something that can change the
