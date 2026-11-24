@@ -5,8 +5,11 @@ const PlacementRulesRef := preload("res://scripts/core/buildings/placement_rules
 
 var _selected: Vector2i = Vector2i(-9999, -9999)
 var _hover: Vector2i = Vector2i(-9999, -9999)  # cell under the pointer (inspection mode only)
-## Tools cannot move the real pointer: they name the cell the build preview is drawn on.
-var preview_cell_for_tools: Variant = null
+## The cell the build preview is drawn on instead of the pointer's: the cell a finger aimed
+## at, and the one a tool names (tools cannot move the real pointer).
+var preview_cell: Variant = null
+## A finger leaves no pointer on the map: on touch the preview shows only on the aimed cell.
+var touch: bool = false
 var _tutorial_cells: Array = []  # cells the tutorial asks the player to click
 var _build_preview: String = ""
 var _show_ranges: bool = false
@@ -93,11 +96,11 @@ func _draw() -> void:
 			_draw_existing_building_range(center)
 
 	# Build preview cursor (snaps to hex grid)
-	if _build_preview != "":
+	if _build_preview != "" and (preview_cell != null or not touch):
 		var mouse_pos: Vector2 = get_global_mouse_position()
 		var coord: Vector2i = HexCoords.pixel_to_axial(mouse_pos)
-		if preview_cell_for_tools != null:
-			coord = preview_cell_for_tools as Vector2i
+		if preview_cell != null:
+			coord = preview_cell as Vector2i
 		var snap_center: Vector2 = HexCoords.axial_to_pixel(coord)
 		var validation: Dictionary = PlacementRulesRef.validate(coord, _build_preview, _hex_grid)
 		var color := Color(0.2, 0.9, 0.25, 0.45) if (validation.get("ok", false) as bool) else Color(1.0, 0.2, 0.12, 0.5)
