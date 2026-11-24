@@ -7,7 +7,8 @@ BOT = re.compile(
     r"^(\w+) \| exit (\d+) \| errors (\d+) \| BOT \[(\w+)\] seed (\d+) lean (\S+) pace (\d+)(?: mechanic (\S+))?: (\S+) \((\w+)\)"
     r".*?жители (\d+) \(пик (\d+), 12 с дня (-?\d+)\) \| сч (\d+) \| доверие (\d+) · поддержка (\d+)(?:.*?норма главы (\S+))?")
 TICK = re.compile(r"TICK COST \[(\w+)\]: ([\d.]+) ms a tick on the worst day \(day (\d+), (\d+) buildings\)")
-bots, other, bad, ticks = [], [], [], []
+BIG = re.compile(r"PERF PROBE \[(\w+)\]: ([\d.]+) ms a tick with (\d+) buildings")
+bots, other, bad, ticks, big = [], [], [], [], []
 for path in sorted(glob.glob(out + "/qa_*.log")):
     for raw in open(path, encoding="utf-8"):
         raw = raw.rstrip("\n")
@@ -17,8 +18,11 @@ for path in sorted(glob.glob(out + "/qa_*.log")):
         if cost:
             ticks.append((cost.group(1), float(cost.group(2)), int(cost.group(3)), int(cost.group(4)), raw.split(" | ")[0]))
         m = BOT.search(raw)
+        grown = BIG.search(raw)
         if m:
             bots.append(m.groups())
+        elif grown:
+            big.append(grown.groups())
         else:
             other.append(raw)
         head = re.match(r"^(\w+) \| exit (\d+) \| errors (\d+)", raw)
@@ -57,6 +61,10 @@ for ch in chapters:
         worst = max(rows, key=lambda t: t[1])
         typical = sorted(t[1] for t in rows)[len(rows) // 2]
         print("  %-18s worst %.2f ms a tick (%d buildings, day %d, %s) · median of runs %.2f ms" % (ch, worst[1], worst[3], worst[2], worst[4], typical))
+print()
+print("BIG DISTRICT: a tick with the district grown to 250 buildings (same machine, tick listeners included)")
+for ch, ms, count in big:
+    print("  %-18s %s ms a tick (%s buildings)" % (ch, ms, count))
 print()
 print("LEGACIES with the bot")
 for b in bots:

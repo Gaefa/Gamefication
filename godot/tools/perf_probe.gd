@@ -3,12 +3,24 @@ extends "res://tools/player_bot.gd"
 ## pipeline and every listener of tick_finished is timed, and the totals are printed with
 ## the number of buildings. Run it when TICK COST in qa.sh grows.
 ##
-## Run: Godot --headless --fixed-fps 60 --path <proj> res://tools/perf_probe.tscn --quit-after 400000 -- chapter=<id>
+## fill=N: before the timing the district is grown to N buildings, free of charge and by the
+## game's own placement rules. The bot wins with 40–100 buildings; a player may build far more.
+##
+## Run: Godot --headless --fixed-fps 60 --path <proj> res://tools/perf_probe.tscn --quit-after 400000 -- chapter=<id> [fill=N]
 ## Dev tool, not shipped.
 
 const SAMPLE_TICKS := 600
+const GROW_WITH: Array = ["bld_shelter", "bld_field_strip", "bld_well_pump", "bld_lumber_yard", "bld_shelter", "bld_quarry_pit", "bld_tool_workshop", "bld_warehouse"]
 
 var _probed: bool = false
+var _fill: int = 0
+
+
+func _ready() -> void:
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("fill="):
+			_fill = arg.trim_prefix("fill=").to_int()
+	super._ready()
 
 
 func _physics_process(delta: float) -> void:
@@ -18,7 +30,22 @@ func _physics_process(delta: float) -> void:
 		_probe()
 
 
+func _grow(target: int) -> void:
+	var misses: int = 0
+	var turn: int = 0
+	while GameStateStore.get_all_building_coords().size() < target and misses < GROW_WITH.size() * 2:
+		_built_today.clear()
+		for paid: String in GROW_WITH + ["bld_road", "bld_solar_panel", "bld_generator"]:
+			for res_id: String in PlacementRules.build_cost_for(ContentDB.get_building_def(paid)):
+				GameStateStore.set_resource(res_id, GameStateStore.get_cap(res_id))
+		var type_id: String = GROW_WITH[turn % GROW_WITH.size()] as String
+		turn += 1
+		misses = 0 if (_place_scored(type_id) or _extend_road(false)) else misses + 1
+
+
 func _probe() -> void:
+	if _fill > 0:
+		_grow(_fill)
 	var orch: GameOrchestrator = _orch()
 	var sched: TickScheduler = orch.tick_scheduler
 	var parts: Dictionary = {}

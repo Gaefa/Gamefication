@@ -2,6 +2,8 @@
 # Full QA for a version: the scenario matrix on top of suite.sh. Run before every tag.
 #   bash godot/tools/qa.sh [out_dir]        (GODOT=/path/to/Godot, QA_JOBS=6 workers, QA_SEEDS="1 2 3 4")
 # Every bot run also reports the cost of a simulation tick on its worst day (TICK COST).
+# The bot wins with a small district, so one more run per chapter grows the district to 250
+# buildings and times a tick there (BIG DISTRICT).
 # Scenarios, per chapter: the building bot on several seeds, at four paces (1, 2, 4, 30
 # decisions a day) and with three answer styles; every legacy start hands-off and with the
 # bot; a bot that ignores the chapter's mechanic; fuzz on several seeds; save round-trip,
@@ -56,7 +58,8 @@ section() {
     for leg in $(legacies $ch); do
       n=loop_${ch}_${leg}; c=$(run $n loop_smoke --quit-after 400000 -- chapter=$ch legacy=$leg); line $n "^=== SMOKE|CHAPTER ACCEPTANCE|БЛОКЕР" $c
       n=botleg_${ch}_${leg}; c=$(run $n player_bot --quit-after 400000 -- chapter=$ch legacy=$leg seed=5); line $n "^BOT \[|^TICK COST" $c
-    done ;;
+    done
+    n=big_${ch}; c=$(run $n perf_probe --quit-after 400000 -- chapter=$ch seed=1 fill=250); line $n "^PERF PROBE" $c ;;
   esac
   echo "## done" >> "$OUT/qa_$SEC.log"
 }
