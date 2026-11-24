@@ -1,6 +1,24 @@
-Mandate Cities 0.4.3-alpha — playtest build / тестовая сборка
+Mandate Cities 0.4.4-alpha — playtest build / тестовая сборка
 
-NEW IN 0.4.3-alpha / НОВОЕ В 0.4.3-alpha
+NEW IN 0.4.4-alpha / НОВОЕ В 0.4.4-alpha
+  The patron's trust no longer climbs to the ceiling on its own. A clean audit raises it by
+  less than before (the penalties for missed lines are the same), and six answers in the
+  Black Quarry that gave the Union's trust for nothing give less. Answering for the city now
+  shows in the trust figure in every chapter.
+  A day runs faster on a big district: about a quarter on 250 buildings.
+  Android: building takes two taps. The first tap on a cell shows what would stand there and
+  says whether it would stand idle; the second tap on the same cell builds. A finger dragging
+  the map no longer plants a building; the building's card pressed again puts the tool down.
+  Доверие покровителя больше не доходит до потолка само. Чистая ревизия поднимает его меньше,
+  чем раньше (штрафы за пропущенные строки прежние), а шесть ответов в Чёрном Карьере,
+  которые давали доверие Союза даром, дают меньше. Ответы за город теперь видны по доверию
+  в каждой главе.
+  День идёт быстрее на большом районе: примерно на четверть при 250 зданиях.
+  Android: стройка в два касания. Первое касание клетки показывает, что там встанет и будет ли
+  здание простаивать; второе касание той же клетки строит. Палец, которым двигают карту,
+  больше не ставит здание; карточка здания ещё раз убирает инструмент.
+
+FROM 0.4.3-alpha / ИЗ 0.4.3-alpha
   The game tells you before you build where a building would stand idle. The cell under the
   cursor is amber when a road would not reach the warehouse or the admin post, when no such
   road is beside a building, or when no pump reaches a field or a house; the note after the
@@ -82,11 +100,17 @@ macOS
 ANDROID (first look only / только посмотреть)
   Install the .apk (allow "unknown sources" when asked). Uninstall the previous build first:
   each build is signed with a new key. One finger drags the map, two fingers zoom, tap = click.
+  Building takes two taps: the first tap on a cell shows what would stand there (green, amber
+  if it would stand idle, red if it cannot be built) and says why; the second tap on the same
+  cell builds. Tap the building's card again to put the tool down.
   The layout is made for a 1280x720 desktop window and is scaled to the screen's height:
   comfortable on a tablet, readable but tight on a phone.
   No hotkeys: panels open from their buttons, pause from the clock.
   Установите .apk (разрешите «неизвестные источники»). Сначала удалите предыдущую сборку:
-  у каждой своя подпись. Один палец тянет карту, два — зум, тап = клик. Раскладка рассчитана
+  у каждой своя подпись. Один палец тянет карту, два — зум, тап = клик.
+  Стройка в два касания: первое касание клетки показывает, что там встанет (зелёная клетка,
+  жёлтая, если здание будет простаивать, красная, если строить нельзя), и называет причину;
+  второе касание той же клетки строит. Карточка здания ещё раз убирает инструмент. Раскладка рассчитана
   на окно 1280x720 и растягивается по высоте экрана: на планшете удобно, на телефоне читаемо,
   но тесно. Горячих клавиш нет: панели открываются кнопками, пауза — кликом по часам.
 

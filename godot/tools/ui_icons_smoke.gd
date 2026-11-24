@@ -93,7 +93,7 @@ func _run() -> void:
 	var selection_before: Vector2i = _main.get("_selected_coord")
 	await _click_at(Vector2(640, 360))
 	_check(_main.get("_selected_coord") == selection_before, "modal click does not select the map behind it")
-	var coord: Vector2i = HexCoords.pixel_to_axial((_main as Node2D).get_global_mouse_position())
+	var coord: Vector2i = HexCoords.pixel_to_axial((_main as Node2D).get_canvas_transform().affine_inverse() * Vector2(640, 360))
 	var original_building: Dictionary = GameStateStore.get_building(coord).duplicate(true)
 	var original_terrain: int = GameStateStore.get_terrain(coord)
 	var original_stone: float = GameStateStore.get_resource("res_stone")
@@ -111,6 +111,7 @@ func _run() -> void:
 	await _click_at(Vector2(640, 360))
 	_check(GameStateStore.get_building(coord).get("type") == "bld_road" and GameStateStore.get_resource("res_stone") < 100.0, "closing modal restores construction")
 	GameStateStore.remove_building(coord)
+	await _check_touch()
 	if not original_building.is_empty():
 		GameStateStore.set_building(coord, original_building)
 	GameStateStore.set_terrain(coord, original_terrain)
@@ -171,6 +172,70 @@ func _settle() -> void:
 	for frame: int in 12:
 		await get_tree().process_frame
 	RenderingServer.force_draw(true)
+
+
+## A finger: the first tap aims, the second builds, a drag pans and builds nothing, and the
+## building's card pressed again leaves build mode (a phone has no right button or Escape).
+func _check_touch() -> void:
+	var none := Vector2i(-9999, -9999)
+	var at := Vector2(640, 360)
+	var camera: Node2D = _main.get_node("Camera") as Node2D
+	var camera_home: Vector2 = camera.global_position
+	var cell: Vector2i = HexCoords.pixel_to_axial((_main as Node2D).get_canvas_transform().affine_inverse() * at)
+	var was_building: Dictionary = GameStateStore.get_building(cell).duplicate(true)
+	var was_terrain: int = GameStateStore.get_terrain(cell)
+	GameStateStore.remove_building(cell)
+	GameStateStore.set_terrain(cell, 0)
+	GameStateStore.set_resource("res_stone", 100.0)
+	var overlay: Node = _main.get_node("World/OverlayLayer")
+	EventBus.build_mode_changed.emit("bld_road")
+	await _tap_at(at)
+	_check(_main.get("touch") == true and overlay.get("touch") == true, "a finger switches the map to touch")
+	_check(not GameStateStore.has_building(cell) and _main.get("_aim") == cell and overlay.get("preview_cell") == cell, "the first tap aims and builds nothing")
+	_check((_hud.get("_toast_label") as Label).text != "", "the first tap says what the second will do")
+	await _tap_at(at, at + Vector2(80, 0))
+	_check(not GameStateStore.has_building(cell), "a dragged finger builds nothing")
+	_check(not camera.global_position.is_equal_approx(camera_home), "a dragged finger pans the map")
+	camera.global_position = camera_home
+	await _settle()
+	await _tap_at(at)
+	_check(GameStateStore.get_building(cell).get("type") == "bld_road", "the second tap on the aimed cell builds")
+	_check(_main.get("_aim") == none and overlay.get("preview_cell") == null, "the aim is gone after the build")
+	_hud.call("_on_build_button", "bld_road")
+	_check(_main.get("_build_mode") == "", "on touch the same card again leaves build mode")
+	GameStateStore.remove_building(cell)
+	if not was_building.is_empty():
+		GameStateStore.set_building(cell, was_building)
+	GameStateStore.set_terrain(cell, was_terrain)
+	var selected: Vector2i = _main.get("_selected_coord")
+	await _click_at(at)
+	_check(_main.get("touch") == false and overlay.get("touch") == false, "a mouse click switches back")
+	_main.set("_selected_coord", selected)
+	_hud.call("_on_build_button", "bld_road")
+	_hud.call("_on_build_button", "bld_road")
+	_check(_main.get("_build_mode") == "bld_road", "with a mouse the same card again keeps build mode")
+	EventBus.build_mode_changed.emit("")
+
+
+func _tap_at(at: Vector2, lift_at: Vector2 = Vector2.INF) -> void:
+	var down := InputEventScreenTouch.new()
+	down.position = at
+	down.pressed = true
+	Input.parse_input_event(down)
+	await get_tree().process_frame
+	var end: Vector2 = at
+	if lift_at != Vector2.INF:
+		end = lift_at
+		var drag := InputEventScreenDrag.new()
+		drag.position = end
+		drag.relative = end - at
+		Input.parse_input_event(drag)
+		await get_tree().process_frame
+	var up := InputEventScreenTouch.new()
+	up.position = end
+	up.pressed = false
+	Input.parse_input_event(up)
+	await get_tree().process_frame
 
 
 func _click_at(at: Vector2) -> void:
