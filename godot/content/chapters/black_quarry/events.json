@@ -116,7 +116,7 @@
         "text": "Отказать: металл для Союза",
         "text_en": "Refuse: the metal is for the Union",
         "effects": {
-          "stat_league_trust": 2,
+          "stat_league_trust": 1,
           "style": "loyal",
           "message": "Крон уехала без слитков. Весы оставила: «на случай, если передумаете».",
           "message_en": "Kron left without the ingots. She left the scales: \"in case you change your mind.\""
@@ -145,7 +145,7 @@
         "text": "Обещать станцию к первой ревизии",
         "text_en": "Promise the station by the first review",
         "effects": {
-          "stat_league_trust": 5,
+          "stat_league_trust": 3,
           "set_flag": "union_standard",
           "style": "loyal",
           "message": "Ответ ушёл. Хольт приписал: «Проверю на пятнадцатый день».",
@@ -299,7 +299,7 @@
         "text": "Принять наладчика",
         "text_en": "Take the fitter",
         "effects": {
-          "stat_league_trust": 5,
+          "stat_league_trust": 3,
           "add_buff": {
             "id": "union_fitter",
             "name": "Наладчик Союза",
@@ -537,7 +537,7 @@
         "text": "Принять посредника",
         "text_en": "Accept the mediator",
         "effects": {
-          "stat_league_trust": 3,
+          "stat_league_trust": 2,
           "stat_unrest_pressure": -6,
           "set_flag": "union_mediator",
           "style": "loyal",
@@ -1616,7 +1616,7 @@
         "text": "Отказать и доложить Хольту",
         "text_en": "Refuse and report to Holt",
         "effects": {
-          "stat_league_trust": 4,
+          "stat_league_trust": 3,
           "stat_rival_score": -1,
           "style": "loyal",
           "message": "Хольт ответил: «Принято. Металл всё равно нужен».",
@@ -1729,7 +1729,7 @@
         "text": "Отказать и написать Хольту",
         "text_en": "Refuse and write to Holt",
         "effects": {
-          "stat_league_trust": 4,
+          "stat_league_trust": 3,
           "stat_rival_score": -1,
           "style": "loyal",
           "message": "Хольт ответил: «Принято. Гарь топит углём, Карьер будет топить по стандарту».",
