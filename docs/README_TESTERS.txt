@@ -1,6 +1,18 @@
-Mandate Cities 0.4.3-alpha — playtest build / тестовая сборка
+Mandate Cities 0.4.4-alpha — playtest build / тестовая сборка
 
-NEW IN 0.4.3-alpha / НОВОЕ В 0.4.3-alpha
+NEW IN 0.4.4-alpha / НОВОЕ В 0.4.4-alpha
+  The patron's trust no longer climbs to the ceiling on its own. A clean audit raises it by
+  less than before (the penalties for missed lines are the same), and six answers in the
+  Black Quarry that gave the Union's trust for nothing give less. Answering for the city now
+  shows in the trust figure in every chapter.
+  A day runs faster on a big district: about a quarter on 250 buildings.
+  Доверие покровителя больше не доходит до потолка само. Чистая ревизия поднимает его меньше,
+  чем раньше (штрафы за пропущенные строки прежние), а шесть ответов в Чёрном Карьере,
+  которые давали доверие Союза даром, дают меньше. Ответы за город теперь видны по доверию
+  в каждой главе.
+  День идёт быстрее на большом районе: примерно на четверть при 250 зданиях.
+
+FROM 0.4.3-alpha / ИЗ 0.4.3-alpha
   The game tells you before you build where a building would stand idle. The cell under the
   cursor is amber when a road would not reach the warehouse or the admin post, when no such
   road is beside a building, or when no pump reaches a field or a house; the note after the
