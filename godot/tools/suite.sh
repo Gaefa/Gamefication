@@ -6,7 +6,7 @@ cd "$(dirname "$0")/../.." || exit 1
 G=${GODOT:-$HOME/Downloads/Godot.app/Contents/MacOS/Godot}
 OUT=${SUITE_OUT:-/tmp/mandate_suite}; mkdir -p "$OUT/ru" "$OUT/en"
 run() { perl -e 'alarm 900; exec @ARGV' "$G" --headless --path godot "res://tools/$1.tscn" --fixed-fps 60 "${@:2}" 2>&1; }
-runw() { perl -e 'alarm 900; exec @ARGV' "$G" --path godot "res://tools/$1.tscn" "${@:2}" 2>&1; }
+runw() { perl -e 'alarm 900; exec @ARGV' "$G" --audio-driver Dummy --path godot "res://tools/$1.tscn" "${@:2}" 2>&1; }
 echo "content: $(run content_check --quit-after 2000 | grep -E '^=== CONTENT' | tr '\n' ' ')"
 echo "rules: $(run rules_smoke | grep -E '^=== RULES|FAIL' | tr '\n' ' ')"
 echo "save_roundtrip: $(run save_roundtrip | grep -E '^=== ROUND' | tr '\n' ' ')"
@@ -36,4 +36,5 @@ echo "campaign: $(run campaign_smoke --quit-after 2000000 | grep -E '^=== CAMPAI
 echo "ui_flow: $(runw ui_flow_smoke | grep -E 'UI FLOW SMOKE|FAIL' | tr '\n' ' ')"
 echo "ui_shots: $(runw ui_shots -- out=$OUT/ru | grep -E 'UI SHOTS|FAIL' | tr '\n' ' ')"
 echo "ui_shots en: $(runw ui_shots -- out=$OUT/en locale=en | grep -E 'UI SHOTS|FAIL' | tr '\n' ' ')"
-for t in pins_smoke props_smoke terrain_smoke ui_icons_smoke; do echo "$t: $(runw $t | grep -E 'SMOKE|FAIL' | tail -1)"; done
+# These four report a failed check as an engine error line: keep it, or a red line says nothing.
+for t in pins_smoke props_smoke terrain_smoke ui_icons_smoke; do echo "$t: $(runw $t | grep -E 'SMOKE:|^ERROR' | grep -v 'still in use at exit' | tr '\n' ' ')"; done
