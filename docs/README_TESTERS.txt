@@ -1,6 +1,16 @@
-Mandate Cities 0.4.4-alpha — playtest build / тестовая сборка
+Mandate Cities 0.4.5-alpha — playtest build / тестовая сборка
 
-NEW IN 0.4.4-alpha / НОВОЕ В 0.4.4-alpha
+NEW IN 0.4.5-alpha / НОВОЕ В 0.4.5-alpha
+  Android: two fingers zoom the map. In earlier builds the pinch did nothing, though this
+  file promised it.
+  Android: the tutorial and the help (H) speak of taps, the clock and the on-screen buttons
+  instead of keys, the mouse wheel and the right button.
+  Android: два пальца меняют масштаб карты. В прежних сборках щипок не работал, хотя этот
+  файл его обещал.
+  Android: обучение и справка (H) говорят о касаниях, часах и кнопках на экране, а не о
+  клавишах, колесе мыши и правой кнопке.
+
+FROM 0.4.4-alpha / ИЗ 0.4.4-alpha
   The patron's trust no longer climbs to the ceiling on its own. A clean audit raises it by
   less than before (the penalties for missed lines are the same), and six answers in the
   Black Quarry that gave the Union's trust for nothing give less. Answering for the city now

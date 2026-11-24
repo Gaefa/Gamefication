@@ -1916,7 +1916,11 @@ func _build_help_panel() -> void:
 
 
 func _get_help_text() -> String:
-	return Localization.t("ui.help.text", "H — справка. Q вода · E сезон · T журнал · Y дневник · Пробел пауза · 1/2/3 скорость.")
+	var text: String = Localization.t("ui.help.text", "H — справка. Q вода · E сезон · T журнал · Y дневник · Пробел пауза · 1/2/3 скорость.")
+	if get_tree().current_scene.get("touch") == true:
+		text = Localization.ru_en("НА СЕНСОРНОМ ЭКРАНЕ\nПалец — двигать карту · два пальца — масштаб · касание — выбрать · стройка: первое касание показывает место, второе по той же клетке строит · карточка здания ещё раз — убрать инструмент · касание по часам — пауза, ×1 ×2 ×3 — скорость",
+			"ON A TOUCH SCREEN\nOne finger moves the map · two fingers zoom · a tap selects · building: the first tap shows the spot, a second tap on the same cell builds · the building's card again puts the tool down · a tap on the clock pauses, ×1 ×2 ×3 set the speed") + "\n\n" + text
+	return text
 
 
 func toggle_help() -> void:
@@ -1927,6 +1931,7 @@ func _set_help(on: bool) -> void:
 	_help_visible = on
 	_help_panel.visible = on
 	if on:
+		_help_label.text = _get_help_text()  # the touch paragraph follows the pointer in use
 		_help_panel.move_to_front()  # above the title screen, where H works too
 		UiModals.opened("help", func() -> void: _set_help(false))
 		UiModals.reveal(_help_panel)
