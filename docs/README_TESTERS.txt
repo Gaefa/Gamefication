@@ -6,11 +6,17 @@ NEW IN 0.4.4-alpha / НОВОЕ В 0.4.4-alpha
   Black Quarry that gave the Union's trust for nothing give less. Answering for the city now
   shows in the trust figure in every chapter.
   A day runs faster on a big district: about a quarter on 250 buildings.
+  Android: building takes two taps. The first tap on a cell shows what would stand there and
+  says whether it would stand idle; the second tap on the same cell builds. A finger dragging
+  the map no longer plants a building; the building's card pressed again puts the tool down.
   Доверие покровителя больше не доходит до потолка само. Чистая ревизия поднимает его меньше,
   чем раньше (штрафы за пропущенные строки прежние), а шесть ответов в Чёрном Карьере,
   которые давали доверие Союза даром, дают меньше. Ответы за город теперь видны по доверию
   в каждой главе.
   День идёт быстрее на большом районе: примерно на четверть при 250 зданиях.
+  Android: стройка в два касания. Первое касание клетки показывает, что там встанет и будет ли
+  здание простаивать; второе касание той же клетки строит. Палец, которым двигают карту,
+  больше не ставит здание; карточка здания ещё раз убирает инструмент.
 
 FROM 0.4.3-alpha / ИЗ 0.4.3-alpha
   The game tells you before you build where a building would stand idle. The cell under the
