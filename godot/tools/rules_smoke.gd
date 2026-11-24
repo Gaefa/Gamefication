@@ -1083,7 +1083,7 @@ func _heat_rules() -> void:
 	GameStateStore.climate()["total_day"] = 36
 	MandateManager.call("_on_tick_finished", 0)
 	_check(GameStateStore.mandate().get("audits_done", 0) == 2 and MandateManager.next_audit_day() == 0, "both audits complete after day 36")
-	_check(is_equal_approx(GameStateStore.mandate().get("patron_trust", 0.0) as float, 57.5), "second audit applies exactly 1.5 times trust, preserving halves")
+	_check(is_equal_approx(GameStateStore.mandate().get("patron_trust", 0.0) as float, 47.5), "second audit applies exactly 1.5 times trust, preserving halves")
 	var old_save: Dictionary = GameStateStore.to_save_dict().duplicate(true)
 	old_save["mandate"].erase("audits_done")
 	old_save["mandate"]["audit_done"] = true

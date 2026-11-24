@@ -77,8 +77,10 @@ func _run_audit() -> void:
 	# The Directorate pays better for a clean sheet and forgives nothing short of it:
 	# a missed norm is a failed inspection and costs trust, where the League still nods.
 	var directorate: bool = (mandate.get("patron_id", "") as String) == "civic_directorate"
+	# Two clean sheets must not carry trust from 50 to the ceiling on their own: with the
+	# neighbour behind and the second audit's weight they add 27.5 (the Directorate 32.5).
 	match missed:
-		0: trust_delta = 15 if directorate else 12
+		0: trust_delta = 10 if directorate else 8
 		1: trust_delta = -8 if directorate else 5
 		2: trust_delta = -12 if directorate else -6
 		_: trust_delta = -20 if directorate else -15
