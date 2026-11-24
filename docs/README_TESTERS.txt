@@ -5,10 +5,16 @@ NEW IN 0.4.5-alpha / НОВОЕ В 0.4.5-alpha
   file promised it.
   Android: the tutorial and the help (H) speak of taps, the clock and the on-screen buttons
   instead of keys, the mouse wheel and the right button.
+  Android: the Back button closes the open panel, puts the tool down or opens the pause menu
+  (in earlier builds it closed the game on the spot). The run is saved when the game goes to
+  the background.
   Android: два пальца меняют масштаб карты. В прежних сборках щипок не работал, хотя этот
   файл его обещал.
   Android: обучение и справка (H) говорят о касаниях, часах и кнопках на экране, а не о
   клавишах, колесе мыши и правой кнопке.
+  Android: кнопка «Назад» закрывает открытую панель, убирает инструмент или открывает меню
+  паузы (в прежних сборках она сразу закрывала игру). Партия сохраняется, когда игра уходит
+  в фон.
 
 FROM 0.4.4-alpha / ИЗ 0.4.4-alpha
   The patron's trust no longer climbs to the ceiling on its own. A clean audit raises it by

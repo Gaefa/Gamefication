@@ -87,9 +87,9 @@ func _run() -> void:
 	click.pressed = true
 	(_hud.get("_utility_label") as Label).gui_input.emit(click)
 	_check(WaterPanel.get("_visible"), "water panel click target preserved")
-	Input.warp_mouse(Vector2(640, 360))
 	await _settle()
-	_check(_main.get("_cursor_kind") == "", "autoload modal uses normal OS cursor")
+	# Asked of the rule itself: the real pointer cannot be moved when the window is not in front.
+	_check(_main.call("_cursor_for_pointer", Vector2(640, 360), world_pos, false) == "", "autoload modal uses normal OS cursor")
 	var selection_before: Vector2i = _main.get("_selected_coord")
 	await _click_at(Vector2(640, 360))
 	_check(_main.get("_selected_coord") == selection_before, "modal click does not select the map behind it")
@@ -225,6 +225,19 @@ func _check_touch() -> void:
 	_check((camera.get("zoom") as Vector2).is_equal_approx(zoom_home) and not camera.global_position.is_equal_approx(camera_home), "after a pinch one finger pans again and does not zoom")
 	camera.global_position = camera_home
 	EventBus.build_mode_changed.emit("")
+	# Android's Back is the phone's Escape: the tool down first, then the pause menu, then out of it.
+	_check(ProjectSettings.get_setting("application/config/quit_on_go_back") == false, "Back does not close the game on the spot")
+	EventBus.build_mode_changed.emit("bld_road")
+	_main.notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	_check(_main.get("_build_mode") == "", "Back puts the tool down")
+	_main.notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	_check(_hud.get("_pause_visible") == false, "behind the start menu Back brings no pause menu")
+	SimulationRunner.run_active = true
+	_main.notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	_check(_hud.get("_pause_visible") == true, "in a run Back with nothing open brings the pause menu")
+	_main.notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	_check(_hud.get("_pause_visible") == false, "Back again closes the pause menu")
+	SimulationRunner.run_active = false
 	# The tutorial and the help say nothing of keys, a wheel or a right button to a finger.
 	var desktop_only := RegEx.create_from_string("WASD|колес|wheel|ПКМ|RMB|Esc|Пробел|Space|[Кк]лик|[Cc]lick|\\[b\\][A-Z0-9]\\[/b\\]")
 	var deaf: Array[int] = []

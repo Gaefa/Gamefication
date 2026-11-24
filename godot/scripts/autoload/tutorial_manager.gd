@@ -222,8 +222,8 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("Дальше сами. Слева под картой — [b]цели[/b] и кнопки панелей: [b]Q[/b] вода, [b]E[/b] сезон и прогноз, [b]T[/b] журнал ваших ответов, [b]H[/b] справка. Значок над зданием — кликните по нему.\n\nУдачи, администратор.",
 				"You are on your own now. Under the minimap on the left are your [b]goals[/b] and the panel buttons: [b]Q[/b] water, [b]E[/b] season and forecast, [b]T[/b] log of your answers, [b]H[/b] help. An icon over a building — click it.\n\nGood luck, administrator."),
-			"touch": t.call("Дальше сами. Слева под картой — [b]цели[/b] и кнопки панелей: вода, сезон и прогноз, журнал ваших ответов, справка. Значок над зданием — коснитесь его.\n\nУдачи, администратор.",
-				"You are on your own now. Under the minimap on the left are your [b]goals[/b] and the panel buttons: water, season and forecast, the log of your answers, help. An icon over a building — tap it.\n\nGood luck, administrator."),
+			"touch": t.call("Дальше сами. Слева под картой — [b]цели[/b] и кнопки панелей: вода, сезон и прогноз, журнал ваших ответов, справка. Значок над зданием — коснитесь его. Кнопка [b]«Назад»[/b] на телефоне — меню паузы.\n\nУдачи, администратор.",
+				"You are on your own now. Under the minimap on the left are your [b]goals[/b] and the panel buttons: water, season and forecast, the log of your answers, help. An icon over a building — tap it. The phone's [b]Back[/b] opens the pause menu.\n\nGood luck, administrator."),
 			"top": true,
 			"last": true,
 		},

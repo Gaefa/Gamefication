@@ -1918,8 +1918,8 @@ func _build_help_panel() -> void:
 func _get_help_text() -> String:
 	var text: String = Localization.t("ui.help.text", "H — справка. Q вода · E сезон · T журнал · Y дневник · Пробел пауза · 1/2/3 скорость.")
 	if get_tree().current_scene.get("touch") == true:
-		text = Localization.ru_en("НА СЕНСОРНОМ ЭКРАНЕ\nПалец — двигать карту · два пальца — масштаб · касание — выбрать · стройка: первое касание показывает место, второе по той же клетке строит · карточка здания ещё раз — убрать инструмент · касание по часам — пауза, ×1 ×2 ×3 — скорость",
-			"ON A TOUCH SCREEN\nOne finger moves the map · two fingers zoom · a tap selects · building: the first tap shows the spot, a second tap on the same cell builds · the building's card again puts the tool down · a tap on the clock pauses, ×1 ×2 ×3 set the speed") + "\n\n" + text
+		text = Localization.ru_en("НА СЕНСОРНОМ ЭКРАНЕ\nПалец — двигать карту · два пальца — масштаб · касание — выбрать · стройка: первое касание показывает место, второе по той же клетке строит · карточка здания ещё раз — убрать инструмент · касание по часам — пауза, ×1 ×2 ×3 — скорость · «Назад» на телефоне — закрыть панель или открыть меню паузы",
+			"ON A TOUCH SCREEN\nOne finger moves the map · two fingers zoom · a tap selects · building: the first tap shows the spot, a second tap on the same cell builds · the building's card again puts the tool down · a tap on the clock pauses, ×1 ×2 ×3 set the speed · the phone's Back closes a panel or opens the pause menu") + "\n\n" + text
 	return text
 
 
