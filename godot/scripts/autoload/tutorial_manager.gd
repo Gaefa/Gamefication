@@ -75,6 +75,9 @@ func on_run_started() -> void:
 func _process(_delta: float) -> void:
 	if not active:
 		return
+	# A panel the player opened is theirs to read: the bubble sits above the HUD and covered
+	# the bottom of the pause menu, the options and the help.
+	_layer.visible = not UiModals.is_open()
 	_frame += 1
 	var step: Dictionary = _steps[_index]
 	_update_target(step)
