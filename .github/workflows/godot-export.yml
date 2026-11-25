@@ -304,7 +304,8 @@ jobs:
 
   # Nobody has started the Android build on a device. This job starts an x86_64 build of the
   # same project in an emulator, waits for the title screen, checks the process is alive and
-  # no fatal exception was logged, and keeps three screenshots at a phone's resolution. It runs in its own job, without
+  # no fatal exception was logged, presses Android's Back and checks the game is still in front,
+  # and keeps five screenshots at a phone's resolution. It runs in its own job, without
   # the signing secrets, and does not block a release: an emulator with software rendering
   # is a weaker witness than a phone, and a flaky one.
   android-run:
@@ -356,6 +357,18 @@ jobs:
             adb shell input tap 1627 742
             sleep 20
             adb exec-out screencap -p > android_3_game.png
+            # Android's own Back and a finger drag, through the system's input: Back must leave
+            # the game running and in front (before 0.4.5 it closed it on the spot).
+            adb shell input keyevent KEYCODE_BACK
+            sleep 4
+            adb exec-out screencap -p > android_4_back.png
+            adb shell pidof com.mandatecities.pixelcitybuilder
+            adb shell dumpsys activity activities | grep -i "resumedactivity" | grep com.mandatecities.pixelcitybuilder
+            adb shell input keyevent KEYCODE_BACK
+            sleep 2
+            adb shell input swipe 1300 600 900 400 600
+            sleep 2
+            adb exec-out screencap -p > android_5_drag.png
             adb logcat -d -s godot:V GodotEngine:V AndroidRuntime:E | grep -v "^$" | grep -E "OpenGL API|ERROR|FATAL|Godot Engine" | sort | uniq -c | sort -rn | head -15
             adb shell pidof com.mandatecities.pixelcitybuilder
             if adb logcat -d -s AndroidRuntime:E | grep -q "FATAL EXCEPTION"; then echo "fatal exception in the log"; exit 1; fi
