@@ -98,6 +98,8 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("[b]Камера.[/b] WASD или стрелки — двигать, колесо мыши — приближать. Подвиньте карту или покрутите колесо.",
 				"[b]Camera.[/b] WASD or arrows to move, mouse wheel to zoom. Move the map or turn the wheel."),
+			"touch": t.call("[b]Камера.[/b] Ведите пальцем — карта двигается. Двумя пальцами — приближение. Подвиньте карту или измените масштаб.",
+				"[b]Camera.[/b] Drag with one finger to move the map, pinch with two to zoom. Move the map or zoom."),
 			"enter": func() -> void:
 				var cam: Node2D = _camera()
 				_base = { "pos": cam.global_position, "zoom": cam.get("zoom") } if cam != null else {},
@@ -110,12 +112,16 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("Это [b]Главная Цистерна[/b] — запас воды всего района. Кликните по ней.",
 				"This is the [b]Main Cistern[/b] — the district's water reserve. Click it."),
+			"touch": t.call("Это [b]Главная Цистерна[/b] — запас воды всего района. Коснитесь её.",
+				"This is the [b]Main Cistern[/b] — the district's water reserve. Tap it."),
 			"cells": func() -> Array: return _coords_of("bld_main_cistern"),
 			"done": func() -> bool: return _coords_of("bld_main_cistern").has(_main().get("_selected_coord")),
 		},
 		{
 			"text": t.call("Слева внизу — [b]карточка[/b] выбранного: что это, чего ему не хватает и что делать. Если над зданием значок — кликните, причина будет здесь.",
 				"Bottom left is the [b]card[/b] of whatever you selected: what it is, what it lacks and what to do. If a building shows an icon, click it — the cause is here."),
+			"touch": t.call("Слева внизу — [b]карточка[/b] выбранного: что это, чего ему не хватает и что делать. Если над зданием значок — коснитесь его, причина будет здесь.",
+				"Bottom left is the [b]card[/b] of whatever you selected: what it is, what it lacks and what to do. If a building shows an icon, tap it — the cause is here."),
 			"target": func() -> Control: return _hud().get("_info_panel"),
 		},
 		{
@@ -128,6 +134,8 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("Поставьте [b]две клетки[/b] дороги от существующей. Подсвеченные клетки подходят. ПКМ или Esc — отменить выбор.",
 				"Place [b]two road tiles[/b] extending the existing one. Highlighted cells are fine. RMB or Esc cancels."),
+			"touch": t.call("Поставьте [b]две клетки[/b] дороги от существующей. Подсвеченные клетки подходят. [b]Первое касание[/b] показывает место, [b]второе[/b] по той же клетке строит. Карточка «Дорога» ещё раз — убрать инструмент.",
+				"Place [b]two road tiles[/b] extending the existing one. Highlighted cells are fine. [b]The first tap[/b] shows the spot, [b]a second tap[/b] on the same cell builds. Tap the Road card again to put the tool down."),
 			"enter": func() -> void: _base = { "n": _count("bld_road") },
 			"target": func() -> Control: return _build_button("bld_road") if _build_mode() != "bld_road" else null,
 			"cells": func() -> Array: return _candidates("bld_road", false),
@@ -150,6 +158,9 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("Насос выбран. Нажмите [b]V[/b] — увидите, куда достаёт его вода. Дом за пределами круга останется сухим, сколько бы воды ни было в цистерне.",
 				"The pump is selected. Press [b]V[/b] to see how far its water reaches. A house outside the circle stays dry however full the cistern is."),
+			"touch": t.call("Насос выбран. Нажмите [b]«Сервисы»[/b] под списком зданий — увидите, куда достаёт его вода. Дом за пределами круга останется сухим, сколько бы воды ни было в цистерне.",
+				"The pump is selected. Press [b]Services[/b] under the building list to see how far its water reaches. A house outside the circle stays dry however full the cistern is."),
+			"target": func() -> Control: return _hud().get("_range_lens_button"),
 			"enter": func() -> void:
 				EventBus.build_mode_changed.emit("")
 				var pumps: Array = _coords_of("bld_well_pump")
@@ -185,12 +196,16 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("Это [b]часы дня[/b]. Сейчас пауза. [b]Пробел[/b] — пуск и пауза, [b]1 / 2 / 3[/b] — скорость. Строить можно и на паузе.\n\nНажмите Пробел — пусть время пойдёт.",
 				"This is the [b]day clock[/b]. It is paused. [b]Space[/b] starts and pauses, [b]1 / 2 / 3[/b] set the speed. You can build while paused.\n\nPress Space to let time run."),
+			"touch": t.call("Это [b]часы дня[/b]. Сейчас пауза. Касание по часам — пуск и пауза, [b]×1 ×2 ×3[/b] — скорость. Строить можно и на паузе.\n\nКоснитесь часов — пусть время пойдёт.",
+				"This is the [b]day clock[/b]. It is paused. A tap on the clock starts and pauses, [b]×1 ×2 ×3[/b] set the speed. You can build while paused.\n\nTap the clock to let time run."),
 			"target": func() -> Control: return _hud().get("_clock_panel"),
 			"done": func() -> bool: return not SimulationRunner.paused,
 		},
 		{
 			"text": t.call("День идёт. Стройте, что считаете нужным, — или нажмите [b]3[/b], чтобы ускорить. Вечером придёт почта.",
 				"The day is running. Build what you think is needed — or press [b]3[/b] to speed up. Mail comes in the evening."),
+			"touch": t.call("День идёт. Стройте, что считаете нужным, — или нажмите [b]×3[/b] у часов, чтобы ускорить. Вечером придёт почта.",
+				"The day is running. Build what you think is needed — or press [b]×3[/b] by the clock to speed up. Mail comes in the evening."),
 			# A player who skipped "press Space" would otherwise be left on a frozen clock.
 			"enter": func() -> void:
 				if _paused_by_us and SimulationRunner.current_phase == SimulationRunner.Phase.DAY and not SimulationRunner.card_open:
@@ -207,6 +222,8 @@ func _make_steps() -> Array[Dictionary]:
 		{
 			"text": t.call("Дальше сами. Слева под картой — [b]цели[/b] и кнопки панелей: [b]Q[/b] вода, [b]E[/b] сезон и прогноз, [b]T[/b] журнал ваших ответов, [b]H[/b] справка. Значок над зданием — кликните по нему.\n\nУдачи, администратор.",
 				"You are on your own now. Under the minimap on the left are your [b]goals[/b] and the panel buttons: [b]Q[/b] water, [b]E[/b] season and forecast, [b]T[/b] log of your answers, [b]H[/b] help. An icon over a building — click it.\n\nGood luck, administrator."),
+			"touch": t.call("Дальше сами. Слева под картой — [b]цели[/b] и кнопки панелей: вода, сезон и прогноз, журнал ваших ответов, справка. Значок над зданием — коснитесь его. Кнопка [b]«Назад»[/b] на телефоне — меню паузы.\n\nУдачи, администратор.",
+				"You are on your own now. Under the minimap on the left are your [b]goals[/b] and the panel buttons: water, season and forecast, the log of your answers, help. An icon over a building — tap it. The phone's [b]Back[/b] opens the pause menu.\n\nGood luck, administrator."),
 			"top": true,
 			"last": true,
 		},
@@ -233,7 +250,8 @@ func _show_step() -> void:
 	var step: Dictionary = _steps[_index]
 	_layer.visible = true
 	_title.text = "%s · %d / %d" % [Localization.ru_en("Обучение", "Tutorial"), _index + 1, _steps.size()]
-	_text.text = step.get("text", "") as String
+	# A phone has no keys, wheel or right button: the steps that name them have a second text.
+	_text.text = step.get("touch" if step.has("touch") and _main().get("touch") == true else "text", "") as String
 	# The right-hand button is always there: "Дальше" on reading steps, "Пропустить шаг" on
 	# action steps — so a player who can't (or won't) do the action is never stuck.
 	var is_action: bool = step.has("done")

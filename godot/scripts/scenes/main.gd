@@ -256,16 +256,30 @@ func _act_on(coord: Vector2i) -> void:
 		_refresh_overlay_state()
 
 
+func _notification(what: int) -> void:
+	# Android's Back is the phone's Escape (project.godot: quit_on_go_back is off, or it would
+	# close the game on the spot, unsaved).
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		_escape()
+	# A phone may kill the game once it is in the background: keep the run before that.
+	elif what == NOTIFICATION_APPLICATION_PAUSED and _hud:
+		_hud.call("_save_run_quietly")
+
+
+## Escape, in order: the open panel, the build mode, then the pause menu.
+func _escape() -> void:
+	if UiModals.close_current():
+		pass
+	elif _build_mode != "":
+		_build_mode = ""
+		EventBus.build_mode_changed.emit("")
+	elif _world_actions_allowed() and _hud and _hud.has_method("toggle_pause_menu"):
+		_hud.call("toggle_pause_menu")
+
+
 func _handle_key(ke: InputEventKey) -> void:
 	if _matches_key(ke, KEY_ESCAPE):
-		# Escape, in order: the open panel, the build mode, then the pause menu.
-		if UiModals.close_current():
-			pass
-		elif _build_mode != "":
-			_build_mode = ""
-			EventBus.build_mode_changed.emit("")
-		elif _world_actions_allowed() and _hud and _hud.has_method("toggle_pause_menu"):
-			_hud.call("toggle_pause_menu")
+		_escape()
 	elif _matches_key(ke, KEY_V) or Input.is_action_just_pressed("toggle_ranges"):
 		toggle_ranges()
 	elif _matches_key(ke, KEY_L):
