@@ -1555,6 +1555,8 @@ func _cost_bb(cost: Dictionary) -> String:
 
 
 func _get_welcome_text() -> String:
+	if get_tree().current_scene.get("touch") == true:
+		return _dim_bb(Localization.ru_en("Коснитесь клетки, чтобы осмотреть здание. Управление — кнопка «Справка».", "Tap a tile to inspect a building. Controls are under Help."))
 	return _dim_bb(Localization.ru_en("Нажмите на клетку, чтобы осмотреть здание. Управление: H.", "Click a tile to inspect a building. Controls: H."))
 
 
